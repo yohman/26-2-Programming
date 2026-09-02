@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="2026 Programming / プログラミング — learn, try, experiment, make.">
+  <title>2026–2 Programming / プログラミング</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <a class="wordmark" href="index.html"><span>PRG / 26–2</span> Programming</a>
+    <button class="menu-toggle" aria-expanded="false" aria-controls="site-nav">MENU</button>
+    <nav id="site-nav" class="site-nav" aria-label="Course navigation">
+      <a href="agenda.html">AGENDA</a><a href="guide.html">MATERIALS</a><a href="#start">START</a>
+    </nav>
+  </header>
+  <main id="main">
+    <section class="hero wrap">
+      <div class="hero-copy">
+        <p class="eyebrow">2026 · FIRST PROGRAMMING COURSE</p>
+        <h1>You write<br>the <em>rules.</em></h1>
+        <p class="jp lead-jp">コードを書く。状態が変わる。コンピュータが動き出す。</p>
+        <p class="dek">Start with one instruction. Watch it execute. Then combine small ideas until the machine does something you imagined.</p>
+        <a class="button" href="agenda.html">See the weekly trace <span>↓</span></a>
+      </div>
+      <div class="execution-stage" aria-label="Code transforming earthquake data into an output">
+        <div class="stage-label"><span>INPUT</span><b>earthquakes.csv</b></div>
+        <div class="code-flow">
+          <div class="code-line"><i>01</i><code>impact = []</code></div>
+          <div class="code-line"><i>02</i><code><b>for</b> quake <b>in</b> data:</code></div>
+          <div class="code-line indent-1"><i>03</i><code><b>if</b> quake.mag &gt; 6:</code></div>
+          <div class="code-line indent-2 active"><i>04</i><code>impact.append(quake)</code><span class="cursor"></span></div>
+        </div>
+        <div class="state-row"><span>quake.mag</span><strong>6.8</strong><span class="arrow">→</span><span>impact</span><strong>[ +1 ]</strong></div>
+        <div class="output-block"><span>OUTPUT / できた</span><strong>One live map.<br>A pattern you can see.</strong><div class="output-dots"><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+      </div>
+    </section>
+
+    <section class="rhythm-band">
+      <div class="wrap"><p class="eyebrow">THE COURSE RHYTHM / 学びのリズム</p><div class="rhythm-line"><span><b>01</b>LEARN<small>仕組みを知る</small></span><i>→</i><span><b>02</b>TRY<small>手を動かす</small></span><i>→</i><span><b>03</b>EXPERIMENT<small>変えて確かめる</small></span><i>→</i><span><b>04</b>MAKE<small>自分のものをつくる</small></span></div></div>
+    </section>
+
+    <section class="home-week wrap" id="start">
+      <div class="section-heading"><div><p class="eyebrow">THE COURSE, AT A GLANCE</p><h2>Small pieces.<br>Real systems.</h2></div><p>Programming is not a list of commands to memorize. It is a way to express an intention precisely enough that a computer can carry it out.</p></div>
+      <div class="week-route" data-week-route></div>
+    </section>
+    <section class="start-strip"><div class="wrap"><span>FIRST DAY</span><strong>One line is enough to begin.</strong><code>print(&quot;hello world&quot;)</code></div></section>
+  </main>
+  <footer class="site-footer"><div class="wrap footer-grid"><p><strong>2026–2 Programming</strong><br><span class="jp">プログラミング</span></p><p>LEARN → TRY → EXPERIMENT → MAKE</p><p><a href="agenda.html">Agenda</a> · <a href="guide.html">Materials</a></p></div></footer>
+  <script src="assets/site.js"></script>
+</body>
+</html>

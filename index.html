@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="ja" data-language="ja">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -8,50 +8,60 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/styles.css">
+  <link rel="stylesheet" href="assets/styles.css?v=20260909c">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header">
     <a class="wordmark" href="index.html"><span>PRG / 26–2</span> Programming</a>
-    <button class="menu-toggle" aria-expanded="false" aria-controls="site-nav">MENU</button>
-    <nav id="site-nav" class="site-nav" aria-label="Course navigation">
-      <a href="agenda.html">AGENDA</a><a href="guide.html">MATERIALS</a><a href="#start">START</a>
-    </nav>
+    <div class="header-tools"><button class="menu-toggle" aria-expanded="false" aria-controls="site-nav">MENU</button><nav id="site-nav" class="site-nav" aria-label="Course navigation">
+      <a href="agenda.html">AGENDA</a><a href="#course-guide">COURSE GUIDE</a>
+    </nav><button class="language-toggle" data-language-toggle type="button" aria-label="Switch to English" title="English">EN</button></div>
   </header>
   <main id="main">
     <section class="hero wrap">
       <div class="hero-copy">
-        <p class="eyebrow">2026 · FIRST PROGRAMMING COURSE</p>
+        <p class="eyebrow">2026 · FIRST PROGRAMMING COURSE / はじめてのプログラミング</p>
         <h1>You write<br>the <em>rules.</em></h1>
         <p class="jp lead-jp">コードを書く。状態が変わる。コンピュータが動き出す。</p>
-        <p class="dek">Start with one instruction. Watch it execute. Then combine small ideas until the machine does something you imagined.</p>
-        <a class="button" href="agenda.html">See the weekly trace <span>↓</span></a>
+        <p class="dek">Start with one instruction. Watch it execute. Then combine small ideas until the machine does something you imagined.<span class="translation jp" lang="ja">一つの命令から始めよう。実行される様子を見よう。小さな考えを組み合わせ、想像したことをコンピュータに動かしてもらおう。</span></p>
+        <a class="button" href="agenda.html">See the weekly trace / 毎週の流れ <span>↓</span></a>
       </div>
-      <div class="execution-stage" aria-label="Code transforming earthquake data into an output">
-        <div class="stage-label"><span>INPUT</span><b>earthquakes.csv</b></div>
-        <div class="code-flow">
-          <div class="code-line"><i>01</i><code>impact = []</code></div>
-          <div class="code-line"><i>02</i><code><b>for</b> quake <b>in</b> data:</code></div>
-          <div class="code-line indent-1"><i>03</i><code><b>if</b> quake.mag &gt; 6:</code></div>
-          <div class="code-line indent-2 active"><i>04</i><code>impact.append(quake)</code><span class="cursor"></span></div>
-        </div>
-        <div class="state-row"><span>quake.mag</span><strong>6.8</strong><span class="arrow">→</span><span>impact</span><strong>[ +1 ]</strong></div>
-        <div class="output-block"><span>OUTPUT / できた</span><strong>One live map.<br>A pattern you can see.</strong><div class="output-dots"><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
-      </div>
+      <section class="execution-stage first-python" aria-label="A first Python experiment">
+        <div class="try-python-top"><span>WEEK 01 · TRY PYTHON</span><b>Python</b></div>
+        <p class="lang-ja jp try-intro" lang="ja">文字を一つ変えて、Runを押してみよう。</p><p class="lang-en try-intro">Change one word, then press Run.</p>
+        <div class="try-code" aria-label="Python code"><span class="line-number">1</span><code><span class="syntax-function">print</span>(<span class="syntax-string">&quot;Hello, <span data-python-name>world</span>!&quot;</span>)</code></div>
+        <div class="try-controls"><label><span class="lang-ja jp" lang="ja">名前</span><span class="lang-en">NAME</span><input data-python-input value="world" maxlength="24" aria-label="Name to print"></label><button type="button" data-run-python><span class="lang-ja jp" lang="ja">Run</span><span class="lang-en">Run</span></button></div>
+        <div class="try-output" aria-live="polite"><span>OUTPUT</span><code data-python-output>_</code></div>
+        <p class="lang-ja jp try-note" lang="ja"><code>print()</code> は、コンピュータに文字を表示させる最初の命令です。</p><p class="lang-en try-note"><code>print()</code> is your first instruction: tell the computer what to show.</p>
+      </section>
     </section>
 
     <section class="rhythm-band">
       <div class="wrap"><p class="eyebrow">THE COURSE RHYTHM / 学びのリズム</p><div class="rhythm-line"><span><b>01</b>LEARN<small>仕組みを知る</small></span><i>→</i><span><b>02</b>TRY<small>手を動かす</small></span><i>→</i><span><b>03</b>EXPERIMENT<small>変えて確かめる</small></span><i>→</i><span><b>04</b>MAKE<small>自分のものをつくる</small></span></div></div>
     </section>
 
-    <section class="home-week wrap" id="start">
-      <div class="section-heading"><div><p class="eyebrow">THE COURSE, AT A GLANCE</p><h2>Small pieces.<br>Real systems.</h2></div><p>Programming is not a list of commands to memorize. It is a way to express an intention precisely enough that a computer can carry it out.</p></div>
-      <div class="week-route" data-week-route></div>
+    <section class="practice-band wrap">
+      <p class="eyebrow">THREE PROGRAMMING PRACTICES / 3つのプログラミング実践</p>
+      <div class="practice-grid"><article><b>01 / HUMAN CODING</b><h2>Read. Trace. Write.</h2><p>First understand the code yourself. Explain its state, write the essential part, and test your prediction.<span class="translation jp" lang="ja">まず自分でコードを理解します。状態を説明し、必要な部分を書き、予想をテストします。</span></p></article><article><b>02 / AI COMPLETION</b><h2>Extend. Debug. Check.</h2><p>Use AI for a bounded next step—not a finished answer. Compare, test, and decide what to keep.<span class="translation jp" lang="ja">完成品ではなく、限定した次の一歩にAIを使います。比べ、テストし、採用を判断します。</span></p></article><article><b>03 / AGENT-BASED CODING</b><h2>Brief. Review. Verify.</h2><p>Give an agent goals, context, constraints, and acceptance criteria. Review the change and prove it works.<span class="translation jp" lang="ja">目標、文脈、制約、受け入れ基準をエージェントに渡します。変更をレビューし、動くことを証明します。</span></p></article></div>
     </section>
-    <section class="start-strip"><div class="wrap"><span>FIRST DAY</span><strong>One line is enough to begin.</strong><code>print(&quot;hello world&quot;)</code></div></section>
+
+    <section class="course-guide wrap" id="course-guide">
+      <div class="section-heading"><div><p class="eyebrow">COURSE GUIDE / 授業について</p><h2>Small pieces.<br>Real systems.</h2><p class="jp translation" lang="ja">小さな部品から、本当に動く仕組みへ。</p></div><p>Programming is not a list of commands to memorize. It is a way to express an intention precisely enough that a computer can carry it out.<span class="translation jp" lang="ja">プログラミングは、暗記する命令の一覧ではありません。コンピュータが実行できるほど正確に、自分の意図を表す方法です。</span></p></div>
+      <div class="course-guide-grid">
+        <article><p class="eyebrow">THE PURPOSE / この授業で</p><h3 class="lang-en">Make the computer useful.</h3><h3 class="lang-ja jp" lang="ja">コンピュータを役立つものにする。</h3><p class="lang-en">Start with one line, then learn how small instructions become tools, stories, investigations, and projects of your own.</p><p class="lang-ja jp" lang="ja">一行から始めて、小さな命令が自分の道具、ストーリー、調査、プロジェクトになるまでを学びます。</p></article>
+        <article><p class="eyebrow">WHAT WE COVER / 学ぶこと</p><h3 class="lang-en">Values → logic → systems.</h3><h3 class="lang-ja jp" lang="ja">値 → 論理 → 仕組み。</h3><p class="lang-en">You will work with values, input, data structures, choices, loops, functions, modules, interfaces, and real data—not as a vocabulary list, but as ways to make something happen.</p><p class="lang-ja jp" lang="ja">値、入力、データ構造、選択、ループ、関数、モジュール、インターフェース、実データを扱います。用語の暗記ではなく、何かを起こすための道具として学びます。</p></article>
+        <article><p class="eyebrow">HOW WE WORK / 授業の進め方</p><h3 class="lang-en">Learn → Try → Make.</h3><h3 class="lang-ja jp" lang="ja">学ぶ → 試す → つくる。</h3><p class="lang-en">Each 100-minute class moves from a short lecture to a guided notebook, then a final 30-minute challenge. Take-home work turns that week’s idea into something personal.</p><p class="lang-ja jp" lang="ja">100分の授業は、Short lecture、ガイド付きノートブック、最後の30分のチャレンジで進みます。持ち帰り課題では、その週の考えを自分のものにします。</p></article>
+      </div>
+      <section class="mini-schedule" aria-labelledby="mini-schedule-title"><p class="eyebrow" id="mini-schedule-title">MINI SCHEDULE / ミニスケジュール</p><div class="mini-schedule-grid"><article><span>W01–04 · OCT 01–22</span><b>WRITE</b><small>書く</small><p>Values, input, collections, choices.</p></article><article><span>W05–08 · OCT 29–NOV 19</span><b>REPEAT</b><small>繰り返す</small><p>Loops, review, and evidence.</p></article><article><span>W09–11 · NOV 26–DEC 10</span><b>COMPOSE</b><small>組み立てる</small><p>Functions, systems, and tools.</p></article><article><span>W12–14 · DEC 17–JAN 14</span><b>MAKE</b><small>つくる</small><p>Proposal, implementation, final work.</p></article></div></section>
+      <div class="course-admin-grid">
+        <section class="submission-guide"><p class="eyebrow">ASSIGNMENT SUBMISSION / 課題の提出</p><h3 class="lang-en">Submit every take-home assignment through UNIPA.</h3><h3 class="lang-ja jp" lang="ja">すべての持ち帰り課題はUNIPAで提出します。</h3><ol><li><span class="lang-en">Submit a fully working `.ipynb` notebook file.</span><span class="lang-ja jp" lang="ja">最後まで動く `.ipynb` ノートブックを提出する。</span></li><li><span class="lang-en">Run the notebook from top to bottom before submitting so its output is visible.</span><span class="lang-ja jp" lang="ja">提出前に上から下まで実行し、出力が見える状態にする。</span></li><li><span class="lang-en">Include the data, images, or other associated files your notebook needs.</span><span class="lang-ja jp" lang="ja">ノートブックが必要とするデータ、画像、その他の関連ファイルも含める。</span></li><li><span class="lang-en">Complete the notebook with your own observations, notes, tests, and reflection.</span><span class="lang-ja jp" lang="ja">自分の観察、メモ、テスト、振り返りまでノートブックに残す。</span></li></ol></section>
+        <section class="grading-guide"><p class="eyebrow">GRADING / 成績評価</p><h3 class="lang-en">Show your work every week.</h3><h3 class="lang-ja jp" lang="ja">毎週の取り組みを、作品で示す。</h3><div class="grade-split"><article><strong>60%</strong><p class="lang-en">Weekly take-home assignments<br><small>Weeks 01–13 · 0–3 points each</small></p><p class="lang-ja jp" lang="ja">毎週の持ち帰り課題<br><small>Week 01–13 · 各0〜3点</small></p></article><article><strong>40%</strong><p class="lang-en">Final exam + final project<br><small>Both conducted and/or due in Week 14</small></p><p class="lang-ja jp" lang="ja">期末試験 + 最終プロジェクト<br><small>どちらもWeek 14に実施・提出</small></p></article></div><table class="grading-scale"><thead><tr><th>POINTS</th><th><span class="lang-en">WEEKLY ASSIGNMENT</span><span class="lang-ja jp" lang="ja">毎週の課題</span></th></tr></thead><tbody><tr><td>3</td><td><span class="lang-en"><strong>Outstanding / Original / Beyond.</strong> Complete, carefully checked work with a meaningful personal idea or improvement beyond the brief.</span><span class="lang-ja jp" lang="ja"><strong>Outstanding / Original / Beyond。</strong>要件を確実に満たし、丁寧に確認され、自分らしい工夫や課題を超える意味のある改善がある。</span></td></tr><tr><td>2</td><td><span class="lang-en"><strong>Meets the brief.</strong> A complete, working submission with the required notes and evidence.</span><span class="lang-ja jp" lang="ja"><strong>標準（要件を満たす）。</strong>動く完成した提出物で、必要なメモと証拠がある。</span></td></tr><tr><td>1</td><td><span class="lang-en"><strong>Needs more work.</strong> Submitted, but incomplete, not fully working, or missing important evidence and notes.</span><span class="lang-ja jp" lang="ja"><strong>要改善。</strong>提出はあるが、不完全、最後まで動かない、または重要な証拠・メモが不足している。</span></td></tr><tr><td>0</td><td><span class="lang-en"><strong>No submission.</strong></span><span class="lang-ja jp" lang="ja"><strong>未提出。</strong></span></td></tr></tbody></table></section>
+      </div>
+    </section>
+    <section class="start-strip"><div class="wrap"><span>FIRST DAY / 初回</span><strong>One line is enough to begin.<small class="jp">一行あれば、始められる。</small></strong><code>print(&quot;hello world&quot;)</code></div></section>
   </main>
-  <footer class="site-footer"><div class="wrap footer-grid"><p><strong>2026–2 Programming</strong><br><span class="jp">プログラミング</span></p><p>LEARN → TRY → EXPERIMENT → MAKE</p><p><a href="agenda.html">Agenda</a> · <a href="guide.html">Materials</a></p></div></footer>
-  <script src="assets/site.js"></script>
+  <footer class="site-footer"><div class="wrap footer-grid"><p><strong>2026–2 Programming</strong><br><span class="jp">プログラミング</span></p><p>LEARN → TRY → EXPERIMENT → MAKE<br><span class="jp">学ぶ → 試す → 実験する → つくる</span></p><p><a href="agenda.html">Agenda / 授業予定</a> · <a href="#course-guide">Course Guide / 授業について</a></p></div></footer>
+  <script src="assets/site.js?v=20260909c"></script>
 </body>
 </html>

@@ -9,8 +9,8 @@ title: Make the computer say something.
 title_ja: コンピュータに「してほしいこと」を伝える。
 course_date: 2026-10-01
 course_time: 13:10–14:50
-overview: Build your Python workspace, run your first notebook, and create a text-art poster or a message from the future.
-overview_ja: Pythonの作業環境をつくり、最初のノートブックを動かし、文字のポスターか未来からのメッセージをつくる。
+overview: Set up Python, run your first notebook, and make a text-art poster. If time remains, try a tiny tool; at home, write a message from the future.
+overview_ja: Pythonを準備して最初のノートブックを動かし、文字のポスターをつくる。時間があればミニツールにも挑戦。宿題は「未来からのメッセージ」。
 ---
 ## Lecture Timelines
 ### journey
@@ -75,22 +75,18 @@ overview_ja: Pythonの作業環境をつくり、最初のノートブックを�
 EN: Set up your own Python notebook, then write and run your first small programs. You will work with output, values, variables, and input.
 JP: 自分のPythonノートブックを準備し、最初の小さなプログラムを書いて実行する。出力、値、変数、入力を扱う。
 ## In-Class Challenge
-EN: Choose one: design a text-art event poster, or write a message from your future self. Use input to make it yours, then show it to a partner.
-JP: 文字で描くイベントポスター、または未来の自分からのメッセージ。どちらかを選び、入力で変わる作品をつくってペアに見せる。
+EN: First, make a text-art event poster that changes with input. Show it to a partner. If time remains, make a tiny useful tool such as a study-time planner.
+JP: まず、入力で変わる文字のイベントポスターをつくり、ペアに見せる。時間があれば、学習時間プランナーなどの小さな便利ツールにも挑戦する。
 ## Take-Home Assignment
-EN: Make a tiny tool for someone else. It should help with a real small task, not repeat your poster or future message.
+EN: Write **a message from your future self**. Ask for a name, a goal, and how many years ahead; calculate the future year, then write a short, original message that changes with the answers.
 
-- Try a study-time planner, a club budget helper, a reading-goal tracker, or another one-screen idea.
-- Use your own words and at least one input to produce a result someone can use.
-- Run the notebook, add a short note about what you made, then submit the `.ipynb` file and one screenshot through UNIPA. Be ready to show it in Week 02.
-- The completed study-planner example below shows what a finished notebook with testing and reflection can look like. Make your own tool rather than copying it.
+- Try two different sets of answers and note what changed. Make the voice, setting, and advice your own.
+- Run and complete the notebook, including your observations. Submit the `.ipynb` file and one screenshot through UNIPA. Be ready to demonstrate it in Week 02.
 
-JP: 授業内のポスターや未来のメッセージとは別に、**誰かの小さな用事に役立つツール**をつくる。
+JP: **未来の自分から今の自分へのメッセージ**をつくる。名前、目標、何年後かを入力し、未来の年を計算する。答えによって変わる、オリジナルの短い手紙にしよう。
 
-- 例：学習時間の計画、部活の予算、読書目標の確認など。
-- 自分の言葉と1つ以上の入力を使い、誰かが使える結果を1画面に見せる。
-- ノートブックを実行し、つくったものについて短いメモを書く。`.ipynb`ファイルとスクリーンショット1枚をUNIPAで提出。Week 02で紹介できるようにしておこう。
-- 下の学習プランナー完成例では、設計メモ・実行結果・確認・振り返りの書き方を見られる。作品はコピーせず、自分の題材でつくろう。
+- 二通りの入力で実行し、何が変わったかをメモする。未来の自分の口調や舞台、アドバイスには自分らしさを。
+- ノートブックを最後まで実行し、観察も書き込む。完成した`.ipynb`ファイルとスクリーンショット1枚をUNIPAで提出。Week 02で実演できるようにしておこう。
 ## Aha!
 EN:
 ```python
@@ -109,7 +105,7 @@ EN: A program is a sequence of small instructions whose values change in a trace
 JP: プログラムは、追跡できる形で値を変えていく小さな命令の連なりである。
 ## Resources
 - [Week 01 In-Class — First Python](weeks/week-01/week-01-in-class-first-python.ipynb) {notebook}
-- [Week 01 Challenge — Choose & Create](weeks/week-01/week-01-challenge-choose-and-create.ipynb) {challenge}
-- [Week 01 Take-Home — My First Tiny Tool](weeks/week-01/week-01-take-home-my-first-tiny-tool.ipynb) {homework}
-- [完成例 — Study Sprint Planner](weeks/week-01/week-01-homework-example-study-sprint.ipynb) {homework}
+- [Week 01 Challenge — Poster & Optional Tiny Tool](weeks/week-01/week-01-challenge-choose-and-create.ipynb) {challenge}
+- [任意課題の参考例 — Study Sprint Planner](weeks/week-01/week-01-homework-example-study-sprint.ipynb) {challenge}
+- [Week 01 Homework — Message from the Future](weeks/week-01/week-01-homework-message-from-the-future.ipynb) {homework}
 - [Week 01 Setup — Python, VS Code, and Jupyter](weeks/week-01/week-01-setup-python-vscode-jupyter.md) {support}

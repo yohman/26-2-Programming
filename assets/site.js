@@ -391,25 +391,28 @@ function lectureTimelinesHtml(body) {
       return `<article class="history-annotation${item.sample ? ' has-code' : ''}${item.famousJa ? ' has-facts' : ''}${item.games?.length ? ' has-games' : ''}${index === 0 ? ' is-active' : ''}" data-history-detail="${index}"${index === 0 ? '' : ' hidden'}>${visual(item, kind, 'history-annotation-visual')}<div class="history-annotation-copy"><span>${escapeHtml(item.year)}${item.popularity ? ` · ${item.popularity.toFixed(1)}% USED IN 2025` : ''}</span><h5>${escapeHtml(item.title)}</h5><p class="lang-en">${escapeHtml(item.en)}</p><p class="lang-ja jp" lang="ja">${escapeHtml(item.ja)}</p>${games}${facts(item)}</div>${item.sample ? `<div class="history-code-sample"><span>HELLO, WORLD · ${escapeHtml(item.title)}</span><pre><code>${highlightTimelineCode(item.sample)}</code></pre></div>` : ''}<div class="history-annotation-links"><a class="history-source" href="${escapeHtml(item.url)}" target="_blank" rel="noopener"><span class="lang-en">EXPLORE ↗</span><span class="lang-ja jp" lang="ja">詳しく見る ↗</span></a>${item.credit ? `<a class="history-credit" href="${escapeHtml(item.credit)}" target="_blank" rel="noopener">IMAGE SOURCE ↗</a>` : ''}</div></article>`;
     }).join('');
     const scaleNote = kind === 'languages' ? `<div class="history-scale-note"><span class="lang-en">Horizontal position = release year · bubble area = 2025 use</span><span class="lang-ja jp" lang="ja">横位置＝発表年 · 円の面積＝2025年の使用率</span><small class="lang-en">Stack Overflow “Have used” share (31,771 responses). Historic languages absent from the survey use the minimum marker.</small><small class="lang-ja jp" lang="ja">Stack Overflow「過去1年に使用」の割合（31,771回答）。調査にない歴史的言語は最小サイズ。</small><a href="https://survey.stackoverflow.co/2025/technology#1-programming-scripting-and-markup-languages" target="_blank" rel="noopener">SOURCE ↗</a></div>` : '';
-    return `<div id="timeline-${kind}" role="tabpanel" aria-labelledby="${tabId}" data-lecture-timeline-panel="${kind}"${kind === 'journey' ? '' : ' hidden'}><div class="history-explorer${kind === 'languages' ? ' is-languages' : ''}" data-history-explorer tabindex="0" aria-label="${escapeHtml(label)}">${scaleNote}<p class="timeline-scroll-cue"><span class="lang-en">SCROLL THE TIMELINE →</span><span class="lang-ja jp" lang="ja">年表を横にスクロール →</span></p><div class="history-map-scroll"><div class="history-map ${kind === 'languages' ? 'is-bubble-map' : 'is-journey-map'}"><span class="history-axis" aria-hidden="true"></span>${ticks.join('')}<nav aria-label="${escapeHtml(label)} chronology">${events}</nav></div></div><div class="history-annotations">${details}</div></div></div>`;
+    return `<div id="timeline-${kind}" role="tabpanel" aria-labelledby="${tabId}" data-lecture-timeline-panel="${kind}" hidden><div class="history-explorer${kind === 'languages' ? ' is-languages' : ''}" data-history-explorer tabindex="0" aria-label="${escapeHtml(label)}">${scaleNote}<p class="timeline-scroll-cue"><span class="lang-en">SCROLL THE TIMELINE →</span><span class="lang-ja jp" lang="ja">年表を横にスクロール →</span></p><div class="history-map-scroll"><div class="history-map ${kind === 'languages' ? 'is-bubble-map' : 'is-journey-map'}"><span class="history-axis" aria-hidden="true"></span>${ticks.join('')}<nav aria-label="${escapeHtml(label)} chronology">${events}</nav></div></div><div class="history-annotations">${details}</div></div></div>`;
   };
-  return `<section class="lecture-timelines" data-lecture-timelines><div class="lecture-timeline-tabs" role="tablist" aria-label="Lecture topics"><button type="button" role="tab" aria-selected="true" aria-controls="timeline-journey" id="timeline-tab-journey" data-lecture-timeline-tab="journey"><span class="lang-en">My PC Journey</span><span class="lang-ja jp" lang="ja">私のPC史</span></button><button type="button" role="tab" aria-selected="false" aria-controls="timeline-languages" id="timeline-tab-languages" data-lecture-timeline-tab="languages" tabindex="-1"><span class="lang-en">Programming Languages</span><span class="lang-ja jp" lang="ja">言語の歩み</span></button><button type="button" role="tab" aria-selected="false" aria-controls="timeline-python" id="timeline-tab-python" data-lecture-timeline-tab="python" tabindex="-1"><span class="lang-en">Why Python?</span><span class="lang-ja jp" lang="ja">なぜPython？</span></button></div>${panel(journey, 'journey', 'My PC Journey', 'timeline-tab-journey')}${panel(languages, 'languages', 'Languages that changed the world', 'timeline-tab-languages')}${pythonPanel(pythonRows)}</section>`;
+  return `<section class="lecture-timelines" data-lecture-timelines><div class="lecture-timeline-tabs" role="tablist" aria-label="Lecture topics"><button type="button" role="tab" aria-selected="false" aria-expanded="false" aria-controls="timeline-journey" id="timeline-tab-journey" data-lecture-timeline-tab="journey"><span class="lang-en">My PC Journey</span><span class="lang-ja jp" lang="ja">私のPC史</span></button><button type="button" role="tab" aria-selected="false" aria-expanded="false" aria-controls="timeline-languages" id="timeline-tab-languages" data-lecture-timeline-tab="languages" tabindex="-1"><span class="lang-en">Programming Languages</span><span class="lang-ja jp" lang="ja">言語の歩み</span></button><button type="button" role="tab" aria-selected="false" aria-expanded="false" aria-controls="timeline-python" id="timeline-tab-python" data-lecture-timeline-tab="python" tabindex="-1"><span class="lang-en">Why Python?</span><span class="lang-ja jp" lang="ja">なぜPython？</span></button></div>${panel(journey, 'journey', 'My PC Journey', 'timeline-tab-journey')}${panel(languages, 'languages', 'Languages that changed the world', 'timeline-tab-languages')}${pythonPanel(pythonRows)}</section>`;
 }
 
 function setupLectureTimelineTabs(root = document) {
   root.querySelectorAll('[data-lecture-timelines]').forEach(group => {
     const buttons = [...group.querySelectorAll('[data-lecture-timeline-tab]')];
     const panels = [...group.querySelectorAll('[data-lecture-timeline-panel]')];
-    const select = index => {
+    let activeIndex = -1;
+    const select = (index, toggle = false) => {
+      activeIndex = toggle && activeIndex === index ? -1 : index;
       buttons.forEach((button, buttonIndex) => {
-        const active = buttonIndex === index;
+        const active = buttonIndex === activeIndex;
         button.setAttribute('aria-selected', String(active));
-        button.tabIndex = active ? 0 : -1;
+        button.setAttribute('aria-expanded', String(active));
+        button.tabIndex = active || (activeIndex === -1 && buttonIndex === 0) ? 0 : -1;
       });
-      panels.forEach((panel, panelIndex) => { panel.hidden = panelIndex !== index; });
+      panels.forEach((panel, panelIndex) => { panel.hidden = panelIndex !== activeIndex; });
     };
     buttons.forEach((button, index) => {
-      button.addEventListener('click', () => select(index));
+      button.addEventListener('click', () => select(index, true));
       button.addEventListener('keydown', event => {
         if (!['ArrowLeft', 'ArrowRight'].includes(event.key)) return;
         event.preventDefault();

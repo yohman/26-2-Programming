@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 400" role="img" aria-labelledby="title desc">
+  <title id="title">All-in-one iMac used for home learning</title>
+  <desc id="desc">Illustration of an all-in-one desktop computer with a built-in optical-drive slot. The exact iMac model is unknown.</desc>
+  <defs>
+    <linearGradient id="case" x1="0" x2="1" y2="1">
+      <stop stop-color="#f5f6f3"/>
+      <stop offset="1" stop-color="#c8d0d0"/>
+    </linearGradient>
+    <linearGradient id="screen" x1="0" y2="1">
+      <stop stop-color="#24445a"/>
+      <stop offset="1" stop-color="#142d40"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="260" cy="366" rx="176" ry="14" fill="#d9e0df" opacity=".7"/>
+  <path d="M95 29h324a16 16 0 0 1 16 16v245a15 15 0 0 1-15 15H96a15 15 0 0 1-15-15V44a15 15 0 0 1 14-15Z" fill="url(#case)" stroke="#aeb9ba" stroke-width="3"/>
+  <rect x="96" y="44" width="324" height="219" rx="4" fill="#1b2730"/>
+  <rect x="105" y="53" width="306" height="201" fill="url(#screen)"/>
+  <rect x="105" y="53" width="306" height="26" fill="#386178"/>
+  <circle cx="121" cy="66" r="4" fill="#e8b48c"/>
+  <circle cx="135" cy="66" r="4" fill="#d6d0a0"/>
+  <circle cx="149" cy="66" r="4" fill="#9ebfb4"/>
+  <rect x="124" y="96" width="126" height="142" rx="3" fill="#e7e9e2"/>
+  <rect x="137" y="110" width="100" height="12" rx="2" fill="#8da8ad"/>
+  <rect x="137" y="132" width="71" height="6" rx="2" fill="#bccdcb"/>
+  <rect x="137" y="147" width="85" height="6" rx="2" fill="#bccdcb"/>
+  <rect x="137" y="177" width="99" height="44" rx="2" fill="#b6c9be"/>
+  <rect x="265" y="96" width="124" height="142" rx="3" fill="#294d61"/>
+  <rect x="277" y="109" width="100" height="68" rx="2" fill="#9eb1ab"/>
+  <circle cx="327" cy="134" r="13" fill="#d8c8aa"/>
+  <path d="M297 168c5-18 55-18 60 0" fill="#c67869"/>
+  <rect x="277" y="187" width="46" height="38" rx="2" fill="#aebfc0"/>
+  <rect x="331" y="187" width="46" height="38" rx="2" fill="#b8b7a9"/>
+  <circle cx="258" cy="284" r="5" fill="#9aaeb2"/>
+  <path d="M435 91h8v151h-8" fill="#a6b2b4"/>
+  <path d="M439 173h5" stroke="#536d76" stroke-width="4" stroke-linecap="round"/>
+  <path d="M236 305h48l12 42h-72z" fill="#b7c4c4"/>
+  <path d="M216 345h88l34 13H182z" fill="#c8d2d0" stroke="#aeb9ba" stroke-width="2"/>
+  <path d="M130 355h76l23 9H110z" fill="#e0e5e0" stroke="#b8c3c0" stroke-width="2"/>
+</svg>

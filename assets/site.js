@@ -807,6 +807,16 @@ async function setupFileViewer() {
       await setupTutorialToc(root, file, returnUrl, source);
       return;
     }
+    if (extension === 'md' && /^---\s*\n[\s\S]*?\nbilingual:\s*true\s*\n[\s\S]*?\n---/.test(source)) {
+      const document = parseFrontMatter(source);
+      const heading = (ja, en) => `<span class="lang-ja jp" lang="ja">${escapeHtml(ja)}</span><span class="lang-en">${escapeHtml(en)}</span>`;
+      const sections = document.sections.map(section => {
+        const [ja, en = ja] = section.title.split(' / ');
+        return `<section><h2>${heading(ja, en)}</h2>${bilingualHtml(section.body)}</section>`;
+      }).join('');
+      root.innerHTML = `<div class="viewer-title"><p class="eyebrow">MARKDOWN PREVIEW</p><h1>${heading(document.title_ja || document.title, document.title)}</h1>${actions(download)}</div><article class="markdown-preview">${sections}</article>`;
+      return;
+    }
     root.innerHTML = `<div class="viewer-title"><p class="eyebrow">MARKDOWN PREVIEW</p><h1>${escapeHtml(title)}</h1>${actions(download)}</div><article class="markdown-preview">${markdownHtml(source.replace(/^#\s+(.+)$/m, '**$1**'))}</article>`;
   } catch (error) { root.innerHTML = `<div class="viewer-title"><p class="eyebrow">FILE PREVIEW</p><h1>${escapeHtml(title)}</h1>${actions(download)}</div><p class="agenda-locked">Could not preview ${escapeHtml(title)}.</p>`; }
 }

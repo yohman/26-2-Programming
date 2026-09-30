@@ -1,46 +1,75 @@
-# Final Project / 最終プロジェクト
+---
+title: Final Project
+title_ja: 最終プロジェクト
+bilingual: true
+---
+## 何をつくる？ / What will you make?
+EN: Build one small, meaningful Python work that another person can run and inspect: a useful tool, data investigation, visualisation, or other focused idea. A clear question or user matters more than extra features. A GUI is optional.
 
-Build one small, meaningful Python work that another person can run and inspect: a useful tool, data investigation, visualisation, or other focused idea. A clear question or user matters more than extra features. A GUI is optional.
+JP: 他の人が実行して確かめられる、小さくても意味のあるPython作品を一つつくります。便利な道具、データ調査、可視化などが対象です。機能の数より、明確な問いや使う人が大切です。GUIは必須ではありません。
+## 進め方 / Milestones
+EN:
 
-他の人が実行して確かめられる、小さくても意味のあるPython作品を一つつくります。便利な道具、データ調査、可視化などが対象です。機能の数より、明確な問いや使う人が大切です。GUIは必須ではありません。
-
-## Milestones / 進め方
-
-| Week | What to show / 見せるもの |
+| Week | What to show |
 | --- | --- |
-| 10 · Dec 3 | A possible question or user need / 問いや使う人の困りごとを一つ見つける |
-| 11 · Dec 10 | One-page scope and test plan, submitted with the weekly assignment / 範囲とテスト計画を1ページにし、週課題とともに提出 |
-| 12 · Dec 17 | One working feature and test evidence, submitted as the weekly assignment / 動く機能一つとテストの証拠を週課題として提出 |
-| 13 · Jan 7 | Peer test, revise, and submit the final project through UNIPA / 仲間に試してもらい、直して、完成版をUNIPAに提出 |
+| 10 · Dec 3 | Find one possible question or user need. |
+| 11 · Dec 10 | Submit a one-page scope and test plan with the weekly assignment. |
+| 12 · Dec 17 | Submit one working feature and test evidence as the weekly assignment. |
+| 13 · Jan 7 | Test with a peer, revise, and submit the final project through UNIPA. |
 
-Follow the exact UNIPA deadline for each submission. Week 13's project is a separate **20%** component, not another 3-point weekly assignment. The Week 14 in-class challenge is separate from this project.
+Follow the exact UNIPA deadline for each submission. The Week 13 project is a separate **20%** component, not another 3-point weekly assignment. The Week 14 in-class challenge is separate.
+
+JP:
+
+| 週 | 見せるもの |
+| --- | --- |
+| Week 10 · 12月3日 | 問い、または使う人の困りごとを一つ見つける。 |
+| Week 11 · 12月10日 | 範囲とテスト計画を1ページにし、週課題とともに提出。 |
+| Week 12 · 12月17日 | 動く機能一つとテストの証拠を週課題として提出。 |
+| Week 13 · 1月7日 | 仲間に試してもらい、直して、完成版をUNIPAに提出。 |
 
 各提出の締切はUNIPAで確認してください。Week 13のプロジェクトは独立した**20%**の評価項目で、3点の週課題を追加するものではありません。Week 14の授業内チャレンジとも別です。
+## 提出物 / Required deliverables
+EN:
 
-## Required deliverables / 提出物
+1. **Runnable work** — A notebook or small program, plus the data and other files it needs. State one clear question or user need.
+2. **Short README** — What it does, how to run it, sources, and one known limit.
+3. **Human code literacy** — Mark two short passages you can trace, explain, and change yourself.
+4. **AI and agent decisions** — Record one bounded AI suggestion and one small agent task: your request, what changed, and why you accepted, revised, or rejected it.
+5. **Three checks** — Test a normal case, an edge or failure case, and a result checked with a person or source.
+6. **Brief reflection** — About 120–180 English words (or 200–300 Japanese characters) on one decision, one limitation, and what you would improve next.
 
-1. **Runnable work / 動く作品** — A notebook or small program, plus its required data and other files. Use one clear question or user need. / Notebookまたは小さなプログラムと、実行に必要なデータ・関連ファイル。問いか使う人を明確にする。
-2. **Short README / 短い説明** — What it does, how to run it, sources, and one known limit. / 何ができるか、実行方法、出典、限界を一つ書く。
-3. **Human code literacy / 人のコード理解** — Mark two short passages you can trace, explain, and change yourself. / 自分で追跡・説明・修正できるコードを短く二か所示す。
-4. **AI and agent decisions / AIとAgentの判断** — Record one bounded AI suggestion and one small agent task: the request or brief, what changed, and why you accepted, revised, or rejected it. / AIの提案一つとエージェントの小さな作業一つを記録する。依頼内容、変更点、採用・修正・却下の理由を書く。
-5. **Three checks / 三つの確認** — A normal case, an edge or failure case, and a result checked with a person or source. / 通常の入力、端や失敗する入力、人または資料と照合した結果を一つずつ確かめる。
-6. **Brief reflection / 短い振り返り** — About 200–300 Japanese characters (or 120–180 English words) on one decision, one limitation, and what you would improve next. / 判断一つ、限界一つ、次に直したいことを日本語200〜300字程度（または英語120〜180語）で書く。
+AI may help generate, revise, or explain code, but you are responsible for understanding and testing it. Give an agent a written, bounded brief with a goal, files/context, constraints, and acceptance checks. Review its changes; do not accept a large unexplained rewrite. Credit data, images, libraries, and outside code.
 
-AI may help generate, revise, or explain code, but you remain responsible for understanding and testing it. Give an agent a written, bounded brief with goal, files/context, constraints, and acceptance checks. Review its changes; do not accept a large unexplained rewrite. Credit data, images, libraries, and outside code.
+JP:
 
-AIに生成・修正・説明を手伝わせてもかまいませんが、理解と検証は自分の責任です。エージェントには、目標、使うファイルや文脈、制約、受け入れ基準を書いて、小さく区切って依頼してください。変更を読み、説明できない大きな書き換えをそのまま使わないでください。データ、画像、ライブラリ、外部コードの出典も示します。
+1. **動く作品** — Notebookまたは小さなプログラムと、実行に必要なデータ・関連ファイル。問いか使う人を明確にする。
+2. **短いREADME** — 何ができるか、実行方法、出典、限界を一つ書く。
+3. **人のコード理解** — 自分で追跡・説明・修正できるコードを短く二か所示す。
+4. **AIとAgentの判断** — AIの提案一つとAgentの小さな作業一つを記録する。依頼内容、変更点、採用・修正・却下の理由を書く。
+5. **三つの確認** — 通常の入力、端や失敗する入力、人または資料と照合した結果を一つずつ確かめる。
+6. **短い振り返り** — 判断一つ、限界一つ、次に直したいことを日本語200〜300字程度（または英語120〜180語）で書く。
 
-## Assessment / 評価（20点）
+AIに生成・修正・説明を手伝わせてもかまいませんが、理解と検証は自分の責任です。Agentには、目標、使うファイルや文脈、制約、受け入れ基準を書いて、小さく区切って依頼してください。変更を読み、説明できない大きな書き換えをそのまま使わないでください。データ、画像、ライブラリ、外部コードの出典も示します。
+## 評価（20点） / Assessment (20 points)
+EN:
 
-| Criterion / 項目 | Points / 点 | Evidence / 見るところ |
+| Criterion | Points | Evidence |
 | --- | ---: | --- |
-| Purpose and runnable result / 目的と動く成果 | 5 | One focused goal; another person can run it / 目的が明確で他の人が動かせる |
-| Human understanding / 人の理解 | 5 | Explain and change two code passages / コード二か所を説明・修正できる |
-| AI and agent judgment / AIとAgentの判断 | 5 | Small briefs, reviewed changes, honest decisions / 小さな依頼、差分の確認、判断の記録 |
-| Verification and communication / 検証と伝達 | 5 | Three checks, README, sources, limits, reflection / 三つの確認、README、出典、限界、振り返り |
+| Purpose and runnable result | 5 | One focused goal; another person can run it. |
+| Human understanding | 5 | Explain and change two code passages. |
+| AI and agent judgment | 5 | Small briefs, reviewed changes, honest decisions. |
+| Verification and communication | 5 | Three checks, README, sources, limits, reflection. |
 
-## Submission / 提出方法
+JP:
 
-Submit through **UNIPA** by the Week 13 deadline: a completed, executed `.ipynb` file or runnable `.py` files, all required data/assets, README, and the brief workflow/test record. A zip folder is fine when the project has several files. A GitHub link may be included, but it does not replace the UNIPA file submission.
+| 項目 | 点 | 見るところ |
+| --- | ---: | --- |
+| 目的と動く成果 | 5 | 目的が明確で、他の人が動かせる。 |
+| 人の理解 | 5 | コード二か所を説明・修正できる。 |
+| AIとAgentの判断 | 5 | 小さな依頼、差分の確認、判断の記録。 |
+| 検証と伝達 | 5 | 三つの確認、README、出典、限界、振り返り。 |
+## 提出方法 / Submission
+EN: Submit through **UNIPA** by the Week 13 deadline: a completed, executed `.ipynb` file or runnable `.py` files, all required data/assets, a README, and the brief workflow/test record. A zip folder is fine when the project has several files. A GitHub link may be included, but it does not replace the UNIPA file submission.
 
-Week 13の締切までに**UNIPA**で提出します。実行済みの`.ipynb`または動く`.py`ファイル、必要なデータ・画像、README、短い作業／テスト記録を入れてください。ファイルが複数ならzipでもかまいません。GitHubのリンクは補助として添えられますが、UNIPAへのファイル提出の代わりにはなりません。
+JP: Week 13の締切までに**UNIPA**で提出します。実行済みの`.ipynb`または動く`.py`ファイル、必要なデータ・画像、README、短い作業／テスト記録を入れてください。ファイルが複数ならzipでもかまいません。GitHubのリンクは補助として添えられますが、UNIPAへのファイル提出の代わりにはなりません。

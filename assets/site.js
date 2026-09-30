@@ -67,6 +67,23 @@ function highlightEscapedCode(code) {
 
 function highlightCode(code) { return highlightEscapedCode(escapeHtml(code)); }
 
+function highlightTimelineCode(code) {
+  const strings = [];
+  let source = escapeHtml(code).replace(/(&quot;.*?&quot;|'[^']*')/g, value => {
+    const token = `@@STRING_${String.fromCharCode(65 + strings.length)}@@`;
+    strings.push(value);
+    return token;
+  });
+  source = source
+    .replace(/\b(PROGRAM|PRINT|END|IDENTIFICATION|DIVISION|PROGRAM-ID|PROCEDURE|DISPLAY|STOP|RUN|class|public|static|void|int|return|const|when|for|seconds)\b/gi, '<span class="syntax-keyword">$1</span>')
+    .replace(/\b(print|printf|println|log|show|say|main)\b/gi, '<span class="syntax-function">$1</span>')
+    .replace(/\b(\d+(?:\.\d+)?)\b/g, '<span class="syntax-number">$1</span>');
+  strings.forEach((value, index) => {
+    source = source.replace(`@@STRING_${String.fromCharCode(65 + index)}@@`, `<span class="syntax-string">${value}</span>`);
+  });
+  return source;
+}
+
 function numberedCodeHtml(source) {
   return source.split('\n').map((line, index) => `<span class="code-row"><i>${index + 1}</i><span>${highlightCode(line) || ' '}</span></span>`).join('');
 }
@@ -289,8 +306,8 @@ function lectureTimelinesHtml(body) {
   const groups = body.split(/^###\s+/m).slice(1).map(group => {
     const [key, ...lines] = group.split('\n');
     const entries = lines.filter(line => /^-\s+/.test(line)).map(line => {
-      const [year, title, ja, en, visual, url, credit = ''] = line.replace(/^-\s+/, '').split('|').map(value => value.trim());
-      return { year, title, ja, en, visual, url, credit };
+      const [year, title, ja, en, visual, url, credit = '', sampleRaw = ''] = line.replace(/^-\s+/, '').split('|').map(value => value.trim());
+      return { year, title, ja, en, visual, url, credit, sample:sampleRaw.replaceAll('⏎', '\n') };
     });
     return { key:key.trim().toLowerCase(), entries };
   });
@@ -316,7 +333,7 @@ function lectureTimelinesHtml(body) {
       ticks.push(`<span class="history-tick" style="--history-x:${position(year)}%"><b>${year}</b></span>`);
     }
     const events = items.map((item, index) => `<button type="button" class="history-event ${index % 2 ? 'is-lower' : 'is-upper'}${index === 0 ? ' is-active' : ''}" style="--history-x:${position(values[index])}%" data-history-jump="${index}"${index === 0 ? ' aria-current="true"' : ''}>${visual(item, kind, 'history-event-visual')}<span class="history-event-copy"><b>${escapeHtml(item.year)}</b><strong>${escapeHtml(item.title)}</strong></span></button>`).join('');
-    const details = items.map((item, index) => `<article class="history-annotation${index === 0 ? ' is-active' : ''}" data-history-detail="${index}"${index === 0 ? '' : ' hidden'}>${visual(item, kind, 'history-annotation-visual')}<div><span>${escapeHtml(item.year)}</span><h5>${escapeHtml(item.title)}</h5><p class="lang-en">${escapeHtml(item.en)}</p><p class="lang-ja jp" lang="ja">${escapeHtml(item.ja)}</p></div><div class="history-annotation-links"><a class="history-source" href="${escapeHtml(item.url)}" target="_blank" rel="noopener"><span class="lang-en">EXPLORE ↗</span><span class="lang-ja jp" lang="ja">詳しく見る ↗</span></a>${item.credit ? `<a class="history-credit" href="${escapeHtml(item.credit)}" target="_blank" rel="noopener">IMAGE SOURCE ↗</a>` : ''}</div></article>`).join('');
+    const details = items.map((item, index) => `<article class="history-annotation${item.sample ? ' has-code' : ''}${index === 0 ? ' is-active' : ''}" data-history-detail="${index}"${index === 0 ? '' : ' hidden'}>${visual(item, kind, 'history-annotation-visual')}<div class="history-annotation-copy"><span>${escapeHtml(item.year)}</span><h5>${escapeHtml(item.title)}</h5><p class="lang-en">${escapeHtml(item.en)}</p><p class="lang-ja jp" lang="ja">${escapeHtml(item.ja)}</p></div>${item.sample ? `<div class="history-code-sample"><span>HELLO, WORLD · ${escapeHtml(item.title)}</span><pre><code>${highlightTimelineCode(item.sample)}</code></pre></div>` : ''}<div class="history-annotation-links"><a class="history-source" href="${escapeHtml(item.url)}" target="_blank" rel="noopener"><span class="lang-en">EXPLORE ↗</span><span class="lang-ja jp" lang="ja">詳しく見る ↗</span></a>${item.credit ? `<a class="history-credit" href="${escapeHtml(item.credit)}" target="_blank" rel="noopener">IMAGE SOURCE ↗</a>` : ''}</div></article>`).join('');
     return `<div id="timeline-${kind}" role="tabpanel" aria-labelledby="${tabId}" data-lecture-timeline-panel="${kind}"${kind === 'journey' ? '' : ' hidden'}><div class="history-explorer" data-history-explorer tabindex="0" aria-label="${escapeHtml(label)}"><div class="history-map-scroll"><div class="history-map"><span class="history-axis" aria-hidden="true"></span>${ticks.join('')}<nav aria-label="${escapeHtml(label)} chronology">${events}</nav></div></div><div class="history-annotations">${details}</div></div></div>`;
   };
   return `<section class="lecture-timelines" data-lecture-timelines><div class="lecture-timeline-intro"><p>TRACE 01 · MACHINES ↔ LANGUAGES</p><h4 class="lang-en">Move through the machines and languages that changed what code could do.</h4><h4 class="lang-ja jp" lang="ja">一台ずつ触れて、コードでできることの変化をたどる。</h4></div><div class="lecture-timeline-tabs" role="tablist" aria-label="Lecture history"><button type="button" role="tab" aria-selected="true" aria-controls="timeline-journey" id="timeline-tab-journey" data-lecture-timeline-tab="journey"><span>MY PC JOURNEY</span><small class="lang-en">The machines that made me want to create</small><small class="lang-ja jp" lang="ja">「つくりたい」を育てたコンピュータ</small></button><button type="button" role="tab" aria-selected="false" aria-controls="timeline-languages" id="timeline-tab-languages" data-lecture-timeline-tab="languages" tabindex="-1"><span class="lang-en">LANGUAGES THAT CHANGED THE WORLD</span><span class="lang-ja jp" lang="ja">世界を変えたプログラミング言語</span><small class="lang-en">New ways to tell machines what we mean</small><small class="lang-ja jp" lang="ja">機械に意図を伝える、新しい方法</small></button></div>${panel(journey, 'journey', 'My PC Journey', 'timeline-tab-journey')}${panel(languages, 'languages', 'Languages that changed the world', 'timeline-tab-languages')}</section>`;

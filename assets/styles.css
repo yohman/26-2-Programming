@@ -912,6 +912,7 @@ html[data-language="ja"] .lang-ja { display: revert; }
 .history-explorer:not(.is-languages) .history-annotation h5 { font-size: 1.7rem; }
 .history-annotation.has-code { grid-template-columns: 8.5rem minmax(12rem, .8fr) minmax(20rem, 1.2fr) 6.5rem; }
 .history-annotation[hidden] { display: none; }
+.history-explorer:not(.is-languages) .history-annotation[hidden] { display: none; }
 .history-annotation-visual { display: grid; place-items: center; width: 8.5rem; height: 7rem; background: #f5f8fc; }
 .history-annotation-visual img { width: 100%; height: 100%; padding: .5rem; object-fit: contain; }
 .history-annotation-visual.is-logo img { padding: 1.4rem; }

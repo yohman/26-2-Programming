@@ -838,6 +838,10 @@ html[data-language="ja"] .lecture-timeline-tabs button > small.lang-ja { display
 .history-explorer { outline: none; }
 .history-map-scroll { overflow-x: auto; background: #f4f7fb; scrollbar-color: #8ea4bf transparent; scrollbar-width: thin; }
 .history-map { position: relative; min-width: 62rem; height: 20rem; overflow: hidden; background: linear-gradient(180deg, #f8fafc, #edf3fa); }
+.history-map.is-journey-map { min-width: 125rem; height: 26rem; }
+.history-map.is-journey-map .history-axis { top: 23rem; }
+.history-map.is-journey-map .history-tick { top: 0; bottom: 1.6rem; }
+.history-map.is-journey-map .history-tick b { top: 23.75rem; }
 .history-scale-note { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .22rem 1rem; align-items: end; padding: .8rem 1rem; background: #e7eef6; color: #173e6f; }
 .history-scale-note > span { grid-column: 1; font: 750 .68rem var(--mono); letter-spacing: .025em; }
 .history-scale-note > small { grid-column: 1; color: #5a6d81; font-size: .62rem; line-height: 1.45; }
@@ -856,6 +860,11 @@ html[data-language="ja"] .lecture-timeline-tabs button > small.lang-ja { display
 .history-event.is-upper::before { top: calc(100% + 1.95rem); }
 .history-event.is-lower::after { bottom: 100%; height: 1.55rem; }
 .history-event.is-lower::before { bottom: calc(100% + 1.25rem); }
+.history-map.is-journey-map .history-event { --event-y: .8rem; top: var(--event-y); }
+.history-map.is-journey-map .history-event.journey-lane-1 { --event-y: 7.8rem; }
+.history-map.is-journey-map .history-event.journey-lane-2 { --event-y: 14.8rem; }
+.history-map.is-journey-map .history-event::after { top: 100%; bottom: auto; height: calc(23rem - var(--event-y) - 5.2rem); }
+.history-map.is-journey-map .history-event::before { top: calc(23rem - var(--event-y) - .3rem); bottom: auto; }
 .history-event:hover,
 .history-event.is-active { color: #173e6f; }
 .history-event.is-active::before { width: .82rem; height: .82rem; background: #2f63ff; }
@@ -929,6 +938,7 @@ html[data-language="ja"] .lecture-timeline-tabs button > small.lang-ja { display
   .lecture-timeline-tabs { display: flex; gap: 1.2rem; overflow-x: auto; }
   .lecture-timeline-tabs button { flex: 0 0 78%; }
   .history-map { min-width: 58rem; }
+  .history-map.is-journey-map { min-width: 118rem; }
   .history-map.is-bubble-map { min-width: 104rem; }
   .history-annotation { display: block; padding: 1.3rem; }
   .history-annotation-visual { float: left; width: 5.5rem; height: 5rem; margin: 0 1rem .5rem 0; }

@@ -8,9 +8,21 @@ grade_project: 20
 grade_final: 20
 ---
 ## この授業で学ぶこと / What you will learn
-EN: Read and write small Python programs. Use AI completion and coding agents when they help—but explain and test the result yourself. By the end, you will make a small project you can show someone else.
+EN:
 
-JP: 小さなPythonプログラムを読み、書けるようになります。AI補完やコーディングAgentも使いますが、結果を説明し、確かめるのは自分です。最後には、人に見せられる小さな作品をつくります。
+- **Write Python yourself.** Use values, conditions, loops, functions, and notebooks to turn a small idea into a working program.
+- **Understand what runs.** Read and trace code, predict its output, find errors, and explain a fix.
+- **Use AI with judgment.** Let completion help with a specific change, then inspect and test its suggestion.
+- **Direct an agent.** Give it a clear goal, context, and checks; review what it changed instead of accepting it blindly.
+- **Make and explain a project.** Build something useful or interesting, show that it works, and describe its limits.
+
+JP:
+
+- **自分でPythonを書く。** 値、条件分岐、ループ、関数、Notebookを使い、小さなアイデアを動くプログラムにする。
+- **動きを理解する。** コードを読み、結果を予想し、エラーを見つけ、直した理由を説明する。
+- **AIを判断して使う。** AI補完に一部の変更を手伝わせ、提案を読み、テストしてから採用する。
+- **Agentに仕事を任せる。** 目標、必要な情報、確認方法を伝え、変更内容を自分で確かめる。
+- **作品をつくり、説明する。** 役立つものや面白いものをつくり、動く証拠と限界を示す。
 ## 毎週の進め方 / Each week
 EN: A short lecture → an in-class notebook → a challenge in the last 30 minutes. Weeks 01–12 also have a take-home task: use that week's ideas to make something different from the class exercise.
 
@@ -24,6 +36,20 @@ EN: Develop a small project in Weeks 10–13 and submit it in **Week 13**. Show 
 
 JP: Week 10〜13で小さな作品を育て、**Week 13**に提出します。つくったもの、AIやAgentの使い方、テストした結果を示してください。**Week 14**は個人で取り組む授業内Pythonチャレンジです。提出物は[プロジェクト要項](viewer.html?file=content%2Ffinal-project.md&title=Final+Project&return=guide.html)を確認してください。
 ## 成績評価 / Grading
-EN: Weekly assignments (Weeks 01–12) are scored **0–3 points** each: **3** = original and well tested; **2** = complete, working, and explained; **1** = incomplete or insufficiently explained; **0** = not submitted. The project and final challenge are each worth 20%.
+EN: **Weekly assignments (Weeks 01–12): 0–3 points each**
 
-JP: 毎週の課題（Week 01〜12）は各回**0〜3点**です。**3点**＝独自の工夫があり、よく検証した作品。**2点**＝完成し、動き、説明できる作品（標準）。**1点**＝未完成、または説明が不十分。**0点**＝未提出。プロジェクトと最終チャレンジは各20%です。
+- **3** — Works, meets the task, and shows an original, well-tested idea.
+- **2** — Works, meets the task, and explains key choices. This is the expected standard.
+- **1** — Submitted, but an important part is missing, broken, or unexplained.
+- **0** — Not submitted.
+
+The **project** is assessed on purpose, working code, your human/AI/agent decisions, and testing. The **final in-class challenge** assesses individual code reading, modification, testing, and explanation.
+
+JP: **毎週の課題（Week 01〜12）：各回0〜3点**
+
+- **3点** — 課題を満たして動き、独自の工夫があり、その工夫も検証している。
+- **2点** — 課題を満たして動き、重要な判断を説明できる。これが標準。
+- **1点** — 提出はしたが、大切な部分が欠けている、動かない、または説明がない。
+- **0点** — 未提出。
+
+**プロジェクト**では、目的、動くコード、Human／AI／Agentの使い分け、テストを見ます。**授業内チャレンジ**では、一人でコードを読み、修正し、テストし、説明できるかを見ます。

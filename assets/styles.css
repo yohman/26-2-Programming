@@ -988,9 +988,11 @@ html[data-language="ja"] .lecture-timeline-tabs button > small.lang-ja { display
 .python-code-window header i:nth-child(2) { background: #ffd34f; }
 .python-code-window header i:nth-child(3) { background: #56d18b; }
 .python-code-window header span { margin-left: .4rem; color: #c8d6e4; font: .55rem var(--mono); }
-.python-code-window pre { overflow-x: auto; margin: 0; padding: 1.2rem .85rem; }
-.python-code-window code { display: block; color: #e7edf5; font: .73rem/1.7 var(--mono); }
-.python-code-window .code-row { padding: 0 .25rem; transition: background .18s ease; }
+.python-code-window pre { overflow-x: hidden; margin: 0; padding: 1.2rem .85rem; white-space: normal; }
+.python-code-window code { display: block; color: #e7edf5; font: .73rem/1.7 var(--mono); white-space: normal; }
+.python-code-window .code-row { display: flex; align-items: flex-start; min-width: 0; padding: 0 .25rem; transition: background .18s ease; }
+.python-code-window .code-row > i { flex: 0 0 1.35em; margin-right: .9em; color: #7e94aa; font-style: normal; text-align: right; user-select: none; }
+.python-code-window .code-row > span { min-width: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
 .python-code-result { min-width: 0; padding: 1.2rem; background: #fff; color: #173e6f; }
 .python-code-result strong { display: block; overflow-wrap: anywhere; font: 800 clamp(1rem, 2.2vw, 1.6rem)/1.25 var(--mono); opacity: .16; transform: translateY(.35rem); transition: opacity .25s ease, transform .25s ease; }
 .python-trace-button { position: absolute; right: 2rem; bottom: 1.35rem; padding: .72rem 1rem; border: 0; background: #ffd34f; color: #102942; font: 800 .58rem var(--mono); letter-spacing: .06em; cursor: pointer; }

@@ -765,9 +765,12 @@ async function setupFileViewer() {
       const notebook = JSON.parse(source);
       const cells = notebook.cells || [];
       const visibleCells = file === 'weeks/week-01/week-01-in-class-first-python.ipynb' ? cells : cells.slice(0, 12);
-      const preview = visibleCells.map(cell => cell.cell_type === 'code'
-        ? `<section class="notebook-cell code-cell"><div class="cell-label"><span>▶</span> Code</div><pre class="code-block"><code>${numberedCodeHtml((cell.source || []).join(''))}</code></pre></section>`
-        : `<section class="notebook-cell markdown-cell"><div class="cell-label">Markdown</div><div class="notebook-markdown">${markdownHtml((cell.source || []).join(''))}</div></section>`).join('');
+      const notebookText = value => Array.isArray(value) ? value.join('') : (value || '');
+      const preview = visibleCells.map(cell => {
+        if (cell.cell_type !== 'code') return `<section class="notebook-cell markdown-cell"><div class="cell-label">Markdown</div><div class="notebook-markdown">${markdownHtml(notebookText(cell.source))}</div></section>`;
+        const output = (cell.outputs || []).map(item => notebookText(item.text || item.data?.['text/plain'])).filter(Boolean).join('\n');
+        return `<section class="notebook-cell code-cell"><div class="cell-label"><span>▶</span> Code</div><div class="notebook-code-content"><pre class="code-block"><code>${numberedCodeHtml(notebookText(cell.source))}</code></pre>${output ? `<div class="notebook-output"><span>OUTPUT</span><pre>${escapeHtml(output)}</pre></div>` : ''}</div></section>`;
+      }).join('');
       root.innerHTML = `<div class="viewer-title"><p class="eyebrow">JUPYTER NOTEBOOK · ${cells.length} CELLS</p><h1>${escapeHtml(title)}</h1>${actions(download)}</div><section class="notebook-shell"><header class="notebook-toolbar"><span class="notebook-tab">${escapeHtml(title)} · Preview</span><span class="notebook-run">▶ Run All</span><span class="notebook-kernel">Python 3.12</span></header><article class="notebook-preview">${preview}</article></section>`;
       return;
     }

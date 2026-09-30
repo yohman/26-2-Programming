@@ -383,6 +383,10 @@ html[data-language="ja"] .lang-ja { display: revert; }
 .notebook-markdown .code-block { margin: .85rem 0; }
 .code-cell .code-block { min-height: 90px; margin: 0; border-radius: 0; background: #1f242a; }
 .code-cell .code-block code { font-size: .8rem; }
+.notebook-code-content { min-width: 0; }
+.notebook-output { padding: .7rem 1rem .9rem; background: #fff; color: #27323b; }
+.notebook-output > span { display: block; margin-bottom: .28rem; color: #75808a; font: 700 .56rem var(--mono); letter-spacing: .06em; }
+.notebook-output pre { overflow-x: auto; margin: 0; font: .76rem/1.55 var(--mono); white-space: pre-wrap; }
 
 /* Footer */
 .site-footer { padding: 2.3rem 0; background: #20252b; color: #e3e6e5; }

@@ -83,12 +83,14 @@ EN: Make a tiny tool for someone else. It should help with a real small task, no
 - Try a study-time planner, a club budget helper, a reading-goal tracker, or another one-screen idea.
 - Use your own words and at least one input to produce a result someone can use.
 - Run the notebook, add a short note about what you made, then submit the `.ipynb` file and one screenshot through UNIPA. Be ready to show it in Week 02.
+- The completed study-planner example below shows what a finished notebook with testing and reflection can look like. Make your own tool rather than copying it.
 
 JP: 授業内のポスターや未来のメッセージとは別に、**誰かの小さな用事に役立つツール**をつくる。
 
 - 例：学習時間の計画、部活の予算、読書目標の確認など。
 - 自分の言葉と1つ以上の入力を使い、誰かが使える結果を1画面に見せる。
 - ノートブックを実行し、つくったものについて短いメモを書く。`.ipynb`ファイルとスクリーンショット1枚をUNIPAで提出。Week 02で紹介できるようにしておこう。
+- 下の学習プランナー完成例では、設計メモ・実行結果・確認・振り返りの書き方を見られる。作品はコピーせず、自分の題材でつくろう。
 ## Aha!
 EN:
 ```python
@@ -109,4 +111,5 @@ JP: プログラムは、追跡できる形で値を変えていく小さな命�
 - [Week 01 In-Class — First Python](weeks/week-01/week-01-in-class-first-python.ipynb) {notebook}
 - [Week 01 Challenge — Choose & Create](weeks/week-01/week-01-challenge-choose-and-create.ipynb) {challenge}
 - [Week 01 Take-Home — My First Tiny Tool](weeks/week-01/week-01-take-home-my-first-tiny-tool.ipynb) {homework}
+- [完成例 — Study Sprint Planner](weeks/week-01/week-01-homework-example-study-sprint.ipynb) {homework}
 - [Week 01 Setup — Python, VS Code, and Jupyter](weeks/week-01/week-01-setup-python-vscode-jupyter.md) {support}

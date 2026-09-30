@@ -871,6 +871,8 @@ html[data-language="ja"] .lang-ja { display: revert; }
 .history-map.is-journey-map .history-event.journey-lane-2 { --event-y: 12.2rem; }
 .history-map.is-journey-map .history-event::after { top: 100%; bottom: auto; height: calc(18.5rem - var(--event-y) - 5.6rem); }
 .history-map.is-journey-map .history-event::before { top: calc(18.5rem - var(--event-y) - .3rem); bottom: auto; }
+.history-event::before,
+.history-event::after { pointer-events: none; }
 .history-event:hover,
 .history-event.is-active { color: #173e6f; }
 .history-event.is-active::before { width: .82rem; height: .82rem; background: #2f63ff; }
@@ -1050,7 +1052,16 @@ html[data-language="en"] .python-history-cue.lang-en { display: block !important
   .lecture-timeline-tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .25rem; }
   .lecture-timeline-tabs button { min-height: 3.1rem; padding: .5rem .2rem; font-size: .67rem; }
   .history-map { min-width: 58rem; }
-  .history-map.is-journey-map { min-width: 90rem; }
+  .history-map.is-journey-map { min-width: 90rem; height: 24.5rem; }
+  .history-map.is-journey-map .history-axis { top: 21.5rem; }
+  .history-map.is-journey-map .history-tick b { top: 22.25rem; }
+  .history-map.is-journey-map .history-event { padding: .45rem; background: #eef3f7; }
+  .history-map.is-journey-map .history-event.journey-lane-1 { --event-y: 7.5rem; }
+  .history-map.is-journey-map .history-event.journey-lane-2 { --event-y: 14.2rem; }
+  .history-map.is-journey-map .history-event::before,
+  .history-map.is-journey-map .history-event::after { display: none; }
+  .history-map.is-journey-map .history-event.is-active { background: #dce7ff; box-shadow: inset 0 0 0 2px #315876; }
+  .history-map.is-journey-map .history-event:focus-visible { outline: 3px solid #315876; outline-offset: 2px; }
   .history-map.is-bubble-map { min-width: 104rem; }
   .history-annotation { display: block; padding: 1.3rem; }
   .history-explorer:not(.is-languages) .history-annotation { display: block; padding: 1.3rem; }

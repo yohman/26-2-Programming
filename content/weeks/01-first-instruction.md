@@ -9,8 +9,8 @@ title: Make the computer say something.
 title_ja: コンピュータに「してほしいこと」を伝える。
 course_date: 2026-10-01
 course_time: 13:10–14:50
-overview: Build your personal Python workspace, run your first notebook, and make a small calculator that someone else can use.
-overview_ja: 自分のPython作業環境をつくり、最初のノートブックを実行し、誰かが使える小さな計算機をつくる。
+overview: Build your Python workspace, run your first notebook, and create a text-art poster or a message from the future.
+overview_ja: Pythonの作業環境をつくり、最初のノートブックを動かし、文字のポスターか未来からのメッセージをつくる。
 ---
 ## Lecture Timelines
 ### journey
@@ -75,19 +75,19 @@ overview_ja: 自分のPython作業環境をつくり、最初のノートブッ�
 EN: Set up your own Python notebook, then write and run your first small programs. You will work with output, values, variables, and input.
 JP: 自分のPythonノートブックを準備し、最初の小さなプログラムを書いて実行する。出力、値、変数、入力を扱う。
 ## In-Class Challenge
-EN: Make a Mini Personal Calculator: two inputs, one useful calculation, and one clear result. A partner should be able to run it.
-JP: 二つの入力、一つの役に立つ計算、読みやすい結果を持つミニ生活計算機を作る。ペアが実行できる状態にする。
+EN: Choose one: design a text-art event poster, or write a message from your future self. Use input to make it yours, then show it to a partner.
+JP: 文字で描くイベントポスター、または未来の自分からのメッセージ。どちらかを選び、入力で変わる作品をつくってペアに見せる。
 ## Take-Home Assignment
-EN: Make a tiny tool of your own. It should be different from the calculator we make in class.
+EN: Make a tiny tool for someone else. It should help with a real small task, not repeat your poster or future message.
 
-- Try a profile card, mini story, game opening, daily plan, or another one-screen idea.
-- Use your own words and at least one input to produce a clear result.
+- Try a study-time planner, a club budget helper, a reading-goal tracker, or another one-screen idea.
+- Use your own words and at least one input to produce a result someone can use.
 - Run the notebook, add a short note about what you made, then submit the `.ipynb` file and one screenshot through UNIPA. Be ready to show it in Week 02.
 
-JP: 授業内の計算機とは別の、**自分だけの小さなツール**をつくる。
+JP: 授業内のポスターや未来のメッセージとは別に、**誰かの小さな用事に役立つツール**をつくる。
 
-- 例：プロフィールカード、ミニストーリー、ゲームの開始画面、1日の予定など。
-- 自分の言葉と1つ以上の入力を使い、結果を1画面に見せる。
+- 例：学習時間の計画、部活の予算、読書目標の確認など。
+- 自分の言葉と1つ以上の入力を使い、誰かが使える結果を1画面に見せる。
 - ノートブックを実行し、つくったものについて短いメモを書く。`.ipynb`ファイルとスクリーンショット1枚をUNIPAで提出。Week 02で紹介できるようにしておこう。
 ## Aha!
 EN:
@@ -107,6 +107,6 @@ EN: A program is a sequence of small instructions whose values change in a trace
 JP: プログラムは、追跡できる形で値を変えていく小さな命令の連なりである。
 ## Resources
 - [Week 01 In-Class — First Python](weeks/week-01/week-01-in-class-first-python.ipynb) {notebook}
-- [Week 01 Challenge — Mini Personal Calculator](weeks/week-01/week-01-challenge-mini-personal-calculator.ipynb) {challenge}
+- [Week 01 Challenge — Choose & Create](weeks/week-01/week-01-challenge-choose-and-create.ipynb) {challenge}
 - [Week 01 Take-Home — My First Tiny Tool](weeks/week-01/week-01-take-home-my-first-tiny-tool.ipynb) {homework}
 - [Week 01 Setup — Python, VS Code, and Jupyter](weeks/week-01/week-01-setup-python-vscode-jupyter.md) {support}

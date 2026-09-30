@@ -34,7 +34,7 @@ Programming/
 ├── .venv/          ← 次のTutorialで作る
 └── week01/
     ├── week-01-in-class-first-python.ipynb
-    └── week-01-challenge-mini-personal-calculator.ipynb
+    └── week-01-challenge-choose-and-create.ipynb
 ```
 
 `.venv`は`week01`の中ではなく、`Programming`の直下に置きます。

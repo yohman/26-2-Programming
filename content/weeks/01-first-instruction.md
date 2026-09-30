@@ -71,8 +71,17 @@ JP: 自分のPythonノートブックを準備し、最初の小さなプログ�
 EN: Make a Mini Personal Calculator: two inputs, one useful calculation, and one clear result. A partner should be able to run it.
 JP: 二つの入力、一つの役に立つ計算、読みやすい結果を持つミニ生活計算機を作る。ペアが実行できる状態にする。
 ## Take-Home Assignment
-EN: Make a first tiny tool that is *not* the class calculator: a personal card, mini story, game-start screen, plan, or other one-screen experience. It should use your own words and inputs, then create one clear output someone will want to see. Submit the notebook and one screenshot. Be ready to show it in Week 02.
-JP: 授業内の計算機とは別に、はじめてのミニツールをつくる。プロフィールカード、ミニストーリー、ゲーム開始画面、予定カードなど、1画面で見せられる自分らしい作品にする。自分の言葉と入力を使い、見せたくなる一つの出力をつくろう。ノートブックとスクリーンショットを提出し、Week 02で紹介できるようにする。
+EN: Make a tiny tool of your own. It should be different from the calculator we make in class.
+
+- Try a profile card, mini story, game opening, daily plan, or another one-screen idea.
+- Use your own words and at least one input to produce a clear result.
+- Run the notebook, add a short note about what you made, then submit the `.ipynb` file and one screenshot through UNIPA. Be ready to show it in Week 02.
+
+JP: 授業内の計算機とは別の、**自分だけの小さなツール**をつくる。
+
+- 例：プロフィールカード、ミニストーリー、ゲームの開始画面、1日の予定など。
+- 自分の言葉と1つ以上の入力を使い、結果を1画面に見せる。
+- ノートブックを実行し、つくったものについて短いメモを書く。`.ipynb`ファイルとスクリーンショット1枚をUNIPAで提出。Week 02で紹介できるようにしておこう。
 ## Aha!
 EN:
 ```python

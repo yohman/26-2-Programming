@@ -282,6 +282,26 @@ function bilingualHtml(body) {
   return `${copy.en ? `<div class="lang-en copy-block">${markdownHtml(copy.en)}</div>` : ''}${copy.ja ? `<div class="lang-ja jp copy-block" lang="ja">${markdownHtml(copy.ja)}</div>` : ''}`;
 }
 
+async function setupCourseGuide() {
+  const root = document.querySelector('[data-course-guide]');
+  if (!root) return;
+  try {
+    const response = await fetch('content/course-guide.md', { cache:'no-cache' });
+    if (!response.ok) throw new Error('Could not load course guide');
+    const guide = parseFrontMatter(await response.text());
+    const sections = guide.sections.map((item, index) => {
+      const [ja, en = ja] = item.title.split(' / ');
+      const id = `guide-${en.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}`;
+      return { ...item, ja, en, id, number:String(index + 1).padStart(2, '0') };
+    });
+    const label = item => `<span class="lang-ja jp" lang="ja">${escapeHtml(item.ja)}</span><span class="lang-en">${escapeHtml(item.en)}</span>`;
+    root.innerHTML = `<header class="guide-opening"><p class="eyebrow">2026–2 PROGRAMMING / COURSE GUIDE</p><h1><span class="lang-ja jp" lang="ja">${escapeHtml(guide.title_ja)}</span><span class="lang-en">${escapeHtml(guide.title)}</span></h1><p class="guide-lead lang-ja jp" lang="ja">${escapeHtml(guide.dek_ja)}</p><p class="guide-lead lang-en">${escapeHtml(guide.dek)}</p></header><nav class="guide-contents" aria-label="Course guide sections">${sections.map(item => `<a href="#${item.id}"><small>${item.number}</small>${label(item)}</a>`).join('')}</nav><div class="guide-sections">${sections.map(item => `<section class="guide-section${item.en === 'Grading' ? ' guide-section--grading' : ''}" id="${item.id}"><header><span class="guide-section-number">${item.number}</span><h2>${label(item)}</h2></header><div class="guide-section-body">${bilingualHtml(item.body)}</div></section>`).join('')}</div>`;
+  } catch (error) {
+    console.error(error);
+    root.innerHTML = '<p class="agenda-locked">The course guide could not load. Please refresh the page.</p>';
+  }
+}
+
 function fileType(href, external) {
   if (external) return 'LINK';
   const extension = href.split('?')[0].split('.').pop().toLowerCase();
@@ -743,10 +763,11 @@ async function setupFileViewer() {
   if (requestedReturn) {
     try {
       const candidate = new URL(requestedReturn, location.href);
-      if (candidate.protocol === location.protocol && candidate.host === location.host && (candidate.pathname === '/' || /\/(?:index|agenda)\.html$/.test(candidate.pathname))) returnUrl = candidate.href;
+      if (candidate.protocol === location.protocol && candidate.host === location.host && (candidate.pathname === '/' || /\/(?:index|agenda|guide)\.html$/.test(candidate.pathname))) returnUrl = candidate.href;
     } catch (_) { /* Use the agenda as a safe fallback. */ }
   }
-  const back = `<a class="viewer-back" href="${escapeHtml(returnUrl)}"><span class="lang-en">← BACK TO AGENDA</span><span class="lang-ja jp" lang="ja">← 授業予定に戻る</span></a>`;
+  const backToGuide = /\/guide\.html$/.test(new URL(returnUrl).pathname);
+  const back = `<a class="viewer-back" href="${escapeHtml(returnUrl)}"><span class="lang-en">← BACK TO ${backToGuide ? 'GUIDE' : 'AGENDA'}</span><span class="lang-ja jp" lang="ja">← ${backToGuide ? 'ガイド' : '授業予定'}に戻る</span></a>`;
   const actions = download => `<div class="viewer-actions">${back}${download}</div>`;
   if (!/^(weeks|content)\//.test(file)) { root.innerHTML = `<div class="viewer-title"><p class="eyebrow">FILE PREVIEW</p><h1>${escapeHtml(title)}</h1>${actions('')}</div><p class="agenda-locked">File preview is unavailable.</p>`; return; }
   const extension = file.split('.').pop().toLowerCase();
@@ -800,6 +821,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   setupFirstPython();
   setupPreviewLinks();
   setupFileViewer();
-  try { const weeks = await loadWeeks(); renderAgenda(weeks); setupAgendaToggles(); setupClassTabs(); setupLectureTimelineTabs(); }
-  catch (error) { console.error(error); document.querySelectorAll('[data-agenda]').forEach(node => { node.innerHTML = '<p class="agenda-locked">Course content could not load. Please refresh the page.</p>'; }); }
+  setupCourseGuide();
+  if (document.querySelector('[data-agenda]')) {
+    try { const weeks = await loadWeeks(); renderAgenda(weeks); setupAgendaToggles(); setupClassTabs(); setupLectureTimelineTabs(); }
+    catch (error) { console.error(error); document.querySelectorAll('[data-agenda]').forEach(node => { node.innerHTML = '<p class="agenda-locked">Course content could not load. Please refresh the page.</p>'; }); }
+  }
 });

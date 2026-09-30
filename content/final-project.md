@@ -1,38 +1,46 @@
 # Final Project / 最終プロジェクト
 
-Build a small, meaningful Python project that someone else can inspect and run: a data investigation, useful tool, interactive app, visualisation, or carefully scoped prototype. The project must have a question or user need; a collection of disconnected AI-generated features is not a project.
+Build one small, meaningful Python work that another person can run and inspect: a useful tool, data investigation, visualisation, or other focused idea. A clear question or user matters more than extra features. A GUI is optional.
 
-自分以外の人が確認し実行できる、小さくても意味のあるPythonプロジェクトを作ります。データ調査、便利なツール、対話的アプリ、可視化、範囲を慎重に定めたプロトタイプなどが対象です。問いまたは利用者の必要が必要です。つながりのないAI生成機能の寄せ集めはプロジェクトになりません。
+他の人が実行して確かめられる、小さくても意味のあるPython作品を一つつくります。便利な道具、データ調査、可視化などが対象です。機能の数より、明確な問いや使う人が大切です。GUIは必須ではありません。
+
+## Milestones / 進め方
+
+| Week | What to show / 見せるもの |
+| --- | --- |
+| 10 · Dec 3 | A possible question or user need / 問いや使う人の困りごとを一つ見つける |
+| 11 · Dec 10 | One-page scope and test plan, submitted with the weekly assignment / 範囲とテスト計画を1ページにし、週課題とともに提出 |
+| 12 · Dec 17 | One working feature and test evidence, submitted as the weekly assignment / 動く機能一つとテストの証拠を週課題として提出 |
+| 13 · Jan 7 | Peer test, revise, and submit the final project through UNIPA / 仲間に試してもらい、直して、完成版をUNIPAに提出 |
+
+Follow the exact UNIPA deadline for each submission. Week 13's project is a separate **20%** component, not another 3-point weekly assignment. The Week 14 in-class challenge is separate from this project.
+
+各提出の締切はUNIPAで確認してください。Week 13のプロジェクトは独立した**20%**の評価項目で、3点の週課題を追加するものではありません。Week 14の授業内チャレンジとも別です。
 
 ## Required deliverables / 提出物
 
-1. **Project and README / プロジェクトとREADME** — Goal, intended user, how to run it, data/source credits, and known limitations.
-2. **Human coding evidence / 人が書いた証拠** — Select and annotate at least two short code passages you can trace, explain, and modify independently.
-3. **AI completion log / AI補完ログ** — Two or more bounded prompts used for debugging, explanation, or revision; record the suggestion, your decision, and the test/evidence behind it.
-4. **Agent workflow log / エージェントの作業ログ** — At least one documented issue with goal, context/files, constraints, acceptance criteria, the reviewed diff, and outcome.
-5. **Verification / 検証** — At least three acceptance tests or checks. Include one normal case, one edge/failure case, and one result checked against a source or user.
-6. **Reflection / 振り返り** — 400–600 Japanese characters (or 250–350 English words): key decisions, what did not work, limitations, and what you would do next.
+1. **Runnable work / 動く作品** — A notebook or small program, plus its required data and other files. Use one clear question or user need. / Notebookまたは小さなプログラムと、実行に必要なデータ・関連ファイル。問いか使う人を明確にする。
+2. **Short README / 短い説明** — What it does, how to run it, sources, and one known limit. / 何ができるか、実行方法、出典、限界を一つ書く。
+3. **Human code literacy / 人のコード理解** — Mark two short passages you can trace, explain, and change yourself. / 自分で追跡・説明・修正できるコードを短く二か所示す。
+4. **AI and agent decisions / AIとAgentの判断** — Record one bounded AI suggestion and one small agent task: the request or brief, what changed, and why you accepted, revised, or rejected it. / AIの提案一つとエージェントの小さな作業一つを記録する。依頼内容、変更点、採用・修正・却下の理由を書く。
+5. **Three checks / 三つの確認** — A normal case, an edge or failure case, and a result checked with a person or source. / 通常の入力、端や失敗する入力、人または資料と照合した結果を一つずつ確かめる。
+6. **Brief reflection / 短い振り返り** — About 200–300 Japanese characters (or 120–180 English words) on one decision, one limitation, and what you would improve next. / 判断一つ、限界一つ、次に直したいことを日本語200〜300字程度（または英語120〜180語）で書く。
 
-## Project rules / 進め方
+AI may help generate, revise, or explain code, but you remain responsible for understanding and testing it. Give an agent a written, bounded brief with goal, files/context, constraints, and acceptance checks. Review its changes; do not accept a large unexplained rewrite. Credit data, images, libraries, and outside code.
 
-- Start from a one-page proposal approved in Week 12. Keep scope small enough to finish and test.
-- AI may help generate, revise, or explain code. You may not submit code you cannot explain or test.
-- An agent must work from a written issue/brief. Do not give it unrestricted access or accept a large unreviewed rewrite.
-- Cite datasets, libraries, models, and external code. Use only data and images you have permission to use.
-- A graceful limitation is better than a hidden failure or an unsupported claim.
+AIに生成・修正・説明を手伝わせてもかまいませんが、理解と検証は自分の責任です。エージェントには、目標、使うファイルや文脈、制約、受け入れ基準を書いて、小さく区切って依頼してください。変更を読み、説明できない大きな書き換えをそのまま使わないでください。データ、画像、ライブラリ、外部コードの出典も示します。
 
-## Assessment / 評価
+## Assessment / 評価（20点）
 
-| Area | Weight | Evidence |
+| Criterion / 項目 | Points / 点 | Evidence / 見るところ |
 | --- | ---: | --- |
-| Meaningful, coherent project | 25% | Clear goal/user, focused scope, runnable result |
-| Human code literacy | 20% | Accurate explanation and independent modification |
-| AI and agent judgment | 20% | Bounded prompts/briefs, reviewed decisions, critical use |
-| Testing and verification | 20% | Acceptance checks, edge case, evidence of results |
-| Communication and reflection | 15% | README, sources, limitations, honest reflection |
+| Purpose and runnable result / 目的と動く成果 | 5 | One focused goal; another person can run it / 目的が明確で他の人が動かせる |
+| Human understanding / 人の理解 | 5 | Explain and change two code passages / コード二か所を説明・修正できる |
+| AI and agent judgment / AIとAgentの判断 | 5 | Small briefs, reviewed changes, honest decisions / 小さな依頼、差分の確認、判断の記録 |
+| Verification and communication / 検証と伝達 | 5 | Three checks, README, sources, limits, reflection / 三つの確認、README、出典、限界、振り返り |
 
 ## Submission / 提出方法
 
-Submit one GitHub repository URL (preferred) or a zipped project folder plus notebook/app files. Include the README and workflow log in the repository. Be ready to demonstrate one feature and explain one code passage during Week 14.
+Submit through **UNIPA** by the Week 13 deadline: a completed, executed `.ipynb` file or runnable `.py` files, all required data/assets, README, and the brief workflow/test record. A zip folder is fine when the project has several files. A GitHub link may be included, but it does not replace the UNIPA file submission.
 
-GitHubリポジトリURL（推奨）、またはzip化したプロジェクトフォルダとノートブック／アプリファイルを提出します。リポジトリにはREADMEとワークフローログを含めます。Week 14には、機能一つのデモとコード一か所の説明を行えるようにしてください。
+Week 13の締切までに**UNIPA**で提出します。実行済みの`.ipynb`または動く`.py`ファイル、必要なデータ・画像、README、短い作業／テスト記録を入れてください。ファイルが複数ならzipでもかまいません。GitHubのリンクは補助として添えられますが、UNIPAへのファイル提出の代わりにはなりません。

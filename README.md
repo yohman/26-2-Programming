@@ -1,5 +1,7 @@
 # 2026–2 Programming: 100-minute teaching flow
 
+> This file preserves earlier teaching-planning notes. The current student-facing schedule and grading policy are in `content/weeks/`, `content/course-guide.md`, and `content/final-project.md`.
+
 ## Teaching model
 
 This is an introductory, workshop-first course. Students should leave each meeting having made something run, changed it deliberately, and explained one result. Slides frame the problem and demonstrate only the next move; they are not the lesson itself.
@@ -204,17 +206,17 @@ This is an introductory, workshop-first course. Students should leave each meeti
 | Project/report (35–40 min) | Use the happiness-data report as a final build or presentation checkpoint. Students create a clear question, three analyses, three appropriate charts, Markdown explanations, and a conclusion. |
 | Finish (5–10 min) | Submission check, a short reflection on the first program versus final work, and celebration/showcase of selected artifacts. |
 
-## Recommended final-assessment model
+## Current final-assessment model
 
-Keep an exam, but make the happiness report a meaningful project component rather than an optional add-on.
+The student-facing policy is maintained in `content/course-guide.md` and `content/final-project.md`. Weeks 01–12 carry the weekly 3-point assignments; the project is submitted in Week 13; the individual practical challenge is held in Week 14.
 
 | Component | Weight | Evidence |
 |---|---:|---|
-| Weekly workshop portfolio | 45% | Core weekly notebooks/challenges, including revision and reflection; grade selected checkpoints rather than every file equally. |
-| Final fundamentals exam | 30% | A 50–60 minute open-notes practical notebook assessing essential transferable skills. |
-| Final data project | 25% | Happiness report or approved equivalent: question, analysis, visual evidence, conclusion, reproducible notebook. |
+| Weekly take-home assignments | 60% | Twelve Week 01–12 submissions, each graded 0–3 points; maximum 36 points. |
+| Final project | 20% | Small, runnable, tested work with a brief human/AI/agent decision record; submitted through UNIPA in Week 13. |
+| Individual in-class challenge | 20% | Week 14 code reading, modification, testing, and explanation. |
 
-This preserves an individual skills check while rewarding the kind of self-directed, visible work the course has been building toward. If university policy requires the existing 60% assignments / 40% final structure, use **assignments 60%** and **final = exam 25% + project 15%**.
+The project and in-class challenge assess different outcomes. Do not count the Week 13 project as an additional 3-point weekly assignment, or require a second project submission in Week 14.
 
 ## Recurring rubrics
 

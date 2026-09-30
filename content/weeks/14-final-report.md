@@ -3,33 +3,32 @@ week: 14
 publish_at: 2027-01-12T09:00:00+09:00
 preview: true
 phase: MAKE
-practice_mix: Human 25% · AI 25% · Agent 50%
-practice_mix_ja: 人 25% · AI 25% · エージェント 50%
-title: Final exam and verified project.
-title_ja: 期末試験と検証済みプロジェクト。
+practice_mix: Human 80% · AI 20% · Agent 0%
+practice_mix_ja: 人 80% · AI 20% · エージェント 0%
+title: Individual Python challenge.
+title_ja: 個人で取り組むPythonチャレンジ。
 course_date: 2027-01-14
 course_time: 13:10–14:50
-overview: Demonstrate individual code literacy, show a working project, and explain the human, AI, and agent decisions behind it.
-overview_ja: 自分のコード理解を示し、動くプロジェクトを発表し、人・AI・エージェントによる判断を説明する。
+overview: Read, repair, extend, and test code in class. The project was submitted in Week 13; this is your individual final challenge.
+overview_ja: 授業内でコードを読み、直し、広げ、確かめる。プロジェクトはWeek 13に提出済み。今回は個人の最終チャレンジ。
 ---
 ## Lecture Flow
-EN: 0–20: final expectations and code literacy check; 20–30: demo protocol; 30–70: final notebook/project work; 70–100: demonstrations and submission.
-JP: 0〜20分：最終要件とコードリテラシー確認、20〜30分：デモ手順、30〜70分：最終ノートブック／プロジェクト作業、70〜100分：デモと提出。
+EN: 0–10: instructions; 10–25: predict and explain code; 25–75: repair and extend a supplied notebook; 75–95: test and explain decisions; 95–100: submit.
+JP: 0〜10分：説明、10〜25分：コードの予想と説明、25〜75分：配布Notebookの修正・拡張、75〜95分：テストと判断の説明、95〜100分：提出。
 ## In-Class Notebook
-EN: **Week 14 In-Class — Final Exam and Verified Project.** Explain and modify one project passage, use AI only for final critique, and document one final agent issue with reviewed diff and test outcome.
-JP: **Week 14 In-Class — Final Exam and Verified Project。** プロジェクトコード一か所を説明・修正し、AIは最終批評だけに使い、レビュー済み差分とテスト結果を含む最終agent issueを記録する。
+EN: **Week 14 In-Class — Challenge Format Guide.** The linked notebook is a practice example, not the exam. The actual challenge notebook and any AI-chat/agent rules will be distributed in class through UNIPA.
+JP: **Week 14 In-Class — Challenge Format Guide。** リンク先は形式を知る練習用で、本番の問題ではありません。本番のNotebookとAIチャット／Agentのルールは授業内にUNIPAで配布します。
 ## In-Class Challenge
-EN: Final 30 minutes: demo to a peer, collect one bug/question, then fix it or document why it remains.
-JP: 最後の30分：仲間にデモし、バグ／質問を一つ集め、修正するか残す理由を記録する。
+EN: Your individual result is assessed for code reading and prediction (5), repair or extension (5), verification (5), and explanation (5). Normal editor completion need not be disabled.
+JP: 個人の成果を、読解と予想（5点）、修正・拡張（5点）、検証（5点）、説明（5点）で評価します。通常のエディタ補完を止める必要はありません。
 ## Take-Home Assignment
-EN: **Final submission.** Submit project, README, human/AI/agent workflow log, three tests, limitations, and 400–600字 reflection. No additional weekly assignment follows.
-JP: **最終提出。** プロジェクト、README、人／AI／エージェントのワークフローログ、三つのテスト、限界、400〜600字の振り返りを提出する。これ以降の週課題はない。
+EN: **No take-home assignment.** Submit the completed final-challenge notebook through UNIPA during class. It is worth **20%**; the Week 13 project is not submitted again.
+JP: **持ち帰り課題はありません。** 完成した最終チャレンジのNotebookを授業中にUNIPAで提出します。成績の**20%**です。Week 13のプロジェクトを再提出する必要はありません。
 ## Aha!
-EN: Finished means supported by working evidence, not merely generated code.
-JP: 完成とは生成されたコードではなく、動く証拠に支えられること。
+EN: A correct output matters more when you can predict and explain why it appeared.
+JP: 正しい出力は、出る理由を予想して説明できてこそ意味がある。
 ## Takeaway
-EN: Direct AI systems while remaining accountable for their results.
-JP: 結果への責任を持ちながら、AIシステムを導く。
+EN: Read, change, test, and explain the code you submit.
+JP: 提出するコードを読み、変え、確かめ、説明する。
 ## Resources
-- [Week 14 In-Class — Final Exam and Verified Project](weeks/week-14/week-14-in-class-final.ipynb) {fundamentals}
-- [Final project specification](content/final-project.md) {challenge}
+- [Week 14 In-Class — Challenge Format Guide](weeks/week-14/week-14-in-class-final.ipynb) {fundamentals}

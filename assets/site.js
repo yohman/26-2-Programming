@@ -289,13 +289,16 @@ async function setupCourseGuide() {
     const response = await fetch('content/course-guide.md', { cache:'no-cache' });
     if (!response.ok) throw new Error('Could not load course guide');
     const guide = parseFrontMatter(await response.text());
-    const sections = guide.sections.map((item, index) => {
+    const sections = guide.sections.map(item => {
       const [ja, en = ja] = item.title.split(' / ');
       const id = `guide-${en.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}`;
-      return { ...item, ja, en, id, number:String(index + 1).padStart(2, '0') };
+      return { ...item, ja, en, id };
     });
     const label = item => `<span class="lang-ja jp" lang="ja">${escapeHtml(item.ja)}</span><span class="lang-en">${escapeHtml(item.en)}</span>`;
-    root.innerHTML = `<header class="guide-opening"><p class="eyebrow">2026–2 PROGRAMMING / COURSE GUIDE</p><h1><span class="lang-ja jp" lang="ja">${escapeHtml(guide.title_ja)}</span><span class="lang-en">${escapeHtml(guide.title)}</span></h1><p class="guide-lead lang-ja jp" lang="ja">${escapeHtml(guide.dek_ja)}</p><p class="guide-lead lang-en">${escapeHtml(guide.dek)}</p></header><nav class="guide-contents" aria-label="Course guide sections">${sections.map(item => `<a href="#${item.id}"><small>${item.number}</small>${label(item)}</a>`).join('')}</nav><div class="guide-sections">${sections.map(item => `<section class="guide-section${item.en === 'Grading' ? ' guide-section--grading' : ''}" id="${item.id}"><header><span class="guide-section-number">${item.number}</span><h2>${label(item)}</h2></header><div class="guide-section-body">${bilingualHtml(item.body)}</div></section>`).join('')}</div>`;
+    const weights = [guide.grade_weekly, guide.grade_project, guide.grade_final].map(value => Number(value));
+    const validWeights = weights.every(value => Number.isFinite(value) && value >= 0) && weights.reduce((sum, value) => sum + value, 0) === 100;
+    const gradeChart = validWeights ? `<div class="guide-grade-chart" role="img" aria-label="Weekly assignments ${weights[0]} percent; final project ${weights[1]} percent; final in-class challenge ${weights[2]} percent"><div class="guide-grade-bar"><span class="guide-grade-weekly" style="width:${weights[0]}%">${weights[0]}%</span><span class="guide-grade-project" style="width:${weights[1]}%">${weights[1]}%</span><span class="guide-grade-final" style="width:${weights[2]}%">${weights[2]}%</span></div><div class="guide-grade-key"><div><span class="guide-grade-swatch guide-grade-weekly"></span><span class="lang-ja jp" lang="ja">毎週の課題</span><span class="lang-en">Weekly assignments</span><strong>${weights[0]}%</strong></div><div><span class="guide-grade-swatch guide-grade-project"></span><span class="lang-ja jp" lang="ja">最終プロジェクト</span><span class="lang-en">Final project</span><strong>${weights[1]}%</strong></div><div><span class="guide-grade-swatch guide-grade-final"></span><span class="lang-ja jp" lang="ja">授業内チャレンジ</span><span class="lang-en">Final in-class challenge</span><strong>${weights[2]}%</strong></div></div></div>` : '';
+    root.innerHTML = `<header class="guide-opening"><p class="eyebrow">2026–2 PROGRAMMING / COURSE GUIDE</p><h1><span class="lang-ja jp" lang="ja">${escapeHtml(guide.title_ja)}</span><span class="lang-en">${escapeHtml(guide.title)}</span></h1><p class="guide-lead lang-ja jp" lang="ja">${escapeHtml(guide.dek_ja)}</p><p class="guide-lead lang-en">${escapeHtml(guide.dek)}</p></header><div class="guide-sections">${sections.map(item => `<section class="guide-section${item.en === 'Grading' ? ' guide-section--grading' : ''}" id="${item.id}"><header><h2>${label(item)}</h2></header><div class="guide-section-body">${item.en === 'Grading' ? gradeChart : ''}${bilingualHtml(item.body)}</div></section>`).join('')}</div>`;
   } catch (error) {
     console.error(error);
     root.innerHTML = '<p class="agenda-locked">The course guide could not load. Please refresh the page.</p>';

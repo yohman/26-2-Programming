@@ -586,6 +586,15 @@ html[data-language="ja"] .lang-ja { display: revert; }
 .course-section--in-class > header > span,
 .course-section--in-class > header p,
 .course-section--in-class .class-task h4 { color: #3f6d57; }
+.class-tab-list { display: grid; grid-template-columns: repeat(var(--class-tab-count), minmax(0, 1fr)); gap: .35rem; margin-bottom: 1.25rem; }
+.class-tab { min-width: 0; min-height: 2.75rem; padding: .48rem .3rem; border: 0; border-radius: 0; background: rgba(255,255,255,.57); color: #315c48; cursor: pointer; font: 750 .75rem/1.3 var(--sans); text-align: center; }
+.class-tab:hover { background: #fff; }
+.class-tab[aria-selected="true"] { background: #315c48; color: #fff; }
+.class-tab:focus-visible { outline: 2px solid #315c48; outline-offset: 2px; }
+.class-tab-panel[hidden] { display: none; }
+.class-tab-panel .class-task, .week--first .class-tab-panel .class-task { margin-top: 0; }
+.class-tab-panel .class-task .copy-block > :first-child { margin-top: 0; }
+.class-tab-panel .week-tutorials { margin-bottom: 0; }
 .course-section--homework > header > span,
 .course-section--homework > header p { color: #8c572e; }
 .course-section-content { min-width: 0; }

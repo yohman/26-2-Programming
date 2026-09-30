@@ -532,14 +532,17 @@ function agendaWeek(w, defaultOpen = false) {
   const homework = section(w, 'Take-Home Assignment');
   const tutorials = section(w, 'Tutorials');
   const lectureFiles = resources ? resourcesHtml(resources.body, ['lecture']) : '';
-  const classFiles = resources ? resourcesHtml(resources.body, ['notebook','fundamentals','support','experiment','challenge','data']) : '';
   const notebookFiles = resources ? resourcesHtml(resources.body, ['notebook','fundamentals','experiment']) : '';
   const challengeFiles = resources ? resourcesHtml(resources.body, ['challenge']) : '';
+  const sharedFiles = resources ? resourcesHtml(resources.body, ['support','data']) : '';
   const homeworkFiles = resources ? resourcesHtml(resources.body, ['homework']) : '';
   const resourceBlock = (files, showLabel = true) => files ? `<div class="section-resources">${showLabel ? '<p class="resources-label"><span class="lang-en">FILES</span><span class="lang-ja jp" lang="ja">使用するファイル</span></p>' : ''}${files}</div>` : '';
-  const notebookTask = notebook ? `<div class="class-task"><h4><span class="lang-en">GUIDED NOTEBOOK</span><span class="lang-ja jp" lang="ja">授業内ノートブック</span></h4>${bilingualHtml(notebook.body)}${w.week === 1 ? resourceBlock(notebookFiles, false) : ''}</div>` : '';
-  const challengeTask = challenge ? `<div class="class-task class-task--challenge"><h4><span class="lang-en">FINAL 30-MINUTE CHALLENGE</span><span class="lang-ja jp" lang="ja">最後の30分チャレンジ</span></h4>${bilingualHtml(challenge.body)}${w.week === 1 ? resourceBlock(challengeFiles, false) : ''}</div>` : '';
-  const inClassCopy = `${tutorials ? tutorialsHtml(tutorials.body) : ''}${notebookTask}${challengeTask}`;
+  const classTabs = [];
+  if (tutorials) classTabs.push({ key:'tutorials', en:'Tutorials', ja:'チュートリアル', content:tutorialsHtml(tutorials.body) });
+  if (notebook) classTabs.push({ key:'notebook', en:'Notebook', ja:'ノートブック', content:`<div class="class-task">${bilingualHtml(notebook.body)}${resourceBlock(notebookFiles, false)}</div>` });
+  if (challenge) classTabs.push({ key:'challenge', en:'30-min challenge', ja:'30分チャレンジ', content:`<div class="class-task">${bilingualHtml(challenge.body)}${resourceBlock(challengeFiles, false)}</div>` });
+  const tabId = `class-${String(w.week).padStart(2,'0')}`;
+  const inClassCopy = classTabs.length ? `<div class="class-tabs"><div class="class-tab-list" role="tablist" aria-label="In-class activities" style="--class-tab-count:${classTabs.length}">${classTabs.map((tab, index) => `<button type="button" class="class-tab" role="tab" id="${tabId}-${tab.key}-tab" aria-controls="${tabId}-${tab.key}-panel" aria-selected="${index === 0}" tabindex="${index === 0 ? '0' : '-1'}"><span class="lang-en">${tab.en}</span><span class="lang-ja jp" lang="ja">${tab.ja}</span></button>`).join('')}</div>${classTabs.map((tab, index) => `<div class="class-tab-panel" role="tabpanel" id="${tabId}-${tab.key}-panel" aria-labelledby="${tabId}-${tab.key}-tab"${index === 0 ? '' : ' hidden'}>${tab.content}</div>`).join('')}</div>${w.week === 1 ? '' : resourceBlock(sharedFiles)}` : '';
   const lectureResource = resources?.body.split('\n').map(line => line.trim()).find(line => /\{lecture\}$/.test(line));
   const lectureMatch = lectureResource?.match(/^[-]\s*\[([^\]]+)\]\(([^\s)]+)\)/);
   const lecturePath = lectureMatch?.[2] || '';
@@ -547,7 +550,7 @@ function agendaWeek(w, defaultOpen = false) {
   const lectureThumb = lecturePath && fileType(lecturePath, false) === 'PDF' ? pdfPageImage(lecturePath, w.week === 1 ? 5 : 1) : '';
   const lectureDeck = lectureFiles ? `<aside class="lecture-deck-panel"><p class="lecture-deck-label"><span class="lang-en">LECTURE SLIDES</span><span class="lang-ja jp" lang="ja">講義スライド</span></p>${lectureThumb ? `<a class="lecture-deck-thumbnail" data-file-preview href="${lectureViewer}" aria-label="${escapeHtml(lectureMatch[1])}"><img src="${escapeHtml(lectureThumb)}" alt="${escapeHtml(lectureMatch[1])} slide preview" loading="lazy"></a>` : ''}<p class="lecture-deck-title">${escapeHtml(lectureMatch?.[1] || '')}</p></aside>` : '';
   const lectureVisual = lectureTimelines ? lectureTimelinesHtml(lectureTimelines.body) : lectureDeck;
-  return `<details class="week${w.week === 1 ? ' week--first' : ''}" id="${id}"${defaultOpen ? ' open' : ''}><summary class="week-summary">${summary}<span class="week-toggle"><span class="week-toggle-closed"><span class="lang-en">OPEN WEEK</span><span class="lang-ja jp" lang="ja">週を開く</span></span><span class="week-toggle-open"><span class="lang-en">CLOSE WEEK</span><span class="lang-ja jp" lang="ja">週を閉じる</span></span><b aria-hidden="true">↓</b></span></summary><div class="week-body"><section class="course-section course-section--lecture${lectureTimelines ? ' has-timelines' : ''}"><header><div><p>LECTURE / 講義</p><h3 class="lang-en">${w.week === 1 ? 'From computers to Python' : 'This week’s lecture'}</h3><h3 class="lang-ja jp" lang="ja">${w.week === 1 ? 'コンピュータからPythonへ' : '今週の講義'}</h3></div></header><div class="course-section-content">${lecture ? bilingualHtml(lecture.body) : ''}${lectureVisual}</div></section><section class="course-section course-section--in-class"><header><div><p>IN CLASS / 授業内</p><h3 class="lang-en">Practice in class</h3><h3 class="lang-ja jp" lang="ja">授業内課題</h3></div></header><div class="course-section-content">${inClassCopy}${w.week === 1 ? '' : resourceBlock(classFiles)}</div></section><section class="course-section course-section--homework"><header><div><p>HOMEWORK / 宿題</p><h3 class="lang-en">Make something of your own</h3><h3 class="lang-ja jp" lang="ja">宿題</h3></div></header><div class="course-section-content">${homework ? bilingualHtml(homework.body) : ''}${resourceBlock(homeworkFiles, w.week !== 1)}</div></section></div></details>`;
+  return `<details class="week${w.week === 1 ? ' week--first' : ''}" id="${id}"${defaultOpen ? ' open' : ''}><summary class="week-summary">${summary}<span class="week-toggle"><span class="week-toggle-closed"><span class="lang-en">OPEN WEEK</span><span class="lang-ja jp" lang="ja">週を開く</span></span><span class="week-toggle-open"><span class="lang-en">CLOSE WEEK</span><span class="lang-ja jp" lang="ja">週を閉じる</span></span><b aria-hidden="true">↓</b></span></summary><div class="week-body"><section class="course-section course-section--lecture${lectureTimelines ? ' has-timelines' : ''}"><header><div><p>LECTURE / 講義</p><h3 class="lang-en">${w.week === 1 ? 'From computers to Python' : 'This week’s lecture'}</h3><h3 class="lang-ja jp" lang="ja">${w.week === 1 ? 'コンピュータからPythonへ' : '今週の講義'}</h3></div></header><div class="course-section-content">${lecture ? bilingualHtml(lecture.body) : ''}${lectureVisual}</div></section><section class="course-section course-section--in-class"><header><div><p>IN CLASS / 授業内</p><h3 class="lang-en">Practice in class</h3><h3 class="lang-ja jp" lang="ja">授業内課題</h3></div></header><div class="course-section-content">${inClassCopy}</div></section><section class="course-section course-section--homework"><header><div><p>HOMEWORK / 宿題</p><h3 class="lang-en">Make something of your own</h3><h3 class="lang-ja jp" lang="ja">宿題</h3></div></header><div class="course-section-content">${homework ? bilingualHtml(homework.body) : ''}${resourceBlock(homeworkFiles, w.week !== 1)}</div></section></div></details>`;
 }
 
 function renderAgenda(weeks) {
@@ -576,6 +579,30 @@ function setupAgendaToggles() {
   }));
   const returnScroll = Number(state.get('scroll'));
   if (Number.isFinite(returnScroll) && returnScroll > 0) requestAnimationFrame(() => window.scrollTo(0, returnScroll));
+}
+
+function setupClassTabs(root = document) {
+  root.querySelectorAll('.class-tabs').forEach(group => {
+    const buttons = [...group.querySelectorAll('[role="tab"]')];
+    const panels = [...group.querySelectorAll('[role="tabpanel"]')];
+    const select = index => {
+      buttons.forEach((button, i) => {
+        button.setAttribute('aria-selected', String(i === index));
+        button.tabIndex = i === index ? 0 : -1;
+      });
+      panels.forEach((panel, i) => { panel.hidden = i !== index; });
+    };
+    buttons.forEach((button, index) => {
+      button.addEventListener('click', () => select(index));
+      button.addEventListener('keydown', event => {
+        if (!['ArrowLeft', 'ArrowRight'].includes(event.key)) return;
+        event.preventDefault();
+        const next = (index + (event.key === 'ArrowRight' ? 1 : -1) + buttons.length) % buttons.length;
+        select(next);
+        buttons[next].focus();
+      });
+    });
+  });
 }
 
 function agendaReturnUrl() {
@@ -737,7 +764,8 @@ async function setupFileViewer() {
     if (extension === 'ipynb') {
       const notebook = JSON.parse(source);
       const cells = notebook.cells || [];
-      const preview = cells.slice(0, 12).map(cell => cell.cell_type === 'code'
+      const visibleCells = file === 'weeks/week-01/week-01-in-class-first-python.ipynb' ? cells : cells.slice(0, 12);
+      const preview = visibleCells.map(cell => cell.cell_type === 'code'
         ? `<section class="notebook-cell code-cell"><div class="cell-label"><span>▶</span> Code</div><pre class="code-block"><code>${numberedCodeHtml((cell.source || []).join(''))}</code></pre></section>`
         : `<section class="notebook-cell markdown-cell"><div class="cell-label">Markdown</div><div class="notebook-markdown">${markdownHtml((cell.source || []).join(''))}</div></section>`).join('');
       root.innerHTML = `<div class="viewer-title"><p class="eyebrow">JUPYTER NOTEBOOK · ${cells.length} CELLS</p><h1>${escapeHtml(title)}</h1>${actions(download)}</div><section class="notebook-shell"><header class="notebook-toolbar"><span class="notebook-tab">${escapeHtml(title)} · Preview</span><span class="notebook-run">▶ Run All</span><span class="notebook-kernel">Python 3.12</span></header><article class="notebook-preview">${preview}</article></section>`;
@@ -766,6 +794,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   setupFirstPython();
   setupPreviewLinks();
   setupFileViewer();
-  try { const weeks = await loadWeeks(); renderAgenda(weeks); setupAgendaToggles(); setupLectureTimelineTabs(); }
+  try { const weeks = await loadWeeks(); renderAgenda(weeks); setupAgendaToggles(); setupClassTabs(); setupLectureTimelineTabs(); }
   catch (error) { console.error(error); document.querySelectorAll('[data-agenda]').forEach(node => { node.innerHTML = '<p class="agenda-locked">Course content could not load. Please refresh the page.</p>'; }); }
 });

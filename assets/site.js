@@ -297,13 +297,27 @@ function lectureTimelinesHtml(body) {
   const journey = groups.find(group => group.key === 'journey')?.entries || [];
   const languages = groups.find(group => group.key === 'languages')?.entries || [];
   if (!journey.length && !languages.length) return '';
-  const visual = (item, kind) => /\.(?:svg|png|jpe?g|webp)$/i.test(item.visual)
-    ? `<div class="history-object ${kind === 'languages' ? 'is-logo' : ''}"><span class="history-backdrop-year" aria-hidden="true">${escapeHtml(item.year)}</span><img src="${escapeHtml(item.visual)}" alt="${escapeHtml(item.title)}" loading="lazy"></div>`
-    : `<div class="history-object is-type"><span class="history-backdrop-year" aria-hidden="true">${escapeHtml(item.year)}</span><strong aria-hidden="true">${escapeHtml(item.visual)}</strong></div>`;
+  const yearValue = value => {
+    const year = Number.parseInt(value, 10);
+    return /s$/i.test(value) ? year + 5 : year;
+  };
+  const visual = (item, kind, className) => /\.(?:svg|png|jpe?g|webp)$/i.test(item.visual)
+    ? `<span class="${className} ${kind === 'languages' ? 'is-logo' : ''}"><img src="${escapeHtml(item.visual)}" alt="${escapeHtml(item.title)}" loading="lazy"></span>`
+    : `<span class="${className} is-type" aria-hidden="true"><strong>${escapeHtml(item.visual)}</strong></span>`;
   const panel = (items, kind, label, tabId) => {
-    const slides = items.map((item, index) => `<article class="history-slide${index === 0 ? ' is-active' : ''}" data-history-slide="${index}"${index === 0 ? '' : ' hidden'}>${visual(item, kind)}<div class="history-story"><div class="history-meta"><span>${escapeHtml(item.year)}</span><span data-history-count>${String(index + 1).padStart(2, '0')} / ${String(items.length).padStart(2, '0')}</span></div><h5>${escapeHtml(item.title)}</h5><p class="lang-en">${escapeHtml(item.en)}</p><p class="lang-ja jp" lang="ja">${escapeHtml(item.ja)}</p><a class="history-source" href="${escapeHtml(item.url)}" target="_blank" rel="noopener"><span class="lang-en">EXPLORE ↗</span><span class="lang-ja jp" lang="ja">詳しく見る ↗</span></a>${item.credit ? `<a class="history-credit" href="${escapeHtml(item.credit)}" target="_blank" rel="noopener">IMAGE SOURCE ↗</a>` : ''}</div></article>`).join('');
-    const rail = items.map((item, index) => `<button type="button" data-history-jump="${index}"${index === 0 ? ' class="is-active" aria-current="true"' : ''}><span>${escapeHtml(item.year)}</span><strong>${escapeHtml(item.title)}</strong></button>`).join('');
-    return `<div id="timeline-${kind}" role="tabpanel" aria-labelledby="${tabId}" data-lecture-timeline-panel="${kind}"${kind === 'journey' ? '' : ' hidden'}><div class="history-explorer" data-history-explorer tabindex="0" aria-label="${escapeHtml(label)}" style="--history-items:${items.length}"><div class="history-stage">${slides}<div class="history-controls"><button type="button" data-history-prev aria-label="Previous item">←</button><span data-history-status>01 / ${String(items.length).padStart(2, '0')}</span><button type="button" data-history-next aria-label="Next item">→</button></div></div><nav class="history-rail" aria-label="${escapeHtml(label)} chronology">${rail}</nav></div></div>`;
+    const values = items.map(item => yearValue(item.year));
+    const minimum = Math.min(...values);
+    const maximum = Math.max(...values);
+    const span = Math.max(1, maximum - minimum);
+    const position = value => 7 + ((value - minimum) / span) * 86;
+    const interval = span <= 42 ? 5 : 10;
+    const ticks = [];
+    for (let year = Math.ceil(minimum / interval) * interval; year <= maximum; year += interval) {
+      ticks.push(`<span class="history-tick" style="--history-x:${position(year)}%"><b>${year}</b></span>`);
+    }
+    const events = items.map((item, index) => `<button type="button" class="history-event ${index % 2 ? 'is-lower' : 'is-upper'}${index === 0 ? ' is-active' : ''}" style="--history-x:${position(values[index])}%" data-history-jump="${index}"${index === 0 ? ' aria-current="true"' : ''}>${visual(item, kind, 'history-event-visual')}<span class="history-event-copy"><b>${escapeHtml(item.year)}</b><strong>${escapeHtml(item.title)}</strong></span></button>`).join('');
+    const details = items.map((item, index) => `<article class="history-annotation${index === 0 ? ' is-active' : ''}" data-history-detail="${index}"${index === 0 ? '' : ' hidden'}>${visual(item, kind, 'history-annotation-visual')}<div><span>${escapeHtml(item.year)}</span><h5>${escapeHtml(item.title)}</h5><p class="lang-en">${escapeHtml(item.en)}</p><p class="lang-ja jp" lang="ja">${escapeHtml(item.ja)}</p></div><div class="history-annotation-links"><a class="history-source" href="${escapeHtml(item.url)}" target="_blank" rel="noopener"><span class="lang-en">EXPLORE ↗</span><span class="lang-ja jp" lang="ja">詳しく見る ↗</span></a>${item.credit ? `<a class="history-credit" href="${escapeHtml(item.credit)}" target="_blank" rel="noopener">IMAGE SOURCE ↗</a>` : ''}</div></article>`).join('');
+    return `<div id="timeline-${kind}" role="tabpanel" aria-labelledby="${tabId}" data-lecture-timeline-panel="${kind}"${kind === 'journey' ? '' : ' hidden'}><div class="history-explorer" data-history-explorer tabindex="0" aria-label="${escapeHtml(label)}"><div class="history-map-scroll"><div class="history-map"><span class="history-axis" aria-hidden="true"></span>${ticks.join('')}<nav aria-label="${escapeHtml(label)} chronology">${events}</nav></div></div><div class="history-annotations">${details}</div></div></div>`;
   };
   return `<section class="lecture-timelines" data-lecture-timelines><div class="lecture-timeline-intro"><p>TRACE 01 · MACHINES ↔ LANGUAGES</p><h4 class="lang-en">Move through the machines and languages that changed what code could do.</h4><h4 class="lang-ja jp" lang="ja">一台ずつ触れて、コードでできることの変化をたどる。</h4></div><div class="lecture-timeline-tabs" role="tablist" aria-label="Lecture history"><button type="button" role="tab" aria-selected="true" aria-controls="timeline-journey" id="timeline-tab-journey" data-lecture-timeline-tab="journey"><span>MY PC JOURNEY</span><small class="lang-en">The machines that made me want to create</small><small class="lang-ja jp" lang="ja">「つくりたい」を育てたコンピュータ</small></button><button type="button" role="tab" aria-selected="false" aria-controls="timeline-languages" id="timeline-tab-languages" data-lecture-timeline-tab="languages" tabindex="-1"><span class="lang-en">LANGUAGES THAT CHANGED THE WORLD</span><span class="lang-ja jp" lang="ja">世界を変えたプログラミング言語</span><small class="lang-en">New ways to tell machines what we mean</small><small class="lang-ja jp" lang="ja">機械に意図を伝える、新しい方法</small></button></div>${panel(journey, 'journey', 'My PC Journey', 'timeline-tab-journey')}${panel(languages, 'languages', 'Languages that changed the world', 'timeline-tab-languages')}</section>`;
 }
@@ -331,50 +345,28 @@ function setupLectureTimelineTabs(root = document) {
       });
     });
     group.querySelectorAll('[data-history-explorer]').forEach(explorer => {
-      const slides = [...explorer.querySelectorAll('[data-history-slide]')];
+      const details = [...explorer.querySelectorAll('[data-history-detail]')];
       const jumps = [...explorer.querySelectorAll('[data-history-jump]')];
-      const previous = explorer.querySelector('[data-history-prev]');
-      const next = explorer.querySelector('[data-history-next]');
-      const status = explorer.querySelector('[data-history-status]');
       let current = 0;
-      let pointerStart = null;
-      const show = (requested, scrollRail = false) => {
-        current = Math.max(0, Math.min(slides.length - 1, requested));
-        slides.forEach((slide, index) => {
-          slide.hidden = index !== current;
-          slide.classList.toggle('is-active', index === current);
+      const show = (requested, scrollTimeline = false) => {
+        current = Math.max(0, Math.min(details.length - 1, requested));
+        details.forEach((detail, index) => {
+          detail.hidden = index !== current;
+          detail.classList.toggle('is-active', index === current);
         });
         jumps.forEach((jump, index) => {
           jump.classList.toggle('is-active', index === current);
           if (index === current) jump.setAttribute('aria-current', 'true');
           else jump.removeAttribute('aria-current');
         });
-        if (status) status.textContent = `${String(current + 1).padStart(2, '0')} / ${String(slides.length).padStart(2, '0')}`;
-        if (previous) previous.disabled = current === 0;
-        if (next) next.disabled = current === slides.length - 1;
-        explorer.style.setProperty('--history-progress', `${((current + 1) / slides.length) * 100}%`);
-        if (scrollRail) jumps[current]?.scrollIntoView({ behavior:'smooth', block:'nearest', inline:'center' });
+        if (scrollTimeline) jumps[current]?.scrollIntoView({ behavior:'smooth', block:'nearest', inline:'center' });
       };
       jumps.forEach((jump, index) => jump.addEventListener('click', () => show(index, true)));
-      previous?.addEventListener('click', () => show(current - 1, true));
-      next?.addEventListener('click', () => show(current + 1, true));
       explorer.addEventListener('keydown', event => {
         if (!['ArrowLeft', 'ArrowRight'].includes(event.key) || event.target.closest('[role="tab"]')) return;
         event.preventDefault();
         show(current + (event.key === 'ArrowRight' ? 1 : -1), true);
       });
-      const stage = explorer.querySelector('.history-stage');
-      stage?.addEventListener('pointerdown', event => {
-        if (event.target.closest('a, button')) return;
-        pointerStart = event.clientX;
-      });
-      stage?.addEventListener('pointerup', event => {
-        if (pointerStart === null) return;
-        const distance = event.clientX - pointerStart;
-        pointerStart = null;
-        if (Math.abs(distance) > 45) show(current + (distance < 0 ? 1 : -1), true);
-      });
-      stage?.addEventListener('pointercancel', () => { pointerStart = null; });
       show(0);
     });
   });

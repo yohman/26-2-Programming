@@ -43,7 +43,7 @@ EN: **Weekly assignments (Weeks 01–12): 0–3 points each**
 - **1** — Submitted, but an important part is missing, broken, or unexplained.
 - **0** — Not submitted.
 
-The **project** is assessed on purpose, working code, your human/AI/agent decisions, and testing. The **final in-class challenge** assesses individual code reading, modification, testing, and explanation.
+The **project** has three criteria: creativity/uniqueness/design (6 points), working Python and human understanding (7), and AI/agent judgment and verification (7). The **final in-class challenge** assesses individual code reading, modification, testing, and explanation.
 
 JP: **毎週の課題（Week 01〜12）：各回0〜3点**
 
@@ -52,4 +52,4 @@ JP: **毎週の課題（Week 01〜12）：各回0〜3点**
 - **1点** — 提出はしたが、大切な部分が欠けている、動かない、または説明がない。
 - **0点** — 未提出。
 
-**プロジェクト**では、目的、動くコード、Human／AI／Agentの使い分け、テストを見ます。**授業内チャレンジ**では、一人でコードを読み、修正し、テストし、説明できるかを見ます。
+**プロジェクト**は、創造性・独自性・デザイン（6点）、動くPythonと人の理解（7点）、AI／Agentの判断と検証（7点）の3項目で評価します。**授業内チャレンジ**では、一人でコードを読み、修正し、テストし、説明できるかを見ます。

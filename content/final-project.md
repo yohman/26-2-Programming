@@ -56,19 +56,17 @@ EN:
 
 | Criterion | Points | Evidence |
 | --- | ---: | --- |
-| Purpose and runnable result | 5 | One focused goal; another person can run it. |
-| Human understanding | 5 | Explain and change two code passages. |
-| AI and agent judgment | 5 | Small briefs, reviewed changes, honest decisions. |
-| Verification and communication | 5 | Three checks, README, sources, limits, reflection. |
+| Creativity, uniqueness, and design | 6 | An original idea or approach, a clear purpose, and thoughtful use or presentation. A GUI is not required. |
+| Working Python and human understanding | 7 | Another person can run it; you can explain and change two code passages. |
+| AI/agent judgment and verification | 7 | Bounded requests, reviewed changes, three checks, README, sources, limits, and reflection. |
 
 JP:
 
 | 項目 | 点 | 見るところ |
 | --- | ---: | --- |
-| 目的と動く成果 | 5 | 目的が明確で、他の人が動かせる。 |
-| 人の理解 | 5 | コード二か所を説明・修正できる。 |
-| AIとAgentの判断 | 5 | 小さな依頼、差分の確認、判断の記録。 |
-| 検証と伝達 | 5 | 三つの確認、README、出典、限界、振り返り。 |
+| 創造性・独自性・デザイン | 6 | 独自のアイデアや工夫、明確な目的、使いやすさや見せ方。GUIは必須ではない。 |
+| 動くPythonと人の理解 | 7 | 他の人が実行でき、コード二か所を自分で説明・修正できる。 |
+| AI／Agentの判断と検証 | 7 | 小さな依頼、差分の確認、三つのテスト、README、出典、限界、振り返り。 |
 ## 提出方法 / Submission
 EN: Submit through **UNIPA** by the Week 13 deadline: a completed, executed `.ipynb` file or runnable `.py` files, all required data/assets, a README, and the brief workflow/test record. A zip folder is fine when the project has several files. A GitHub link may be included, but it does not replace the UNIPA file submission.
 

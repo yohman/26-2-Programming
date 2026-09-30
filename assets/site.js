@@ -305,15 +305,17 @@ function tutorialsHtml(body) {
 function lectureTimelinesHtml(body) {
   const groups = body.split(/^###\s+/m).slice(1).map(group => {
     const [key, ...lines] = group.split('\n');
-    const entries = lines.filter(line => /^-\s+/.test(line)).map(line => {
-      const [year, title, ja, en, visual, url, credit = '', sampleRaw = '', famousJa = '', famousEn = '', usersJa = '', usersEn = '', popularityRaw = ''] = line.replace(/^-\s+/, '').split('|').map(value => value.trim());
+    const rows = lines.filter(line => /^-\s+/.test(line)).map(line => line.replace(/^-\s+/, '').split('|').map(value => value.trim()));
+    const entries = rows.map(parts => {
+      const [year, title, ja, en, visual, url, credit = '', sampleRaw = '', famousJa = '', famousEn = '', usersJa = '', usersEn = '', popularityRaw = ''] = parts;
       const popularity = Number.parseFloat(popularityRaw);
       return { year, title, ja, en, visual, url, credit, sample:sampleRaw.replaceAll('⏎', '\n'), famousJa, famousEn, usersJa, usersEn, popularity:Number.isFinite(popularity) ? popularity : 0 };
     });
-    return { key:key.trim().toLowerCase(), entries };
+    return { key:key.trim().toLowerCase(), entries, rows };
   });
   const journey = groups.find(group => group.key === 'journey')?.entries || [];
   const languages = groups.find(group => group.key === 'languages')?.entries || [];
+  const pythonRows = groups.find(group => group.key === 'python')?.rows || [];
   if (!journey.length && !languages.length) return '';
   const yearValue = value => {
     const year = Number.parseInt(value, 10);
@@ -322,6 +324,25 @@ function lectureTimelinesHtml(body) {
   const visual = (item, kind, className) => /\.(?:svg|png|jpe?g|webp)$/i.test(item.visual)
     ? `<span class="${className} ${kind === 'languages' ? 'is-logo' : ''}"><img src="${escapeHtml(item.visual)}" alt="${escapeHtml(item.title)}" loading="lazy"></span>`
     : `<span class="${className} is-type" aria-hidden="true"><strong>${escapeHtml(item.visual)}</strong></span>`;
+  const pythonPanel = rows => {
+    const items = rows.map(([kind, key, titleEn, titleJa, textEn, textJa, sampleRaw = '', output = '', url = '']) => ({ kind, key, titleEn, titleJa, textEn, textJa, sample:sampleRaw.replaceAll('⏎', '\n'), output, url }));
+    const milestones = items.filter(item => item.kind === 'milestone');
+    const metrics = items.filter(item => item.kind === 'metric');
+    const domains = items.filter(item => item.kind === 'domain');
+    if (!items.length) return '';
+    const years = milestones.map(item => Number(item.key));
+    const minimum = Math.min(...years);
+    const maximum = Math.max(...years);
+    const historyPoints = milestones.map((item, index) => {
+      const x = 5 + ((Number(item.key) - minimum) / Math.max(1, maximum - minimum)) * 90;
+      return `<button type="button" class="python-history-point${index % 2 ? ' is-lower' : ''}${index === 0 ? ' is-active' : ''}" style="--python-year-x:${x}%" data-python-history-jump="${index}"${index === 0 ? ' aria-current="true"' : ''}><i aria-hidden="true"></i><b>${escapeHtml(item.key)}</b><span class="lang-en">${escapeHtml(item.titleEn)}</span><span class="lang-ja jp" lang="ja">${escapeHtml(item.titleJa)}</span></button>`;
+    }).join('');
+    const historyDetails = milestones.map((item, index) => `<article class="python-history-detail${index === 0 ? ' is-active' : ''}" data-python-history-detail="${index}"${index === 0 ? '' : ' hidden'}><span>${escapeHtml(item.key)}</span><div><h5 class="lang-en">${escapeHtml(item.titleEn)}</h5><h5 class="lang-ja jp" lang="ja">${escapeHtml(item.titleJa)}</h5><p class="lang-en">${escapeHtml(item.textEn)}</p><p class="lang-ja jp" lang="ja">${escapeHtml(item.textJa)}</p></div><a href="${escapeHtml(item.url)}" target="_blank" rel="noopener">SOURCE ↗</a></article>`).join('');
+    const metricCards = metrics.map(item => `<a class="python-metric" href="${escapeHtml(item.url)}" target="_blank" rel="noopener"><strong>${escapeHtml(item.key)}</strong><span class="lang-en">${escapeHtml(item.titleEn)}</span><span class="lang-ja jp" lang="ja">${escapeHtml(item.titleJa)}</span><small class="lang-en">${escapeHtml(item.textEn)}</small><small class="lang-ja jp" lang="ja">${escapeHtml(item.textJa)}</small></a>`).join('');
+    const domainButtons = domains.map((item, index) => `<button type="button" data-python-domain-jump="${index}" class="${index === 0 ? 'is-active' : ''}"${index === 0 ? ' aria-current="true"' : ''}><span>0${index + 1}</span><strong class="lang-en">${escapeHtml(item.titleEn)}</strong><strong class="lang-ja jp" lang="ja">${escapeHtml(item.titleJa)}</strong><small>${escapeHtml(item.key.toUpperCase())}</small></button>`).join('');
+    const domainScenes = domains.map((item, index) => `<article class="python-code-scene${index === 0 ? ' is-active' : ''}" data-python-domain-scene="${index}"${index === 0 ? '' : ' hidden'}><div class="python-code-intent"><span>HUMAN INTENT</span><p class="lang-en">${escapeHtml(item.textEn)}</p><p class="lang-ja jp" lang="ja">${escapeHtml(item.textJa)}</p></div><div class="python-flow-arrow" aria-hidden="true">→</div><div class="python-code-window"><header><i></i><i></i><i></i><span>${escapeHtml(item.key)}.py</span></header><pre><code>${numberedCodeHtml(item.sample)}</code></pre></div><div class="python-flow-arrow" aria-hidden="true">→</div><div class="python-code-result"><span>OUTPUT</span><strong>${escapeHtml(item.output)}</strong></div><button type="button" class="python-trace-button" data-python-trace><span class="lang-en">TRACE THE CODE ▶</span><span class="lang-ja jp" lang="ja">コードを追う ▶</span></button></article>`).join('');
+    return `<div id="timeline-python" role="tabpanel" aria-labelledby="timeline-tab-python" data-lecture-timeline-panel="python" hidden><section class="python-lecture" data-python-lecture><header class="python-lecture-opening"><img src="assets/timeline/python-logo.svg" alt="Python"><div><p>WHY PYTHON?</p><h4 class="lang-en">One readable language. Many ways to make.</h4><h4 class="lang-ja jp" lang="ja">ひとつの読みやすい言語から、たくさんの「つくる」へ。</h4><small class="lang-en">Its power is not one ranking. It is the bridge between beginners, researchers, data, automation, and AI.</small><small class="lang-ja jp" lang="ja">強さは一つの順位ではない。初学者、研究、データ、自動化、AIをつなぐことにある。</small></div></header><div class="python-metrics">${metricCards}</div><section class="python-history"><div class="python-section-heading"><span>01 · HISTORY</span><h5 class="lang-en">A side project becomes shared infrastructure.</h5><h5 class="lang-ja jp" lang="ja">個人の実験が、世界の共通基盤になる。</h5></div><div class="python-history-scroll"><div class="python-history-map"><span class="python-history-axis" aria-hidden="true"></span>${historyPoints}</div></div><div class="python-history-details">${historyDetails}</div></section><section class="python-domains"><div class="python-section-heading"><span>02 · ONE LANGUAGE, MANY DOORS</span><h5 class="lang-en">Choose a purpose. Then trace intent → code → output.</h5><h5 class="lang-ja jp" lang="ja">目的を選び、意図 → コード → 出力をたどる。</h5></div><nav class="python-domain-tabs" aria-label="Python application areas">${domainButtons}</nav><div class="python-domain-scenes">${domainScenes}</div></section><footer class="python-honesty"><b class="lang-en">Dominant does not mean “best at everything.”</b><b class="lang-ja jp" lang="ja">Dominantは「すべてに最適」という意味ではない。</b><span class="lang-en">Python wins by being readable enough to start, broad enough to grow, and connected enough to matter.</span><span class="lang-ja jp" lang="ja">始めやすく、成長できる幅があり、多くの分野とつながっている。それがPythonの強さ。</span></footer></section></div>`;
+  };
   const panel = (items, kind, label, tabId) => {
     const values = items.map(item => yearValue(item.year));
     const minimum = Math.min(...values);
@@ -350,7 +371,7 @@ function lectureTimelinesHtml(body) {
     const scaleNote = kind === 'languages' ? `<div class="history-scale-note"><span class="lang-en">Horizontal position = release year · bubble area = 2025 use</span><span class="lang-ja jp" lang="ja">横位置＝発表年 · 円の面積＝2025年の使用率</span><small class="lang-en">Stack Overflow “Have used” share (31,771 responses). Historic languages absent from the survey use the minimum marker.</small><small class="lang-ja jp" lang="ja">Stack Overflow「過去1年に使用」の割合（31,771回答）。調査にない歴史的言語は最小サイズ。</small><a href="https://survey.stackoverflow.co/2025/technology#1-programming-scripting-and-markup-languages" target="_blank" rel="noopener">SOURCE ↗</a></div>` : '';
     return `<div id="timeline-${kind}" role="tabpanel" aria-labelledby="${tabId}" data-lecture-timeline-panel="${kind}"${kind === 'journey' ? '' : ' hidden'}><div class="history-explorer${kind === 'languages' ? ' is-languages' : ''}" data-history-explorer tabindex="0" aria-label="${escapeHtml(label)}">${scaleNote}<div class="history-map-scroll"><div class="history-map ${kind === 'languages' ? 'is-bubble-map' : 'is-journey-map'}"><span class="history-axis" aria-hidden="true"></span>${ticks.join('')}<nav aria-label="${escapeHtml(label)} chronology">${events}</nav></div></div><div class="history-annotations">${details}</div></div></div>`;
   };
-  return `<section class="lecture-timelines" data-lecture-timelines><div class="lecture-timeline-intro"><p>TRACE 01 · MACHINES ↔ LANGUAGES</p><h4 class="lang-en">Move through the machines and languages that changed what code could do.</h4><h4 class="lang-ja jp" lang="ja">一台ずつ触れて、コードでできることの変化をたどる。</h4></div><div class="lecture-timeline-tabs" role="tablist" aria-label="Lecture history"><button type="button" role="tab" aria-selected="true" aria-controls="timeline-journey" id="timeline-tab-journey" data-lecture-timeline-tab="journey"><span>MY PC JOURNEY</span><small class="lang-en">The machines that made me want to create</small><small class="lang-ja jp" lang="ja">「つくりたい」を育てたコンピュータ</small></button><button type="button" role="tab" aria-selected="false" aria-controls="timeline-languages" id="timeline-tab-languages" data-lecture-timeline-tab="languages" tabindex="-1"><span class="lang-en">LANGUAGES THAT CHANGED THE WORLD</span><span class="lang-ja jp" lang="ja">世界を変えたプログラミング言語</span><small class="lang-en">New ways to tell machines what we mean</small><small class="lang-ja jp" lang="ja">機械に意図を伝える、新しい方法</small></button></div>${panel(journey, 'journey', 'My PC Journey', 'timeline-tab-journey')}${panel(languages, 'languages', 'Languages that changed the world', 'timeline-tab-languages')}</section>`;
+  return `<section class="lecture-timelines" data-lecture-timelines><div class="lecture-timeline-intro"><p>TRACE 01 · MACHINES ↔ LANGUAGES</p><h4 class="lang-en">Move through the machines and languages that changed what code could do.</h4><h4 class="lang-ja jp" lang="ja">一台ずつ触れて、コードでできることの変化をたどる。</h4></div><div class="lecture-timeline-tabs" role="tablist" aria-label="Lecture history"><button type="button" role="tab" aria-selected="true" aria-controls="timeline-journey" id="timeline-tab-journey" data-lecture-timeline-tab="journey"><span>MY PC JOURNEY</span><small class="lang-en">The machines that made me want to create</small><small class="lang-ja jp" lang="ja">「つくりたい」を育てたコンピュータ</small></button><button type="button" role="tab" aria-selected="false" aria-controls="timeline-languages" id="timeline-tab-languages" data-lecture-timeline-tab="languages" tabindex="-1"><span class="lang-en">LANGUAGES THAT CHANGED THE WORLD</span><span class="lang-ja jp" lang="ja">世界を変えたプログラミング言語</span><small class="lang-en">New ways to tell machines what we mean</small><small class="lang-ja jp" lang="ja">機械に意図を伝える、新しい方法</small></button><button type="button" role="tab" aria-selected="false" aria-controls="timeline-python" id="timeline-tab-python" data-lecture-timeline-tab="python" tabindex="-1"><span>WHY PYTHON?</span><small class="lang-en">How one language connects learning, data, automation, and AI</small><small class="lang-ja jp" lang="ja">学習、データ、自動化、AIをつなぐ言語</small></button></div>${panel(journey, 'journey', 'My PC Journey', 'timeline-tab-journey')}${panel(languages, 'languages', 'Languages that changed the world', 'timeline-tab-languages')}${pythonPanel(pythonRows)}</section>`;
 }
 
 function setupLectureTimelineTabs(root = document) {
@@ -399,6 +420,35 @@ function setupLectureTimelineTabs(root = document) {
         show(current + (event.key === 'ArrowRight' ? 1 : -1), true);
       });
       show(0);
+    });
+    group.querySelectorAll('[data-python-lecture]').forEach(lecture => {
+      const historyJumps = [...lecture.querySelectorAll('[data-python-history-jump]')];
+      const historyDetails = [...lecture.querySelectorAll('[data-python-history-detail]')];
+      const domainJumps = [...lecture.querySelectorAll('[data-python-domain-jump]')];
+      const domainScenes = [...lecture.querySelectorAll('[data-python-domain-scene]')];
+      const choose = (jumps, scenes, requested) => {
+        const current = Math.max(0, Math.min(scenes.length - 1, requested));
+        jumps.forEach((jump, index) => {
+          jump.classList.toggle('is-active', index === current);
+          if (index === current) jump.setAttribute('aria-current', 'true');
+          else jump.removeAttribute('aria-current');
+        });
+        scenes.forEach((scene, index) => {
+          scene.hidden = index !== current;
+          scene.classList.toggle('is-active', index === current);
+          scene.classList.remove('is-tracing');
+        });
+      };
+      historyJumps.forEach((jump, index) => jump.addEventListener('click', () => choose(historyJumps, historyDetails, index)));
+      domainJumps.forEach((jump, index) => jump.addEventListener('click', () => choose(domainJumps, domainScenes, index)));
+      lecture.querySelectorAll('[data-python-trace]').forEach(button => button.addEventListener('click', () => {
+        const scene = button.closest('[data-python-domain-scene]');
+        scene.classList.remove('is-tracing');
+        void scene.offsetWidth;
+        scene.classList.add('is-tracing');
+      }));
+      choose(historyJumps, historyDetails, 0);
+      choose(domainJumps, domainScenes, 0);
     });
   });
 }

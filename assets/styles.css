@@ -830,7 +830,7 @@ html[data-language="ja"] .lecture-timeline-tabs button > small.lang-ja { display
 .lecture-timeline-intro { grid-template-columns: 14rem minmax(0, 1fr); margin-bottom: 1.6rem; }
 .lecture-timeline-intro > p { color: #315876; }
 .lecture-timeline-intro h4 { max-width: 46rem; font-size: clamp(1.3rem, 2.5vw, 2rem); font-weight: 680; line-height: 1.3; }
-.lecture-timeline-tabs { gap: 2rem; margin-bottom: 1rem; border: 0; background: transparent; }
+.lecture-timeline-tabs { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2rem; margin-bottom: 1rem; border: 0; background: transparent; }
 .lecture-timeline-tabs button { padding: .75rem 0 .85rem; border: 0; border-bottom: 3px solid #d5dbdd; background: transparent; color: #778086; }
 .lecture-timeline-tabs button + button { border-left: 0; }
 .lecture-timeline-tabs button:hover { color: #173e6f; }
@@ -917,6 +917,87 @@ html[data-language="ja"] .lecture-timeline-tabs button > small.lang-ja { display
 .history-source:hover { color: #bdd0ff; }
 .history-credit { color: #91a8c4; font: 600 .5rem var(--mono); letter-spacing: .05em; text-decoration: none; }
 
+/* Week 01 · Why Python */
+.python-lecture { overflow: hidden; background: #f5f8fb; color: #172331; }
+.python-lecture-opening { display: grid; grid-template-columns: 8.5rem minmax(0, 1fr); gap: 2rem; align-items: center; padding: 2.3rem; background: #173e6f; color: #fff; }
+.python-lecture-opening img { width: 8.5rem; height: 8.5rem; padding: 1.35rem; background: #fff; object-fit: contain; }
+.python-lecture-opening p { margin: 0 0 .55rem; color: #ffd866; font: 750 .65rem var(--mono); letter-spacing: .08em; }
+.python-lecture-opening h4 { max-width: 50rem; margin: 0 0 .7rem; font-size: clamp(1.65rem, 3.4vw, 2.8rem); line-height: 1.14; letter-spacing: -.045em; }
+.python-lecture-opening small { display: block; max-width: 48rem; color: #d8e5f4; font-size: .78rem; line-height: 1.65; }
+.python-metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2px; background: #cbd7e4; }
+.python-metric { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: .15rem 1rem; align-items: start; min-height: 8rem; padding: 1.35rem; background: #fff; color: #172331; text-decoration: none; }
+.python-metric:hover { background: #edf3fa; color: #172331; }
+.python-metric strong { grid-row: 1 / span 2; color: #2f63ff; font: 800 clamp(1.3rem, 2.8vw, 2.2rem) var(--mono); letter-spacing: -.06em; white-space: nowrap; }
+.python-metric > span { font-size: .76rem; font-weight: 780; line-height: 1.3; }
+.python-metric small { color: #68747f; font-size: .62rem; line-height: 1.45; }
+.python-history,
+.python-domains { padding: 2.5rem 2.3rem; }
+.python-domains { background: #e7eef6; }
+.python-section-heading { display: grid; grid-template-columns: 14rem minmax(0, 1fr); gap: 1.5rem; align-items: baseline; margin-bottom: 1.7rem; }
+.python-section-heading > span { color: #2f63ff; font: 750 .62rem var(--mono); letter-spacing: .07em; }
+.python-section-heading h5 { max-width: 48rem; margin: 0; font-size: clamp(1.15rem, 2.2vw, 1.7rem); line-height: 1.35; letter-spacing: -.035em; }
+.python-history-map { position: relative; height: 10rem; margin: 0 .5rem; }
+.python-history-scroll { overflow-x: auto; scrollbar-color: #8ea4bf transparent; scrollbar-width: thin; }
+.python-history-axis { position: absolute; top: 4.75rem; right: 5%; left: 5%; height: 3px; background: #afbdcc; }
+.python-history-axis::after { content: "TIME →"; position: absolute; right: 0; top: .65rem; color: #718295; font: 700 .52rem var(--mono); letter-spacing: .08em; }
+.python-history-point { position: absolute; top: 0; left: var(--python-year-x); width: 8.5rem; height: 4.7rem; padding: 0; border: 0; background: transparent; color: #3f5368; text-align: center; transform: translateX(-50%); cursor: pointer; }
+.python-history-point.is-lower { top: 5rem; }
+.python-history-point i { position: absolute; bottom: -.48rem; left: 50%; width: .82rem; height: .82rem; border: 3px solid #f5f8fb; border-radius: 50%; background: #8298ae; transform: translateX(-50%); }
+.python-history-point.is-lower i { top: -.62rem; bottom: auto; }
+.python-history-point b { display: block; margin-bottom: .22rem; color: #2f63ff; font: 800 .68rem var(--mono); }
+.python-history-point span { display: block; font-size: .63rem; font-weight: 760; line-height: 1.25; }
+.python-history-point:hover i,
+.python-history-point.is-active i { width: 1rem; height: 1rem; background: #ffd34f; box-shadow: 0 0 0 2px #173e6f; }
+.python-history-point.is-active { color: #173e6f; }
+.python-history-details { min-height: 7.5rem; background: #fff; }
+.python-history-detail { display: grid; grid-template-columns: 6rem minmax(0, 1fr) auto; gap: 1.4rem; align-items: center; min-height: 7.5rem; padding: 1.2rem 1.4rem; animation: history-enter .25s ease-out both; }
+.python-history-detail[hidden] { display: none; }
+.python-history-detail > span { color: #2f63ff; font: 800 1.45rem var(--mono); }
+.python-history-detail h5 { margin: 0 0 .3rem; font-size: 1rem; }
+.python-history-detail p { margin: 0; color: #5e6974; font-size: .73rem; line-height: 1.55; }
+.python-history-detail a { color: #173e6f; font: 750 .55rem var(--mono); letter-spacing: .05em; text-decoration: none; }
+.python-domain-tabs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 2px; margin-bottom: 2px; background: #b7c7d8; }
+.python-domain-tabs button { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: .05rem .65rem; align-items: center; min-height: 4.7rem; padding: .75rem .9rem; border: 0; background: #fff; color: #5a6875; text-align: left; cursor: pointer; }
+.python-domain-tabs button:hover { background: #f7faff; color: #173e6f; }
+.python-domain-tabs button.is-active { background: #173e6f; color: #fff; }
+.python-domain-tabs button > span { grid-row: 1 / span 2; color: #2f63ff; font: 800 .68rem var(--mono); }
+.python-domain-tabs button.is-active > span { color: #ffd34f; }
+.python-domain-tabs strong { font-size: .76rem; line-height: 1.2; }
+.python-domain-tabs small { color: inherit; font: 650 .5rem var(--mono); letter-spacing: .07em; opacity: .68; }
+.python-code-scene { position: relative; display: grid; grid-template-columns: minmax(10rem, .75fr) 2rem minmax(17rem, 1.15fr) 2rem minmax(9rem, .65fr); gap: 1rem; align-items: center; min-height: 18rem; padding: 2rem 2rem 4.8rem; background: #102942; color: #fff; }
+.python-code-scene[hidden] { display: none; }
+.python-code-intent > span,
+.python-code-result > span { display: block; margin-bottom: .55rem; color: #82a8d1; font: 700 .55rem var(--mono); letter-spacing: .08em; }
+.python-code-intent p { margin: 0; color: #e3edf7; font-size: .75rem; line-height: 1.65; }
+.python-flow-arrow { color: #ffd34f; font: 400 1.6rem var(--mono); text-align: center; }
+.python-code-window { min-width: 0; overflow: hidden; background: #071b2d; box-shadow: 0 1.2rem 2rem rgba(1, 12, 22, .2); }
+.python-code-window header { display: flex; align-items: center; gap: .35rem; height: 2.2rem; padding: 0 .75rem; background: #243b50; }
+.python-code-window header i { width: .48rem; height: .48rem; border-radius: 50%; background: #73869a; }
+.python-code-window header i:first-child { background: #ff7d72; }
+.python-code-window header i:nth-child(2) { background: #ffd34f; }
+.python-code-window header i:nth-child(3) { background: #56d18b; }
+.python-code-window header span { margin-left: .4rem; color: #c8d6e4; font: .55rem var(--mono); }
+.python-code-window pre { overflow-x: auto; margin: 0; padding: 1.2rem .85rem; }
+.python-code-window code { display: block; color: #e7edf5; font: .73rem/1.7 var(--mono); }
+.python-code-window .code-row { padding: 0 .25rem; transition: background .18s ease; }
+.python-code-result { min-width: 0; padding: 1.2rem; background: #fff; color: #173e6f; }
+.python-code-result strong { display: block; overflow-wrap: anywhere; font: 800 clamp(1rem, 2.2vw, 1.6rem)/1.25 var(--mono); opacity: .16; transform: translateY(.35rem); transition: opacity .25s ease, transform .25s ease; }
+.python-trace-button { position: absolute; right: 2rem; bottom: 1.35rem; padding: .72rem 1rem; border: 0; background: #ffd34f; color: #102942; font: 800 .58rem var(--mono); letter-spacing: .06em; cursor: pointer; }
+.python-trace-button:hover { background: #ffe486; }
+.python-code-scene.is-tracing .python-code-window .code-row { animation: python-line-trace .45s ease both; }
+.python-code-scene.is-tracing .python-code-window .code-row:nth-child(2) { animation-delay: .38s; }
+.python-code-scene.is-tracing .python-code-window .code-row:nth-child(3) { animation-delay: .76s; }
+.python-code-scene.is-tracing .python-code-result strong { opacity: 1; transform: translateY(0); transition-delay: .75s; }
+.python-honesty { display: grid; grid-template-columns: 18rem minmax(0, 1fr); gap: 1.5rem; padding: 1.4rem 2.3rem; background: #ffd34f; color: #172331; }
+.python-honesty b { font-size: .8rem; }
+.python-honesty span { font-size: .72rem; line-height: 1.55; }
+
+@keyframes python-line-trace {
+  0% { background: transparent; }
+  40% { background: rgba(255, 211, 79, .24); }
+  100% { background: rgba(47, 99, 255, .16); }
+}
+
 @keyframes history-enter {
   from { opacity: .35; transform: translateX(1rem); }
   to { opacity: 1; transform: translateX(0); }
@@ -931,6 +1012,14 @@ html[data-language="ja"] .lecture-timeline-tabs button > small.lang-ja { display
   .history-annotation-links { grid-column: 2; flex-direction: row; }
   .history-scale-note { grid-template-columns: 1fr; }
   .history-scale-note > a { grid-column: 1; grid-row: auto; margin-top: .2rem; }
+  .python-lecture-opening { grid-template-columns: 7rem minmax(0, 1fr); padding: 1.7rem; }
+  .python-lecture-opening img { width: 7rem; height: 7rem; }
+  .python-section-heading { grid-template-columns: 1fr; gap: .45rem; }
+  .python-code-scene { grid-template-columns: minmax(0, 1fr) 2rem minmax(10rem, .72fr); }
+  .python-code-intent { grid-column: 1 / -1; }
+  .python-code-intent + .python-flow-arrow { display: none; }
+  .python-code-window { grid-column: 1; }
+  .python-code-result { grid-column: 3; }
 }
 
 @media (max-width: 560px) {
@@ -946,6 +1035,24 @@ html[data-language="ja"] .lecture-timeline-tabs button > small.lang-ja { display
   .history-code-sample { clear: both; padding-top: 1rem; }
   .history-annotation-links { clear: both; flex-direction: row; padding-top: 1rem; }
   .history-facts { grid-template-columns: 1fr; }
+  .python-lecture-opening { grid-template-columns: 4.8rem minmax(0, 1fr); gap: 1rem; padding: 1.35rem; }
+  .python-lecture-opening img { width: 4.8rem; height: 4.8rem; padding: .8rem; }
+  .python-lecture-opening h4 { font-size: 1.45rem; }
+  .python-metrics { grid-template-columns: 1fr; }
+  .python-metric { min-height: 0; }
+  .python-history,
+  .python-domains { padding: 1.6rem 1.2rem; }
+  .python-history-map { min-width: 44rem; }
+  .python-history-detail { display: block; }
+  .python-history-detail > span { display: block; margin-bottom: .5rem; }
+  .python-history-detail a { display: inline-block; margin-top: .75rem; }
+  .python-domain-tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .python-code-scene { display: block; padding: 1.4rem 1.2rem 4.7rem; }
+  .python-flow-arrow { display: none; }
+  .python-code-window,
+  .python-code-result { margin-top: 1rem; }
+  .python-trace-button { right: 1.2rem; }
+  .python-honesty { grid-template-columns: 1fr; gap: .45rem; padding: 1.2rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {

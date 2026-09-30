@@ -904,6 +904,14 @@ html[data-language="ja"] .lecture-timeline-tabs button > small.lang-ja { display
 .history-annotation > div > span { color: #9dbdff; font: 700 .62rem var(--mono); letter-spacing: .06em; }
 .history-annotation h5 { margin: .2rem 0 .45rem; color: #fff; font-size: 1.35rem; letter-spacing: -.025em; }
 .history-annotation p { max-width: 43rem; margin: 0; color: #e8eff9; font-size: .86rem; line-height: 1.65; }
+.history-game-shelf { margin-top: .9rem; }
+.history-game-shelf > span { display: block; color: #9dbdff; font: 700 .5rem var(--mono); letter-spacing: .055em; }
+.history-game-shelf > div { display: flex; flex-wrap: wrap; gap: .7rem; margin-top: .45rem; }
+.history-game-shelf a { display: grid; grid-template-columns: 3.8rem auto; gap: .55rem; align-items: center; max-width: 12rem; color: #fff; text-decoration: none; }
+.history-game-shelf img { display: block; width: 3.8rem; height: 4.9rem; object-fit: cover; background: #f5f8fc; transition: transform .18s ease, box-shadow .18s ease; }
+.history-game-shelf a:hover img,
+.history-game-shelf a:focus-visible img { transform: translateY(-2px); box-shadow: 0 .25rem .8rem rgba(0, 0, 0, .28); }
+.history-game-shelf strong { font-size: .65rem; line-height: 1.35; }
 .history-facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .65rem 1rem; margin-top: 1rem; }
 .history-facts > div { min-width: 0; }
 .history-facts span { display: block; margin-bottom: .2rem; color: #9dbdff; font: 700 .48rem var(--mono); letter-spacing: .045em; }

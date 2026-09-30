@@ -238,12 +238,21 @@ async function setupTutorialToc(root, file, returnUrl, currentSource) {
       const newTab = current ? '' : ' target="_blank" rel="noopener"';
       return `<a class="${levelClass}" href="${escapeHtml(href)}"${panelData}${newTab}>${escapeHtml(section.label)}</a>`;
     }).join('');
-    const openLink = current
-      ? ''
-      : `<a class="tutorial-toc-open" href="${escapeHtml(tutorialLink(item, returnUrl))}" target="_blank" rel="noopener"><span class="lang-en">OPEN THIS STEP ↗</span><span class="lang-ja jp" lang="ja">このステップを開く ↗</span></a>`;
-    return `<details class="tutorial-toc-step${current ? ' is-current' : ''}"${current ? ' open' : ''}><summary><span>${String(index + 1).padStart(2, '0')}</span><strong><span class="lang-en">${escapeHtml(item.en)}</span><span class="lang-ja jp" lang="ja">${escapeHtml(item.ja)}</span></strong><b aria-hidden="true">⌄</b></summary><nav aria-label="${escapeHtml(item.en)} sections">${openLink}${sectionLinks}</nav></details>`;
+    const firstSection = outline[0];
+    const titleHref = current ? `#${firstSection?.id || 'tutorial-section-1'}` : tutorialLink(item, returnUrl);
+    const titlePanel = current && firstSection && firstSection.panelIndex !== '' ? ` data-toc-panel="${escapeHtml(firstSection.panelIndex)}"` : '';
+    const newTab = current ? '' : ' target="_blank" rel="noopener"';
+    const sectionId = `tutorial-toc-sections-${index + 1}`;
+    return `<div class="tutorial-toc-step${current ? ' is-current is-open' : ''}"><div class="tutorial-toc-row"><span class="tutorial-toc-number">${String(index + 1).padStart(2, '0')}</span><a class="tutorial-toc-step-link" href="${escapeHtml(titleHref)}"${titlePanel}${newTab}><span class="lang-en">${escapeHtml(item.en)}</span><span class="lang-ja jp" lang="ja">${escapeHtml(item.ja)}</span></a><button type="button" class="tutorial-toc-expand" data-toc-expand aria-controls="${sectionId}" aria-expanded="${current}" aria-label="${escapeHtml(item.ja)}の項目を開閉">⌄</button></div><nav id="${sectionId}" aria-label="${escapeHtml(item.en)} sections"${current ? '' : ' hidden'}>${sectionLinks}</nav></div>`;
   }).join('');
   toc.innerHTML = `<header><a class="tutorial-toc-title" href="#tutorial-section-1"><span class="lang-en">TUTORIAL INDEX</span><span class="lang-ja jp" lang="ja">チュートリアル 目次</span></a><span>01—07</span></header><div class="tutorial-toc-steps">${steps}</div>`;
+  toc.querySelectorAll('[data-toc-expand]').forEach(button => button.addEventListener('click', () => {
+    const sections = toc.querySelector(`#${button.getAttribute('aria-controls')}`);
+    const expanded = button.getAttribute('aria-expanded') === 'true';
+    button.setAttribute('aria-expanded', String(!expanded));
+    button.closest('.tutorial-toc-step').classList.toggle('is-open', !expanded);
+    if (sections) sections.hidden = expanded;
+  }));
   toc.querySelector('.tutorial-toc-title')?.addEventListener('click', event => {
     const firstHeading = article.querySelector('#tutorial-section-1');
     if (!firstHeading) return;

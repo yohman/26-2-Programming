@@ -320,22 +320,20 @@ html[data-language="ja"] .lang-ja { display: revert; }
 .tutorial-toc-steps::before { content: ""; position: absolute; top: 1.2rem; bottom: 1.2rem; left: 1.13rem; width: 1px; background: #b8cbbf; }
 .tutorial-toc-step { position: relative; background: transparent; }
 .tutorial-toc-step.is-current { background: #e5eee7; }
-.tutorial-toc-step summary { display: grid; grid-template-columns: 1.65rem minmax(0, 1fr) auto; gap: .65rem; align-items: center; min-height: 3.25rem; padding: .52rem .55rem; list-style: none; cursor: pointer; }
-.tutorial-toc-step summary::-webkit-details-marker { display: none; }
-.tutorial-toc-step summary::marker { content: ""; }
-.tutorial-toc-step summary > span { z-index: 1; display: grid; place-items: center; width: 1.65rem; height: 1.65rem; border: 1px solid #91aa99; border-radius: 50%; background: var(--paper); color: #315c48; font: 700 .56rem var(--mono); }
-.tutorial-toc-step.is-current summary > span { border-color: #315c48; background: #315c48; color: #fff; }
-.tutorial-toc-step summary strong { font-size: .77rem; font-weight: 650; line-height: 1.35; }
-.tutorial-toc-step.is-current summary strong { font-weight: 800; }
-.tutorial-toc-step summary b { color: #668371; font: 600 .82rem var(--mono); transition: transform .16s ease; }
-.tutorial-toc-step summary:hover strong { color: #315c48; }
-.tutorial-toc-step[open] summary b { transform: rotate(180deg); }
+.tutorial-toc-row { display: grid; grid-template-columns: 1.65rem minmax(0, 1fr) 1.65rem; gap: .65rem; align-items: center; min-height: 3.25rem; padding: .52rem .55rem; }
+.tutorial-toc-number { z-index: 1; display: grid; place-items: center; width: 1.65rem; height: 1.65rem; border: 1px solid #91aa99; border-radius: 50%; background: var(--paper); color: #315c48; font: 700 .56rem var(--mono); }
+.tutorial-toc-step.is-current .tutorial-toc-number { border-color: #315c48; background: #315c48; color: #fff; }
+.tutorial-toc .tutorial-toc-step-link { color: var(--ink); font-size: .77rem; font-weight: 650; line-height: 1.35; }
+.tutorial-toc .tutorial-toc-step.is-current .tutorial-toc-step-link { font-weight: 800; }
+.tutorial-toc-expand { display: grid; place-items: center; width: 1.65rem; height: 1.65rem; padding: 0; border: 0; background: transparent; color: #668371; font: 600 .82rem var(--mono); cursor: pointer; transition: transform .16s ease; }
+.tutorial-toc-expand:hover { background: rgba(49, 92, 72, .12); color: #315c48; }
+.tutorial-toc-expand[aria-expanded="true"] { transform: rotate(180deg); }
 .tutorial-toc-step nav { display: grid; gap: .5rem; padding: .1rem .7rem .95rem 2.85rem; }
+.tutorial-toc-step nav[hidden] { display: none; }
 .tutorial-toc a { color: #4b5850; font-size: .73rem; font-weight: 550; line-height: 1.4; text-decoration: none; }
 .tutorial-toc a:hover { color: #315c48; text-decoration: underline; text-underline-offset: 3px; }
 .tutorial-toc a.is-subsection { padding-left: .55rem; font-size: .69rem; }
 .tutorial-toc a.is-subsection--deep { padding-left: 1.1rem; color: var(--muted); }
-.tutorial-toc a.tutorial-toc-open { margin: .15rem 0 .2rem; color: #315c48; font: 750 .59rem var(--mono); letter-spacing: .02em; }
 .tutorial-preview { box-shadow: none; }
 .tutorial-preview > p:first-child { margin-top: 0; color: var(--ink); font-size: 1.08rem; font-weight: 700; }
 .tutorial-preview h2 { margin-top: 2.7rem; }

@@ -746,7 +746,6 @@ html[data-language="ja"] .lang-ja { display: revert; }
   align-items: center;
   min-width: 0;
   padding: .62rem 0;
-  border-top: 1px solid color-mix(in srgb, var(--line) 80%, transparent);
   border-radius: 0;
   background: transparent;
 }
@@ -902,7 +901,7 @@ html[data-language="ja"] .lang-ja { display: revert; }
 .history-explorer:not(.is-languages) .history-annotation { grid-template-columns: 11rem minmax(0, 1fr) 7rem; gap: 1.7rem; min-height: 14rem; padding: 1.7rem; }
 .history-explorer:not(.is-languages) .history-annotation-visual { width: 11rem; height: 9.5rem; }
 .history-explorer:not(.is-languages) .history-annotation h5 { font-size: 1.7rem; }
-.history-annotation.has-code { grid-template-columns: 7rem minmax(12rem, .8fr) minmax(20rem, 1.2fr) 6.5rem; }
+.history-annotation.has-code { grid-template-columns: 8.5rem minmax(12rem, .8fr) minmax(20rem, 1.2fr) 6.5rem; }
 .history-annotation[hidden] { display: none; }
 .history-annotation-visual { display: grid; place-items: center; width: 8.5rem; height: 7rem; background: #f5f8fc; }
 .history-annotation-visual img { width: 100%; height: 100%; padding: .5rem; object-fit: contain; }
@@ -949,8 +948,11 @@ html[data-language="ja"] .lang-ja { display: revert; }
 .python-section-heading { display: grid; grid-template-columns: 14rem minmax(0, 1fr); gap: 1.5rem; align-items: baseline; margin-bottom: 1.7rem; }
 .python-section-heading > span { color: #315876; font: 750 .62rem var(--mono); letter-spacing: .07em; }
 .python-section-heading h5 { max-width: 48rem; margin: 0; font-size: clamp(1.15rem, 2.2vw, 1.7rem); line-height: 1.35; letter-spacing: -.035em; }
-.python-history-map { position: relative; height: 10rem; margin: 0 .5rem; }
+.python-history-map { position: relative; min-width: 120rem; height: 10rem; margin: 0 .5rem; }
 .python-history-scroll { overflow-x: auto; scrollbar-color: #8ea4bf transparent; scrollbar-width: thin; }
+.python-history-cue { display: block; margin: .15rem 0 .7rem; color: #61768a; font: 700 .56rem var(--mono); letter-spacing: .04em; }
+html[data-language="ja"] .python-history-cue.lang-ja,
+html[data-language="en"] .python-history-cue.lang-en { display: block !important; }
 .python-history-axis { position: absolute; top: 4.75rem; right: 5%; left: 5%; height: 3px; background: #afbdcc; }
 .python-history-axis::after { content: "TIME →"; position: absolute; right: 0; top: .65rem; color: #718295; font: 700 .52rem var(--mono); letter-spacing: .08em; }
 .python-history-point { position: absolute; top: 0; left: var(--python-year-x); width: 8.5rem; height: 4.7rem; padding: 0; border: 0; background: transparent; color: #3f5368; text-align: center; transform: translateX(-50%); cursor: pointer; }
@@ -1062,7 +1064,7 @@ html[data-language="ja"] .lang-ja { display: revert; }
   .python-metric { min-height: 3.8rem; }
   .python-history,
   .python-domains { padding: 1.6rem 1.2rem; }
-  .python-history-map { min-width: 44rem; }
+  .python-history-map { min-width: 120rem; }
   .python-history-detail { display: block; }
   .python-history-detail > span { display: block; margin-bottom: .5rem; }
   .python-history-detail a { display: inline-block; margin-top: .75rem; }

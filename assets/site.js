@@ -243,7 +243,14 @@ async function setupTutorialToc(root, file, returnUrl, currentSource) {
       : `<a class="tutorial-toc-open" href="${escapeHtml(tutorialLink(item, returnUrl))}" target="_blank" rel="noopener"><span class="lang-en">OPEN TUTORIAL ↗</span><span class="lang-ja jp" lang="ja">Tutorialを開く ↗</span></a>`;
     return `<details class="tutorial-toc-step${current ? ' is-current' : ''}"${current ? ' open' : ''}><summary><span>${String(index + 1).padStart(2, '0')}</span><strong><span class="lang-en">${escapeHtml(item.en)}</span><span class="lang-ja jp" lang="ja">${escapeHtml(item.ja)}</span></strong><b aria-hidden="true">⌄</b></summary><nav aria-label="${escapeHtml(item.en)} sections">${openLink}${sectionLinks}</nav></details>`;
   }).join('');
-  toc.innerHTML = `<header><p>TUTORIALS</p><span><span class="lang-en">7 STEPS</span><span class="lang-ja jp" lang="ja">全7ステップ</span></span></header><div class="tutorial-toc-steps">${steps}</div>`;
+  toc.innerHTML = `<header><a class="tutorial-toc-title" href="#tutorial-section-1">TUTORIALS</a><span><span class="lang-en">7 STEPS</span><span class="lang-ja jp" lang="ja">全7ステップ</span></span></header><div class="tutorial-toc-steps">${steps}</div>`;
+  toc.querySelector('.tutorial-toc-title')?.addEventListener('click', event => {
+    const firstHeading = article.querySelector('#tutorial-section-1');
+    if (!firstHeading) return;
+    event.preventDefault();
+    history.replaceState({}, '', '#tutorial-section-1');
+    firstHeading.scrollIntoView({ behavior:'smooth', block:'start' });
+  });
   toc.querySelectorAll('[data-toc-panel]').forEach(link => link.addEventListener('click', event => {
     event.preventDefault();
     const panelIndex = link.dataset.tocPanel;
@@ -288,6 +295,9 @@ function resourcesHtml(body, onlyKinds = []) {
 }
 
 function tutorialsHtml(body) {
+  const firstLine = body.split('\n').map(line => line.trim()).find(line => line.startsWith('- ')) || '';
+  const firstMatch = firstLine.match(/^-\s*\[([^\]]+)\]\(([^\s)]+)\)/);
+  const firstViewer = firstMatch ? `viewer.html?file=${encodeURIComponent(firstMatch[2])}&title=${encodeURIComponent(firstMatch[1])}` : '#';
   const links = body.split('\n').map(line => line.trim()).filter(line => line.startsWith('- ')).map((line, index) => {
     const match = line.match(/^-\s*\[([^\]]+)\]\(([^\s)]+)\)/);
     if (!match) return '';
@@ -299,7 +309,7 @@ function tutorialsHtml(body) {
     return `<a class="tutorial-link" data-file-preview href="${viewer}" aria-label="${escapeHtml(label)}"><span class="tutorial-number">${String(index + 1).padStart(2, '0')}</span><span class="tutorial-link-title"><strong class="lang-en">${escapeHtml(englishLabel)}</strong><strong class="lang-ja jp" lang="ja">${escapeHtml(japaneseLabel)}</strong></span><b aria-hidden="true">→</b></a>`;
   }).join('');
   if (!links) return '';
-  return `<section class="week-tutorials"><div class="tutorials-intro"><p>WEEK 01 · TUTORIALS</p><h4 class="lang-en">Set up Python, one step at a time</h4><h4 class="lang-ja jp" lang="ja">Pythonを動かすまでの7ステップ</h4><small class="lang-en">Start at 01 and continue downward. Reopen any step when you need help.</small><small class="lang-ja jp" lang="ja">01から順番に進みます。困ったときは、必要なステップをもう一度開いてください。</small></div><nav class="tutorial-links" aria-label="Week 01 tutorials">${links}</nav></section>`;
+  return `<section class="week-tutorials"><div class="tutorials-intro"><p>WEEK 01 · TUTORIALS</p><h4 class="lang-en"><a href="${firstViewer}" data-file-preview>Set up Python, one step at a time</a></h4><h4 class="lang-ja jp" lang="ja"><a href="${firstViewer}" data-file-preview>Pythonを動かすまでの7ステップ</a></h4><small class="lang-en">Start at 01 and continue downward. Reopen any step when you need help.</small><small class="lang-ja jp" lang="ja">01から順番に進みます。困ったときは、必要なステップをもう一度開いてください。</small></div><nav class="tutorial-links" aria-label="Week 01 tutorials">${links}</nav></section>`;
 }
 
 function lectureTimelinesHtml(body) {

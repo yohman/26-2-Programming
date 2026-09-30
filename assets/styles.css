@@ -838,6 +838,11 @@ html[data-language="ja"] .lecture-timeline-tabs button > small.lang-ja { display
 .history-explorer { outline: none; }
 .history-map-scroll { overflow-x: auto; background: #f4f7fb; scrollbar-color: #8ea4bf transparent; scrollbar-width: thin; }
 .history-map { position: relative; min-width: 62rem; height: 20rem; overflow: hidden; background: linear-gradient(180deg, #f8fafc, #edf3fa); }
+.history-scale-note { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .22rem 1rem; align-items: end; padding: .8rem 1rem; background: #e7eef6; color: #173e6f; }
+.history-scale-note > span { grid-column: 1; font: 750 .68rem var(--mono); letter-spacing: .025em; }
+.history-scale-note > small { grid-column: 1; color: #5a6d81; font-size: .62rem; line-height: 1.45; }
+.history-scale-note > a { grid-column: 2; grid-row: 1 / span 2; color: #173e6f; font: 750 .58rem var(--mono); letter-spacing: .05em; text-decoration: none; }
+.history-scale-note > a:hover { text-decoration: underline; }
 .history-axis { position: absolute; top: 50%; right: 7%; left: 7%; height: 2px; background: #7694b7; }
 .history-axis::after { content: "TIME →"; position: absolute; right: 0; top: .75rem; color: #6d8199; font: 700 .56rem var(--mono); letter-spacing: .08em; }
 .history-tick { position: absolute; top: 12%; bottom: 10%; left: var(--history-x); width: 1px; background: rgba(59, 91, 126, .1); }
@@ -861,6 +866,24 @@ html[data-language="ja"] .lecture-timeline-tabs button > small.lang-ja { display
 .history-event.is-active .history-event-visual { background: #dce7ff; }
 .history-event-copy b { display: block; margin-bottom: .25rem; color: #2f63ff; font: 700 .58rem var(--mono); }
 .history-event-copy strong { display: block; font-size: .65rem; line-height: 1.3; }
+.history-map.is-bubble-map { min-width: 110rem; height: 29rem; overflow: hidden; background: linear-gradient(180deg, #f9fbfd 0%, #e9f0f8 100%); }
+.history-map.is-bubble-map .history-axis { top: 26rem; }
+.history-map.is-bubble-map .history-tick { top: 0; bottom: 1.8rem; }
+.history-map.is-bubble-map .history-tick b { top: 26.75rem; }
+.history-bubble { --bubble-y: 1.2rem; position: absolute; top: var(--bubble-y); left: var(--history-x); z-index: 2; display: grid; justify-items: center; width: 8.5rem; padding: 0; border: 0; background: transparent; color: #173e6f; text-align: center; transform: translateX(-50%); cursor: pointer; }
+.history-bubble.lane-1 { --bubble-y: 9.15rem; }
+.history-bubble.lane-2 { --bubble-y: 17.1rem; }
+.history-bubble::after { content: ""; position: absolute; top: var(--bubble-size); left: 50%; z-index: -1; width: 1px; height: calc(26rem - var(--bubble-y) - var(--bubble-size)); background: rgba(78, 112, 149, .38); }
+.history-bubble-orb { position: relative; z-index: 1; display: grid; place-items: center; width: var(--bubble-size); height: var(--bubble-size); border-radius: 50%; background: #d6e2f1; box-shadow: inset 0 0 0 1px rgba(23, 62, 111, .08); transition: background .16s ease, box-shadow .16s ease, transform .16s ease; }
+.history-bubble:hover .history-bubble-orb { background: #c4d4e8; transform: translateY(-2px); }
+.history-bubble.is-active .history-bubble-orb { background: #2f63ff; box-shadow: 0 0 0 4px #fff, 0 0 0 6px #2f63ff; color: #fff; }
+.history-bubble-mark { display: grid; place-items: center; width: 72%; height: 72%; }
+.history-bubble-mark img { width: 100%; height: 100%; object-fit: contain; }
+.history-bubble-mark.is-type strong { color: currentColor; font: 800 clamp(.54rem, calc(var(--bubble-size) / 5.3), 1.15rem) var(--mono); letter-spacing: -.06em; }
+.history-bubble-copy { position: relative; z-index: 2; display: block; margin-top: .38rem; padding: .18rem .3rem; background: rgba(242, 246, 251, .92); }
+.history-bubble-copy strong { display: block; font-size: .68rem; line-height: 1.2; }
+.history-bubble-copy small { display: block; margin-top: .12rem; color: #5c7188; font: 650 .52rem var(--mono); letter-spacing: .015em; white-space: nowrap; }
+.history-bubble.is-active .history-bubble-copy strong { color: #2f63ff; }
 .history-annotations { background: #173e6f; color: #fff; }
 .history-annotation { display: grid; grid-template-columns: 8.5rem minmax(0, 1fr) 8rem; gap: 1.6rem; align-items: center; min-height: 10rem; padding: 1.5rem 1.7rem; animation: history-enter .25s ease-out both; }
 .history-annotation.has-code { grid-template-columns: 7rem minmax(12rem, .8fr) minmax(20rem, 1.2fr) 6.5rem; }
@@ -872,6 +895,10 @@ html[data-language="ja"] .lecture-timeline-tabs button > small.lang-ja { display
 .history-annotation > div > span { color: #9dbdff; font: 700 .62rem var(--mono); letter-spacing: .06em; }
 .history-annotation h5 { margin: .2rem 0 .45rem; color: #fff; font-size: 1.35rem; letter-spacing: -.025em; }
 .history-annotation p { max-width: 43rem; margin: 0; color: #e8eff9; font-size: .86rem; line-height: 1.65; }
+.history-facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .65rem 1rem; margin-top: 1rem; }
+.history-facts > div { min-width: 0; }
+.history-facts span { display: block; margin-bottom: .2rem; color: #9dbdff; font: 700 .48rem var(--mono); letter-spacing: .045em; }
+.history-facts p { color: #fff; font-size: .68rem; font-weight: 600; line-height: 1.45; }
 .history-code-sample { min-width: 0; }
 .history-code-sample > span { display: block; margin-bottom: .4rem; color: #9dbdff; font: 700 .55rem var(--mono); letter-spacing: .06em; }
 .history-code-sample pre { overflow-x: auto; margin: 0; padding: .85rem 1rem; background: #0f2946; color: #e7edf5; }
@@ -893,6 +920,8 @@ html[data-language="ja"] .lecture-timeline-tabs button > small.lang-ja { display
   .history-annotation-visual { width: 7rem; }
   .history-code-sample { grid-column: 1 / -1; }
   .history-annotation-links { grid-column: 2; flex-direction: row; }
+  .history-scale-note { grid-template-columns: 1fr; }
+  .history-scale-note > a { grid-column: 1; grid-row: auto; margin-top: .2rem; }
 }
 
 @media (max-width: 560px) {
@@ -900,11 +929,13 @@ html[data-language="ja"] .lecture-timeline-tabs button > small.lang-ja { display
   .lecture-timeline-tabs { display: flex; gap: 1.2rem; overflow-x: auto; }
   .lecture-timeline-tabs button { flex: 0 0 78%; }
   .history-map { min-width: 58rem; }
+  .history-map.is-bubble-map { min-width: 104rem; }
   .history-annotation { display: block; padding: 1.3rem; }
   .history-annotation-visual { float: left; width: 5.5rem; height: 5rem; margin: 0 1rem .5rem 0; }
   .history-annotation h5 { font-size: 1.2rem; }
   .history-code-sample { clear: both; padding-top: 1rem; }
   .history-annotation-links { clear: both; flex-direction: row; padding-top: 1rem; }
+  .history-facts { grid-template-columns: 1fr; }
 }
 
 @media (prefers-reduced-motion: reduce) {

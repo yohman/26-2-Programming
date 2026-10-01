@@ -235,8 +235,7 @@ async function setupTutorialToc(root, file, returnUrl, currentSource) {
       const levelClass = section.level === 5 ? 'is-subsection is-subsection--deep' : section.level === 4 ? 'is-subsection' : '';
       const href = current ? `#${section.id}` : `${tutorialLink(item, returnUrl)}#${section.id}`;
       const panelData = current && section.panelIndex !== '' ? ` data-toc-panel="${escapeHtml(section.panelIndex)}"` : '';
-      const newTab = current ? '' : ' target="_blank" rel="noopener"';
-      return `<a class="${levelClass}" href="${escapeHtml(href)}"${panelData}${newTab}>${escapeHtml(section.label)}</a>`;
+      return `<a class="${levelClass}" href="${escapeHtml(href)}"${panelData}>${escapeHtml(section.label)}</a>`;
     }).join('');
     const firstSection = outline[0];
     const titleHref = current ? `#${firstSection?.id || 'tutorial-section-1'}` : tutorialLink(item, returnUrl);

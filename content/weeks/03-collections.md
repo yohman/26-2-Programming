@@ -3,8 +3,8 @@ week: 3
 publish_at: 2026-10-13T09:00:00+09:00
 preview: true
 phase: WRITE
-practice_mix: Human 75% · AI 20% · Agent 5%
-practice_mix_ja: 人 75% · AI 20% · エージェント 5%
+practice_mix: Human 80% · AI 20%
+practice_mix_ja: 人 80% · AI 20%
 title: Collections and versioned work.
 title_ja: コレクションとバージョン管理。
 course_date: 2026-10-15
@@ -17,8 +17,8 @@ overview_ja: リストと辞書で関係する情報をまとめ、変更を追�
 EN: 0–20: lists/dictionaries; 20–30: indexing and keys; 30–70: profile-data notebook; 70–100: repository challenge.
 JP: 0〜20分：リスト／辞書、20〜30分：添字とキー、30〜70分：プロフィールデータノートブック、70〜100分：リポジトリチャレンジ。
 ## In-Class Notebook
-EN: **Week 03 In-Class — Collections and Versioned Work.** Build a list and dictionary, trace lookups, use AI to critique a broken lookup, then brief a tiny profile-data addition for an agent to review.
-JP: **Week 03 In-Class — Collections and Versioned Work。** リストと辞書を作り検索を追い、壊れた検索をAIに批評させ、プロフィールデータへの小さな追加をエージェントにbriefしてレビューする。
+EN: **Week 03 In-Class — Collections and Versioned Work.** Build a list and dictionary, trace lookups, use AI to critique a broken lookup, then make and review a small profile-data addition yourself.
+JP: **Week 03 In-Class — Collections and Versioned Work。** リストと辞書を作り検索を追い、壊れた検索をAIに批評させ、プロフィールデータへの小さな追加を自分で行い、結果を確認する。
 ## In-Class Challenge
 EN: Final 30 minutes: publish a “me” repository with a structured profile, three links, and one commit.
 JP: 最後の30分：構造化プロフィール、三つのリンク、一つのコミットを含む「me」リポジトリを公開する。

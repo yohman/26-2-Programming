@@ -3,8 +3,8 @@ week: 14
 publish_at: 2027-01-12T09:00:00+09:00
 preview: true
 phase: MAKE
-practice_mix: Human 80% · AI 20% · Agent 0%
-practice_mix_ja: 人 80% · AI 20% · エージェント 0%
+practice_mix: Human 80% · AI 20%
+practice_mix_ja: 人 80% · AI 20%
 title: Individual Python challenge.
 title_ja: 個人で取り組むPythonチャレンジ。
 course_date: 2027-01-14
@@ -16,8 +16,8 @@ overview_ja: 授業内でコードを読み、直し、広げ、確かめる。�
 EN: 0–10: instructions; 10–25: predict and explain code; 25–75: repair and extend a supplied notebook; 75–95: test and explain decisions; 95–100: submit.
 JP: 0〜10分：説明、10〜25分：コードの予想と説明、25〜75分：配布Notebookの修正・拡張、75〜95分：テストと判断の説明、95〜100分：提出。
 ## In-Class Notebook
-EN: **Week 14 In-Class — Challenge Format Guide.** The linked notebook is a practice example, not the exam. The actual challenge notebook and any AI-chat/agent rules will be distributed in class through UNIPA.
-JP: **Week 14 In-Class — Challenge Format Guide。** リンク先は形式を知る練習用で、本番の問題ではありません。本番のNotebookとAIチャット／Agentのルールは授業内にUNIPAで配布します。
+EN: **Week 14 In-Class — Challenge Format Guide.** The linked notebook is a practice example, not the exam. The actual challenge notebook and any AI-use rules will be distributed in class through UNIPA.
+JP: **Week 14 In-Class — Challenge Format Guide。** リンク先は形式を知る練習用で、本番の問題ではありません。本番のNotebookとAI利用のルールは授業内にUNIPAで配布します。
 ## In-Class Challenge
 EN: Your individual result is assessed for code reading and prediction (5), repair or extension (5), verification (5), and explanation (5). Normal editor completion need not be disabled.
 JP: 個人の成果を、読解と予想（5点）、修正・拡張（5点）、検証（5点）、説明（5点）で評価します。通常のエディタ補完を止める必要はありません。

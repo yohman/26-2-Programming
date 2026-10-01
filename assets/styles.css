@@ -209,7 +209,6 @@ html[data-language="ja"] .lang-ja { display: revert; }
 .mix-segment { display: grid; place-items: center; min-width: 0; color: #fff; font: 600 .56rem var(--mono); }
 .mix-segment.human, .mix-dot.human { background: #77808a; }
 .mix-segment.ai, .mix-dot.ai { background: var(--blue); }
-.mix-segment.agent, .mix-dot.agent { background: #a58c79; }
 .mix-key { display: flex; flex-wrap: wrap; gap: .65rem 1.15rem; margin-top: .6rem; color: var(--muted); font: .65rem var(--mono); }
 .mix-key > span { display: inline-flex; align-items: center; gap: .32rem; }
 .mix-dot { width: .55rem; height: .55rem; border-radius: 999px; }

@@ -6,7 +6,7 @@ Each file in `content/weeks/` is the live, editable source for one teaching week
 
 `content/final-project.md` drives the dedicated `final-project.html` page. Keep its `EN:` and `JP:` versions together in each section; the site shows only the selected language. Links to the project brief in weekly resource lists open this page, not the raw Markdown file.
 
-Edit the front matter for the week number, titles, phase, and publication controls. The agenda renders: `Lecture Flow`, `In-Class Notebook`, `In-Class Challenge`, `Take-Home Assignment`, `Aha!`, `Takeaway`, and `Resources`. The In-Class Notebook should state its Human Coding, AI Completion, and Agent-Based Coding stages. Keep the `EN:` and `JP:` lines for the bilingual layout.
+Edit the front matter for the week number, titles, phase, and publication controls. The agenda renders: `Lecture Flow`, `In-Class Notebook`, `In-Class Challenge`, `Take-Home Assignment`, `Aha!`, `Takeaway`, and `Resources`. The In-Class Notebook should make independent Human Coding and carefully checked AI Completion clear. Keep the `EN:` and `JP:` lines for the bilingual layout.
 
 Weeks 01–13 also have `homework_due` in front matter. Use a Japan-time ISO timestamp such as `2026-10-07T23:59:00+09:00`; the agenda displays its date and time above that week's homework. Week 14 has no take-home homework or `homework_due`.
 
@@ -18,7 +18,7 @@ preview: true
 
 `publish_at` uses Japan time. Week 01 is available; later weeks stay collapsed and locked until their `publish_at` time. Use `?preview=all` on `agenda.html` to inspect every week before release. The legacy `preview:` front-matter field is not used by the current renderer.
 
-The three programming practices are intentional: early weeks require independent tracing and writing before AI use; the middle weeks use AI for bounded completion and review; later weeks use agents only from a written brief with acceptance checks. Every `Take-Home Assignment` must state what is due, how to submit, and what demonstrates individual understanding.
+The two programming practices are intentional: every week requires independent tracing and writing; AI may support bounded completion and review, with the student responsible for checking every result. Every `Take-Home Assignment` must state what is due, how to submit, and what demonstrates individual understanding.
 
 Resources use one line each:
 

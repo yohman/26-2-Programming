@@ -36,22 +36,22 @@ EN:
 1. **Runnable work** — A notebook or small program, plus the data and other files it needs. State one clear question or user need.
 2. **Short README** — What it does, how to run it, sources, and one known limit.
 3. **Human code literacy** — Mark two short passages you can trace, explain, and change yourself.
-4. **AI and agent decisions** — Record one bounded AI suggestion and one small agent task: your request, what changed, and why you accepted, revised, or rejected it.
+4. **Process and judgment** — Show one meaningful revision. If you used AI, record a specific suggestion, what you changed, and why you accepted, revised, or rejected it. If not, explain a decision you made yourself.
 5. **Three checks** — Test a normal case, an edge or failure case, and a result checked with a person or source.
 6. **Brief reflection** — About 120–180 English words (or 200–300 Japanese characters) on one decision, one limitation, and what you would improve next.
 
-AI may help generate, revise, or explain code, but you are responsible for understanding and testing it. Give an agent a written, bounded brief with a goal, files/context, constraints, and acceptance checks. Review its changes; do not accept a large unexplained rewrite. Credit data, images, libraries, and outside code.
+AI may help generate, revise, or explain code, but you are responsible for understanding and testing it. AI access is not required for the project grade. Do not accept a large unexplained rewrite. Credit data, images, libraries, and outside code.
 
 JP:
 
 1. **動く作品** — Notebookまたは小さなプログラムと、実行に必要なデータ・関連ファイル。問いか使う人を明確にする。
 2. **短いREADME** — 何ができるか、実行方法、出典、限界を一つ書く。
 3. **人のコード理解** — 自分で追跡・説明・修正できるコードを短く二か所示す。
-4. **AIとAgentの判断** — AIの提案一つとAgentの小さな作業一つを記録する。依頼内容、変更点、採用・修正・却下の理由を書く。
+4. **制作過程と判断** — 意味のある修正を一つ示す。AIを使った場合は、提案内容、変更点、採用・修正・却下の理由を記録する。使わなかった場合は、自分で下した判断を説明する。
 5. **三つの確認** — 通常の入力、端や失敗する入力、人または資料と照合した結果を一つずつ確かめる。
 6. **短い振り返り** — 判断一つ、限界一つ、次に直したいことを日本語200〜300字程度（または英語120〜180語）で書く。
 
-AIに生成・修正・説明を手伝わせてもかまいませんが、理解と検証は自分の責任です。Agentには、目標、使うファイルや文脈、制約、受け入れ基準を書いて、小さく区切って依頼してください。変更を読み、説明できない大きな書き換えをそのまま使わないでください。データ、画像、ライブラリ、外部コードの出典も示します。
+AIに生成・修正・説明を手伝わせてもかまいませんが、理解と検証は自分の責任です。AIへのアクセスの有無は評価に影響しません。説明できない大きな書き換えをそのまま使わないでください。データ、画像、ライブラリ、外部コードの出典も示します。
 ## 評価（20点） / Assessment (20 points)
 EN:
 
@@ -59,7 +59,7 @@ EN:
 | --- | ---: | --- |
 | Creativity, uniqueness, and design | 6 | An original idea or approach, a clear purpose, and thoughtful use or presentation. A GUI is not required. |
 | Working Python and human understanding | 7 | Another person can run it; you can explain and change two code passages. |
-| AI/agent judgment and verification | 7 | Bounded requests, reviewed changes, three checks, README, sources, limits, and reflection. |
+| Testing, documentation, and judgment | 7 | Three checks, README, sources, limits, reflection, and a reasoned revision (including review of AI help, if used). |
 
 JP:
 
@@ -67,7 +67,7 @@ JP:
 | --- | ---: | --- |
 | 創造性・独自性・デザイン | 6 | 独自のアイデアや工夫、明確な目的、使いやすさや見せ方。GUIは必須ではない。 |
 | 動くPythonと人の理解 | 7 | 他の人が実行でき、コード二か所を自分で説明・修正できる。 |
-| AI／Agentの判断と検証 | 7 | 小さな依頼、差分の確認、三つのテスト、README、出典、限界、振り返り。 |
+| テスト・記録・判断 | 7 | 三つのテスト、README、出典、限界、振り返り、修正の理由（AIを使った場合は提案の確認も）。 |
 ## 提出方法 / Submission
 EN: Submit through **UNIPA by Wed, Jan 13, 2027 at 11:59 PM JST**: a completed, executed `.ipynb` file or runnable `.py` files, all required data/assets, a README, and the brief workflow/test record. A zip folder is fine when the project has several files. A GitHub link may be included, but it does not replace the UNIPA file submission.
 

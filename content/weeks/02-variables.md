@@ -3,8 +3,8 @@ week: 2
 publish_at: 2026-10-06T09:00:00+09:00
 preview: true
 phase: WRITE
-practice_mix: Human 80% · AI 15% · Agent 5%
-practice_mix_ja: 人 80% · AI 15% · エージェント 5%
+practice_mix: Human 85% · AI 15%
+practice_mix_ja: 人 85% · AI 15%
 title: Variables, types, and input.
 title_ja: 変数・型・入力。
 course_date: 2026-10-08
@@ -17,8 +17,8 @@ overview_ja: 値に意味のある名前を付け、型の違いを理解し、�
 EN: 0–20: values, names, and types; 20–30: `=` versus `==`; 30–70: calculator notebook; 70–100: challenge and test share.
 JP: 0〜20分：値・名前・型、20〜30分：`=`と`==`、30〜70分：計算機ノートブック、70〜100分：チャレンジとテスト共有。
 ## In-Class Notebook
-EN: **Week 02 In-Class — Variables, Types, and Input.** Write a temperature/budget calculator, test type conversion, ask AI for edge cases, then brief an agent to add one bounded feature with three acceptance tests.
-JP: **Week 02 In-Class — Variables, Types, and Input。** 温度／予算計算機を書き、型変換をテストし、AIに境界ケースを求め、三つの受け入れテスト付きの限定機能をエージェントにbriefする。
+EN: **Week 02 In-Class — Variables, Types, and Input.** Write a temperature/budget calculator, test type conversion, ask AI for edge cases, then add one bounded feature yourself and check it with three tests.
+JP: **Week 02 In-Class — Variables, Types, and Input。** 温度／予算計算機を書き、型変換をテストし、AIに境界ケースを求め、限定機能を自分で一つ追加し、三つのテストで確かめる。
 ## In-Class Challenge
 EN: Final 30 minutes: make a calculator for a real student decision—café bill, club fee, travel, or game score—and test it with a partner.
 JP: 最後の30分：カフェ代、部費、旅行、ゲーム得点など、実際の学生の判断に使う計算機を作り、ペアでテストする。

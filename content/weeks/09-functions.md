@@ -3,8 +3,8 @@ week: 9
 publish_at: 2026-11-24T09:00:00+09:00
 preview: true
 phase: COMPOSE
-practice_mix: Human 40% · AI 30% · Agent 30%
-practice_mix_ja: 人 40% · AI 30% · エージェント 30%
+practice_mix: Human 55% · AI 45%
+practice_mix_ja: 人 55% · AI 45%
 title: Functions and disaster stories.
 title_ja: 関数と災害データストーリー。
 course_date: 2026-11-26
@@ -17,8 +17,8 @@ overview_ja: 繰り返す考えを関数にまとめ、災害データをより�
 EN: 0–20: parameters, return, scope; 20–30: function contract; 30–70: disaster notebook; 70–100: story challenge.
 JP: 0〜20分：引数・return・スコープ、20〜30分：関数の契約、30〜70分：災害ノートブック、70〜100分：ストーリーチャレンジ。
 ## In-Class Notebook
-EN: **Week 09 In-Class — Functions and Disaster Stories.** Write/test a two-input function, have AI suggest tests/docstring, then brief an agent to add one chart helper with a sample call.
-JP: **Week 09 In-Class — Functions and Disaster Stories。** 二入力関数を書いてテストし、AIにテスト／docstringを提案させ、呼び出し例付きのグラフ補助関数を追加するようエージェントにbriefする。
+EN: **Week 09 In-Class — Functions and Disaster Stories.** Write/test a two-input function, have AI suggest tests/docstring, then write a chart helper with a sample call and test it.
+JP: **Week 09 In-Class — Functions and Disaster Stories。** 二入力関数を書いてテストし、AIにテスト／docstringを提案させ、呼び出し例付きのグラフ補助関数を書き、テストする。
 ## In-Class Challenge
 EN: Final 30 minutes: make one disaster chart driven by your function and state the insight it supports.
 JP: 最後の30分：自分の関数で動く災害グラフを一つ作り、それが支える洞察を述べる。

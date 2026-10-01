@@ -544,9 +544,9 @@ function releaseDateLabels(value) {
 
 function practiceMixHtml(w) {
   if (!w.practice_mix) return '';
-  const values = [...w.practice_mix.matchAll(/(Human|AI|Agent)\s+(\d+)%/g)].map(([, label, value]) => ({ label, value:Number(value) }));
-  const colors = { Human:'human', AI:'ai', Agent:'agent' };
-  const japaneseLabels = { Human:'人', AI:'AI', Agent:'エージェント' };
+  const values = [...w.practice_mix.matchAll(/(Human|AI)\s+(\d+)%/g)].map(([, label, value]) => ({ label, value:Number(value) }));
+  const colors = { Human:'human', AI:'ai' };
+  const japaneseLabels = { Human:'人', AI:'AI' };
   const segments = values.map(item => `<span class="mix-segment ${colors[item.label]}" style="width:${item.value}%" title="${item.label} ${item.value}%"><i>${item.value >= 15 ? item.value + '%' : ''}</i></span>`).join('');
   const key = values.map(item => `<span><i class="mix-dot ${colors[item.label]}"></i>${item.label} ${item.value}%</span>`).join('');
   const keyJapanese = values.map(item => `<span><i class="mix-dot ${colors[item.label]}"></i>${japaneseLabels[item.label]} ${item.value}%</span>`).join('');

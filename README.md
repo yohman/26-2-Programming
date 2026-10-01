@@ -213,7 +213,7 @@ The student-facing policy is maintained in `content/course-guide.md` and `conten
 | Component | Weight | Evidence |
 |---|---:|---|
 | Weekly take-home assignments | 60% | Twelve Week 01–12 submissions, each graded 0–3 points; maximum 36 points. |
-| Final project | 20% | Small, runnable, tested work with a brief human/AI/agent decision record; submitted through UNIPA in Week 13. |
+| Final project | 20% | Small, runnable, tested work with a brief decision and verification record; submitted through UNIPA in Week 13. |
 | Individual in-class challenge | 20% | Week 14 code reading, modification, testing, and explanation. |
 
 The project and in-class challenge assess different outcomes. Do not count the Week 13 project as an additional 3-point weekly assignment, or require a second project submission in Week 14.

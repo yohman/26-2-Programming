@@ -3,8 +3,8 @@ week: 1
 publish_at: 2026-09-29T09:00:00+09:00
 preview: true
 phase: WRITE
-practice_mix: Human 85% · AI 10% · Agent 5%
-practice_mix_ja: 人 85% · AI 10% · エージェント 5%
+practice_mix: Human 90% · AI 10%
+practice_mix_ja: 人 90% · AI 10%
 title: Make the computer say something.
 title_ja: コンピュータに「してほしいこと」を伝える。
 course_date: 2026-10-01

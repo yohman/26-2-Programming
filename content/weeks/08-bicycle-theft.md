@@ -3,8 +3,8 @@ week: 8
 publish_at: 2026-11-17T09:00:00+09:00
 preview: true
 phase: REPEAT
-practice_mix: Human 45% · AI 30% · Agent 25%
-practice_mix_ja: 人 45% · AI 30% · エージェント 25%
+practice_mix: Human 60% · AI 40%
+practice_mix_ja: 人 60% · AI 40%
 title: Data investigation and recommendations.
 title_ja: データ調査と提案。
 course_date: 2026-11-19
@@ -17,8 +17,8 @@ overview_ja: 本物の問いを証拠へ変える。データを調べ、パタ�
 EN: 0–20: question → evidence → recommendation; 20–30: inspect a table; 30–70: investigation notebook; 70–100: evidence sprint.
 JP: 0〜20分：問い→証拠→提案、20〜30分：表を調べる、30〜70分：調査ノートブック、70〜100分：証拠スプリント。
 ## In-Class Notebook
-EN: **Week 08 In-Class — Bicycle-Theft Data Investigation.** Inspect columns and create a chart yourself, use AI for alternative interpretations, then brief an agent with permitted columns and documentation rules.
-JP: **Week 08 In-Class — Bicycle-Theft Data Investigation。** 列を調べ自分でグラフを作り、AIで別解釈を検討し、使用列と記録ルールを指定してエージェントにbriefする。
+EN: **Week 08 In-Class — Bicycle-Theft Data Investigation.** Inspect columns and create a chart yourself, use AI for alternative interpretations, then document the columns and choices behind the chart.
+JP: **Week 08 In-Class — Bicycle-Theft Data Investigation。** 列を調べ自分でグラフを作り、AIで別解釈を検討し、使った列とグラフの選択理由を記録する。
 ## In-Class Challenge
 EN: Final 30 minutes: make one evidence-backed prevention recommendation and audit one claim against raw rows.
 JP: 最後の30分：根拠のある防犯提案を一つ作り、主張一つを元データの行で監査する。

@@ -3,8 +3,8 @@ week: 11
 publish_at: 2026-12-08T09:00:00+09:00
 preview: true
 phase: COMPOSE
-practice_mix: Human 35% · AI 30% · Agent 35%
-practice_mix_ja: 人 35% · AI 30% · エージェント 35%
+practice_mix: Human 50% · AI 50%
+practice_mix_ja: 人 50% · AI 50%
 title: Objects, modules, and responsible tools.
 title_ja: オブジェクト・モジュール・責任あるツール利用。
 course_date: 2026-12-10
@@ -17,8 +17,8 @@ overview_ja: オブジェクトとモジュールを慎重に使い、ドキュ�
 EN: 0–20: objects/methods/modules; 20–30: documentation and limits; 30–70: vision notebook; 70–100: responsible prototype challenge.
 JP: 0〜20分：オブジェクト／メソッド／モジュール、20〜30分：ドキュメントと限界、30〜70分：ビジョンノートブック、70〜100分：責任ある試作チャレンジ。
 ## In-Class Notebook
-EN: **Week 11 In-Class — Objects, Modules, and Responsible Tools.** Read method calls, verify AI’s library explanation against docs, then brief a constrained image-processing agent task.
-JP: **Week 11 In-Class — Objects, Modules, and Responsible Tools。** メソッド呼び出しを読み、AIのライブラリ説明をドキュメントで検証し、制約付き画像処理課題をエージェントにbriefする。
+EN: **Week 11 In-Class — Objects, Modules, and Responsible Tools.** Read method calls, verify AI’s library explanation against docs, then make and test one constrained image-processing change.
+JP: **Week 11 In-Class — Objects, Modules, and Responsible Tools。** メソッド呼び出しを読み、AIのライブラリ説明をドキュメントで検証し、制約を決めて画像処理を一つ修正し、テストする。
 ## In-Class Challenge
 EN: Final 30 minutes: produce a face-detection/privacy prototype and record one limitation or ethical constraint.
 JP: 最後の30分：顔検出／プライバシー試作を作り、限界または倫理的制約を一つ記録する。

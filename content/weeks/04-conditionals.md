@@ -3,8 +3,8 @@ week: 4
 publish_at: 2026-10-20T09:00:00+09:00
 preview: true
 phase: WRITE
-practice_mix: Human 70% · AI 20% · Agent 10%
-practice_mix_ja: 人 70% · AI 20% · エージェント 10%
+practice_mix: Human 75% · AI 25%
+practice_mix_ja: 人 75% · AI 25%
 title: Conditions and chatbot choices.
 title_ja: 条件分岐とチャットボットの選択。
 course_date: 2026-10-22
@@ -17,8 +17,8 @@ overview_ja: 値を比べ、境界を確かめ、答えに応じて進む小さ�
 EN: 0–20: comparisons and Boolean logic; 20–30: indentation and boundary tests; 30–70: classifier notebook; 70–100: chatbot challenge.
 JP: 0〜20分：比較とブール論理、20〜30分：インデントと境界テスト、30〜70分：分類器ノートブック、70〜100分：チャットボットチャレンジ。
 ## In-Class Notebook
-EN: **Week 04 In-Class — Conditions and Chatbot Choices.** Write a three-branch classifier, hand-test boundaries, use AI only for test ideas, then brief an agent to add one specified mood.
-JP: **Week 04 In-Class — Conditions and Chatbot Choices。** 三分岐の分類器を書き、境界を手でテストし、AIはテスト案だけに使い、指定した気分一つを追加するようエージェントにbriefする。
+EN: **Week 04 In-Class — Conditions and Chatbot Choices.** Write a three-branch classifier, hand-test boundaries, use AI only for test ideas, then add one specified mood and test unknown input.
+JP: **Week 04 In-Class — Conditions and Chatbot Choices。** 三分岐の分類器を書き、境界を手でテストし、AIはテスト案だけに使い、気分を一つ追加し、未知の入力もテストする。
 ## In-Class Challenge
 EN: Final 30 minutes: give the chatbot one original decision path and demo it to another student.
 JP: 最後の30分：チャットボットに独自の判断経路を一つ加え、他の学生にデモする。

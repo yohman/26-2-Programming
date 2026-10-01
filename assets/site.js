@@ -305,6 +305,34 @@ async function setupCourseGuide() {
   }
 }
 
+async function setupFinalProjectPage() {
+  const root = document.querySelector('[data-final-project]');
+  if (!root) return;
+  let returnUrl = 'guide.html';
+  const requestedReturn = new URLSearchParams(location.search).get('return');
+  if (requestedReturn) {
+    try {
+      const candidate = new URL(requestedReturn, location.href);
+      if (candidate.protocol === location.protocol && candidate.host === location.host && /\/(?:index|agenda|guide)\.html$/.test(candidate.pathname)) returnUrl = candidate.href;
+    } catch (_) { /* Keep the course guide as the safe default. */ }
+  }
+  const backToGuide = /\/guide\.html$/.test(new URL(returnUrl, location.href).pathname);
+  try {
+    const response = await fetch('content/final-project.md', { cache:'no-cache' });
+    if (!response.ok) throw new Error('Could not load final project requirements');
+    const project = parseFrontMatter(await response.text());
+    const sections = project.sections.map(item => {
+      const [ja, en = ja] = item.title.split(' / ');
+      const id = `project-${en.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}`;
+      return `<section class="project-section" id="${id}"><header><h2><span class="lang-ja jp" lang="ja">${escapeHtml(ja)}</span><span class="lang-en">${escapeHtml(en)}</span></h2></header><div class="project-section-body">${bilingualHtml(item.body)}</div></section>`;
+    }).join('');
+    root.innerHTML = `<header class="project-opening"><a class="project-back" href="${escapeHtml(returnUrl)}"><span class="lang-ja jp" lang="ja">← ${backToGuide ? 'この授業について' : '授業予定'}に戻る</span><span class="lang-en">← Back to ${backToGuide ? 'course guide' : 'agenda'}</span></a><p class="eyebrow">2026–2 PROGRAMMING / FINAL PROJECT</p><h1><span class="lang-ja jp" lang="ja">${escapeHtml(project.title_ja)}</span><span class="lang-en">${escapeHtml(project.title)}</span></h1><p class="project-meta"><span class="lang-ja jp" lang="ja">Week 13 提出 · 成績の20% · UNIPA</span><span class="lang-en">Due Week 13 · 20% of course grade · UNIPA</span></p></header><div class="project-sections">${sections}</div>`;
+  } catch (error) {
+    console.error(error);
+    root.innerHTML = '<p class="agenda-locked">The final project requirements could not load. Please refresh the page.</p>';
+  }
+}
+
 function fileType(href, external) {
   if (external) return 'LINK';
   const extension = href.split('?')[0].split('.').pop().toLowerCase();
@@ -317,6 +345,7 @@ function resourcesHtml(body, onlyKinds = []) {
     if (!match) return '';
     const [, label, href, kind = 'support'] = match;
     if (onlyKinds.length && !onlyKinds.includes(kind.toLowerCase())) return '';
+    if (href === 'content/final-project.md') return `<a class="project-resource-link" data-project-link href="final-project.html"><span><span class="lang-ja jp" lang="ja">最終プロジェクト要項</span><span class="lang-en">Final Project Requirements</span></span><b aria-hidden="true">→</b></a>`;
     const external = /^https?:/.test(href);
     const type = fileType(href, external);
     const displayLabel = label.replace(/^Week\s+\d{2}\s+(?:In-Class|Challenge|Take-Home|Lecture|Setup)\s+—\s+/i, '');
@@ -646,6 +675,13 @@ function agendaReturnUrl() {
 function setupPreviewLinks() {
   const saveReturnDestination = event => {
     if (!(event.target instanceof Element)) return;
+    const projectLink = event.target.closest('a[data-project-link]');
+    if (projectLink) {
+      const projectUrl = new URL(projectLink.href, location.href);
+      projectUrl.searchParams.set('return', agendaReturnUrl());
+      projectLink.href = projectUrl.href;
+      return;
+    }
     const link = event.target.closest('a[data-file-preview]');
     if (!link) return;
     const viewer = new URL(link.href, location.href);
@@ -759,6 +795,10 @@ async function setupFileViewer() {
   if (!root) return;
   const params = new URLSearchParams(location.search);
   const file = params.get('file') || '';
+  if (file === 'content/final-project.md') {
+    location.replace(new URL('final-project.html', location.href).href);
+    return;
+  }
   const title = params.get('title') || file.split('/').pop() || 'File preview';
   const fallback = new URL('index.html', location.href);
   const requestedReturn = params.get('return');
@@ -835,6 +875,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   setupPreviewLinks();
   setupFileViewer();
   setupCourseGuide();
+  setupFinalProjectPage();
   if (document.querySelector('[data-agenda]')) {
     try { const weeks = await loadWeeks(); renderAgenda(weeks); setupAgendaToggles(); setupClassTabs(); setupLectureTimelineTabs(); }
     catch (error) { console.error(error); document.querySelectorAll('[data-agenda]').forEach(node => { node.innerHTML = '<p class="agenda-locked">Course content could not load. Please refresh the page.</p>'; }); }

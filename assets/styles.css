@@ -1124,9 +1124,33 @@ html[data-language="en"] .python-history-cue.lang-en { display: block !important
 .guide-grade-key strong { grid-column: 2; font: 700 .8rem var(--mono); }
 .guide-grade-swatch { width: .7rem; height: .7rem; margin-top: .16rem; }
 
+/* Final project: a course page, not a file preview. */
+.project-main { padding-block: clamp(2.5rem, 5vw, 4.5rem) 6rem; }
+.project-opening { max-width: 62rem; }
+.project-back { display: inline-block; margin-bottom: 2.2rem; color: var(--muted); font: 700 .72rem var(--mono); text-decoration: none; }
+.project-back:hover { color: var(--blue); }
+.project-opening h1 { margin: .6rem 0 .8rem; font-size: clamp(2.6rem, 5.5vw, 4.6rem); line-height: 1.06; letter-spacing: -.055em; }
+.project-meta { margin: 0; color: var(--blue); font: 700 .78rem/1.6 var(--mono); }
+.project-sections { margin-top: 2.8rem; }
+.project-section { display: grid; grid-template-columns: minmax(12rem, .28fr) minmax(0, .72fr); gap: clamp(2rem, 5vw, 5rem); padding: 2.1rem 0 2.5rem; scroll-margin-top: 1rem; }
+.project-section + .project-section { border-top: 1px solid var(--line); }
+.project-section h2 { margin: 0; font-size: clamp(1.5rem, 2.3vw, 2rem); line-height: 1.2; letter-spacing: -.04em; }
+.project-section-body { min-width: 0; }
+.project-section-body .copy-block > :first-child { margin-top: 0; }
+.project-section-body .copy-block p, .project-section-body .copy-block li { font-size: .96rem; }
+.project-section-body .copy-block li + li { margin-top: .6rem; }
+.project-section .content-table { border-spacing: 0; }
+.project-section .content-table th { padding: .5rem .75rem; }
+.project-section .content-table td { padding: .8rem .75rem; border-top: 1px solid var(--line); background: transparent; line-height: 1.55; }
+.project-section .content-table td:first-child { white-space: normal; }
+.project-resource-link { display: inline-flex; align-items: center; justify-content: space-between; gap: 1.5rem; max-width: 100%; margin-top: .8rem; padding: .75rem 1rem; background: var(--blue); color: #fff; font: 700 .78rem var(--sans); text-decoration: none; }
+.project-resource-link:hover, .project-resource-link:focus-visible { background: var(--ink); }
+.project-resource-link b { font: 700 1.1rem var(--mono); }
+
 @media (max-width: 820px) {
   .guide-section { grid-template-columns: 1fr; gap: 1.1rem; }
   .guide-section-body .copy-block { max-width: 100%; }
+  .project-section { grid-template-columns: 1fr; gap: 1.1rem; }
 }
 
 @media (max-width: 680px) {
@@ -1140,4 +1164,6 @@ html[data-language="en"] .python-history-cue.lang-en { display: block !important
   .guide-grade-key { grid-template-columns: 1fr; gap: .55rem; }
   .guide-grade-key > div { grid-template-columns: .7rem minmax(0, 1fr) auto; align-items: center; }
   .guide-grade-key strong { grid-column: 3; }
+  .project-main { padding-block: 2.3rem 4rem; }
+  .project-section { padding-block: 1.9rem; }
 }

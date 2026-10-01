@@ -1,6 +1,6 @@
 ---
-title: Final Project
-title_ja: 最終プロジェクト
+title: Final Project Requirements
+title_ja: 最終プロジェクト要項
 bilingual: true
 ---
 ## 何をつくる？ / What will you make?

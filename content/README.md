@@ -4,6 +4,8 @@ Each file in `content/weeks/` is the live, editable source for one teaching week
 
 `content/course-guide.md` drives `guide.html`: edit it to update learning goals, submission rules, and grading. The current plan is twelve 3-point assignments in Weeks 01–12 (60%), a Week 13 project (20%), and a Week 14 individual in-class challenge (20%). Keep the guide, `content/final-project.md`, and Weeks 10–14 aligned if this policy changes.
 
+`content/final-project.md` drives the dedicated `final-project.html` page. Keep its `EN:` and `JP:` versions together in each section; the site shows only the selected language. Links to the project brief in weekly resource lists open this page, not the raw Markdown file.
+
 Edit the front matter for the week number, titles, phase, and publication controls. The agenda renders: `Lecture Flow`, `In-Class Notebook`, `In-Class Challenge`, `Take-Home Assignment`, `Aha!`, `Takeaway`, and `Resources`. The In-Class Notebook should state its Human Coding, AI Completion, and Agent-Based Coding stages. Keep the `EN:` and `JP:` lines for the bilingual layout.
 
 ```yaml

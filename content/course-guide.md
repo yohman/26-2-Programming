@@ -32,9 +32,9 @@ JP: 短い講義 → 授業内Notebook → 最後の30分のチャレンジ。We
 
 **実行済みの`.ipynb` Notebook**と必要なファイルを**UNIPA**へ提出してください。出力と自分の観察をNotebookに残します。締切はUNIPAで確認してください。
 ## 最終プロジェクトとチャレンジ / Project and final challenge
-EN: Develop a small project in Weeks 10–13 and submit it in **Week 13**. Show what you made, how you used AI or agents, and how you tested it. In **Week 14**, complete an individual in-class Python challenge. See the [project brief](viewer.html?file=content%2Ffinal-project.md&title=Final+Project&return=guide.html) for deliverables.
+EN: Develop a small project in Weeks 10–13 and submit it in **Week 13**. Show what you made, how you used AI or agents, and how you tested it. In **Week 14**, complete an individual in-class Python challenge. See the [Final Project Requirements](final-project.html) for deliverables.
 
-JP: Week 10〜13で小さな作品を育て、**Week 13**に提出します。つくったもの、AIやAgentの使い方、テストした結果を示してください。**Week 14**は個人で取り組む授業内Pythonチャレンジです。提出物は[プロジェクト要項](viewer.html?file=content%2Ffinal-project.md&title=Final+Project&return=guide.html)を確認してください。
+JP: Week 10〜13で小さな作品を育て、**Week 13**に提出します。つくったもの、AIやAgentの使い方、テストした結果を示してください。**Week 14**は個人で取り組む授業内Pythonチャレンジです。提出物は[最終プロジェクト要項](final-project.html)を確認してください。
 ## 成績評価 / Grading
 EN: **Weekly assignments (Weeks 01–12): 0–3 points each**
 

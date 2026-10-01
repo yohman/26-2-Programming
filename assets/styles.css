@@ -975,9 +975,14 @@ html[data-language="en"] .python-history-cue.lang-en { display: block !important
 .python-history-point.is-active i { width: 1rem; height: 1rem; background: #ffd34f; box-shadow: 0 0 0 2px #173e6f; }
 .python-history-point.is-active { color: #173e6f; }
 .python-history-details { min-height: 7.5rem; background: #fff; }
-.python-history-detail { display: grid; grid-template-columns: 6rem minmax(0, 1fr) auto; gap: 1.4rem; align-items: center; min-height: 7.5rem; padding: 1.2rem 1.4rem; animation: history-enter .25s ease-out both; }
+.python-history-detail { display: grid; grid-template-columns: 5rem minmax(0, 1fr) auto; gap: 1.4rem; align-items: center; min-height: 7.5rem; padding: 1.2rem 1.4rem; animation: history-enter .25s ease-out both; }
 .python-history-detail[hidden] { display: none; }
+.python-history-detail.has-visual { grid-template-columns: 5rem minmax(7rem, 13rem) minmax(0, 1fr) auto; }
 .python-history-detail > span { color: #2f63ff; font: 800 1.45rem var(--mono); }
+.python-history-visual { min-width: 0; margin: 0; }
+.python-history-visual img { display: block; width: 100%; height: 7rem; object-fit: contain; background: #e7eef6; }
+.python-history-visual figcaption { margin-top: .28rem; color: #61768a; font: 600 .5rem/1.35 var(--mono); }
+.python-history-visual a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
 .python-history-detail h5 { margin: 0 0 .3rem; font-size: 1rem; }
 .python-history-detail p { margin: 0; color: #5e6974; font-size: .73rem; line-height: 1.55; }
 .python-history-detail a { color: #173e6f; font: 750 .55rem var(--mono); letter-spacing: .05em; text-decoration: none; }
@@ -1084,7 +1089,10 @@ html[data-language="en"] .python-history-cue.lang-en { display: block !important
   .python-history,
   .python-domains { padding: 1.6rem 1.2rem; }
   .python-history-map { min-width: 120rem; }
-  .python-history-detail { display: block; }
+  .python-history-detail { display: grid; grid-template-columns: 1fr auto; gap: .5rem 1rem; }
+  .python-history-detail.has-visual { grid-template-columns: 1fr auto; }
+  .python-history-visual { grid-column: 1 / -1; max-width: 15rem; }
+  .python-history-detail > div { grid-column: 1 / -1; }
   .python-history-detail > span { display: block; margin-bottom: .5rem; }
   .python-history-detail a { display: inline-block; margin-top: .75rem; }
   .python-domain-tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); }

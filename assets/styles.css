@@ -975,6 +975,11 @@ html[data-language="en"] .python-history-cue.lang-en { display: block !important
 .python-history-point.is-active i { width: 1rem; height: 1rem; background: #ffd34f; box-shadow: 0 0 0 2px #173e6f; }
 .python-history-point.is-active { color: #173e6f; }
 .python-history-details { min-height: 7.5rem; background: #fff; }
+.python-history-controls { display: flex; align-items: center; justify-content: flex-end; gap: .75rem; padding: 0 1.4rem 1rem; background: #fff; }
+.python-history-controls button { width: 2.2rem; height: 2.2rem; border: 0; background: #e7eef6; color: #173e6f; font: 700 1rem var(--mono); cursor: pointer; }
+.python-history-controls button:hover:not(:disabled), .python-history-controls button:focus-visible { background: #173e6f; color: #fff; }
+.python-history-controls button:disabled { color: #9ca9b8; cursor: default; }
+.python-history-controls span { min-width: 3.5rem; color: #61768a; font: 700 .62rem var(--mono); text-align: center; }
 .python-history-detail { display: grid; grid-template-columns: 5rem minmax(0, 1fr) auto; gap: 1.4rem; align-items: center; min-height: 7.5rem; padding: 1.2rem 1.4rem; animation: history-enter .25s ease-out both; }
 .python-history-detail[hidden] { display: none; }
 .python-history-detail.has-visual { grid-template-columns: 5rem minmax(7rem, 13rem) minmax(0, 1fr) auto; }

@@ -506,6 +506,15 @@ function setupLectureTimelineTabs(root = document) {
     group.querySelectorAll('[data-python-lecture]').forEach(lecture => {
       const historyJumps = [...lecture.querySelectorAll('[data-python-history-jump]')];
       const historyDetails = [...lecture.querySelectorAll('[data-python-history-detail]')];
+      const historyScroll = lecture.querySelector('.python-history-scroll');
+      const historyControls = document.createElement('nav');
+      historyControls.className = 'python-history-controls';
+      historyControls.setAttribute('aria-label', 'Python history navigation');
+      historyControls.innerHTML = '<button type="button" data-python-history-previous aria-label="前の出来事 / Previous event">←</button><span data-python-history-count aria-live="polite"></span><button type="button" data-python-history-next aria-label="次の出来事 / Next event">→</button>';
+      lecture.querySelector('.python-history-details')?.after(historyControls);
+      const previousHistory = historyControls.querySelector('[data-python-history-previous]');
+      const nextHistory = historyControls.querySelector('[data-python-history-next]');
+      const historyCount = historyControls.querySelector('[data-python-history-count]');
       const domainJumps = [...lecture.querySelectorAll('[data-python-domain-jump]')];
       const domainScenes = [...lecture.querySelectorAll('[data-python-domain-scene]')];
       const choose = (jumps, scenes, requested) => {
@@ -521,7 +530,38 @@ function setupLectureTimelineTabs(root = document) {
           scene.classList.remove('is-tracing');
         });
       };
-      historyJumps.forEach((jump, index) => jump.addEventListener('click', () => choose(historyJumps, historyDetails, index)));
+      let historyIndex = 0;
+      const timelinePosition = index => {
+        const points = historyJumps.map(jump => jump.offsetLeft + jump.offsetWidth / 2);
+        const span = points[points.length - 1] - points[0];
+        return span > 0 ? (points[index] - points[0]) / span : 0;
+      };
+      const showHistory = (requested, scrollTimeline = false) => {
+        historyIndex = Math.max(0, Math.min(historyDetails.length - 1, requested));
+        choose(historyJumps, historyDetails, historyIndex);
+        historyCount.textContent = `${String(historyIndex + 1).padStart(2, '0')} / ${String(historyDetails.length).padStart(2, '0')}`;
+        previousHistory.disabled = historyIndex === 0;
+        nextHistory.disabled = historyIndex === historyDetails.length - 1;
+        if (scrollTimeline && historyScroll) {
+          const travel = historyScroll.scrollWidth - historyScroll.clientWidth;
+          historyScroll.scrollTo({ left: timelinePosition(historyIndex) * travel, behavior:'auto' });
+        }
+      };
+      historyJumps.forEach((jump, index) => jump.addEventListener('click', () => showHistory(index, true)));
+      previousHistory.addEventListener('click', () => showHistory(historyIndex - 1, true));
+      nextHistory.addEventListener('click', () => showHistory(historyIndex + 1, true));
+      let scrollFrame = 0;
+      historyScroll?.addEventListener('scroll', () => {
+        cancelAnimationFrame(scrollFrame);
+        scrollFrame = requestAnimationFrame(() => {
+          const travel = historyScroll.scrollWidth - historyScroll.clientWidth;
+          if (travel <= 0 || historyJumps.length < 2) return;
+          const position = historyScroll.scrollLeft / travel;
+          const nearest = historyJumps.reduce((best, _jump, index) =>
+            Math.abs(timelinePosition(index) - position) < Math.abs(timelinePosition(best) - position) ? index : best, 0);
+          if (nearest !== historyIndex) showHistory(nearest);
+        });
+      }, { passive:true });
       domainJumps.forEach((jump, index) => jump.addEventListener('click', () => choose(domainJumps, domainScenes, index)));
       lecture.querySelectorAll('[data-python-trace]').forEach(button => button.addEventListener('click', () => {
         const scene = button.closest('[data-python-domain-scene]');
@@ -529,7 +569,7 @@ function setupLectureTimelineTabs(root = document) {
         void scene.offsetWidth;
         scene.classList.add('is-tracing');
       }));
-      choose(historyJumps, historyDetails, 0);
+      showHistory(0);
       choose(domainJumps, domainScenes, 0);
     });
   });

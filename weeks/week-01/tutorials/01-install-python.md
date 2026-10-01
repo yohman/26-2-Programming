@@ -11,9 +11,13 @@ Pythonは、書いたcodeを動かす**エンジン**です。インストール
 
 1. [Python公式ダウンロードページ](https://www.python.org/downloads/)を開く。
 2. **Download Python install manager**を選び、downloadしたfileを開く。
-3. **Install**を選ぶ。終了したらPowerShellを開き直す。
+3. **Install**を選ぶ。
+4. 途中で**Manage app execution aliases（アプリ実行エイリアスの管理）**を求められたら、Windowsのスタートメニューでその名前を検索して開く。**Python (default)** の `python.exe` を**オン**にする。`py.exe` が **Python install manager** として表示されていれば、そちらもオンにする。すでにオンなら変更しなくてよい。
+5. PowerShellを閉じて開き直す。
 
 > **TIP / ヒント：** Microsoft Storeが開いたら、発行元が**Python Software Foundation**であることを確認する。
+
+> **Aha!** この「エイリアス」は、PowerShellで`python`と入力したときに、どのPythonを起動するかをWindowsに教える設定です。
 
 ## 2. Check
 
@@ -37,8 +41,7 @@ print("Python is ready!")
 
 | うまくいかない | まず試すこと |
 | --- | --- |
-| `python`が見つからない | PowerShellを閉じて開き直す。 |
-| Storeが開く | Python Install Managerをinstallする。 |
+| `python`が見つからない／Storeが開く | 上の**アプリ実行エイリアス**で`python.exe`が **Python (default)** になっているか確認し、PowerShellを開き直す。[Python公式の対処法](https://docs.python.org/3/using/windows.html#troubleshooting) |
 
 ### macOS
 

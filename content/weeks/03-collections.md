@@ -8,6 +8,7 @@ practice_mix_ja: 人 75% · AI 20% · エージェント 5%
 title: Collections and versioned work.
 title_ja: コレクションとバージョン管理。
 course_date: 2026-10-15
+homework_due: 2026-10-21T23:59:00+09:00
 course_time: 13:10–14:50
 overview: Keep related information together with lists and dictionaries, then begin making changes you can trace.
 overview_ja: リストと辞書で関係する情報をまとめ、変更を追跡できる形で作業を始める。

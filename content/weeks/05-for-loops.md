@@ -8,6 +8,7 @@ practice_mix_ja: 人 60% · AI 25% · エージェント 15%
 title: For loops and demographic patterns.
 title_ja: forループと人口データのパターン。
 course_date: 2026-10-29
+homework_due: 2026-11-04T23:59:00+09:00
 course_time: 13:10–14:50
 overview: Repeat one precise action across many records and discover a pattern hidden in demographic data.
 overview_ja: たくさんの記録に同じ正確な処理を繰り返し、人口データに隠れたパターンを見つける。

@@ -26,11 +26,11 @@ JP:
 ## 毎週の進め方 / Each week
 EN: A short lecture → an in-class notebook → a challenge in the last 30 minutes. Weeks 01–12 also have a take-home task: use that week's ideas to make something different from the class exercise.
 
-Submit the **executed `.ipynb` notebook** and any files it needs through **UNIPA**. Leave outputs and your observations in the notebook. Check the deadline in UNIPA.
+Submit the **executed `.ipynb` notebook** and any files it needs through **UNIPA**. Leave outputs and your observations in the notebook. Homework is due at **11:59 PM JST on the Wednesday before the next class**; each week's exact date is shown in the agenda.
 
 JP: 短い講義 → 授業内Notebook → 最後の30分のチャレンジ。Week 01〜12には持ち帰り課題もあります。その週に学んだことを使い、授業内とは別のものをつくります。
 
-**実行済みの`.ipynb` Notebook**と必要なファイルを**UNIPA**へ提出してください。出力と自分の観察をNotebookに残します。締切はUNIPAで確認してください。
+**実行済みの`.ipynb` Notebook**と必要なファイルを**UNIPA**へ提出してください。出力と自分の観察をNotebookに残します。締切は**次の授業の前日（水曜日）23:59 JST**。各週の正確な日付は授業予定に表示します。
 ## 最終プロジェクトとチャレンジ / Project and final challenge
 EN: Develop a small project in Weeks 10–13 and submit it in **Week 13**. Show what you made, how you used AI or agents, and how you tested it. In **Week 14**, complete an individual in-class Python challenge. See the [Final Project Requirements](final-project.html) for deliverables.
 

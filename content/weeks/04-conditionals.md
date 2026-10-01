@@ -8,6 +8,7 @@ practice_mix_ja: 人 70% · AI 20% · エージェント 10%
 title: Conditions and chatbot choices.
 title_ja: 条件分岐とチャットボットの選択。
 course_date: 2026-10-22
+homework_due: 2026-10-28T23:59:00+09:00
 course_time: 13:10–14:50
 overview: Help a program choose: compare values, test boundaries, and turn answers into a small chatbot path.
 overview_ja: 値を比べ、境界を確かめ、答えに応じて進む小さなチャットボットをつくる。

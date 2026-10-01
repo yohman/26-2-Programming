@@ -8,6 +8,7 @@ practice_mix_ja: 人 85% · AI 10% · エージェント 5%
 title: Make the computer say something.
 title_ja: コンピュータに「してほしいこと」を伝える。
 course_date: 2026-10-01
+homework_due: 2026-10-07T23:59:00+09:00
 course_time: 13:10–14:50
 overview: Set up Python, run your first notebook, and make a text-art poster. If time remains, try a tiny tool; at home, write a message from the future.
 overview_ja: Pythonを準備して最初のノートブックを動かし、文字のポスターをつくる。時間があればミニツールにも挑戦。宿題は「未来からのメッセージ」。

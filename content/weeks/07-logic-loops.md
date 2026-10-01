@@ -8,6 +8,7 @@ practice_mix_ja: 人 50% · AI 25% · エージェント 25%
 title: Logic, loops, and code review.
 title_ja: 論理・ループ・コードレビュー。
 course_date: 2026-11-12
+homework_due: 2026-11-18T23:59:00+09:00
 course_time: 13:10–14:50
 overview: Read another person’s algorithm, explain its logic, and make a small revision you can justify.
 overview_ja: 他の人のアルゴリズムを読み、論理を説明し、理由を言える小さな修正を行う。

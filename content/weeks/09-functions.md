@@ -8,6 +8,7 @@ practice_mix_ja: 人 40% · AI 30% · エージェント 30%
 title: Functions and disaster stories.
 title_ja: 関数と災害データストーリー。
 course_date: 2026-11-26
+homework_due: 2026-12-02T23:59:00+09:00
 course_time: 13:10–14:50
 overview: Package a repeatable idea as a function, then use it to tell a clearer story with disaster data.
 overview_ja: 繰り返す考えを関数にまとめ、災害データをより明確に語るために使う。

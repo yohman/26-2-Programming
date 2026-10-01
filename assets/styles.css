@@ -601,6 +601,7 @@ html[data-language="ja"] .lang-ja { display: revert; }
 .class-tab-panel .week-tutorials { margin-bottom: 0; }
 .course-section--homework > header > span,
 .course-section--homework > header p { color: #8c572e; }
+.homework-deadline { margin: 0 0 1rem; color: #784822; font: 750 .82rem/1.5 var(--sans); }
 .course-section-content { min-width: 0; }
 .course-section--lecture .course-section-content {
   display: grid;
@@ -1130,6 +1131,7 @@ html[data-language="en"] .python-history-cue.lang-en { display: block !important
 .project-back { display: inline-block; margin-bottom: 2.2rem; color: var(--muted); font: 700 .72rem var(--mono); text-decoration: none; }
 .project-back:hover { color: var(--blue); }
 .project-opening h1 { margin: .6rem 0 .8rem; font-size: clamp(2.6rem, 5.5vw, 4.6rem); line-height: 1.06; letter-spacing: -.055em; }
+.project-opening .homework-deadline { margin: 0 0 .35rem; color: var(--blue); }
 .project-meta { margin: 0; color: var(--blue); font: 700 .78rem/1.6 var(--mono); }
 .project-sections { margin-top: 2.8rem; }
 .project-section { display: grid; grid-template-columns: minmax(12rem, .28fr) minmax(0, .72fr); gap: clamp(2rem, 5vw, 5rem); padding: 2.1rem 0 2.5rem; scroll-margin-top: 1rem; }

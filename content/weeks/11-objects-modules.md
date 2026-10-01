@@ -8,6 +8,7 @@ practice_mix_ja: 人 35% · AI 30% · エージェント 35%
 title: Objects, modules, and responsible tools.
 title_ja: オブジェクト・モジュール・責任あるツール利用。
 course_date: 2026-12-10
+homework_due: 2026-12-16T23:59:00+09:00
 course_time: 13:10–14:50
 overview: Use objects and modules carefully, check their documentation, and turn a project idea into a one-page plan.
 overview_ja: オブジェクトとモジュールを慎重に使い、ドキュメントで確かめ、プロジェクトの案を1ページの計画にする。

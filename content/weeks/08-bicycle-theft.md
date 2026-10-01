@@ -8,6 +8,7 @@ practice_mix_ja: 人 45% · AI 30% · エージェント 25%
 title: Data investigation and recommendations.
 title_ja: データ調査と提案。
 course_date: 2026-11-19
+homework_due: 2026-11-25T23:59:00+09:00
 course_time: 13:10–14:50
 overview: Turn a real question into evidence: inspect data, find a pattern, and support a recommendation.
 overview_ja: 本物の問いを証拠へ変える。データを調べ、パターンを見つけ、提案を支える。

@@ -8,6 +8,7 @@ practice_mix_ja: 人 55% · AI 25% · エージェント 20%
 title: While loops and live earthquakes.
 title_ja: whileループとライブ地震データ。
 course_date: 2026-11-05
+homework_due: 2026-11-11T23:59:00+09:00
 course_time: 13:10–14:50
 overview: Make a process continue until a condition is met, and learn how to diagnose when it will not stop.
 overview_ja: 条件が満たされるまで処理を続け、止まらないプログラムを見つけて直す。

@@ -8,6 +8,7 @@ practice_mix_ja: 人 35% · AI 30% · エージェント 35%
 title: Functions, loops, and small systems.
 title_ja: 関数・ループ・小さなシステム。
 course_date: 2026-12-03
+homework_due: 2026-12-09T23:59:00+09:00
 course_time: 13:10–14:50
 overview: Combine functions and loops into a testable small system, then notice one question or user need that could grow into your project.
 overview_ja: 関数とループでテスト可能な小さな仕組みをつくり、プロジェクトにつながる問いや使う人の困りごとを一つ見つける。

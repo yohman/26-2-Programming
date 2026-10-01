@@ -8,6 +8,8 @@ Each file in `content/weeks/` is the live, editable source for one teaching week
 
 Edit the front matter for the week number, titles, phase, and publication controls. The agenda renders: `Lecture Flow`, `In-Class Notebook`, `In-Class Challenge`, `Take-Home Assignment`, `Aha!`, `Takeaway`, and `Resources`. The In-Class Notebook should state its Human Coding, AI Completion, and Agent-Based Coding stages. Keep the `EN:` and `JP:` lines for the bilingual layout.
 
+Weeks 01–13 also have `homework_due` in front matter. Use a Japan-time ISO timestamp such as `2026-10-07T23:59:00+09:00`; the agenda displays its date and time above that week's homework. Week 14 has no take-home homework or `homework_due`.
+
 ```yaml
 week: 1
 publish_at: 2026-09-29T09:00:00+09:00

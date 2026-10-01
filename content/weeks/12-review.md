@@ -8,6 +8,7 @@ practice_mix_ja: 人 35% · AI 25% · エージェント 40%
 title: Review, repair, and project prototype.
 title_ja: 復習・修復・プロジェクト試作。
 course_date: 2026-12-17
+homework_due: 2027-01-06T23:59:00+09:00
 course_time: 13:10–14:50
 overview: Repair what you know, then turn your Week 11 plan into one working project feature with tests.
 overview_ja: できることを修復して確かめ、Week 11の計画をテスト付きの動く機能一つに変える。

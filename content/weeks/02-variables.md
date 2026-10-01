@@ -8,6 +8,7 @@ practice_mix_ja: 人 80% · AI 15% · エージェント 5%
 title: Variables, types, and input.
 title_ja: 変数・型・入力。
 course_date: 2026-10-08
+homework_due: 2026-10-14T23:59:00+09:00
 course_time: 13:10–14:50
 overview: Give values useful names, distinguish their types, and let a program respond to a person’s input.
 overview_ja: 値に意味のある名前を付け、型の違いを理解し、入力に応じるプログラムをつくる。

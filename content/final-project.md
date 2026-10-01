@@ -2,6 +2,7 @@
 title: Final Project Requirements
 title_ja: 最終プロジェクト要項
 bilingual: true
+due_at: 2027-01-13T23:59:00+09:00
 ---
 ## 何をつくる？ / What will you make?
 EN: Build one small, meaningful Python work that another person can run and inspect: a useful tool, data investigation, visualisation, or other focused idea. A clear question or user matters more than extra features. A GUI is optional.
@@ -15,9 +16,9 @@ EN:
 | 10 · Dec 3 | Find one possible question or user need. |
 | 11 · Dec 10 | Submit a one-page scope and test plan with the weekly assignment. |
 | 12 · Dec 17 | Submit one working feature and test evidence as the weekly assignment. |
-| 13 · Jan 7 | Test with a peer, revise, and submit the final project through UNIPA. |
+| 13 · Jan 7 | Test with a peer and revise. Submit the final project by Wed, Jan 13 at 11:59 PM JST. |
 
-Follow the exact UNIPA deadline for each submission. The Week 13 project is a separate **20%** component, not another 3-point weekly assignment. The Week 14 in-class challenge is separate.
+The final project is due through **UNIPA on Wed, Jan 13, 2027 at 11:59 PM JST**. It is a separate **20%** component, not another 3-point weekly assignment. The Week 14 in-class challenge is separate.
 
 JP:
 
@@ -26,9 +27,9 @@ JP:
 | Week 10 · 12月3日 | 問い、または使う人の困りごとを一つ見つける。 |
 | Week 11 · 12月10日 | 範囲とテスト計画を1ページにし、週課題とともに提出。 |
 | Week 12 · 12月17日 | 動く機能一つとテストの証拠を週課題として提出。 |
-| Week 13 · 1月7日 | 仲間に試してもらい、直して、完成版をUNIPAに提出。 |
+| Week 13 · 1月7日 | 仲間に試してもらい、直す。完成版は1月13日（水）23:59 JSTまでに提出。 |
 
-各提出の締切はUNIPAで確認してください。Week 13のプロジェクトは独立した**20%**の評価項目で、3点の週課題を追加するものではありません。Week 14の授業内チャレンジとも別です。
+最終プロジェクトは**2027年1月13日（水）23:59 JSTまでにUNIPAへ提出**します。独立した**20%**の評価項目で、3点の週課題を追加するものではありません。Week 14の授業内チャレンジとも別です。
 ## 提出物 / Required deliverables
 EN:
 
@@ -68,6 +69,6 @@ JP:
 | 動くPythonと人の理解 | 7 | 他の人が実行でき、コード二か所を自分で説明・修正できる。 |
 | AI／Agentの判断と検証 | 7 | 小さな依頼、差分の確認、三つのテスト、README、出典、限界、振り返り。 |
 ## 提出方法 / Submission
-EN: Submit through **UNIPA** by the Week 13 deadline: a completed, executed `.ipynb` file or runnable `.py` files, all required data/assets, a README, and the brief workflow/test record. A zip folder is fine when the project has several files. A GitHub link may be included, but it does not replace the UNIPA file submission.
+EN: Submit through **UNIPA by Wed, Jan 13, 2027 at 11:59 PM JST**: a completed, executed `.ipynb` file or runnable `.py` files, all required data/assets, a README, and the brief workflow/test record. A zip folder is fine when the project has several files. A GitHub link may be included, but it does not replace the UNIPA file submission.
 
-JP: Week 13の締切までに**UNIPA**で提出します。実行済みの`.ipynb`または動く`.py`ファイル、必要なデータ・画像、README、短い作業／テスト記録を入れてください。ファイルが複数ならzipでもかまいません。GitHubのリンクは補助として添えられますが、UNIPAへのファイル提出の代わりにはなりません。
+JP: **2027年1月13日（水）23:59 JSTまでにUNIPA**で提出します。実行済みの`.ipynb`または動く`.py`ファイル、必要なデータ・画像、README、短い作業／テスト記録を入れてください。ファイルが複数ならzipでもかまいません。GitHubのリンクは補助として添えられますが、UNIPAへのファイル提出の代わりにはなりません。

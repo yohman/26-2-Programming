@@ -395,7 +395,13 @@ function lectureTimelinesHtml(body) {
     ? `<span class="${className} ${kind === 'languages' ? 'is-logo' : ''}"><img src="${escapeHtml(item.visual)}" alt="${escapeHtml(item.title)}" loading="lazy"></span>`
     : `<span class="${className} is-type" aria-hidden="true"><strong>${escapeHtml(item.visual)}</strong></span>`;
   const pythonPanel = rows => {
-    const items = rows.map(([kind, key, titleEn, titleJa, textEn, textJa, visual = '', credit = '', url = '']) => ({ kind, key, titleEn, titleJa, textEn, textJa, visual, credit, url }));
+    const items = rows.map(([kind, key, titleEn, titleJa, textEn, textJa, detail = '', secondary = '', url = '']) => ({
+      kind, key, titleEn, titleJa, textEn, textJa, url,
+      visual: kind === 'milestone' ? detail : '',
+      credit: kind === 'milestone' ? secondary : '',
+      sample: kind === 'domain' ? detail.replaceAll('⏎', '\n') : '',
+      output: kind === 'domain' ? secondary : ''
+    }));
     const milestones = items.filter(item => item.kind === 'milestone');
     const metrics = items.filter(item => item.kind === 'metric');
     const domains = items.filter(item => item.kind === 'domain');

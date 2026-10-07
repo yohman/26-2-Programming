@@ -47,6 +47,37 @@ const markdownExamples = {
   }
 };
 
+// Slide cells show recorded examples, not a browser Python interpreter.
+document.querySelectorAll('.slide pre').forEach(pre => {
+  pre.closest('.slide').classList.add('slide--cells');
+  const markdown = !!pre.closest('.cell-example--markdown, .notebook-step--markdown');
+  const output = pre.nextElementSibling;
+  const hasOutput = output?.matches('output, .result-card, .cell-example-result, .notebook-step-result');
+  const cell = document.createElement('div');
+  cell.className = 'lecture-notebook-cell';
+  const toolbar = document.createElement('div');
+  toolbar.className = 'lecture-cell-toolbar';
+  const label = document.createElement('span');
+  label.textContent = markdown ? 'Markdown' : 'Python';
+  toolbar.append(label);
+  if (hasOutput) {
+    const run = document.createElement('button');
+    run.type = 'button';
+    run.innerHTML = '<span aria-hidden="true">▶</span> <span class="ja">例の結果を表示</span><span class="en">Show example result</span>';
+    run.setAttribute('aria-expanded', 'false');
+    output.hidden = true;
+    output.classList.add('lecture-cell-output');
+    run.addEventListener('click', () => {
+      output.hidden = !output.hidden;
+      run.setAttribute('aria-expanded', String(!output.hidden));
+      cell.classList.toggle('is-executed', !output.hidden);
+    });
+    toolbar.append(run);
+  }
+  pre.before(cell);
+  cell.append(toolbar, pre);
+});
+
 function appendMarkdownInline(parent, source) {
   const parts = source.split(/(\*\*[^*]+\*\*|\*[^*]+\*|`[^`]+`|\[[^\]]+\]\(https?:\/\/[^\s)]+\))/g);
   parts.forEach(part => {

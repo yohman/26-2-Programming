@@ -59,20 +59,34 @@ EN: **Bring back your Week 01 homework.** Open your own “Message from the Futu
 JP: **先週の宿題を授業で使う。** 自分の「未来からのメッセージ」Notebookを開く。未完成なら同じテンプレートから今ここで完成させる。`input()`は文字を返すことを確認し、年数を`int()`で数に変え、計算した年をf文字列で表示する。異なる入力で二回実行し、変わった点をMarkdown Cellに一文書く。最後に隣の人へ見せる。内容と言葉は自分のものにする。
 
 ## In-Class Challenge
-EN: **Last 30 minutes: live earthquake map.** Before Yoh runs the code, predict what the `latitude`, `longitude`, `mag`, and `place` columns will become on a map. Open the template, run it once using the USGS feed, then change at least one visible choice such as the minimum magnitude, marker color, or map center. The supplied 2024 CSV is an offline fallback. Loops and libraries in the template are provided; today your job is to understand the inputs, output, and the lines you change.
-JP: **最後の30分：ライブ地震地図。** Yohがコードを実行する前に、`latitude`、`longitude`、`mag`、`place`が地図上で何になるか予想する。テンプレートを開き、USGSのデータで一度実行する。その後、表示する最小マグニチュード、点の色、地図の中心などを一つ以上変える。付属の2024年CSVはネット接続できないときの予備データ。ループやライブラリの部分は用意してある。今日は入力・出力・自分が変えた行を理解する。
+EN: **Last 30 minutes: start your homework map.** Download a CSV from the [USGS CSV download page](https://earthquake.usgs.gov/earthquakes/feed/v1.0/csv.php) (**Past Day → All Earthquakes**) and put it beside the notebook. Run the starter: read the CSV, loop through its rows, and place one Folium marker at each latitude/longitude. Then choose an improvement:
+
+- Change the base map.
+- Replace pins with circles.
+- Color markers by magnitude.
+- Filter earthquakes by magnitude or location.
+
+Start one change in class; finish the same notebook as homework. The supplied 2024 CSV is a backup dataset, not current earthquakes.
+JP: **最後の30分：宿題の地図づくりを始める。** [USGSのCSVダウンロードページ](https://earthquake.usgs.gov/earthquakes/feed/v1.0/csv.php)の**Past Day → All Earthquakes**からCSVを保存し、Notebookと同じフォルダに置く。まずテンプレートを実行：CSVを読み、各行をループして、緯度・経度にFoliumのマーカーを一つずつ置く。その地図を自分で改良しよう。
+
+- ベースマップを変える。
+- ピンを円に変える。
+- マグニチュードによって色を変える。
+- マグニチュードや場所で絞り込む。
+
+授業で一つ改良を始め、**同じNotebookを宿題として仕上げる**。付属の2024年CSVは予備データで、現在の地震ではありません。
 
 ## Take-Home Assignment
-EN: Make the earthquake-map template useful for **an audience you choose**.
+EN: **Continue the map you started in class—this is the same assignment.** Make it useful for an audience you choose. [USGS CSV download page](https://earthquake.usgs.gov/earthquakes/feed/v1.0/csv.php)
 
-1. Give your map a clear title and change **at least two visible settings**. Explain why.
-2. Run the notebook from top to bottom. In Markdown, note your prediction, one thing you noticed on the map, and whether you used live or fallback data.
-3. Submit the working `.ipynb` to **UNIPA**. Include the CSV only if your notebook needs that local file. AI can help explain an error; verify the final map yourself.
-JP: 地震地図のテンプレートを、**自分で決めた相手**のための地図にする。
+1. Give your map a title and make **at least two improvements**: a different base map, circles, magnitude colors, or a filter. Your own idea is welcome.
+2. In Markdown, explain who the map is for, why you made those changes, and one observation. Record the CSV source and download date (or identify the 2024 backup).
+3. Run every cell, save the outputs, and submit the completed `.ipynb` **and the CSV it reads** to **UNIPA**. AI may explain an error; check the resulting map yourself.
+JP: **授業で始めた地図を、そのまま宿題として完成させる。別の課題ではありません。** 自分で決めた相手に伝わる地図にしよう。[USGSのCSVダウンロードページ](https://earthquake.usgs.gov/earthquakes/feed/v1.0/csv.php)
 
-1. 分かりやすいタイトルを付け、**見た目に現れる設定を二つ以上**変える。変えた理由も書く。
-2. Notebookを上から最後まで実行する。Markdownに事前の予想、地図から気づいたこと、ライブデータと予備データのどちらを使ったかを書く。
-3. 動く`.ipynb`を**UNIPA**へ提出。ローカルCSVが必要な場合だけ一緒に提出する。AIにエラーの意味を聞いてもよいが、最後の地図は自分で確かめる。
+1. タイトルを付け、**二つ以上改良する**。ベースマップ、円、色分け、フィルターなどから選ぶ。自分のアイデアでもOK。
+2. Markdownに「誰に見せる地図か」「なぜその改良をしたか」「地図から気づいたこと」を書く。CSVの出典とダウンロード日も記録する（予備データなら2024年のデータと明記）。
+3. 全Cellを実行して出力を保存し、完成した`.ipynb`と**読み込んだCSV**を**UNIPA**へ提出する。AIにエラーの意味を聞いてもよいが、地図は自分で確かめる。
 
 ## Aha!
 EN: `input()` looks like a number when you type `5`, but Python receives the text `"5"`. One conversion changes what the program can calculate.

@@ -674,6 +674,11 @@ html[data-language="ja"] .lang-ja { display: revert; }
 .lecture-deck-thumbnail img { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; transition: transform .2s ease; }
 .lecture-deck-thumbnail:hover img { opacity: .86; }
 .lecture-deck-title { margin: .55rem 0 0; font-size: .86rem; font-weight: 700; line-height: 1.4; }
+.lecture-deck-launch { display: grid; gap: 1.5rem; min-height: 13rem; padding: 1.3rem; background: #fff; color: var(--ink); text-decoration: none; }
+.lecture-deck-launch > span { color: var(--blue); font: 700 .63rem var(--mono); letter-spacing: .05em; }
+.lecture-deck-launch code { align-self: center; overflow-wrap: anywhere; color: #315876; font: 600 clamp(.88rem, 1.5vw, 1.15rem)/1.5 var(--mono); }
+.lecture-deck-launch strong { align-self: end; color: var(--blue); font: 750 .76rem var(--sans); }
+.lecture-deck-launch:hover, .lecture-deck-launch:focus-visible { background: #f4f8fa; }
 .lecture-timelines { margin-top: 0; }
 .lecture-timeline-tabs { display: grid; }
 .lecture-timeline-tabs button { min-width: 0; cursor: pointer; }

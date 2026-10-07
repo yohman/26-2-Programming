@@ -640,6 +640,7 @@ function agendaWeek(w, defaultOpen = false) {
   const challenge = section(w, 'In-Class Challenge');
   const homework = section(w, 'Take-Home Assignment');
   const tutorials = section(w, 'Tutorials');
+  const setupCheck = section(w, 'Setup Check');
   const lectureFiles = resources ? resourcesHtml(resources.body, ['lecture']) : '';
   const notebookFiles = resources ? resourcesHtml(resources.body, ['notebook','fundamentals','experiment']) : '';
   const challengeFiles = resources ? resourcesHtml(resources.body, ['challenge']) : '';
@@ -647,6 +648,7 @@ function agendaWeek(w, defaultOpen = false) {
   const homeworkFiles = resources ? resourcesHtml(resources.body, ['homework']) : '';
   const resourceBlock = (files, showLabel = true) => files ? `<div class="section-resources">${showLabel ? '<p class="resources-label"><span class="lang-en">FILES</span><span class="lang-ja jp" lang="ja">使用するファイル</span></p>' : ''}${files}</div>` : '';
   const classTabs = [];
+  if (setupCheck) classTabs.push({ key:'setup', en:'Setup check', ja:'環境チェック', content:`<div class="class-task">${bilingualHtml(setupCheck.body)}</div>` });
   if (tutorials) classTabs.push({ key:'tutorials', en:'Tutorials', ja:'チュートリアル', content:tutorialsHtml(tutorials.body) });
   if (notebook) classTabs.push({ key:'notebook', en:'Notebook', ja:'ノートブック', content:`<div class="class-task">${bilingualHtml(notebook.body)}${resourceBlock(notebookFiles, false)}</div>` });
   if (challenge) classTabs.push({ key:'challenge', en:'30-min challenge', ja:'30分チャレンジ', content:`<div class="class-task">${bilingualHtml(challenge.body)}${resourceBlock(challengeFiles, false)}</div>` });
@@ -657,9 +659,11 @@ function agendaWeek(w, defaultOpen = false) {
   const lecturePath = lectureMatch?.[2] || '';
   const lectureViewer = lecturePath ? `viewer.html?file=${encodeURIComponent(lecturePath)}&title=${encodeURIComponent(lectureMatch[1])}` : '';
   const lectureThumb = lecturePath && fileType(lecturePath, false) === 'PDF' ? pdfPageImage(lecturePath, w.week === 1 ? 5 : 1) : '';
-  const lectureDeck = lectureFiles ? `<aside class="lecture-deck-panel"><p class="lecture-deck-label"><span class="lang-en">LECTURE SLIDES</span><span class="lang-ja jp" lang="ja">講義スライド</span></p>${lectureThumb ? `<a class="lecture-deck-thumbnail" data-file-preview href="${lectureViewer}" aria-label="${escapeHtml(lectureMatch[1])}"><img src="${escapeHtml(lectureThumb)}" alt="${escapeHtml(lectureMatch[1])} slide preview" loading="lazy"></a>` : ''}<p class="lecture-deck-title">${escapeHtml(lectureMatch?.[1] || '')}</p></aside>` : '';
+  const lectureDeck = w.week === 2
+    ? `<aside class="lecture-deck-panel"><p class="lecture-deck-label"><span class="lang-en">LECTURE SLIDES + PLAYGROUND</span><span class="lang-ja jp" lang="ja">講義スライド + Playground</span></p><a class="lecture-deck-launch" data-lecture-page href="weeks/week-02/lecture.html"><span>02 / PYTHON BASICS</span><code>name = "Aoi"<br>print(f"Hello, {name}!")</code><strong><span class="lang-ja jp" lang="ja">講義を開く →</span><span class="lang-en">OPEN LECTURE →</span></strong></a></aside>`
+    : lectureFiles ? `<aside class="lecture-deck-panel"><p class="lecture-deck-label"><span class="lang-en">LECTURE SLIDES</span><span class="lang-ja jp" lang="ja">講義スライド</span></p>${lectureThumb ? `<a class="lecture-deck-thumbnail" data-file-preview href="${lectureViewer}" aria-label="${escapeHtml(lectureMatch[1])}"><img src="${escapeHtml(lectureThumb)}" alt="${escapeHtml(lectureMatch[1])} slide preview" loading="lazy"></a>` : ''}<p class="lecture-deck-title">${escapeHtml(lectureMatch?.[1] || '')}</p></aside>` : '';
   const lectureVisual = lectureTimelines ? lectureTimelinesHtml(lectureTimelines.body) : lectureDeck;
-  return `<details class="week${w.week === 1 ? ' week--first' : ''}" id="${id}"${defaultOpen ? ' open' : ''}><summary class="week-summary">${summary}<span class="week-toggle"><span class="week-toggle-closed"><span class="lang-en">OPEN WEEK</span><span class="lang-ja jp" lang="ja">週を開く</span></span><span class="week-toggle-open"><span class="lang-en">CLOSE WEEK</span><span class="lang-ja jp" lang="ja">週を閉じる</span></span><b aria-hidden="true">↓</b></span></summary><div class="week-body"><section class="course-section course-section--lecture${lectureTimelines ? ' has-timelines' : ''}"><header><div><p>LECTURE / 講義</p><h3 class="lang-en">${w.week === 1 ? 'From computers to Python' : 'This week’s lecture'}</h3><h3 class="lang-ja jp" lang="ja">${w.week === 1 ? 'コンピュータからPythonへ' : '今週の講義'}</h3></div></header><div class="course-section-content">${lecture ? bilingualHtml(lecture.body) : ''}${lectureVisual}</div></section><section class="course-section course-section--in-class"><header><div><p>IN CLASS / 授業内</p><h3 class="lang-en">Practice in class</h3><h3 class="lang-ja jp" lang="ja">授業内課題</h3></div></header><div class="course-section-content">${inClassCopy}</div></section><section class="course-section course-section--homework"><header><div><p>HOMEWORK / 宿題</p><h3 class="lang-en">Make something of your own</h3><h3 class="lang-ja jp" lang="ja">宿題</h3></div></header><div class="course-section-content">${homeworkDeadlineHtml(w)}${homework ? bilingualHtml(homework.body) : ''}${resourceBlock(homeworkFiles, w.week !== 1)}</div></section></div></details>`;
+  return `<details class="week${w.week === 1 ? ' week--first' : ''}" id="${id}"${defaultOpen ? ' open' : ''}><summary class="week-summary">${summary}<span class="week-toggle"><span class="week-toggle-closed"><span class="lang-en">OPEN WEEK</span><span class="lang-ja jp" lang="ja">週を開く</span></span><span class="week-toggle-open"><span class="lang-en">CLOSE WEEK</span><span class="lang-ja jp" lang="ja">週を閉じる</span></span><b aria-hidden="true">↓</b></span></summary><div class="week-body"><section class="course-section course-section--lecture${lectureTimelines ? ' has-timelines' : ''}"><header><div><p>LECTURE / 講義</p><h3 class="lang-en">${w.week === 1 ? 'From computers to Python' : w.week === 2 ? 'Python basics + earthquake map' : 'This week’s lecture'}</h3><h3 class="lang-ja jp" lang="ja">${w.week === 1 ? 'コンピュータからPythonへ' : w.week === 2 ? 'Pythonの基本と地震地図' : '今週の講義'}</h3></div></header><div class="course-section-content">${lecture ? bilingualHtml(lecture.body) : ''}${lectureVisual}</div></section><section class="course-section course-section--in-class"><header><div><p>IN CLASS / 授業内</p><h3 class="lang-en">Practice in class</h3><h3 class="lang-ja jp" lang="ja">授業内課題</h3></div></header><div class="course-section-content">${inClassCopy}</div></section><section class="course-section course-section--homework"><header><div><p>HOMEWORK / 宿題</p><h3 class="lang-en">Make something of your own</h3><h3 class="lang-ja jp" lang="ja">宿題</h3></div></header><div class="course-section-content">${homeworkDeadlineHtml(w)}${homework ? bilingualHtml(homework.body) : ''}${resourceBlock(homeworkFiles, w.week !== 1)}</div></section></div></details>`;
 }
 
 function renderAgenda(weeks) {
@@ -741,6 +745,13 @@ function agendaReturnUrl() {
 function setupPreviewLinks() {
   const saveReturnDestination = event => {
     if (!(event.target instanceof Element)) return;
+    const lectureLink = event.target.closest('a[data-lecture-page]');
+    if (lectureLink) {
+      const lectureUrl = new URL(lectureLink.href, location.href);
+      lectureUrl.searchParams.set('return', agendaReturnUrl());
+      lectureLink.href = lectureUrl.href;
+      return;
+    }
     const projectLink = event.target.closest('a[data-project-link]');
     if (projectLink) {
       const projectUrl = new URL(projectLink.href, location.href);
@@ -748,7 +759,7 @@ function setupPreviewLinks() {
       projectLink.href = projectUrl.href;
       return;
     }
-    const link = event.target.closest('a[data-file-preview]');
+    const link = event.target.closest('a[data-file-preview], a[href^="viewer.html?file="]');
     if (!link) return;
     const viewer = new URL(link.href, location.href);
     viewer.searchParams.set('return', agendaReturnUrl());

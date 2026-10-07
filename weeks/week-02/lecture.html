@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="ja" data-language="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Week 02 lecture: Python basics, live earthquake mapping, and an interactive Playground.">
+  <title>Week 02 Lecture · Programming</title>
+  <link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="lecture.css?v=20261007">
+  <script src="lecture.js?v=20261007" defer></script>
+</head>
+<body>
+  <header class="lecture-header">
+    <a id="lecture-return" class="return-link" href="../../agenda.html?open=02#week-02"><span class="ja">← 授業予定に戻る</span><span class="en">← Back to agenda</span></a>
+    <span class="lecture-mark">PRG / 26–2 · WEEK 02</span>
+    <button id="language-toggle" class="language-toggle" type="button" aria-label="Switch to English">EN</button>
+  </header>
+  <main>
+    <nav class="lecture-tabs" aria-label="Lecture sections">
+      <button type="button" class="is-selected" data-view="slides" aria-selected="true"><span class="ja">講義スライド</span><span class="en">Lecture slides</span></button>
+      <button type="button" data-view="playground" aria-selected="false">Playground</button>
+    </nav>
+    <div id="slides-view" class="view">
+      <div class="slide-stage" aria-live="polite">
+        <section class="slide is-active" data-slide>
+          <p class="slide-kicker">WEEK 02 / 10.08</p>
+          <h1><span class="ja">Pythonを動かす。<br>世界を地図にする。</span><span class="en">Make Python work.<br>Map what is happening.</span></h1>
+          <p class="slide-lead ja">今日のゴールは、全員が自分のNotebookを動かし、コードの入力と出力を説明できること。</p>
+          <p class="slide-lead en">Today: everyone runs their own notebook and explains what goes into and comes out of a program.</p>
+        </section>
+        <section class="slide" data-slide hidden>
+          <p class="slide-kicker">00–30 MIN / SETUP</p>
+          <h2><span class="ja">まず、全員のPCで動かす</span><span class="en">First, get everyone running</span></h2>
+          <ol class="setup-steps">
+            <li><b>01</b><span class="ja">VS Codeで <code>Programming</code> を開き、<code>week02</code> フォルダを作る</span><span class="en">Open <code>Programming</code> in VS Code; make <code>week02</code></span></li>
+            <li><b>02</b><span class="ja"><code>hello.ipynb</code> を作り、右上で <strong>Select Kernel</strong> → <code>.venv</code></span><span class="en">Create <code>hello.ipynb</code>; choose <strong>Select Kernel</strong> → <code>.venv</code></span></li>
+            <li><b>03</b><span class="ja">Code Cellで <code>print("Hello, Week 02!")</code> を実行</span><span class="en">Run <code>print("Hello, Week 02!")</code> in a Code cell</span></li>
+            <li><b>04</b><span class="ja">Markdown Cellに結果を書き、保存してもう一度実行</span><span class="en">Explain the output in Markdown, save, and run again</span></li>
+          </ol>
+          <p class="slide-note ja">止まったら、その画面を見せてください。ここで全員が通過することが大事です。</p>
+          <p class="slide-note en">If a step fails, show the screen. Everyone should get through this together.</p>
+        </section>
+        <section class="slide" data-slide hidden>
+          <p class="slide-kicker">PYTHON BASICS / 01</p>
+          <h2><code>print()</code> <span class="ja">は結果を見せる</span><span class="en">shows a result</span></h2>
+          <div class="comparison"><div><pre><code>print(5 + 2)</code></pre><output>7</output></div><div><pre><code>print("5 + 2")</code></pre><output>5 + 2</output></div></div>
+          <p class="slide-question ja">実行する前に予想：引用符 <code>" "</code> は何を変えた？</p>
+          <p class="slide-question en">Predict first: what did the quotation marks change?</p>
+        </section>
+        <section class="slide" data-slide hidden>
+          <p class="slide-kicker">PYTHON BASICS / 02</p>
+          <h2><span class="ja">値に名前をつける</span><span class="en">Give a value a name</span></h2>
+          <div class="code-and-note"><pre><code>price = 120&#10;quantity = 3&#10;total = price * quantity&#10;print(total)</code></pre><div class="result-card"><small>OUTPUT</small><strong>360</strong></div></div>
+          <p class="slide-question ja"><code>quantity = 4</code> に変えたら、最後の行は？</p>
+          <p class="slide-question en">If <code>quantity = 4</code>, what does the last line show?</p>
+          <p class="slide-note ja"><code>=</code> は右側を計算して、左の名前に保存する。</p>
+          <p class="slide-note en"><code>=</code> calculates the right side and stores it under the name on the left.</p>
+        </section>
+        <section class="slide" data-slide hidden>
+          <p class="slide-kicker">PYTHON BASICS / 03</p>
+          <h2><code>input()</code> <span class="ja">は文字を受け取る</span><span class="en">receives text</span></h2>
+          <div class="code-and-note"><pre><code>years = input("何年後？ ")&#10;print(type(years))&#10;&#10;future_year = 2026 + int(years)&#10;print(future_year)</code></pre><div class="result-card"><small>INPUT → OUTPUT</small><strong>5 → 2031</strong></div></div>
+          <p class="slide-question ja"><code>int(years)</code> を消すと、何が起きる？</p>
+          <p class="slide-question en">What happens if we remove <code>int(years)</code>?</p>
+          <p class="slide-note ja"><code>"5"</code> は文字列。<code>5</code> は整数。見た目が似ていても、できることは違う。</p>
+          <p class="slide-note en"><code>"5"</code> is text. <code>5</code> is a number. They look alike but behave differently.</p>
+        </section>
+        <section class="slide" data-slide hidden>
+          <p class="slide-kicker">PYTHON BASICS / 04</p>
+          <h2><span class="ja">f文字列で、値を文章に入れる</span><span class="en">Put values into a sentence</span></h2>
+          <div class="code-and-note"><pre><code>name = "Aoi"&#10;years = 5&#10;future_year = 2026 + years&#10;&#10;print(f"{name}へ。{future_year}年の私より。")</code></pre><div class="result-card result-card--sentence"><small>OUTPUT</small><strong>Aoiへ。2031年の私より。</strong></div></div>
+          <p class="slide-question ja">先週の「未来からのメッセージ」では、どの値を文章に入れた？</p>
+          <p class="slide-question en">Which values did your “Message from the Future” put into its text?</p>
+        </section>
+        <section class="slide" data-slide hidden>
+          <p class="slide-kicker">PYTHON BASICS / 05</p>
+          <h2><span class="ja">一つ、たくさん、名前つき</span><span class="en">One value, many values, named values</span></h2>
+          <div class="type-examples">
+            <div><small>STR / INT / FLOAT</small><pre><code>place = "Tokyo"&#10;mag = 4.2</code></pre><p class="ja">文字・整数・小数</p><p class="en">Text, integers, decimals</p></div>
+            <div><small>LIST</small><pre><code>magnitudes = [2.8, 4.2, 5.1]&#10;print(magnitudes[0])</code></pre><p class="ja">順番のある複数の値</p><p class="en">Several values in order</p></div>
+            <div><small>DICT / OBJECT-LIKE RECORD</small><pre><code>quake = {"place": "Tokyo", "mag": 4.2}&#10;print(quake["mag"])</code></pre><p class="ja">名前をつけた項目の集まり</p><p class="en">A record with named fields</p></div>
+          </div>
+          <p class="slide-note ja">リストは配列のように順番で扱える。数値計算用のNumPy配列は後で学ぶ。Pythonでは、これらの値も「オブジェクト」。</p>
+          <p class="slide-note en">A list is array-like. Numerical NumPy arrays come later. In Python, these values are also objects.</p>
+        </section>
+        <section class="slide" data-slide hidden>
+          <p class="slide-kicker">PREDICT BEFORE RUNNING</p>
+          <h2><span class="ja">このコードを動かすと？</span><span class="en">What will this code draw?</span></h2>
+          <div class="predict-layout"><pre><code>earthquake_map = folium.Map(location=center, zoom_start=2)&#10;&#10;for _, row in events.iterrows():&#10;    folium.CircleMarker(&#10;        location=[row["latitude"], row["longitude"]],&#10;        radius=4 + row["mag"] * 2,&#10;        color=marker_color,&#10;        popup=row["place"]&#10;    ).add_to(earthquake_map)&#10;&#10;earthquake_map</code></pre><div class="predict-questions"><p class="ja">① 丸はどこに置かれる？</p><p class="en">① Where will the circles appear?</p><p class="ja">② 丸の大きさは何で変わる？</p><p class="en">② What changes their size?</p><p class="ja">③ クリックしたら何が見える？</p><p class="en">③ What appears when clicked?</p></div></div>
+        </section>
+        <section class="slide" data-slide hidden>
+          <p class="slide-kicker">LIVE EARTHQUAKE MAP</p>
+          <h2><span class="ja">予想して、実行して、変える</span><span class="en">Predict, run, then change it</span></h2>
+          <div class="demo-grid"><div class="demo-map" aria-hidden="true"><span class="map-dot dot-1"></span><span class="map-dot dot-2"></span><span class="map-dot dot-3"></span><span class="map-dot dot-4"></span><span class="map-dot dot-5"></span></div><div><p class="ja">USGSが公開する過去24時間の地震データを読み、緯度・経度に丸を置く。</p><p class="en">Read the USGS past-day feed and place circles at each latitude and longitude.</p><p class="ja">今日は設定を一つ変える。家で、自分の目的が伝わる地図に仕上げる。</p><p class="en">Change one setting in class. At home, make the map communicate your own purpose.</p><a class="primary-link" href="week-02-challenge-live-earthquake-map.ipynb" download><span class="ja">地震地図テンプレートをダウンロード</span><span class="en">Download the map template</span> ↓</a><a class="secondary-link" href="all-month-earthquakes.csv" download><span class="ja">予備データ（ネット接続できないとき）</span><span class="en">Offline backup data</span> ↓</a><a class="source-link" href="https://earthquake.usgs.gov/earthquakes/feed/v1.0/csv.php" target="_blank" rel="noopener">USGS data source ↗</a></div></div>
+        </section>
+      </div>
+      <nav class="slide-controls" aria-label="Slide navigation"><button id="previous-slide" type="button">← <span class="ja">前へ</span><span class="en">Previous</span></button><span id="slide-count" aria-live="polite">01 / 09</span><button id="next-slide" type="button"><span class="ja">次へ</span><span class="en">Next</span> →</button></nav>
+    </div>
+    <section id="playground-view" class="view playground" hidden>
+      <div class="playground-intro"><div><p class="slide-kicker">PLAYGROUND / いつでも戻れるPythonの実験室</p><h1><span class="ja">一行変える。結果が変わる。</span><span class="en">Change a value. See the result.</span></h1></div><p class="ja">テーマを選び、値を変えて「実行」を押そう。これは<strong>表示したPythonの動きを再現する練習用シミュレーター</strong>です。自由なPythonコードはNotebookで実行してください。</p><p class="en">Choose a topic, change the inputs, and press Run. This is a <strong>guided simulation</strong> of the shown Python lines. Run your own code in a notebook.</p></div>
+      <div class="playground-grid"><nav id="playground-topics" class="playground-topics" aria-label="Python examples"></nav><div class="playground-workbench"><div id="playground-controls" class="playground-controls"></div><div class="playground-panels"><div class="playground-code"><div class="panel-caption">PYTHON</div><pre><code id="playground-code"></code></pre></div><div class="playground-output"><div class="panel-caption">OUTPUT</div><pre id="playground-output"></pre></div></div><div class="playground-actions"><button id="playground-run" type="button"><span class="ja">実行する</span><span class="en">Run example</span> ▶</button><p id="playground-explanation" aria-live="polite"></p></div></div></div>
+    </section>
+  </main>
+</body>
+</html>

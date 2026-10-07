@@ -669,7 +669,15 @@ function renderAgenda(weeks) {
   const today = new Intl.DateTimeFormat('en-CA', { timeZone:'Asia/Tokyo', year:'numeric', month:'2-digit', day:'2-digit' }).format(new Date());
   const current = weeks.find(w => isAvailable(w) && w.course_date >= today) || [...weeks].reverse().find(isAvailable) || weeks[0];
   const heading = `<section class="agenda-heading wrap"><div><p class="eyebrow">2026–2 PROGRAMMING / プログラミング</p><h1><span class="lang-en">Course agenda</span><span class="lang-ja jp" lang="ja">授業予定</span></h1></div><p><span class="lang-en">Thursday · Period 3 · 13:10–14:50</span><span class="lang-ja jp" lang="ja">木曜日 · 3限 · 13:10–14:50</span></p>${preview ? '<span class="preview-notice">PREVIEW · ALL WEEKS</span>' : ''}</section>`;
-  root.innerHTML = `${heading}<section class="week-list wrap">${weeks.map(w => agendaWeek(w, preview || w.week === current.week)).join('')}</section>`;
+  const shortcuts = weeks.map(w => {
+    const number = String(w.week).padStart(2, '0');
+    const date = new Date(`${w.course_date}T12:00:00+09:00`);
+    const ja = new Intl.DateTimeFormat('ja-JP', { month:'numeric', day:'numeric', weekday:'short', timeZone:'Asia/Tokyo' }).format(date);
+    const en = new Intl.DateTimeFormat('en-US', { month:'short', day:'numeric', timeZone:'Asia/Tokyo' }).format(date);
+    const classes = `week-shortcut${w.week === current.week ? ' is-current' : ''}${isAvailable(w) ? '' : ' is-locked'}`;
+    return `<a class="${classes}" href="#week-${number}" aria-label="Week ${number}: ${escapeHtml(w.title)} — ${escapeHtml(en)}"${w.week === current.week ? ' aria-current="date"' : ''}><strong>${number}</strong><span class="lang-ja jp" lang="ja">${escapeHtml(ja)}</span><span class="lang-en">${escapeHtml(en)}</span></a>`;
+  }).join('');
+  root.innerHTML = `${heading}<nav class="week-shortcuts wrap" aria-label="Week shortcuts / 各週へ移動">${shortcuts}</nav><section class="week-list wrap">${weeks.map(w => agendaWeek(w, preview || w.week === current.week)).join('')}</section>`;
 }
 
 function setupAgendaToggles() {
@@ -685,6 +693,10 @@ function setupAgendaToggles() {
     else url.searchParams.delete('open');
     url.searchParams.delete('scroll');
     history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
+  }));
+  root.querySelectorAll('.week-shortcut').forEach(shortcut => shortcut.addEventListener('click', () => {
+    const week = root.querySelector(shortcut.getAttribute('href'));
+    if (week?.tagName === 'DETAILS') week.open = true;
   }));
   const returnScroll = Number(state.get('scroll'));
   if (Number.isFinite(returnScroll) && returnScroll > 0) requestAnimationFrame(() => window.scrollTo(0, returnScroll));

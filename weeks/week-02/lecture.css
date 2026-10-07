@@ -132,27 +132,25 @@ button:focus-visible, a:focus-visible { outline:3px solid #be7e32; outline-offse
 .markdown-library { margin:2.3rem 0 0; }
 .markdown-library > h2 { margin:0 0 1rem; font-size:clamp(1.5rem,2.5vw,2rem); letter-spacing:-.04em; }
 .markdown-examples { display:grid; gap:.8rem; }
-.markdown-example { min-width:0; background:#fff; }
+.markdown-example { min-width:0; }
 .markdown-example header { display:flex; align-items:center; justify-content:space-between; gap:1rem; padding:.75rem 1rem; }
 .markdown-example h3 { margin:0; font-size:.91rem; }
 .markdown-example button { flex:none; padding:.48rem .65rem; border:0; background:#e8ece9; color:#496c5a; font-size:.72rem; font-weight:750; }
 .markdown-example button:hover { background:#dce7df; }
 .markdown-example button.is-selected { background:#496c5a; color:#fff; }
 .markdown-example-pair { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.65rem; padding:0 .75rem .75rem; }
-.markdown-example-source, .markdown-example-result { min-width:0; padding:.8rem 1rem; background:#e9f0eb; }
-.markdown-example-result { background:#f2f5f5; }
+.markdown-example-source, .markdown-example-result { display:grid; grid-template-rows:auto 1fr; min-width:0; }
 .markdown-example-pair small { display:block; margin-bottom:.5rem; color:#496c5a; font:750 .62rem var(--mono); letter-spacing:.04em; }
-.markdown-example-source pre { margin:0; overflow-x:auto; white-space:pre-wrap; overflow-wrap:anywhere; color:#213a30; font:clamp(.76rem,1.1vw,.91rem)/1.65 var(--mono); }
-.markdown-example-result .markdown-preview-content { min-height:100%; padding:.75rem; }
+.markdown-example-source pre { margin:0; padding:1rem; background:#e9f0eb; overflow-x:auto; white-space:pre-wrap; overflow-wrap:anywhere; color:#213a30; font:clamp(.76rem,1.1vw,.91rem)/1.65 var(--mono); }
+.markdown-example-result .markdown-preview-content { min-height:0; padding:1rem; }
 .markdown-example-result .markdown-preview-content h1 { font-size:1.25rem; }
 .markdown-example-result .markdown-preview-content h2 { font-size:1.1rem; }
 .markdown-example-result .markdown-preview-content h3 { font-size:1rem; }
 .markdown-example-result .markdown-preview-content p, .markdown-example-result .markdown-preview-content li { font-size:.83rem; }
 .markdown-workbench { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.8rem; }
-.markdown-source, .markdown-rendered { display:grid; grid-template-rows:auto 1fr; min-width:0; min-height:25rem; padding:1.1rem; background:#fff; }
+.markdown-source, .markdown-rendered { display:grid; grid-template-rows:auto 1fr; min-width:0; min-height:25rem; }
 .markdown-source > span, .markdown-rendered > span { margin-bottom:.85rem; color:#496c5a; font:750 .68rem var(--mono); letter-spacing:.04em; }
 .markdown-source textarea { display:block; width:100%; min-height:21rem; padding:1.25rem; resize:vertical; border:0; background:#e9f0eb; color:#213a30; font:clamp(.83rem,1.25vw,1rem)/1.8 var(--mono); }
-.markdown-rendered { background:#f2f5f5; }
 .markdown-preview-content { min-width:0; padding:1.25rem; background:#fff; overflow-wrap:anywhere; }
 .markdown-preview-content > :first-child { margin-top:0; }
 .markdown-preview-content h1, .markdown-preview-content h2, .markdown-preview-content h3 { margin:0 0 .7rem; font-weight:800; line-height:1.25; letter-spacing:-.04em; }

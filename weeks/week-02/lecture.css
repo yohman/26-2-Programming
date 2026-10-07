@@ -142,6 +142,7 @@ button:focus-visible, a:focus-visible { outline:3px solid #be7e32; outline-offse
 .markdown-example-source, .markdown-example-result { display:grid; grid-template-rows:auto 1fr; min-width:0; }
 .markdown-example-pair small { display:block; margin-bottom:.5rem; color:#496c5a; font:750 .62rem var(--mono); letter-spacing:.04em; }
 .markdown-example-source pre { margin:0; padding:1rem; background:#e9f0eb; overflow-x:auto; white-space:pre-wrap; overflow-wrap:anywhere; color:#213a30; font:clamp(.76rem,1.1vw,.91rem)/1.65 var(--mono); }
+.markdown-example-source textarea { width:100%; min-height:10rem; margin:0; padding:1rem; border:0; border-radius:0; resize:vertical; background:#e9f0eb; color:#213a30; font:clamp(.76rem,1.1vw,.91rem)/1.65 var(--mono); }
 .markdown-example-result .markdown-preview-content { min-height:0; padding:1rem; }
 .markdown-example-result .markdown-preview-content h1 { font-size:1.25rem; }
 .markdown-example-result .markdown-preview-content h2 { font-size:1.1rem; }

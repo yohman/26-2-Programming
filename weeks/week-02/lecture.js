@@ -116,14 +116,12 @@ function renderMarkdownExamples() {
   const locale = language();
   root.replaceChildren();
   Object.entries(markdownExamples).forEach(([key, example], index) => {
-    const card = document.createElement('article'); card.className = 'markdown-example';
+    const card = document.createElement('article'); card.className = 'markdown-example'; card.dataset.example = key;
     const header = document.createElement('header');
     const title = document.createElement('h3'); title.textContent = `${String(index + 1).padStart(2, '0')}  ${locale === 'ja' ? example.titleJa : example.titleEn}`;
     const button = document.createElement('button'); button.type = 'button'; button.dataset.markdownExample = key;
     button.textContent = locale === 'ja' ? '編集して試す →' : 'Try in editor →';
-    const selected = selectedMarkdownExample === key && document.getElementById('markdown-input').value === example[locale];
-    button.classList.toggle('is-selected', selected);
-    button.setAttribute('aria-pressed', String(selected));
+    button.setAttribute('aria-expanded', 'false');
     header.append(title, button);
     const pair = document.createElement('div'); pair.className = 'markdown-example-pair';
     const sourceBox = document.createElement('div'); sourceBox.className = 'markdown-example-source';
@@ -140,15 +138,22 @@ function renderMarkdownExamples() {
 }
 
 function showMarkdownExample(key) {
-  selectedMarkdownExample = key;
-  document.getElementById('markdown-input').value = markdownExamples[key][language()];
-  document.querySelectorAll('[data-markdown-example]').forEach(button => {
-    const selected = button.dataset.markdownExample === key;
-    button.classList.toggle('is-selected', selected);
-    button.setAttribute('aria-pressed', String(selected));
-  });
-  renderMarkdown();
-  document.getElementById('markdown-input').focus();
+  const card = document.querySelector(`[data-example="${key}"]`);
+  const button = card.querySelector('[data-markdown-example]');
+  let editor = card.querySelector('textarea');
+  if (!editor) {
+    const source = card.querySelector('.markdown-example-source pre');
+    editor = document.createElement('textarea');
+    editor.value = source.textContent;
+    editor.rows = Math.max(5, editor.value.split('\n').length + 1);
+    editor.setAttribute('aria-label', `${language() === 'ja' ? 'Markdownを編集：' : 'Edit Markdown: '}${card.querySelector('h3').textContent}`);
+    editor.spellcheck = false;
+    editor.addEventListener('input', () => renderMarkdownInto(card.querySelector('.markdown-preview-content'), editor.value));
+    source.replaceWith(editor);
+    button.classList.add('is-selected');
+    button.setAttribute('aria-expanded', 'true');
+  }
+  editor.focus({preventScroll: true});
 }
 
 const string = value => JSON.stringify(String(value));

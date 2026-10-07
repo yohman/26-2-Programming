@@ -16,16 +16,16 @@ overview_ja: まず全員がNotebookを動かせるようにする。先週の�
 ## Lecture Flow
 EN: | Time | In class |
 | --- | --- |
-| 13:10–13:40 · 30 min | **Everyone gets running.** Open VS Code, select a kernel, create a new `.ipynb`, and run two cells. Ask for help as soon as one step fails. |
-| 13:40–14:00 · 20 min | **Python basics.** `print()`, `input()`, arithmetic, variables, f-strings, text and numbers, lists, and dictionaries. Use the Playground to predict outputs. |
-| 14:00–14:20 · 20 min | **Message from the future.** Open last week's homework, finish or improve it, test two inputs, and show a partner. |
-| 14:20–14:50 · 30 min | **Earthquake challenge.** Predict the map code, watch the live demonstration, then run and change your own template. |
+| 13:10–13:40 | **Get Python running · 30 min** VS Code → kernel → your first working notebook. |
+| 13:40–14:00 | **Python basics · 20 min** Predict what a few lines of code will print. |
+| 14:00–14:20 | **In-class activity · 20 min** Finish and share your message from the future. |
+| 14:20–14:50 | **Earthquake challenge · 30 min** Predict, run, and change a live map. |
 JP: | 時間 | 授業で行うこと |
 | --- | --- |
-| 13:10–13:40 · 30分 | **全員で環境を整える。** VS Codeを開き、Kernelを選び、新しい`.ipynb`を作って二つのCellを動かす。止まったらすぐに声をかける。 |
-| 13:40–14:00 · 20分 | **Pythonの基本。** `print()`、`input()`、計算、変数、f文字列、文字と数、リスト、辞書。Playgroundで出力を予想する。 |
-| 14:00–14:20 · 20分 | **未来からのメッセージ。** 先週の宿題を開いて完成・改善し、二通りで試して隣の人に見せる。 |
-| 14:20–14:50 · 30分 | **地震地図チャレンジ。** コードの結果を予想し、ライブデモを見て、テンプレートを自分で動かし変更する。 |
+| 13:10–13:40 | **Pythonを動かす · 30分** VS Code → Kernel → 動くNotebook。 |
+| 13:40–14:00 | **Pythonの基本 · 20分** 短いコードの出力を予想する。 |
+| 14:00–14:20 | **授業内アクティビティ · 20分** 「未来からのメッセージ」を完成させて共有する。 |
+| 14:20–14:50 | **地震地図チャレンジ · 30分** 予想し、動かし、自分で変える。 |
 
 ## Setup Check
 EN: **Goal: everyone leaves with a working notebook.**
@@ -54,8 +54,16 @@ EN: **Last 30 minutes: live earthquake map.** Before Yoh runs the code, predict 
 JP: **最後の30分：ライブ地震地図。** Yohがコードを実行する前に、`latitude`、`longitude`、`mag`、`place`が地図上で何になるか予想する。テンプレートを開き、USGSのデータで一度実行する。その後、表示する最小マグニチュード、点の色、地図の中心などを一つ以上変える。付属の2024年CSVはネット接続できないときの予備データ。ループやライブラリの部分は用意してある。今日は入力・出力・自分が変えた行を理解する。
 
 ## Take-Home Assignment
-EN: **Your earthquake map.** Continue the in-class template at home. Choose a purpose or audience for your map, change at least two visible settings, and give it a clear title. Run the notebook from top to bottom. In Markdown, record (1) your prediction, (2) two changes and why you made them, (3) one observation from the map, and (4) whether you used live or fallback data. Submit the working `.ipynb` to UNIPA by Wednesday, October 14 at 23:59 JST. Include the CSV only if your notebook depends on that local file. AI may help explain an error, but check the final output yourself.
-JP: **自分の地震地図。** 授業で使ったテンプレートを家で続ける。誰に何を見せたい地図かを決め、見た目に現れる設定を二つ以上変更し、分かりやすいタイトルを付ける。Notebookを上から最後まで実行する。Markdownに①事前の予想、②変えた二つの点と理由、③地図から気づいたことを一つ、④ライブデータか予備データのどちらを使ったかを書く。**10月14日（水）23:59 JST**までに、動く`.ipynb`をUNIPAへ提出する。ローカルCSVに依存する場合だけ、そのCSVも一緒に提出する。AIにエラーの意味を聞いてもよいが、最終結果は自分で確かめる。
+EN: Make the earthquake-map template useful for **an audience you choose**.
+
+1. Give your map a clear title and change **at least two visible settings**. Explain why.
+2. Run the notebook from top to bottom. In Markdown, note your prediction, one thing you noticed on the map, and whether you used live or fallback data.
+3. Submit the working `.ipynb` to **UNIPA**. Include the CSV only if your notebook needs that local file. AI can help explain an error; verify the final map yourself.
+JP: 地震地図のテンプレートを、**自分で決めた相手**のための地図にする。
+
+1. 分かりやすいタイトルを付け、**見た目に現れる設定を二つ以上**変える。変えた理由も書く。
+2. Notebookを上から最後まで実行する。Markdownに事前の予想、地図から気づいたこと、ライブデータと予備データのどちらを使ったかを書く。
+3. 動く`.ipynb`を**UNIPA**へ提出。ローカルCSVが必要な場合だけ一緒に提出する。AIにエラーの意味を聞いてもよいが、最後の地図は自分で確かめる。
 
 ## Aha!
 EN: `input()` looks like a number when you type `5`, but Python receives the text `"5"`. One conversion changes what the program can calculate.

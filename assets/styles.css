@@ -806,6 +806,60 @@ html[data-language="ja"] .lang-ja { display: revert; }
 .file-download:hover { background: var(--ink); border-color: var(--ink); color: #fff; text-decoration: none; }
 .course-section--homework .file-action { border-color: #d2cdc1; }
 
+/* Week 02: make the lesson sequence and the take-home task easy to scan. */
+.week--second .course-section--lecture { background: #e8eef0; }
+.week--second .course-section--lecture .content-table { border-spacing: 0 .45rem; }
+.week--second .course-section--lecture .content-table th { padding-bottom: .35rem; }
+.week--second .course-section--lecture .content-table td {
+  padding: .85rem 1rem;
+  background: rgba(255, 255, 255, .7);
+  line-height: 1.48;
+}
+.week--second .course-section--lecture .content-table td:first-child {
+  width: 8.1rem;
+  padding-right: .4rem;
+  color: #315876;
+}
+.week--second .course-section--lecture .content-table td:last-child { color: #4e5a60; font-weight: 500; }
+.week--second .course-section--lecture .content-table td strong {
+  display: block;
+  margin-bottom: .16rem;
+  color: #1d3342;
+  font-size: .86rem;
+  font-weight: 800;
+}
+.week--second .course-section--lecture .content-table tr:first-child td { background: #fff; }
+.week--second .lecture-deck-launch {
+  min-height: 15.6rem;
+  padding: 1.4rem;
+  background: #f8faf9;
+  transition: background .16s ease;
+}
+.week--second .lecture-deck-launch code {
+  display: block;
+  padding: 1.1rem;
+  background: #213b4e;
+  color: #f0f5f5;
+  font-size: clamp(.78rem, 1.2vw, 1rem);
+}
+.week--second .lecture-deck-launch:hover,
+.week--second .lecture-deck-launch:focus-visible { background: #fff; }
+.week--second .course-section--homework { background: #f3eae0; }
+.week--second .course-section--homework .homework-deadline {
+  display: inline-block;
+  margin: 0 0 1.15rem;
+  padding: .42rem .7rem;
+  background: #fff;
+  color: #77451f;
+  font-size: .76rem;
+}
+.week--second .course-section--homework .copy-block > p { font-size: 1rem; font-weight: 650; line-height: 1.58; }
+.week--second .course-section--homework .copy-block ol { margin: 1.25rem 0 0; padding-left: 1.35rem; }
+.week--second .course-section--homework .copy-block li { padding-left: .25rem; line-height: 1.6; }
+.week--second .course-section--homework .copy-block li + li { margin-top: .8rem; }
+.week--second .course-section--homework .copy-block li::marker { color: #9a6438; font-weight: 800; }
+.week--second .course-section--homework .section-resources { margin-top: 1.45rem; }
+
 @media (max-width: 820px) {
   .agenda-heading { grid-template-columns: 1fr auto; gap: 1rem; padding: 2.4rem 0 1.5rem; }
   .agenda-heading > p { grid-column: 1; text-align: left; }
@@ -839,6 +893,8 @@ html[data-language="ja"] .lang-ja { display: revert; }
   .course-section--lecture .content-table { min-width: 0; table-layout: fixed; }
   .course-section--lecture .content-table td:first-child { width: 5.4rem; padding-right: .65rem; white-space: normal; }
   .course-section--lecture .content-table td:last-child { overflow-wrap: anywhere; }
+  .week--second .course-section--lecture .content-table td { padding: .7rem .55rem; }
+  .week--second .course-section--lecture .content-table td:first-child { width: 5.8rem; padding-right: .25rem; }
   .timeline-preview-pcs { display: flex; gap: 2px; min-height: 0; padding: .65rem; overflow-x: auto; scroll-snap-type: x mandatory; }
   .timeline-preview-pcs figure { flex: 0 0 82%; scroll-snap-align: start; }
   .timeline-preview-pcs .preview-pc--2 { margin: 0; }

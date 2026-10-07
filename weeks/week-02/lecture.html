@@ -136,21 +136,21 @@
         <section class="slide" data-slide hidden>
           <p class="slide-kicker">EARTHQUAKE DATA / 01</p>
           <h2><span class="ja">地震一件には、場所と座標がある。</span><span class="en">One quake has a place and coordinates.</span></h2>
-          <div class="quake-record"><div><small>PLACE</small><strong>17 km W of New Idria, CA</strong></div><div><small>MAGNITUDE</small><strong>0.91</strong></div><div class="quake-coordinate"><small>LATITUDE / 緯度</small><strong>36.364</strong></div><div class="quake-coordinate"><small>LONGITUDE / 経度</small><strong>−120.854</strong></div></div>
-          <p class="slide-note ja">2024年の予備CSVから取り出した一行。座標は小数第3位まで表示。Foliumには <code>[latitude, longitude]</code> の順で渡す。</p>
-          <p class="slide-note en">One row from the 2024 backup CSV; coordinates are rounded to three decimals. Folium expects <code>[latitude, longitude]</code>, in that order.</p>
+          <div class="quake-record"><div><small>PLACE</small><strong>33 km N of Kobuk, Alaska</strong></div><div><small>MAGNITUDE</small><strong>2.7</strong></div><div class="quake-coordinate"><small>LATITUDE / 緯度</small><strong>67.208</strong></div><div class="quake-coordinate"><small>LONGITUDE / 経度</small><strong>−156.866</strong></div></div>
+          <p class="slide-note ja">2026年10月7日時点のeq.csvから取り出した一行。座標は小数第3位まで表示。Foliumには <code>[latitude, longitude]</code> の順で渡す。</p>
+          <p class="slide-note en">One row from the October 7, 2026 eq.csv snapshot; coordinates are rounded to three decimals. Folium expects <code>[latitude, longitude]</code>, in that order.</p>
         </section>
         <section class="slide" data-slide hidden>
           <p class="slide-kicker">EARTHQUAKE MAP / 01</p>
           <h2><span class="ja">まず、一つの点を置く。</span><span class="en">First, place one marker.</span></h2>
-          <div class="code-and-note"><pre><code>import folium&#10;&#10;m = folium.Map(&#10;    location=[36.364, -120.854],&#10;    zoom_start=6&#10;)&#10;folium.Marker(&#10;    location=[36.364, -120.854],&#10;    popup="New Idria, CA"&#10;).add_to(m)&#10;m</code></pre><div class="result-card marker-result"><small>MARKER LOCATION</small><strong>36.364° N<br>120.854° W</strong><span aria-hidden="true">●</span></div></div>
+          <div class="code-and-note"><pre><code>import folium&#10;&#10;m = folium.Map(&#10;    location=[67.208, -156.866],&#10;    zoom_start=6&#10;)&#10;folium.Marker(&#10;    location=[67.208, -156.866],&#10;    popup="Kobuk, Alaska"&#10;).add_to(m)&#10;m</code></pre><div class="result-card marker-result"><small>MARKER LOCATION</small><strong>67.208° N<br>156.866° W</strong><span aria-hidden="true">●</span></div></div>
           <p class="slide-question ja"><code>location</code> を変えると、点はどこへ移動する？</p>
           <p class="slide-question en">Change <code>location</code>. Where will the marker move?</p>
         </section>
         <section class="slide" data-slide hidden>
           <p class="slide-kicker">EARTHQUAKE DATA / 02</p>
           <h2><span class="ja">複数の地震は、JSONのリストに。</span><span class="en">Many quakes form a JSON array.</span></h2>
-          <div class="json-example"><small>JSON · <span class="ja">2024年の予備CSVから抜粋</span><span class="en">EXCERPT FROM THE 2024 BACKUP CSV</span></small><pre><code>[&#10;  {"place": "17 km W of New Idria, CA",&#10;   "mag": 0.91, "latitude": 36.364, "longitude": -120.854},&#10;  {"place": "15 km SE of Fern Forest, Hawaii",&#10;   "mag": 1.78, "latitude": 19.365, "longitude": -155.028},&#10;  {"place": "10 km SW of Idyllwild, CA",&#10;   "mag": 0.13, "latitude": 33.664, "longitude": -116.780}&#10;]</code></pre></div>
+          <div class="json-example"><small>JSON · <span class="ja">2026年10月7日時点のeq.csvから抜粋</span><span class="en">EXCERPT FROM EQ.CSV · OCT 7, 2026</span></small><pre><code>[&#10;  {"place": "33 km N of Kobuk, Alaska",&#10;   "mag": 2.7, "latitude": 67.208, "longitude": -156.866},&#10;  {"place": "18 km W of Preston, Nevada",&#10;   "mag": 2.66, "latitude": 38.902, "longitude": -115.278},&#10;  {"place": "13 km ENE of Nyora, Australia",&#10;   "mag": 3.5, "latitude": -38.307, "longitude": 145.827}&#10;]</code></pre></div>
           <p class="slide-note ja"><code>[ ]</code> はリスト、<code>{ }</code> は一件分。座標は小数第3位まで表示。次のCellでは、このリストを <code>quakes</code> という変数に入れて使う。</p>
           <p class="slide-note en"><code>[ ]</code> holds the list; each <code>{ }</code> holds one record. Coordinates are rounded to three decimals. In the next cell, store this list as <code>quakes</code>.</p>
         </section>
@@ -162,7 +162,7 @@
         <section class="slide" data-slide hidden>
           <p class="slide-kicker">LIVE EARTHQUAKE MAP</p>
           <h2><span class="ja">予想して、実行して、変える</span><span class="en">Predict, run, then change it</span></h2>
-          <div class="demo-grid"><div class="demo-map" aria-hidden="true"><span class="map-dot dot-1"></span><span class="map-dot dot-2"></span><span class="map-dot dot-3"></span><span class="map-dot dot-4"></span><span class="map-dot dot-5"></span></div><div><p class="ja">USGSからCSVを保存し、一行につきマーカーを一つ置く。</p><p class="en">Download a USGS CSV and place one marker per row.</p><p class="ja">授業で改良を始め、宿題で二つ以上の改良を仕上げる。</p><p class="en">Start improving the map in class; finish two or more improvements for homework.</p><a class="primary-link" href="week-02-challenge-live-earthquake-map.ipynb" download><span class="ja">地震地図テンプレートをダウンロード</span><span class="en">Download the map template</span> ↓</a><a class="secondary-link" href="all-month-earthquakes.csv" download><span class="ja">予備データ（ネット接続できないとき）</span><span class="en">Offline backup data</span> ↓</a><a class="source-link" href="https://earthquake.usgs.gov/earthquakes/feed/v1.0/csv.php" target="_blank" rel="noopener">USGS CSV download ↗</a></div></div>
+          <div class="demo-grid"><div class="demo-map" aria-hidden="true"><span class="map-dot dot-1"></span><span class="map-dot dot-2"></span><span class="map-dot dot-3"></span><span class="map-dot dot-4"></span><span class="map-dot dot-5"></span></div><div><p class="ja">USGSからCSVを保存し、一行につきマーカーを一つ置く。</p><p class="en">Download a USGS CSV and place one marker per row.</p><p class="ja">授業で改良を始め、宿題で二つ以上の改良を仕上げる。</p><p class="en">Start improving the map in class; finish two or more improvements for homework.</p><a class="primary-link" href="week-02-challenge-earthquake-map.ipynb" download><span class="ja">地震地図テンプレートをダウンロード</span><span class="en">Download the map template</span> ↓</a><a class="secondary-link" href="eq.csv" download><span class="ja">地震データ eq.csv（2026年10月7日時点）</span><span class="en">Earthquake data eq.csv · Oct 7, 2026</span> ↓</a><a class="source-link" href="https://earthquake.usgs.gov/earthquakes/feed/v1.0/csv.php" target="_blank" rel="noopener">USGS CSV download ↗</a></div></div>
         </section>
       </div>
     </div>

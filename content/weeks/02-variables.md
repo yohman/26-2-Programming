@@ -59,33 +59,33 @@ EN: **Bring back your Week 01 homework.** Open your own “Message from the Futu
 JP: **先週の宿題を授業で使う。** 自分の「未来からのメッセージ」Notebookを開く。未完成なら同じテンプレートから今ここで完成させる。`input()`は文字を返すことを確認し、年数を`int()`で数に変え、計算した年をf文字列で表示する。異なる入力で二回実行し、変わった点をMarkdown Cellに一文書く。最後に隣の人へ見せる。内容と言葉は自分のものにする。
 
 ## In-Class Challenge
-EN: **Last 30 minutes: start your homework map.** Download a CSV from the [USGS CSV download page](https://earthquake.usgs.gov/earthquakes/feed/v1.0/csv.php) (**Past Day → All Earthquakes**) and put it beside the notebook. Run the starter: read the CSV, loop through its rows, and place one Folium marker at each latitude/longitude. Then choose an improvement:
+EN: **Last 30 minutes: start your homework map.** Download the supplied **`eq.csv`** and put it beside the notebook. For fresh data, use the [USGS CSV download page](https://earthquake.usgs.gov/earthquakes/feed/v1.0/csv.php) (**Past Day → All Earthquakes**). Run the starter: read the CSV, loop through its rows, and place one Folium marker at each latitude/longitude. Then choose an improvement:
 
 - Change the base map.
 - Replace pins with circles.
 - Color markers by magnitude.
 - Filter earthquakes by magnitude or location.
 
-Start one change in class; finish the same notebook as homework. The supplied 2024 CSV is a backup dataset, not current earthquakes.
-JP: **最後の30分：宿題の地図づくりを始める。** [USGSのCSVダウンロードページ](https://earthquake.usgs.gov/earthquakes/feed/v1.0/csv.php)の**Past Day → All Earthquakes**からCSVを保存し、Notebookと同じフォルダに置く。まずテンプレートを実行：CSVを読み、各行をループして、緯度・経度にFoliumのマーカーを一つずつ置く。その地図を自分で改良しよう。
+Start one change in class; finish the same notebook as homework. The supplied `eq.csv` is a snapshot from October 7, 2026, not a continuously updating feed.
+JP: **最後の30分：宿題の地図づくりを始める。** 下の**`eq.csv`**をダウンロードし、Notebookと同じフォルダに置く。最新データは[USGSのCSVダウンロードページ](https://earthquake.usgs.gov/earthquakes/feed/v1.0/csv.php)の**Past Day → All Earthquakes**から取得できます。まずテンプレートを実行：CSVを読み、各行をループして、緯度・経度にFoliumのマーカーを一つずつ置く。その地図を自分で改良しよう。
 
 - ベースマップを変える。
 - ピンを円に変える。
 - マグニチュードによって色を変える。
 - マグニチュードや場所で絞り込む。
 
-授業で一つ改良を始め、**同じNotebookを宿題として仕上げる**。付属の2024年CSVは予備データで、現在の地震ではありません。
+授業で一つ改良を始め、**同じNotebookを宿題として仕上げる**。`eq.csv`は2026年10月7日時点のデータです。自動更新はされません。
 
 ## Take-Home Assignment
 EN: **Continue the map you started in class—this is the same assignment.** Make it useful for an audience you choose. [USGS CSV download page](https://earthquake.usgs.gov/earthquakes/feed/v1.0/csv.php)
 
 1. Give your map a title and make **at least two improvements**: a different base map, circles, magnitude colors, or a filter. Your own idea is welcome.
-2. In Markdown, explain who the map is for, why you made those changes, and one observation. Record the CSV source and download date (or identify the 2024 backup).
+2. In Markdown, explain who the map is for, why you made those changes, and one observation. Record the CSV source and download date (or identify the supplied October 7 snapshot).
 3. Run every cell, save the outputs, and submit the completed `.ipynb` **and the CSV it reads** to **UNIPA**. AI may explain an error; check the resulting map yourself.
 JP: **授業で始めた地図を、そのまま宿題として完成させる。別の課題ではありません。** 自分で決めた相手に伝わる地図にしよう。[USGSのCSVダウンロードページ](https://earthquake.usgs.gov/earthquakes/feed/v1.0/csv.php)
 
 1. タイトルを付け、**二つ以上改良する**。ベースマップ、円、色分け、フィルターなどから選ぶ。自分のアイデアでもOK。
-2. Markdownに「誰に見せる地図か」「なぜその改良をしたか」「地図から気づいたこと」を書く。CSVの出典とダウンロード日も記録する（予備データなら2024年のデータと明記）。
+2. Markdownに「誰に見せる地図か」「なぜその改良をしたか」「地図から気づいたこと」を書く。CSVの出典とダウンロード日も記録する（付属CSVなら2026年10月7日時点のデータと明記）。
 3. 全Cellを実行して出力を保存し、完成した`.ipynb`と**読み込んだCSV**を**UNIPA**へ提出する。AIにエラーの意味を聞いてもよいが、地図は自分で確かめる。
 
 ## Aha!
@@ -99,6 +99,6 @@ JP: 入力を見つけ、値を変え、出力を説明できると、コード�
 ## Resources
 - [Week 02 Lecture — Python Basics & Earthquake Map](weeks/week-02/lecture.html) {lecture}
 - [Week 01 Homework — Message from the Future](weeks/week-01/week-01-homework-message-from-the-future.ipynb) {notebook}
-- [Week 02 Challenge — Live Earthquake Map Template](weeks/week-02/week-02-challenge-live-earthquake-map.ipynb) {challenge}
-- [Earthquake data — 2024 offline fallback](weeks/week-02/all-month-earthquakes.csv) {data}
-- [Week 02 Homework — Continue the Earthquake Map Template](weeks/week-02/week-02-challenge-live-earthquake-map.ipynb) {homework}
+- [Week 02 Challenge — Earthquake Map](weeks/week-02/week-02-challenge-earthquake-map.ipynb) {challenge}
+- [Earthquake data — eq.csv · 2026-10-07](weeks/week-02/eq.csv) {data}
+- [Week 02 Homework — Earthquake Map](weeks/week-02/week-02-challenge-earthquake-map.ipynb) {homework}

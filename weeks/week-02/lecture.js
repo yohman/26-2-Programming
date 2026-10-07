@@ -11,9 +11,9 @@ let selectedMarkdownExample = 'intro';
 
 const markdownExamples = {
   intro: {
-    titleJa:'見出しと文章', titleEn:'Heading + paragraph',
-    ja: '# はじめてのNotebook\n今日の目標：Pythonを自分のPCで動かす。',
-    en: '# My first notebook\nToday: run Python on my own computer.'
+    titleJa:'見出し・文章・リスト', titleEn:'Heading, sentence + list',
+    ja: '# はじめてのNotebook\n今日やること：\n- Cellをつくる\n- 結果を見る',
+    en: '# My first notebook\nToday I will:\n- Add a cell\n- Check the result'
   },
   emphasis: {
     titleJa:'強調とコード', titleEn:'Emphasis + inline code',
@@ -179,6 +179,14 @@ const topics = [
     run:({ score, bonus }) => result(`score = ${number(score)}\nscore = score + ${number(bonus)}\nprint(score)`,String(number(score)+number(bonus)),'同じ変数名に、新しく計算した値を保存します。','The variable name now holds the newly calculated value.')
   },
   {
+    ja:'int と float', en:'int and float',
+    inputs:[{ key:'kind', ja:'数の書き方', en:'Write the number as', value:'int', options:[['int','3 · int'],['float','3.0 · float']] }],
+    run:({ kind }) => {
+      const decimal=kind==='float';
+      return result(`value = ${decimal?'3.0':'3'}\nprint(type(value))\nprint(value + 1)`,decimal?"<class 'float'>\n4.0":"<class 'int'>\n4",'小数点があるとfloat。計算後もfloatとして表示されます。','A decimal point makes a float. The result stays a float.');
+    }
+  },
+  {
     ja:'input と型変換', en:'Input and conversion',
     inputs:[{ key:'years', ja:'何年後？', en:'How many years?', value:'5' }],
     run:({ years }) => {
@@ -214,8 +222,8 @@ const topics = [
   },
   {
     ja:'辞書とオブジェクト', en:'Dictionaries and objects',
-    inputs:[{ key:'place', ja:'場所', en:'Place', value:'Tokyo' },{ key:'mag', ja:'マグニチュード', en:'Magnitude', value:'4.2', type:'number' }],
-    run:({ place, mag }) => result(`quake = {"place": ${string(place)}, "mag": ${number(mag)}}\nprint(quake["place"])\nprint(quake["mag"])`,`${place}\n${number(mag)}`,'辞書は名前つきの項目をまとめるPythonのオブジェクトです。','A dictionary is a Python object that groups named fields.')
+    inputs:[{ key:'place', ja:'場所', en:'Place', value:'Tokyo' },{ key:'mag', ja:'マグニチュード', en:'Magnitude', value:'4.2', type:'number' },{ key:'lat', ja:'緯度', en:'Latitude', value:'35.68', type:'number' },{ key:'lon', ja:'経度', en:'Longitude', value:'139.69', type:'number' }],
+    run:({ place, mag, lat, lon }) => result(`quake = {\n    "place": ${string(place)},\n    "mag": ${number(mag)},\n    "latitude": ${number(lat)},\n    "longitude": ${number(lon)}\n}\nprint(quake["place"])\nprint(quake["mag"])\nprint(quake["latitude"], quake["longitude"])`,`${place}\n${number(mag)}\n${number(lat)} ${number(lon)}`,'辞書は場所・大きさ・緯度・経度を名前で取り出せます。','A dictionary lets us retrieve place, magnitude, latitude, and longitude by name.')
   }
 ];
 
@@ -373,6 +381,24 @@ document.getElementById('markdown-input').addEventListener('input',()=>{
 });
 document.getElementById('previous-slide').addEventListener('click',()=>showSlide(slideIndex-1));
 document.getElementById('next-slide').addEventListener('click',()=>showSlide(slideIndex+1));
+const slideStage=document.querySelector('.slide-stage');
+let swipeStart=null;
+slideStage.addEventListener('touchstart',event=>{
+  if (event.touches.length!==1 || event.target.closest('pre, a, button, input, textarea')) return;
+  const touch=event.touches[0];
+  const bounds=slideStage.getBoundingClientRect();
+  if (touch.clientX-bounds.left<24 || bounds.right-touch.clientX<24) return;
+  swipeStart={ x:touch.clientX, y:touch.clientY };
+},{passive:true});
+slideStage.addEventListener('touchend',event=>{
+  if (!swipeStart || event.changedTouches.length!==1) return;
+  const dx=event.changedTouches[0].clientX-swipeStart.x;
+  const dy=event.changedTouches[0].clientY-swipeStart.y;
+  swipeStart=null;
+  if (Math.abs(dx)<55 || Math.abs(dx)<Math.abs(dy)*1.25) return;
+  showSlide(slideIndex+(dx<0?1:-1));
+},{passive:true});
+slideStage.addEventListener('touchcancel',()=>{ swipeStart=null; },{passive:true});
 fullscreenButton.addEventListener('click',toggleSlidesFullscreen);
 document.addEventListener('fullscreenchange',updateFullscreenControl);
 document.addEventListener('keydown',event=>{

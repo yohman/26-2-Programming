@@ -15,18 +15,23 @@ html[data-language="ja"] .en, html[data-language="en"] .ja { display:none !impor
 .language-toggle { justify-self:end; min-width:3rem; padding:.45rem .55rem; border:1px solid var(--line); background:transparent; color:var(--blue); font:700 .7rem var(--mono); }
 .language-toggle:hover { background:#fff; }
 main { max-width:1500px; margin:auto; padding:0 clamp(1rem,3vw,2.5rem) 3rem; }
+.lecture-agenda { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:.55rem; margin:0 0 1.25rem; padding:0; list-style:none; }
+.lecture-agenda li { display:grid; gap:.2rem; min-width:0; padding:.8rem .9rem; background:#e7ecee; }
+.lecture-agenda time { color:var(--blue); font:750 .7rem var(--mono); }
+.lecture-agenda strong { font-size:clamp(.8rem,1.25vw,.98rem); line-height:1.3; }
+.lecture-agenda small { color:var(--muted); font:650 .56rem var(--mono); letter-spacing:.03em; }
 .lecture-tabs { display:flex; gap:.4rem; margin:0 0 1rem; }
 .lecture-tabs button { min-width:10.5rem; padding:.8rem 1.15rem; border:0; background:#e4e7e6; color:var(--muted); font-weight:750; text-align:center; }
 .lecture-tabs button:hover { background:#d9e3e8; color:var(--blue); }
 .lecture-tabs button.is-selected { background:var(--blue); color:#fff; }
 .lecture-tabs button:focus-visible, button:focus-visible, a:focus-visible { outline:3px solid #be7e32; outline-offset:3px; }
 .view[hidden], .slide[hidden] { display:none !important; }
-.slide-stage { background:#fff; }
+.slide-stage { background:#fff; touch-action:pan-y; }
 .slide { min-height:min(74vh,780px); padding:clamp(2rem,5vw,5.5rem); }
 .slide:nth-child(1) { background:#edf2f3; }
 .slide:nth-child(2) { background:#f6f7f3; }
 .slide:nth-child(9) { background:#f1f5f5; }
-.slide:nth-child(10), .slide:nth-child(11) { background:#edf2f3; }
+.slide:nth-child(n+10) { background:#edf2f3; }
 .slide-kicker { margin:0 0 1.35rem; color:var(--blue); font:700 .72rem var(--mono); letter-spacing:.08em; }
 .slide h1, .slide h2, .playground h1 { max-width:1050px; margin:0 0 2rem; font-weight:800; letter-spacing:-.055em; line-height:1.12; }
 .slide h1 { font-size:clamp(2.8rem,5.7vw,6.8rem); }
@@ -57,9 +62,14 @@ main { max-width:1500px; margin:auto; padding:0 clamp(1rem,3vw,2.5rem) 3rem; }
 .cell-example-heading { display:flex; justify-content:space-between; gap:1rem; align-items:baseline; margin-bottom:.8rem; color:#365a73; font-size:.86rem; font-weight:750; }
 .cell-example-heading b { font:750 .72rem var(--mono); letter-spacing:.04em; }
 .cell-example--markdown .cell-example-heading { color:#496c5a; }
-.cell-example pre { margin:0; padding:1rem; background:#e9f0eb; font:clamp(.9rem,1.45vw,1.2rem)/1.5 var(--mono); }
+.cell-example pre { margin:0; padding:1rem; background:#e9f0eb; font:clamp(.9rem,1.45vw,1.2rem)/1.5 var(--mono); white-space:pre-wrap; overflow-wrap:anywhere; }
 .cell-example--code pre { background:var(--code); color:#edf4f7; }
 .cell-example-result { display:flex; justify-content:space-between; align-items:center; gap:1rem; min-height:4.5rem; padding:1rem; background:#f1f5f3; }
+.cell-example-result--markdown { display:block; }
+.cell-example-result--markdown small { display:block; margin-bottom:.4rem; }
+.cell-example-result--markdown h3 { margin:0 0 .25rem; font-size:1.05rem; }
+.cell-example-result--markdown p { margin:0; color:var(--ink); font-size:.85rem; }
+.cell-example-result--markdown ul { margin:.3rem 0 0; padding-left:1.2rem; font-size:.83rem; }
 .cell-example--code .cell-example-result { background:#e5ebef; }
 .cell-example-result small { color:var(--muted); font:700 .62rem var(--mono); }
 .cell-example-result strong { font:700 clamp(1.3rem,2.7vw,2rem) var(--mono); }
@@ -71,17 +81,35 @@ main { max-width:1500px; margin:auto; padding:0 clamp(1rem,3vw,2.5rem) 3rem; }
 .notebook-step pre { min-height:6.6rem; margin:0; padding:1rem; overflow-x:auto; background:#e9f0eb; font:clamp(.75rem,1.1vw,.96rem)/1.65 var(--mono); white-space:pre-wrap; overflow-wrap:anywhere; }
 .notebook-step--code pre { background:var(--code); color:#edf4f7; }
 .notebook-step output { display:block; padding:.75rem 1rem; background:#e5ebef; color:var(--blue); font:750 .88rem var(--mono); }
+.notebook-step-result { min-height:7.1rem; padding:.65rem .85rem; background:#f2f5f3; }
+.notebook-step-result small { margin-bottom:.3rem; color:#496c5a; font-size:.58rem; }
+.notebook-step-result h3 { margin:0 0 .25rem; font-size:1rem; line-height:1.3; }
+.notebook-step-result p { margin:0; font-size:.72rem; line-height:1.55; }
 .notebook-action { max-width:75rem; margin:1.4rem 0 0; padding:1rem 1.2rem; background:#dfe9e5; color:#315d4c; font-size:clamp(.92rem,1.4vw,1.1rem); }
 .comparison { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1.25rem; max-width:950px; }
 .comparison > div { background:var(--blue-light); }
 .comparison pre { margin:0; padding:1.6rem; overflow-x:auto; background:var(--code); color:#ecf4fa; font-size:clamp(1.1rem,2.2vw,1.8rem); }
 .comparison output { display:block; padding:1rem 1.6rem; color:var(--blue); font:700 clamp(1.7rem,4vw,3rem) var(--mono); }
+.type-comparison small { display:block; padding:.75rem 1rem; color:var(--blue); font:750 .68rem var(--mono); }
+.type-comparison output { font-size:clamp(1rem,2.2vw,1.6rem); }
 .code-and-note { display:grid; grid-template-columns:minmax(0,1.4fr) minmax(14rem,.6fr); max-width:1100px; }
 .code-and-note pre, .predict-layout pre { min-width:0; margin:0; padding:clamp(1.3rem,2.5vw,2rem); overflow-x:auto; background:var(--code); color:#e8f0f6; font-size:clamp(.88rem,1.6vw,1.28rem); line-height:1.8; }
 .result-card { display:flex; flex-direction:column; justify-content:center; gap:1rem; padding:2rem; background:var(--blue-light); color:var(--blue); }
 .result-card small, .type-examples small, .panel-caption { color:#8197a8; font:700 .72rem var(--mono); letter-spacing:.08em; }
 .result-card strong { font-size:clamp(1.6rem,3.4vw,3.3rem); letter-spacing:-.04em; overflow-wrap:anywhere; }
 .result-card--sentence strong { font-size:clamp(1.15rem,2vw,2rem); }
+.result-card--lines strong { font-size:clamp(1rem,1.8vw,1.45rem); line-height:1.8; }
+.marker-result { align-items:start; background:#dfe9e9; }
+.marker-result strong { font-size:clamp(1.1rem,2vw,1.75rem); line-height:1.5; }
+.marker-result > span { align-self:center; color:#ad623c; font-size:3rem; }
+.quake-record { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:.7rem; max-width:1150px; }
+.quake-record > div { display:grid; align-content:space-between; gap:1.1rem; min-height:10rem; min-width:0; padding:1.1rem; background:#fff; }
+.quake-record .quake-coordinate { background:#dfe9e9; }
+.quake-record small { color:var(--blue); font:750 .63rem var(--mono); }
+.quake-record strong { font-size:clamp(1rem,2vw,1.7rem); line-height:1.25; overflow-wrap:anywhere; }
+.json-example { max-width:1150px; }
+.json-example > small { display:block; padding:.65rem .85rem; background:#dfe9e9; color:var(--blue); font:750 .62rem var(--mono); }
+.json-example pre { margin:0; padding:1.2rem 1.4rem; overflow-x:auto; background:var(--code); color:#edf4f7; font:clamp(.72rem,1.12vw,1rem)/1.62 var(--mono); white-space:pre-wrap; overflow-wrap:anywhere; }
 .type-examples { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:1rem; }
 .type-examples > div { min-width:0; padding:1.4rem; background:var(--blue-light); }
 .type-examples small { color:var(--blue); }
@@ -161,7 +189,7 @@ main { max-width:1500px; margin:auto; padding:0 clamp(1rem,3vw,2.5rem) 3rem; }
 .playground-actions button { flex:0 0 auto; padding:.75rem 1.15rem; border:0; background:var(--blue); color:#fff; font-size:.84rem; font-weight:750; }
 .playground-actions button:hover { background:var(--ink); }
 .playground-actions p { margin:0; color:var(--muted); font-size:.79rem; }
-@media (max-width:800px) { .lecture-header { grid-template-columns:1fr auto; }.lecture-mark { display:none; }.slide { min-height:0; padding:2rem 1.25rem; }.code-and-note,.predict-layout,.demo-grid,.playground-intro,.playground-grid { grid-template-columns:1fr; }.type-examples,.notebook-sequence { grid-template-columns:1fr; }.playground-topics { display:flex; overflow-x:auto; }.playground-topics button { min-width:8.5rem; }.playground-intro { gap:.7rem; }.predict-questions { padding:1.2rem; }.predict-questions p { display:inline-block; }.demo-map { min-height:14rem; } }
+@media (max-width:800px) { .lecture-header { grid-template-columns:1fr auto; }.lecture-mark { display:none; }.lecture-agenda { grid-template-columns:repeat(2,minmax(0,1fr)); }.slide { min-height:0; padding:2rem 1.25rem; }.cell-comparison,.code-and-note,.predict-layout,.demo-grid,.playground-intro,.playground-grid { grid-template-columns:1fr; }.type-examples,.notebook-sequence { grid-template-columns:1fr; }.quake-record { grid-template-columns:repeat(2,minmax(0,1fr)); }.playground-topics { display:flex; overflow-x:auto; }.playground-topics button { min-width:8.5rem; }.playground-intro { gap:.7rem; }.predict-questions { padding:1.2rem; }.predict-questions p { display:inline-block; }.demo-map { min-height:14rem; } }
 @media (max-width:650px) { .markdown-workbench,.markdown-example-pair { grid-template-columns:1fr; }.markdown-source, .markdown-rendered { min-height:0; }.markdown-source textarea { min-height:13rem; }.markdown-workbench .markdown-preview-content { min-height:13rem; } }
 @media (max-width:520px) { .comparison,.cell-comparison,.playground-panels { grid-template-columns:1fr; }.lecture-tabs button { flex:1; min-width:0; }.playground-subnav { width:100%; }.playground-subnav button { min-width:0; flex:1; }.slide h1 { font-size:2.65rem; }.slide h2 { font-size:2.1rem; }.slide-controls { gap:.3rem; }.slide-nav-group { gap:.15rem; }.slide-controls button { min-width:0; padding:.55rem .4rem; }.slide-controls .slide-fullscreen { padding:.55rem .4rem; }.playground-actions { align-items:start; flex-direction:column; } }
 @media print { @page { size: 13.333in 7.5in; margin:0; } body { background:#fff; } .lecture-header,.lecture-tabs,.slide-controls,.playground { display:none !important; } main { max-width:none; padding:0; } .slide,.slide[hidden] { display:block !important; width:100%; min-height:7.5in; break-after:page; padding:.7in; } .slide:last-child { break-after:auto; } }

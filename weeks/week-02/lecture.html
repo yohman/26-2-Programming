@@ -9,13 +9,14 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="lecture.css?v=20261007-run-control">
-  <script src="lecture.js?v=20261007-lesson-flow" defer></script>
+  <link rel="stylesheet" href="lecture.css?v=20261007-ui">
+  <link rel="stylesheet" href="../../assets/ui.css?v=20261007-ui">
+  <script src="lecture.js?v=20261007-ui" defer></script>
 </head>
-<body>
+<body class="lecture-page">
   <header class="lecture-header">
     <a id="lecture-return" class="return-link" href="../../agenda.html?open=02#week-02"><span class="ja">← 授業予定に戻る</span><span class="en">← Back to agenda</span></a>
-    <span class="lecture-mark">PRG / 26–2 · WEEK 02</span>
+    <nav class="lecture-view-nav" aria-label="Week 02 lecture"><a href="#slides" data-lecture-destination="slides"><span class="ja">講義スライド</span><span class="en">Lecture slides</span></a><a href="#playground" data-lecture-destination="playground">Playground</a></nav>
     <button id="language-toggle" class="language-toggle" type="button" aria-label="Switch to English">EN</button>
   </header>
   <main>
@@ -166,9 +167,9 @@
       <nav class="slide-controls" aria-label="Slide navigation"><div class="slide-nav-group"><button id="previous-slide" type="button">← <span class="ja">前へ</span><span class="en">Previous</span></button><span id="slide-count" aria-live="polite">01 / 16</span><button id="next-slide" type="button"><span class="ja">次へ</span><span class="en">Next</span> →</button></div><button id="slide-fullscreen" class="slide-fullscreen" type="button" aria-pressed="false"><span data-fullscreen-enter>⛶ <span class="ja">全画面</span><span class="en">Full screen</span></span><span data-fullscreen-exit hidden>⛶ <span class="ja">全画面を終了</span><span class="en">Exit full screen</span></span></button></nav>
     </div>
     <section id="playground-view" class="view playground" hidden>
-      <nav class="playground-subnav" role="tablist" aria-label="Playground language">
-        <button type="button" role="tab" id="markdown-playground-tab" data-playground="markdown" aria-controls="markdown-playground" aria-selected="true">Markdown <span class="ja">/ 説明を書く</span><span class="en">/ write</span></button>
-        <button type="button" role="tab" id="python-playground-tab" data-playground="python" aria-controls="python-playground" aria-selected="false">Python <span class="ja">/ コードを動かす</span><span class="en">/ run code</span></button>
+      <nav class="playground-subnav ui-tabs" role="tablist" aria-label="Playground language">
+        <button type="button" class="ui-tab" role="tab" id="markdown-playground-tab" data-playground="markdown" aria-controls="markdown-playground" aria-selected="true">Markdown <span class="ja">/ 説明を書く</span><span class="en">/ write</span></button>
+        <button type="button" class="ui-tab" role="tab" id="python-playground-tab" data-playground="python" aria-controls="python-playground" aria-selected="false">Python <span class="ja">/ コードを動かす</span><span class="en">/ run code</span></button>
       </nav>
       <div id="markdown-playground" role="tabpanel" aria-labelledby="markdown-playground-tab">
         <div class="playground-intro"><div><p class="slide-kicker">MARKDOWN PLAYGROUND</p><h1><span class="ja">書いて、すぐに見る。</span><span class="en">Write it. See it.</span></h1></div><p class="ja">左のMarkdownを変えると、右にNotebookのMarkdown Cellと同じように表示されます。見出し、強調、リストを試してみよう。</p><p class="en">Edit the Markdown on the left. See how it would appear in a notebook Markdown cell on the right. Try headings, emphasis, and lists.</p></div>
@@ -180,7 +181,8 @@
         <section class="markdown-library"><h2><span class="ja">Markdownの例</span><span class="en">Markdown examples</span></h2><div id="markdown-examples" class="markdown-examples"></div></section>
       </div>
       <div id="python-playground" role="tabpanel" aria-labelledby="python-playground-tab" hidden>
-        <div class="playground-intro"><div><p class="slide-kicker">PYTHON PLAYGROUND</p><h1><span class="ja">一行変える。結果が変わる。</span><span class="en">Change a value. See the result.</span></h1></div><p class="ja">テーマを選び、値を変えて「実行」を押そう。これは<strong>表示したPythonの動きを再現する練習用シミュレーター</strong>です。自由なPythonコードはNotebookで実行してください。</p><p class="en">Choose a topic, change the inputs, and press Run. This is a <strong>guided simulation</strong> of the shown Python lines. Run your own code in a notebook.</p></div>
+        <div class="playground-intro"><div><p class="slide-kicker">PYTHON PLAYGROUND</p><h1><span class="ja">一行変える。結果が変わる。</span><span class="en">Change a value. See the result.</span></h1></div><p class="ja">例を選び、値を変えて「実行する」。コードと結果を比べよう。<br>用意された例のシミュレーターです。自由なコードはNotebookで実行します。</p><p class="en">Choose an example, change a value, and run it. Compare the code and output.<br>These examples are simulated. Run your own code in a notebook.</p></div>
+        <label class="python-topic-select"><span class="ja">コードの例</span><span class="en">Code example</span><select id="python-topic-select" aria-label="Python code example"></select></label>
         <div class="playground-grid"><nav id="playground-topics" class="playground-topics" aria-label="Python examples"></nav><div class="playground-workbench"><div class="playground-toolbar"><div id="playground-controls" class="playground-controls"></div><button id="playground-run" type="button"><span class="ja">実行する</span><span class="en">Run example</span> ▶</button></div><div class="playground-panels"><div class="playground-code"><div class="panel-caption">PYTHON</div><pre><code id="playground-code"></code></pre></div><div class="playground-output"><div class="panel-caption">OUTPUT</div><pre id="playground-output"></pre></div></div><div class="playground-actions"><p id="playground-explanation" aria-live="polite"></p></div></div></div>
       </div>
     </section>

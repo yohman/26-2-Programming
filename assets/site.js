@@ -131,12 +131,12 @@ function tutorialTabsHtml(source) {
   const tabs = [...source.matchAll(/^###\s+(Windows|macOS)\s*\n([\s\S]*?)(?=^###\s+(?:Windows|macOS)\s*$|$(?![\s\S]))/gmi)];
   if (!tabs.length) return markdownHtml(source);
   const id = `tutorial-tabs-${Math.random().toString(36).slice(2, 9)}`;
-  const buttons = tabs.map(([, label], index) => `<button type="button" role="tab" id="${id}-tab-${index}" aria-controls="${id}-panel-${index}" aria-selected="${index === 0}" tabindex="${index === 0 ? '0' : '-1'}" data-tutorial-tab="${index}">${escapeHtml(label)}</button>`).join('');
+  const buttons = tabs.map(([, label], index) => `<button type="button" class="ui-tab" role="tab" id="${id}-tab-${index}" aria-controls="${id}-panel-${index}" aria-selected="${index === 0}" tabindex="${index === 0 ? '0' : '-1'}" data-tutorial-tab="${index}">${escapeHtml(label)}</button>`).join('');
   const panels = tabs.map(([, label, body], index) => {
     const nestedBody = markdownHtml(body.trim()).replace(/<(\/?)h([34])>/g, (_, closing, level) => `<${closing}h${Number(level) + 1}>`);
     return `<section role="tabpanel" id="${id}-panel-${index}" aria-labelledby="${id}-tab-${index}" data-tutorial-panel="${index}"${index === 0 ? '' : ' hidden'}><h3>${escapeHtml(label)}</h3>${nestedBody}</section>`;
   }).join('');
-  return `<div class="tutorial-tabs" data-tutorial-tabs><div class="tutorial-tab-list" role="tablist" aria-label="Operating system">${buttons}</div>${panels}</div>`;
+  return `<div class="tutorial-tabs" data-tutorial-tabs><div class="tutorial-tab-list ui-tabs" role="tablist" aria-label="Operating system">${buttons}</div>${panels}</div>`;
 }
 
 function tutorialMarkdownHtml(source) {
@@ -335,7 +335,7 @@ async function setupFinalProjectPage() {
 function fileType(href, external) {
   if (external) return 'LINK';
   const extension = href.split('?')[0].split('.').pop().toLowerCase();
-  return ({ pdf:'PDF', ipynb:'IPYNB', csv:'CSV', md:'MD', py:'PY', png:'PNG', jpg:'JPG', jpeg:'JPG', gif:'GIF', zip:'ZIP' })[extension] || 'FILE';
+  return ({ pdf:'PDF', ipynb:'IPYNB', csv:'CSV', md:'MD', py:'PY', html:'HTML', png:'PNG', jpg:'JPG', jpeg:'JPG', gif:'GIF', zip:'ZIP' })[extension] || 'FILE';
 }
 
 function resourcesHtml(body, onlyKinds = []) {
@@ -347,9 +347,10 @@ function resourcesHtml(body, onlyKinds = []) {
     if (href === 'content/final-project.md') return `<a class="project-resource-link" data-project-link href="final-project.html"><span><span class="lang-ja jp" lang="ja">最終プロジェクト要項</span><span class="lang-en">Final Project Requirements</span></span><b aria-hidden="true">→</b></a>`;
     const external = /^https?:/.test(href);
     const type = fileType(href, external);
-    const displayLabel = label.replace(/^Week\s+\d{2}\s+(?:In-Class|Challenge|Take-Home|Lecture|Setup)\s+—\s+/i, '');
+    const displayLabel = label.replace(/^Week\s+\d{2}\s+(?:In-Class|Challenge|Take-Home|Homework|Lecture|Setup)\s+—\s+/i, '').replace(/\s+Template$/i, '');
     const viewer = `viewer.html?file=${encodeURIComponent(href)}&title=${encodeURIComponent(label)}`;
-    return `<div class="file-action" data-kind="${escapeHtml(kind.toLowerCase())}" title="${escapeHtml(label)}"><span class="file-name">${escapeHtml(displayLabel)}</span><span class="file-type">${type}</span><span class="file-links"><a class="file-preview"${external ? '' : ' data-file-preview'} href="${external ? escapeHtml(href) : viewer}"${external ? ' target="_blank" rel="noopener"' : ''}><span class="lang-ja jp" lang="ja">${external ? '開く' : 'プレビュー'}</span><span class="lang-en">${external ? 'OPEN' : 'PREVIEW'}</span></a>${external ? '' : `<a class="file-download" href="${escapeHtml(href)}" download><span class="lang-ja jp" lang="ja">ダウンロード</span><span class="lang-en">DOWNLOAD</span></a>`}</span></div>`;
+    const direct = external || type === 'HTML';
+    return `<div class="file-action" data-kind="${escapeHtml(kind.toLowerCase())}" title="${escapeHtml(label)}"><span class="file-name">${escapeHtml(displayLabel)}</span><span class="file-type">${type}</span><span class="file-links"><a class="file-preview"${external ? '' : type === 'HTML' ? ' data-lecture-page' : ' data-file-preview'} href="${direct ? escapeHtml(href) : viewer}" aria-label="${escapeHtml(label)} — ${direct ? '開く / Open' : 'プレビュー / Preview'}"${external ? ' target="_blank" rel="noopener"' : ''}><span class="lang-ja jp" lang="ja">${direct ? '開く' : 'プレビュー'}</span><span class="lang-en">${direct ? 'Open' : 'Preview'}</span></a>${external ? '' : `<a class="file-download" href="${escapeHtml(href)}" download aria-label="${escapeHtml(label)} — ダウンロード / Download"><span class="lang-ja jp" lang="ja">ダウンロード</span><span class="lang-en">Download</span></a>`}</span></div>`;
   }).join('');
 }
 
@@ -450,7 +451,7 @@ function lectureTimelinesHtml(body) {
     const scaleNote = kind === 'languages' ? `<div class="history-scale-note"><span class="lang-en">Horizontal position = release year · bubble area = 2025 use</span><span class="lang-ja jp" lang="ja">横位置＝発表年 · 円の面積＝2025年の使用率</span><small class="lang-en">Stack Overflow “Have used” share (31,771 responses). Historic languages absent from the survey use the minimum marker.</small><small class="lang-ja jp" lang="ja">Stack Overflow「過去1年に使用」の割合（31,771回答）。調査にない歴史的言語は最小サイズ。</small><a href="https://survey.stackoverflow.co/2025/technology#1-programming-scripting-and-markup-languages" target="_blank" rel="noopener">SOURCE ↗</a></div>` : '';
     return `<div id="timeline-${kind}" role="tabpanel" aria-labelledby="${tabId}" data-lecture-timeline-panel="${kind}" hidden><div class="history-explorer${kind === 'languages' ? ' is-languages' : ''}" data-history-explorer tabindex="0" aria-label="${escapeHtml(label)}">${scaleNote}<p class="timeline-scroll-cue"><span class="lang-en">SCROLL THE TIMELINE →</span><span class="lang-ja jp" lang="ja">年表を横にスクロール →</span></p><div class="history-map-scroll"><div class="history-map ${kind === 'languages' ? 'is-bubble-map' : 'is-journey-map'}"><span class="history-axis" aria-hidden="true"></span>${ticks.join('')}<nav aria-label="${escapeHtml(label)} chronology">${events}</nav></div></div><div class="history-annotations">${details}</div></div></div>`;
   };
-  return `<section class="lecture-timelines" data-lecture-timelines><div class="lecture-timeline-tabs" role="tablist" aria-label="Lecture topics"><button type="button" role="tab" aria-selected="false" aria-expanded="false" aria-controls="timeline-journey" id="timeline-tab-journey" data-lecture-timeline-tab="journey"><span class="lang-en">My PC Journey</span><span class="lang-ja jp" lang="ja">私のPC史</span></button><button type="button" role="tab" aria-selected="false" aria-expanded="false" aria-controls="timeline-languages" id="timeline-tab-languages" data-lecture-timeline-tab="languages" tabindex="-1"><span class="lang-en">Programming Languages</span><span class="lang-ja jp" lang="ja">言語の歩み</span></button><button type="button" role="tab" aria-selected="false" aria-expanded="false" aria-controls="timeline-python" id="timeline-tab-python" data-lecture-timeline-tab="python" tabindex="-1"><span class="lang-en">Why Python?</span><span class="lang-ja jp" lang="ja">なぜPython？</span></button></div>${panel(journey, 'journey', 'My PC Journey', 'timeline-tab-journey')}${panel(languages, 'languages', 'Languages that changed the world', 'timeline-tab-languages')}${pythonPanel(pythonRows)}</section>`;
+  return `<section class="lecture-timelines" data-lecture-timelines><div class="lecture-timeline-tabs ui-tabs" role="tablist" aria-label="Lecture topics"><button type="button" class="ui-tab" role="tab" aria-selected="false" aria-expanded="false" aria-controls="timeline-journey" id="timeline-tab-journey" data-lecture-timeline-tab="journey"><span class="lang-en">My PC Journey</span><span class="lang-ja jp" lang="ja">私のPC史</span></button><button type="button" class="ui-tab" role="tab" aria-selected="false" aria-expanded="false" aria-controls="timeline-languages" id="timeline-tab-languages" data-lecture-timeline-tab="languages" tabindex="-1"><span class="lang-en">Programming Languages</span><span class="lang-ja jp" lang="ja">言語の歩み</span></button><button type="button" class="ui-tab" role="tab" aria-selected="false" aria-expanded="false" aria-controls="timeline-python" id="timeline-tab-python" data-lecture-timeline-tab="python" tabindex="-1"><span class="lang-en">Why Python?</span><span class="lang-ja jp" lang="ja">なぜPython？</span></button></div>${panel(journey, 'journey', 'My PC Journey', 'timeline-tab-journey')}${panel(languages, 'languages', 'Languages that changed the world', 'timeline-tab-languages')}${pythonPanel(pythonRows)}</section>`;
 }
 
 function setupLectureTimelineTabs(root = document) {
@@ -664,7 +665,7 @@ function agendaWeek(w, defaultOpen = false) {
   if (notebook) classTabs.push({ key:'notebook', en:'In-class activity', ja:'授業内アクティビティ', content:`<div class="class-task">${bilingualHtml(notebook.body)}${resourceBlock(notebookFiles, false)}</div>` });
   if (challenge) classTabs.push({ key:'challenge', en:'30-min challenge', ja:'30分チャレンジ', content:`<div class="class-task">${bilingualHtml(challenge.body)}${resourceBlock(challengeFiles + (w.week === 2 ? sharedFiles : ''), false)}</div>` });
   const tabId = `class-${String(w.week).padStart(2,'0')}`;
-  const inClassCopy = classTabs.length ? `<div class="class-tabs"><div class="class-tab-list" role="tablist" aria-label="In-class activities" style="--class-tab-count:${classTabs.length}">${classTabs.map((tab, index) => `<button type="button" class="class-tab" role="tab" id="${tabId}-${tab.key}-tab" aria-controls="${tabId}-${tab.key}-panel" aria-selected="${index === 0}" tabindex="${index === 0 ? '0' : '-1'}"><span class="lang-en">${tab.en}</span><span class="lang-ja jp" lang="ja">${tab.ja}</span></button>`).join('')}</div>${classTabs.map((tab, index) => `<div class="class-tab-panel" role="tabpanel" id="${tabId}-${tab.key}-panel" aria-labelledby="${tabId}-${tab.key}-tab"${index === 0 ? '' : ' hidden'}>${tab.content}</div>`).join('')}</div>${w.week === 1 || w.week === 2 ? '' : resourceBlock(sharedFiles)}` : '';
+  const inClassCopy = classTabs.length ? `<div class="class-tabs"><div class="class-tab-list ui-tabs" role="tablist" aria-label="In-class activities" style="--class-tab-count:${classTabs.length}">${classTabs.map((tab, index) => `<button type="button" class="class-tab ui-tab" role="tab" id="${tabId}-${tab.key}-tab" aria-controls="${tabId}-${tab.key}-panel" aria-selected="${index === 0}" tabindex="${index === 0 ? '0' : '-1'}"><span class="lang-en">${tab.en}</span><span class="lang-ja jp" lang="ja">${tab.ja}</span></button>`).join('')}</div>${classTabs.map((tab, index) => `<div class="class-tab-panel" role="tabpanel" id="${tabId}-${tab.key}-panel" aria-labelledby="${tabId}-${tab.key}-tab"${index === 0 ? '' : ' hidden'}>${tab.content}</div>`).join('')}</div>${w.week === 1 || w.week === 2 ? '' : resourceBlock(sharedFiles)}` : '';
   const lectureResource = resources?.body.split('\n').map(line => line.trim()).find(line => /\{lecture\}$/.test(line));
   const lectureMatch = lectureResource?.match(/^[-]\s*\[([^\]]+)\]\(([^\s)]+)\)/);
   const lecturePath = lectureMatch?.[2] || '';
@@ -672,9 +673,9 @@ function agendaWeek(w, defaultOpen = false) {
   const lectureThumb = lecturePath && fileType(lecturePath, false) === 'PDF' ? pdfPageImage(lecturePath, w.week === 1 ? 5 : 1) : '';
   const lectureDeck = lectureFiles ? `<aside class="lecture-deck-panel"><p class="lecture-deck-label"><span class="lang-en">LECTURE SLIDES</span><span class="lang-ja jp" lang="ja">講義スライド</span></p>${lectureThumb ? `<a class="lecture-deck-thumbnail" data-file-preview href="${lectureViewer}" aria-label="${escapeHtml(lectureMatch[1])}"><img src="${escapeHtml(lectureThumb)}" alt="${escapeHtml(lectureMatch[1])} slide preview" loading="lazy"></a>` : ''}<p class="lecture-deck-title">${escapeHtml(lectureMatch?.[1] || '')}</p></aside>` : '';
   const weekTwoLectureTabs = `<div class="class-tabs week-lecture-tabs">
-    <div class="class-tab-list" role="tablist" aria-label="Week 02 lecture materials">
-      <button type="button" class="class-tab" role="tab" id="week-02-slides-tab" aria-controls="week-02-slides-panel" aria-selected="true" tabindex="0"><span class="lang-ja jp" lang="ja">講義スライド</span><span class="lang-en">Lecture slides</span></button>
-      <button type="button" class="class-tab" role="tab" id="week-02-playground-tab" aria-controls="week-02-playground-panel" aria-selected="false" tabindex="-1">Playground</button>
+    <div class="class-tab-list ui-tabs" role="tablist" aria-label="Week 02 lecture materials">
+      <button type="button" class="class-tab ui-tab" role="tab" id="week-02-slides-tab" aria-controls="week-02-slides-panel" aria-selected="true" tabindex="0"><span class="lang-ja jp" lang="ja">講義スライド</span><span class="lang-en">Lecture slides</span></button>
+      <button type="button" class="class-tab ui-tab" role="tab" id="week-02-playground-tab" aria-controls="week-02-playground-panel" aria-selected="false" tabindex="-1">Playground</button>
     </div>
     <div class="class-tab-panel" role="tabpanel" id="week-02-slides-panel" aria-labelledby="week-02-slides-tab">
       <a class="week-slide-preview" data-lecture-page href="weeks/week-02/lecture.html#slides">
@@ -734,13 +735,21 @@ function setupClassTabs(root = document) {
   root.querySelectorAll('.class-tabs').forEach(group => {
     const buttons = [...group.querySelectorAll('[role="tab"]')];
     const panels = [...group.querySelectorAll('[role="tabpanel"]')];
-    const select = index => {
+    if (!buttons.length) return;
+    const storageKey = `programming-tab:${buttons[0].id}`;
+    const select = (index, remember = true) => {
       buttons.forEach((button, i) => {
         button.setAttribute('aria-selected', String(i === index));
         button.tabIndex = i === index ? 0 : -1;
       });
       panels.forEach((panel, i) => { panel.hidden = i !== index; });
+      if (remember) { try { sessionStorage.setItem(storageKey, String(index)); } catch (_) { /* Tabs still work without storage. */ } }
     };
+    try {
+      const saved = sessionStorage.getItem(storageKey);
+      const index = Number(saved);
+      if (saved !== null && Number.isInteger(index) && index >= 0 && index < buttons.length) select(index, false);
+    } catch (_) { /* Use the default tab. */ }
     buttons.forEach((button, index) => {
       button.addEventListener('click', () => select(index));
       button.addEventListener('keydown', event => {
@@ -967,7 +976,7 @@ async function setupFileViewer() {
   if (!/^(weeks|content)\//.test(file)) { root.innerHTML = `<div class="viewer-title"><p class="eyebrow">FILE PREVIEW</p><h1>${escapeHtml(title)}</h1>${actions('')}</div><p class="agenda-locked">File preview is unavailable.</p>`; return; }
   const extension = file.split('.').pop().toLowerCase();
   const isTutorial = /^weeks\/week-01\/tutorials\//.test(file);
-  const download = isTutorial ? '' : `<a class="file-download viewer-download" href="${escapeHtml(file)}" download>↓ <span>DOWNLOAD</span></a>`;
+  const download = isTutorial ? '' : `<a class="file-download viewer-download" href="${escapeHtml(file)}" download><span class="lang-ja jp" lang="ja">ダウンロード</span><span class="lang-en">Download</span></a>`;
   try {
     if (extension === 'pdf') {
       const pageCount = pdfPageCounts[file] || 1;
@@ -987,14 +996,14 @@ async function setupFileViewer() {
     if (extension === 'ipynb') {
       const notebook = JSON.parse(source);
       const cells = notebook.cells || [];
-      const visibleCells = file === 'weeks/week-01/week-01-in-class-first-python.ipynb' ? cells : cells.slice(0, 12);
+      const visibleCells = cells;
       const notebookText = value => Array.isArray(value) ? value.join('') : (value || '');
       const preview = visibleCells.map(cell => {
         if (cell.cell_type !== 'code') return `<section class="notebook-cell markdown-cell"><div class="cell-label">Markdown</div><div class="notebook-markdown">${markdownHtml(notebookText(cell.source))}</div></section>`;
         const output = (cell.outputs || []).map(item => notebookText(item.text || item.data?.['text/plain'])).filter(Boolean).join('\n');
         return `<section class="notebook-cell code-cell"><div class="cell-label"><span>▶</span> Code</div><div class="notebook-code-content"><pre class="code-block"><code>${numberedCodeHtml(notebookText(cell.source))}</code></pre>${output ? `<div class="notebook-output"><span>OUTPUT</span><pre>${escapeHtml(output)}</pre></div>` : ''}</div></section>`;
       }).join('');
-      root.innerHTML = `<div class="viewer-title"><p class="eyebrow">JUPYTER NOTEBOOK · ${cells.length} CELLS</p><h1>${escapeHtml(title)}</h1>${actions(download)}</div><section class="notebook-shell"><header class="notebook-toolbar"><span class="notebook-tab">${escapeHtml(title)} · Preview</span><span class="notebook-run">▶ Run All</span><span class="notebook-kernel">Python 3.12</span></header><article class="notebook-preview">${preview}</article></section>`;
+      root.innerHTML = `<div class="viewer-title"><p class="eyebrow">JUPYTER NOTEBOOK · ${cells.length} CELLS</p><h1>${escapeHtml(title)}</h1>${actions(download)}</div><section class="notebook-shell"><header class="notebook-toolbar"><span class="notebook-tab">${escapeHtml(file.split('/').pop())}</span><span class="notebook-readonly"><span class="lang-ja jp" lang="ja">プレビュー · 読み取り専用</span><span class="lang-en">Preview · Read only</span></span></header><article class="notebook-preview">${preview}</article></section>`;
       return;
     }
     if (isTutorial) {

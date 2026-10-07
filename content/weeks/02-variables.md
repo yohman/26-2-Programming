@@ -45,6 +45,15 @@ JP: **今日の最優先：全員がNotebookを動かせること。**
 
 止まったら：Notebookの操作が出ない → **Jupyter**拡張機能を確認。`.venv`がない → **Python: Create Environment → Venv**。Cellが終わらない → **Restart Kernel**。待たずに画面を見せて相談する。[Kernelの手順](viewer.html?file=weeks%2Fweek-01%2Ftutorials%2F04-environment-and-kernel.md) · [Notebookの手順](viewer.html?file=weeks%2Fweek-01%2Ftutorials%2F05-jupyter-notebook.md)
 
+## Tutorials
+- [Pythonをインストールする / Install Python](weeks/week-01/tutorials/01-install-python.md) {tutorial}
+- [VS Codeを準備する / Set up VS Code](weeks/week-01/tutorials/02-install-vscode.md) {tutorial}
+- [授業フォルダをつくる / Create the course workspace](weeks/week-01/tutorials/03-course-workspace.md) {tutorial}
+- [`.venv`とKernelをつなぐ / Environment and kernel](weeks/week-01/tutorials/04-environment-and-kernel.md) {tutorial}
+- [Jupyter Notebookの使い方 / Use a notebook](weeks/week-01/tutorials/05-jupyter-notebook.md) {tutorial}
+- [Markdownで説明を書く / Markdown basics](weeks/week-01/tutorials/06-markdown-basics.md) {tutorial}
+- [Python BasicsとローカルChallenge / Python basics](weeks/week-01/tutorials/07-python-basics-and-challenges.md) {tutorial}
+
 ## In-Class Notebook
 EN: **Bring back your Week 01 homework.** Open your own “Message from the Future” notebook. If you did not finish it, use the same template and complete it now. Check that `input()` returns text, convert the number of years with `int()`, and display the calculated year in an f-string. Run it with two different inputs; add one Markdown sentence about what changed. Then show the result to a partner. Your idea and wording should remain your own.
 JP: **先週の宿題を授業で使う。** 自分の「未来からのメッセージ」Notebookを開く。未完成なら同じテンプレートから今ここで完成させる。`input()`は文字を返すことを確認し、年数を`int()`で数に変え、計算した年をf文字列で表示する。異なる入力で二回実行し、変わった点をMarkdown Cellに一文書く。最後に隣の人へ見せる。内容と言葉は自分のものにする。

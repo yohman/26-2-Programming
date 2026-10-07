@@ -1,0 +1,138 @@
+/* Shared student interface: blue actions, sage practice, warm homework.
+   These components are used by the agenda, tutorials, previews, and lecture. */
+:root {
+  --paper: #f5f4ef;
+  --surface: #fff;
+  --surface-muted: #e9eceb;
+  --ink: #202a31;
+  --muted: #59666d;
+  --line: #d2dadd;
+  --blue: #315876;
+  --blue-pale: #e8eef2;
+  --blue-light: #e8eef2;
+  --code: #162b3c;
+  --practice: #e3ede7;
+  --homework: #f0e6da;
+  --max: 1180px;
+  --sans: "Manrope", -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", sans-serif;
+  --mono: "DM Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+body { font-family: var(--sans); }
+button, input, select, textarea { border-radius: 0; }
+a, button, input, select, textarea, summary { touch-action: manipulation; }
+:is(a, button, input, select, textarea, summary):focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }
+button:disabled { cursor: default; }
+.language-toggle { min-width: 3rem; min-height: 2.5rem; padding: .5rem .65rem; border: 0; background: var(--surface-muted); color: var(--blue); font: 750 .75rem var(--sans); }
+.language-toggle:hover { background: var(--blue); color: #fff; }
+.site-nav a, .lecture-view-nav a { display: inline-flex; align-items: center; min-height: 2.5rem; color: var(--muted); font: 750 .8rem var(--sans); letter-spacing: 0; text-decoration: none; }
+.site-nav a[aria-current], .site-nav a:hover, .lecture-view-nav a[aria-current], .lecture-view-nav a:hover { color: var(--blue); }
+.viewer-back, .project-back, .return-link { display: inline-flex; align-items: center; min-height: 2.5rem; color: var(--blue); font: 750 .8rem var(--sans); letter-spacing: 0; }
+.viewer-back:hover, .project-back:hover, .return-link:hover { text-decoration: underline; text-underline-offset: 4px; }
+
+/* Tabs join their panel. Color identifies the selected state everywhere. */
+.ui-tabs { display: flex; gap: .25rem; margin: 0; padding: 0; width: 100%; overflow-x: auto; }
+.ui-tabs > .ui-tab { flex: 1 0 auto; min-width: 0; min-height: 2.75rem; padding: .75rem 1rem; border: 0; border-top: 3px solid transparent; background: #dce4e7; color: #3f5260; font: 750 .85rem/1.35 var(--sans); text-align: center; cursor: pointer; }
+.ui-tabs > .ui-tab:hover { background: #eaf0f2; color: var(--blue); }
+.ui-tabs > .ui-tab[aria-selected="true"] { border-top-color: var(--blue); background: #fff; color: #173e6f; }
+.class-tabs > .class-tab-panel { padding: 1.25rem; background: #fff; }
+.class-tab-list.ui-tabs > .ui-tab { flex: 1 1 0; white-space: normal; overflow-wrap: anywhere; }
+.tutorial-tab-list.ui-tabs { width: fit-content; }
+.tutorial-tabs [role="tabpanel"] { background: #fff; }
+.lecture-timeline-tabs.ui-tabs { margin-bottom: .75rem; }
+.playground-subnav.ui-tabs { width: fit-content; }
+
+/* Keep week navigation within reach, including on a phone. */
+.week-shortcuts { position: sticky; top: 0; z-index: 20; display: grid; grid-template-columns: repeat(14, minmax(4.6rem, 1fr)); gap: .35rem; padding-top: .65rem; padding-bottom: .65rem; margin-bottom: 1.5rem; overflow-x: auto; background: var(--paper); scrollbar-width: thin; }
+.week-shortcut { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 3.5rem; gap: .4rem; padding: .65rem .35rem; }
+.week-shortcut strong { font-size: 1.05rem; }
+.week-shortcut span { font-size: .65rem; }
+.agenda-page .week { scroll-margin-top: 6rem; }
+.week-summary-copy .week-title { line-height: 1.2; }
+.agenda-page .week-overview { font-size: .9rem; line-height: 1.65; }
+.agenda-page .week-schedule { font-size: .75rem; }
+.agenda-page .week-schedule small { font-size: .65rem; }
+.course-section > header h3 { font-size: clamp(1.3rem, 2vw, 1.7rem); line-height: 1.25; }
+.course-section > header p { font-size: .7rem; }
+.week-lecture-agenda li { background: var(--blue-pale); }
+.week-lecture-agenda time { font-size: .75rem; }
+.week-lecture-agenda strong { font-size: 1rem; }
+.week-lecture-agenda li > span { font-size: .85rem; line-height: 1.6; }
+.week-slide-preview-action { min-height: 2.75rem; font-size: .85rem; }
+.homework-deadline { font-size: .85rem; }
+
+/* One file row: title, compact type, preview, download. */
+.section-resources { margin-top: 1rem; padding: .5rem .75rem; background: #f3f5f4; }
+.resources-label { font-size: .65rem; }
+.file-action { min-height: 3rem; gap: .65rem; padding: .35rem 0; }
+.file-name { font: 700 .85rem/1.4 var(--sans); }
+.file-type { padding: .15rem .3rem; background: #e4e8e7; color: #4a5960; font: 650 .65rem/1.3 var(--mono); }
+.file-links { gap: .4rem; }
+.file-preview, .file-download, .viewer-download { display: inline-flex; align-items: center; justify-content: center; min-height: 2.5rem; padding: .5rem .7rem; border: 1px solid var(--line); font: 750 .75rem/1.3 var(--sans); }
+.file-preview { background: #fff; color: var(--blue); }
+.file-download { background: var(--blue); border-color: var(--blue); color: #fff; }
+.file-preview:hover { background: var(--blue-pale); border-color: var(--blue); color: var(--blue); }
+.file-download:hover { background: var(--ink); border-color: var(--ink); color: #fff; }
+.tutorial-link { min-height: 3rem; gap: .75rem; padding: .5rem; }
+.tutorial-link-title strong { font-size: .85rem; line-height: 1.45; }
+.tutorial-number { border: 0; border-radius: 0; background: var(--blue-pale); color: var(--blue); }
+.tutorial-link:first-of-type .tutorial-number { background: var(--blue); }
+.tutorial-group-label { margin-top: 1rem; font-size: .7rem; }
+
+/* Tutorials and previews use the same readable document surface. */
+.viewer-main { padding-top: 2rem; }
+.viewer-title h1 { line-height: 1.2; font-size: clamp(1.6rem, 3vw, 2.5rem); }
+.markdown-preview { box-shadow: none; }
+.markdown-preview h2 { border: 0; padding: 0; line-height: 1.3; }
+.tutorial-toc-steps::before { display: none; }
+.tutorial-toc-step.is-current { background: var(--blue-pale); }
+.tutorial-toc-row { grid-template-columns: 1.5rem minmax(0, 1fr) 2.5rem; gap: .5rem; padding: .4rem .5rem; }
+.tutorial-toc-number { width: 1.5rem; height: 1.5rem; border: 0; border-radius: 0; background: #e5e9e8; color: var(--blue); font-size: .65rem; }
+.tutorial-toc-step.is-current .tutorial-toc-number { background: var(--blue); }
+.tutorial-toc .tutorial-toc-step-link { font-size: .85rem; line-height: 1.4; }
+.tutorial-toc-expand { width: 2.5rem; height: 2.5rem; color: var(--blue); font-size: 1rem; }
+.tutorial-toc-step nav { padding-left: 2.5rem; gap: .25rem; }
+.tutorial-toc-step nav a { display: block; padding-block: .4rem; font-size: .8rem; }
+.tutorial-step strong { font-size: .9rem; }
+.notebook-toolbar { justify-content: space-between; }
+.notebook-readonly { flex: none; color: var(--muted); font: 650 .7rem var(--sans); }
+
+/* The lecture is a companion to the agenda, with the same navigation. */
+.lecture-header { max-width: var(--max); grid-template-columns: 1fr auto auto; padding: 1rem 0; }
+.lecture-view-nav { display: flex; gap: 1.25rem; }
+.lecture-page main { max-width: var(--max); padding-inline: 0; }
+.lecture-page .playground-intro { gap: 1.5rem; padding: 1.5rem 0 2rem; align-items: center; }
+.lecture-page .playground-intro h1 { font-size: clamp(1.75rem, 3vw, 2.7rem); line-height: 1.25; }
+.lecture-page .playground-intro > p { font-size: .9rem; line-height: 1.7; }
+.playground-topics button { min-height: 2.75rem; font-size: .85rem; }
+.python-topic-select { display: none; }
+.playground-controls label { font-size: .85rem; }
+.playground-controls input, .playground-controls select { min-height: 2.75rem; }
+#playground-run { min-height: 2.75rem; }
+.playground-actions p { font-size: .85rem; line-height: 1.65; }
+.markdown-source > span, .markdown-rendered > span, .markdown-example-pair small, .panel-caption { font-size: .7rem; }
+.markdown-example button { min-height: 2.5rem; font: 750 .8rem var(--sans); }
+.slide-controls button, .csv-pager button, .pdf-pager button { min-height: 2.75rem; }
+
+@media (max-width: 1236px) { .lecture-header, .lecture-page main { margin-inline: 28px; } }
+@media (max-width: 800px) {
+  .lecture-header { grid-template-columns: 1fr auto; gap: .5rem; }
+  .lecture-view-nav { grid-column: 1; grid-row: 2; gap: 1rem; }
+  .lecture-header .language-toggle { grid-column: 2; grid-row: 1 / span 2; }
+  .python-topic-select { display: grid; gap: .4rem; margin-bottom: 1rem; color: var(--muted); font-size: .85rem; }
+  .python-topic-select select { min-height: 2.75rem; padding: .5rem .75rem; border: 1px solid var(--line); background: #fff; color: var(--ink); font: 700 .9rem var(--sans); }
+  .playground-grid .playground-topics { display: none; }
+}
+@media (max-width: 560px) {
+  .site-header { flex-wrap: wrap; gap: .25rem 1rem; padding-block: .6rem; }
+  .header-tools { gap: 1rem; }
+  .site-nav { gap: 1rem; }
+  .ui-tabs > .ui-tab { padding: .65rem .75rem; font-size: .8rem; }
+  .class-tabs > .class-tab-panel { padding: 1rem; }
+  .file-action { gap: .4rem; }
+  .file-name { font-size: .8rem; }
+  .file-preview, .file-download { padding-inline: .45rem; font-size: .7rem; }
+  .tutorial-toc { position: static; max-height: none; }
+  .lecture-header, .lecture-page main { margin-inline: 1rem; }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { transition-duration: 0s !important; animation-duration: 0s !important; } }
+@media print { .week-shortcuts, .lecture-view-nav, .python-topic-select { display: none; } }

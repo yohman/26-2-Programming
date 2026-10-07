@@ -244,6 +244,9 @@ function setLanguage(value) {
     renderMarkdown();
   }
   renderMarkdownExamples();
+  document.querySelectorAll('#python-topic-select option').forEach(option => {
+    option.textContent = topics[Number(option.value)][value];
+  });
 }
 
 function showSlide(index) {
@@ -282,6 +285,10 @@ function showView(view) {
   activeView=view;
   document.getElementById('slides-view').hidden=view!=='slides';
   document.getElementById('playground-view').hidden=view!=='playground';
+  document.querySelectorAll('[data-lecture-destination]').forEach(link => {
+    if (link.dataset.lectureDestination === view) link.setAttribute('aria-current', 'page');
+    else link.removeAttribute('aria-current');
+  });
   document.querySelectorAll('[data-view]').forEach(button=>{
     const selected=button.dataset.view===view;
     button.classList.toggle('is-selected',selected);
@@ -305,6 +312,7 @@ function showPlayground(kind) {
 
 function renderTopic(index) {
   activeTopic=index;
+  document.getElementById('python-topic-select').value=String(index);
   document.querySelectorAll('[data-topic]').forEach((button,i)=>{
     button.classList.toggle('is-selected',i===index);
     button.setAttribute('aria-current',i===index?'true':'false');
@@ -358,6 +366,10 @@ if (returnParam) {
 document.getElementById('language-toggle').addEventListener('click',()=>setLanguage(language()==='ja'?'en':'ja'));
 setLanguage(localStorage.getItem('programming-language')==='en'?'en':'ja');
 document.querySelectorAll('[data-view]').forEach(button=>button.addEventListener('click',()=>showView(button.dataset.view)));
+document.querySelectorAll('[data-lecture-destination]').forEach(link => link.addEventListener('click', event => {
+  event.preventDefault();
+  showView(link.dataset.lectureDestination);
+}));
 document.querySelectorAll('[data-playground]').forEach(button=>{
   button.addEventListener('click',()=>showPlayground(button.dataset.playground));
   button.addEventListener('keydown',event=>{
@@ -414,7 +426,13 @@ document.addEventListener('keydown',event=>{
 document.getElementById('playground-run').addEventListener('click',runTopic);
 document.getElementById('playground-controls').addEventListener('keydown',event=>{ if (event.key==='Enter') runTopic(); });
 const topicNav=document.getElementById('playground-topics');
+const topicSelect=document.getElementById('python-topic-select');
+topicSelect.addEventListener('change',()=>renderTopic(Number(topicSelect.value)));
 topics.forEach((topic,index)=>{
+  const option=document.createElement('option');
+  option.value=String(index);
+  option.textContent=topic[language()];
+  topicSelect.append(option);
   const button=document.createElement('button');
   button.type='button';
   button.dataset.topic=String(index);
@@ -426,3 +444,4 @@ showSlide(0);
 renderTopic(0);
 if (location.hash==='#playground' || location.hash==='#playground-python') showPlayground('python');
 if (location.hash.startsWith('#playground')) showView('playground');
+else showView('slides');

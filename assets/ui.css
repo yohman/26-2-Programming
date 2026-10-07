@@ -53,10 +53,11 @@ button:disabled { cursor: default; }
 .agenda-page .week-schedule small { font-size: .65rem; }
 .course-section > header h3 { font-size: clamp(1.3rem, 2vw, 1.7rem); line-height: 1.25; }
 .course-section > header p { font-size: .7rem; }
-.week-lecture-agenda li { background: var(--blue-pale); }
-.week-lecture-agenda time { font-size: .75rem; }
-.week-lecture-agenda strong { font-size: 1rem; }
-.week-lecture-agenda li > span { font-size: .85rem; line-height: 1.6; }
+.week-lecture-agenda { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.5rem; padding: 1rem 1.7rem; background: #eceeea; overflow: visible; }
+.week-lecture-agenda li { aspect-ratio: auto; min-height: 0; padding: 0; gap: .35rem; background: none; }
+.week-lecture-agenda time { font-size: .7rem; }
+.week-lecture-agenda strong { font-size: .9rem; line-height: 1.4; }
+.week-lecture-agenda li > span { margin-top: 0; font-size: .75rem; line-height: 1.5; }
 .week-slide-preview-action { min-height: 2.75rem; font-size: .85rem; }
 .homework-deadline { font-size: .85rem; }
 
@@ -123,6 +124,7 @@ button:disabled { cursor: default; }
   .playground-grid .playground-topics { display: none; }
 }
 @media (max-width: 560px) {
+  .week-lecture-agenda { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem 1.25rem; padding: 1rem; }
   .site-header { flex-wrap: wrap; gap: .25rem 1rem; padding-block: .6rem; }
   .header-tools { gap: 1rem; }
   .site-nav { gap: 1rem; }

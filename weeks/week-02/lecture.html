@@ -9,8 +9,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="lecture.css?v=20261007-fullscreen">
-  <script src="lecture.js?v=20261007-fullscreen" defer></script>
+  <link rel="stylesheet" href="lecture.css?v=20261007-markdown-examples">
+  <script src="lecture.js?v=20261007-markdown-examples" defer></script>
 </head>
 <body>
   <header class="lecture-header">
@@ -136,17 +136,12 @@
       </nav>
       <div id="markdown-playground" role="tabpanel" aria-labelledby="markdown-playground-tab">
         <div class="playground-intro"><div><p class="slide-kicker">MARKDOWN PLAYGROUND</p><h1><span class="ja">書いて、すぐに見る。</span><span class="en">Write it. See it.</span></h1></div><p class="ja">左のMarkdownを変えると、右にNotebookのMarkdown Cellと同じように表示されます。見出し、強調、リストを試してみよう。</p><p class="en">Edit the Markdown on the left. See how it would appear in a notebook Markdown cell on the right. Try headings, emphasis, and lists.</p></div>
-        <div class="markdown-examples" aria-label="Markdown examples">
-          <button type="button" data-markdown-example="intro"><span class="ja">見出しと文章</span><span class="en">Heading + text</span></button>
-          <button type="button" data-markdown-example="emphasis"><span class="ja">強調</span><span class="en">Emphasis</span></button>
-          <button type="button" data-markdown-example="list"><span class="ja">リスト</span><span class="en">List</span></button>
-          <button type="button" data-markdown-example="reflection"><span class="ja">観察メモ</span><span class="en">Observation note</span></button>
-        </div>
         <div class="markdown-workbench">
           <label class="markdown-source"><span>MARKDOWN CELL</span><textarea id="markdown-input" spellcheck="false" aria-label="Markdown source"></textarea></label>
           <div class="markdown-rendered"><span><span class="ja">表示結果</span><span class="en">RENDERED CELL</span></span><div id="markdown-preview" class="markdown-preview-content"></div></div>
         </div>
         <p class="markdown-hint"><span class="ja">Notebookでは <strong>+ Markdown</strong> でCellを追加し、<strong>Shift + Enter</strong> で表示します。ここではPythonは実行されません。</span><span class="en">In a notebook, add a cell with <strong>+ Markdown</strong> and render it with <strong>Shift + Enter</strong>. This playground does not run Python.</span></p>
+        <section class="markdown-library"><h2><span class="ja">Markdownの例</span><span class="en">Markdown examples</span></h2><div id="markdown-examples" class="markdown-examples"></div></section>
       </div>
       <div id="python-playground" role="tabpanel" aria-labelledby="python-playground-tab" hidden>
         <div class="playground-intro"><div><p class="slide-kicker">PYTHON PLAYGROUND</p><h1><span class="ja">一行変える。結果が変わる。</span><span class="en">Change a value. See the result.</span></h1></div><p class="ja">テーマを選び、値を変えて「実行」を押そう。これは<strong>表示したPythonの動きを再現する練習用シミュレーター</strong>です。自由なPythonコードはNotebookで実行してください。</p><p class="en">Choose a topic, change the inputs, and press Run. This is a <strong>guided simulation</strong> of the shown Python lines. Run your own code in a notebook.</p></div>

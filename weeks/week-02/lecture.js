@@ -11,20 +11,39 @@ let selectedMarkdownExample = 'intro';
 
 const markdownExamples = {
   intro: {
+    titleJa:'見出しと文章', titleEn:'Heading + paragraph',
     ja: '# はじめてのNotebook\n今日の目標：Pythonを自分のPCで動かす。',
     en: '# My first notebook\nToday: run Python on my own computer.'
   },
   emphasis: {
+    titleJa:'強調とコード', titleEn:'Emphasis + inline code',
     ja: 'これは **大事な結果** です。\nこの行は *少し強調* します。\n`print()` はコードの名前です。',
     en: 'This is an **important result**.\nThis is *slightly emphasized*.\n`print()` is the name of a function.'
   },
   list: {
+    titleJa:'箇条書き', titleEn:'Bullet list',
     ja: '## 実行する前に\n- 結果を予想する\n- Code Cellを実行する\n- 出力を確かめる',
     en: '## Before running\n- Predict the result\n- Run the Code cell\n- Check the output'
   },
+  steps: {
+    titleJa:'番号付き手順', titleEn:'Numbered steps',
+    ja: '## Notebookを動かす\n1. Kernelを選ぶ\n2. Code Cellを実行する\n3. 出力を確認する',
+    en: '## Run the notebook\n1. Select a kernel\n2. Run the Code cell\n3. Check the output'
+  },
+  link: {
+    titleJa:'リンク', titleEn:'Link',
+    ja: '資料：[Jupyterの公式サイト](https://jupyter.org/)\nあとで読み返せるように残す。',
+    en: 'Resource: [Jupyter’s website](https://jupyter.org/)\nKeep the source for later.'
+  },
+  quote: {
+    titleJa:'引用・メモ', titleEn:'Quote or note',
+    ja: '> Aha! `"5"` は文字、`5` は数字。',
+    en: '> Aha! `"5"` is text; `5` is a number.'
+  },
   reflection: {
-    ja: '## 気づいたこと\n**予想：** 5 + 2 は 7。\n**結果：** 7 が表示された。\n**次に試す：** 数を変えてみる。',
-    en: '## What I noticed\n**Prediction:** 5 + 2 will be 7.\n**Result:** The output was 7.\n**Next:** Change one number.'
+    titleJa:'観察メモ', titleEn:'Observation note',
+    ja: '## 気づいたこと\n**予想：** 5 + 2 は 7。\n\n**結果：** 7 が表示された。\n\n**次に試す：** 数を変えてみる。',
+    en: '## What I noticed\n**Prediction:** 5 + 2 will be 7.\n\n**Result:** The output was 7.\n\n**Next:** Change one number.'
   }
 };
 
@@ -49,31 +68,74 @@ function appendMarkdownInline(parent, source) {
   });
 }
 
-function renderMarkdown() {
-  const preview = document.getElementById('markdown-preview');
+function renderMarkdownInto(preview, source) {
   preview.replaceChildren();
   let list = null;
-  document.getElementById('markdown-input').value.split(/\r?\n/).forEach(line => {
-    if (!line.trim()) { list = null; return; }
+  let paragraph = null;
+  source.split(/\r?\n/).forEach(line => {
+    if (!line.trim()) { list = null; paragraph = null; return; }
     const heading = line.match(/^(#{1,3})\s+(.+)$/);
     const bullet = line.match(/^\s*[-*]\s+(.+)$/);
     const numbered = line.match(/^\s*\d+\.\s+(.+)$/);
     if (heading) {
       list = null;
+      paragraph = null;
       const element = document.createElement(`h${heading[1].length}`);
       appendMarkdownInline(element, heading[2]); preview.append(element);
     } else if (bullet || numbered) {
+      paragraph = null;
       const type = bullet ? 'ul' : 'ol';
       if (!list || list.tagName.toLowerCase() !== type) {
         list = document.createElement(type); preview.append(list);
       }
       const item = document.createElement('li');
       appendMarkdownInline(item, (bullet || numbered)[1]); list.append(item);
+    } else if (line.startsWith('> ')) {
+      list = null;
+      paragraph = null;
+      const element = document.createElement('blockquote');
+      appendMarkdownInline(element, line.slice(2)); preview.append(element);
     } else {
       list = null;
-      const element = document.createElement(line.startsWith('> ') ? 'blockquote' : 'p');
-      appendMarkdownInline(element, line.replace(/^>\s+/, '')); preview.append(element);
+      if (!paragraph) {
+        paragraph = document.createElement('p'); preview.append(paragraph);
+      } else {
+        paragraph.append(document.createTextNode(' '));
+      }
+      appendMarkdownInline(paragraph, line);
     }
+  });
+}
+
+function renderMarkdown() {
+  renderMarkdownInto(document.getElementById('markdown-preview'), document.getElementById('markdown-input').value);
+}
+
+function renderMarkdownExamples() {
+  const root = document.getElementById('markdown-examples');
+  const locale = language();
+  root.replaceChildren();
+  Object.entries(markdownExamples).forEach(([key, example], index) => {
+    const card = document.createElement('article'); card.className = 'markdown-example';
+    const header = document.createElement('header');
+    const title = document.createElement('h3'); title.textContent = `${String(index + 1).padStart(2, '0')}  ${locale === 'ja' ? example.titleJa : example.titleEn}`;
+    const button = document.createElement('button'); button.type = 'button'; button.dataset.markdownExample = key;
+    button.textContent = locale === 'ja' ? '編集して試す →' : 'Try in editor →';
+    const selected = selectedMarkdownExample === key && document.getElementById('markdown-input').value === example[locale];
+    button.classList.toggle('is-selected', selected);
+    button.setAttribute('aria-pressed', String(selected));
+    header.append(title, button);
+    const pair = document.createElement('div'); pair.className = 'markdown-example-pair';
+    const sourceBox = document.createElement('div'); sourceBox.className = 'markdown-example-source';
+    const sourceLabel = document.createElement('small'); sourceLabel.textContent = 'MARKDOWN';
+    const sourcePre = document.createElement('pre'); sourcePre.textContent = example[locale];
+    sourceBox.append(sourceLabel, sourcePre);
+    const resultBox = document.createElement('div'); resultBox.className = 'markdown-example-result';
+    const resultLabel = document.createElement('small'); resultLabel.textContent = locale === 'ja' ? '表示結果' : 'RENDERED';
+    const resultContent = document.createElement('div'); resultContent.className = 'markdown-preview-content';
+    renderMarkdownInto(resultContent, example[locale]);
+    resultBox.append(resultLabel, resultContent);
+    pair.append(sourceBox, resultBox); card.append(header, pair); root.append(card);
   });
 }
 
@@ -86,6 +148,7 @@ function showMarkdownExample(key) {
     button.setAttribute('aria-pressed', String(selected));
   });
   renderMarkdown();
+  document.getElementById('markdown-input').focus();
 }
 
 const string = value => JSON.stringify(String(value));
@@ -172,6 +235,7 @@ function setLanguage(value) {
     markdownInput.value = markdownExamples[selectedMarkdownExample][value];
     renderMarkdown();
   }
+  renderMarkdownExamples();
 }
 
 function showSlide(index) {
@@ -296,7 +360,10 @@ document.querySelectorAll('[data-playground]').forEach(button=>{
     document.querySelector(`[data-playground="${next}"]`).focus();
   });
 });
-document.querySelectorAll('[data-markdown-example]').forEach(button=>button.addEventListener('click',()=>showMarkdownExample(button.dataset.markdownExample)));
+document.getElementById('markdown-examples').addEventListener('click',event=>{
+  const button=event.target.closest('[data-markdown-example]');
+  if (button) showMarkdownExample(button.dataset.markdownExample);
+});
 document.getElementById('markdown-input').addEventListener('input',()=>{
   document.querySelectorAll('[data-markdown-example]').forEach(button=>{
     button.classList.remove('is-selected');
@@ -304,8 +371,6 @@ document.getElementById('markdown-input').addEventListener('input',()=>{
   });
   renderMarkdown();
 });
-document.querySelector('[data-markdown-example="intro"]').classList.add('is-selected');
-document.querySelector('[data-markdown-example="intro"]').setAttribute('aria-pressed','true');
 document.getElementById('previous-slide').addEventListener('click',()=>showSlide(slideIndex-1));
 document.getElementById('next-slide').addEventListener('click',()=>showSlide(slideIndex+1));
 fullscreenButton.addEventListener('click',toggleSlidesFullscreen);

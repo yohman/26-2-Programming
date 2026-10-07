@@ -18,6 +18,15 @@ main { max-width:1500px; margin:auto; padding:0 clamp(1rem,3vw,2.5rem) 3rem; }
 button:focus-visible, a:focus-visible { outline:3px solid #be7e32; outline-offset:3px; }
 .view[hidden], .slide[hidden] { display:none !important; }
 .slide-stage { background:#fff; touch-action:pan-y; }
+.lecture-parts { flex:none; }
+.lecture-embedded .lecture-header { display:none; }
+.lecture-page.lecture-embedded main { margin:0; padding:0; max-width:none; }
+.lecture-embedded #slides-view { display:flex; flex-direction:column; height:100dvh; }
+.lecture-embedded .slide-stage { flex:1; min-height:0; overflow:auto; }
+.lecture-embedded .slide-controls { flex:none; padding:.5rem .75rem; }
+.lecture-embedded .slide { min-height:0; padding:1.5rem; }
+.lecture-embedded .slide h1 { font-size:clamp(2rem,5vw,3.5rem); }
+.lecture-embedded .slide h2 { font-size:clamp(1.5rem,3vw,2.4rem); }
 .slide { min-height:min(74vh,780px); padding:clamp(2rem,5vw,5.5rem); }
 .slide:nth-child(1) { background:#edf2f3; }
 .slide:nth-child(2) { background:#f6f7f3; }

@@ -9,9 +9,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="lecture.css?v=20261007-notebook-slides">
+  <link rel="stylesheet" href="lecture.css?v=20261007-embedded">
   <link rel="stylesheet" href="../../assets/ui.css?v=20261007-ui">
-  <script src="lecture.js?v=20261007-notebook-slides" defer></script>
+  <script src="lecture.js?v=20261007-embedded" defer></script>
 </head>
 <body class="lecture-page">
   <header class="lecture-header">
@@ -21,6 +21,10 @@
   </header>
   <main>
     <div id="slides-view" class="view">
+      <nav class="lecture-parts ui-tabs" aria-label="Lecture parts">
+        <button type="button" class="ui-tab" data-lecture-part="basics" aria-pressed="true" aria-selected="true"><span class="ja">1 · Basics — MarkdownとPython</span><span class="en">1 · Basics — Markdown & Python</span></button>
+        <button type="button" class="ui-tab" data-lecture-part="map" aria-pressed="false" aria-selected="false"><span class="ja">2 · Earthquake Map — 地図をつくる</span><span class="en">2 · Earthquake Map</span></button>
+      </nav>
       <nav class="slide-controls" aria-label="Slide navigation"><div class="slide-nav-group"><button id="previous-slide" type="button">← <span class="ja">前へ</span><span class="en">Previous</span></button><span id="slide-count" aria-live="polite">01 / 16</span><button id="next-slide" type="button"><span class="ja">次へ</span><span class="en">Next</span> →</button></div><button id="slide-fullscreen" class="slide-fullscreen" type="button" aria-pressed="false"><span data-fullscreen-enter>⛶ <span class="ja">全画面</span><span class="en">Full screen</span></span><span data-fullscreen-exit hidden>⛶ <span class="ja">全画面を終了</span><span class="en">Exit full screen</span></span></button></nav>
       <div class="slide-stage" aria-live="polite">
         <section class="slide is-active" data-slide>
@@ -127,7 +131,7 @@
           <p class="slide-note en">A count is an integer. Earthquake magnitude and coordinates can be decimals.</p>
         </section>
         <section class="slide" data-slide hidden>
-          <p class="slide-kicker">FROM ONE VALUE TO MANY / 01</p>
+          <p class="slide-kicker" data-map-start>PART 2 · EARTHQUAKE MAP / FOR LOOP</p>
           <h2><code>for</code> <span class="ja">で一つずつ繰り返す</span><span class="en">repeats for each item</span></h2>
           <div class="code-and-note"><pre><code>places = ["Tokyo", "Kashiwa", "Kyoto"]&#10;&#10;for place in places:&#10;    print(f"Hello, {place}!")</code></pre><div class="result-card result-card--lines"><small>OUTPUT</small><strong>Hello, Tokyo!<br>Hello, Kashiwa!<br>Hello, Kyoto!</strong></div></div>
           <p class="slide-question ja">同じ命令が何回動く？ インデントされた行が繰り返される。</p>
@@ -155,12 +159,33 @@
           <p class="slide-note en"><code>[ ]</code> holds the list; each <code>{ }</code> holds one record. Coordinates are rounded to three decimals. In the next cell, store this list as <code>quakes</code>.</p>
         </section>
         <section class="slide" data-slide hidden>
-          <p class="slide-kicker">PREDICT BEFORE RUNNING</p>
-          <h2><span class="ja">今度は、地震を一件ずつ地図に。</span><span class="en">Now map each quake in turn.</span></h2>
-          <div class="predict-layout"><pre><code># Store the previous slide's list as quakes first.&#10;m = folium.Map(location=[30, -135], zoom_start=4)&#10;&#10;for quake in quakes:&#10;    folium.CircleMarker(&#10;        location=[quake["latitude"], quake["longitude"]],&#10;        radius=4 + quake["mag"] * 2,&#10;        popup=quake["place"]&#10;    ).add_to(m)&#10;&#10;m</code></pre><div class="predict-questions"><p class="ja">① ループは何回動く？</p><p class="en">① How many times does the loop run?</p><p class="ja">② 緯度・経度は点の何を決める？</p><p class="en">② What do latitude and longitude determine?</p><p class="ja">③ <code>mag</code> は何を変える？</p><p class="en">③ What does <code>mag</code> change?</p></div></div>
+          <p class="slide-kicker">EARTHQUAKE MAP / CSV → PYTHON</p>
+          <h2><span class="ja">CSVの行を、Pythonのリストに。</span><span class="en">Turn CSV rows into a Python list.</span></h2>
+          <div class="code-and-note"><pre><code>import csv&#10;import folium&#10;&#10;csv_file = "eq.csv"&#10;with open(csv_file, encoding="utf-8-sig") as file:&#10;    earthquakes = list(csv.DictReader(file))&#10;&#10;print(earthquakes[0]["mag"])</code></pre><div class="result-card"><small>OUTPUT</small><strong>2.7</strong></div></div>
+          <p class="slide-note ja"><code>import</code>で道具を読み込む。<code>with open</code>でファイルを開く。<code>DictReader</code>は列名をキーにする。<code>earthquakes[0]</code>は最初の行。</p>
+          <p class="slide-note en"><code>import</code> loads tools. <code>with open</code> opens the file. <code>DictReader</code> uses column names as keys. <code>earthquakes[0]</code> is the first row.</p>
         </section>
         <section class="slide" data-slide hidden>
-          <p class="slide-kicker">LIVE EARTHQUAKE MAP</p>
+          <p class="slide-kicker">EARTHQUAKE MAP / TEXT → NUMBER</p>
+          <h2><span class="ja">CSVの数字も、最初は文字。</span><span class="en">CSV numbers arrive as text, too.</span></h2>
+          <div class="code-and-note"><pre><code>quake = earthquakes[0]&#10;magnitude = float(quake["mag"])&#10;&#10;print(type(quake["mag"]))&#10;print(type(magnitude))&#10;print(f"M {magnitude}")</code></pre><div class="result-card"><small>OUTPUT</small><strong>&lt;class 'str'&gt;<br>&lt;class 'float'&gt;<br>M 2.7</strong></div></div>
+          <p class="slide-note ja"><code>input()</code>と同じ考え方。文字を<code>float()</code>で数にすれば、大小を比べたり円の大きさに使ったりできる。</p>
+          <p class="slide-note en">The same idea as <code>input()</code>: use <code>float()</code> to compare magnitudes or calculate circle sizes.</p>
+        </section>
+        <section class="slide" data-slide hidden>
+          <p class="slide-kicker">PREDICT BEFORE RUNNING</p>
+          <h2><span class="ja">今度は、地震を一件ずつ地図に。</span><span class="en">Now map each quake in turn.</span></h2>
+          <div class="predict-layout"><pre><code>earthquake_map = folium.Map(location=[20, 0], zoom_start=2)&#10;&#10;for quake in earthquakes:&#10;    folium.Marker(&#10;        location=[float(quake["latitude"]),&#10;                  float(quake["longitude"])],&#10;        tooltip=f"M {quake[\'mag\']}"&#10;    ).add_to(earthquake_map)&#10;&#10;earthquake_map</code></pre><div class="predict-questions"><p class="ja">① ループは何回動く？</p><p class="en">① How many times does the loop run?</p><p class="ja">② 緯度・経度は点の何を決める？</p><p class="en">② What do latitude and longitude determine?</p><p class="ja">③ マーカーに触れると何が表示される？</p><p class="en">③ What appears when you hover over a marker?</p></div></div>
+        </section>
+        <section class="slide" data-slide hidden>
+          <p class="slide-kicker">EARTHQUAKE MAP / IF → CIRCLES</p>
+          <h2><span class="ja">条件を加える。見せ方を変える。</span><span class="en">Add a condition. Change the presentation.</span></h2>
+          <div class="code-and-note"><pre><code>for quake in earthquakes:&#10;    if quake["mag"] and float(quake["mag"]) &gt;= 4:&#10;        folium.CircleMarker(&#10;            location=[float(quake["latitude"]),&#10;                      float(quake["longitude"])],&#10;            radius=6, color="orange", fill=True&#10;        ).add_to(earthquake_map)</code></pre></div>
+          <p class="slide-note ja"><code>if</code>は条件を満たすときだけ実行。空欄でないマグニチュードが4以上なら、円を置く。試すときは、新しい地図を作ってからこのループを実行しよう。</p>
+          <p class="slide-note en"><code>if</code> runs only when its condition is met: a non-empty magnitude of at least 4. Create a fresh map before trying this loop.</p>
+        </section>
+        <section class="slide" data-slide hidden>
+          <p class="slide-kicker">EARTHQUAKE MAP / CHALLENGE</p>
           <h2><span class="ja">予想して、実行して、変える</span><span class="en">Predict, run, then change it</span></h2>
           <div class="demo-grid"><div class="demo-map" aria-hidden="true"><span class="map-dot dot-1"></span><span class="map-dot dot-2"></span><span class="map-dot dot-3"></span><span class="map-dot dot-4"></span><span class="map-dot dot-5"></span></div><div><p class="ja">USGSからCSVを保存し、一行につきマーカーを一つ置く。</p><p class="en">Download a USGS CSV and place one marker per row.</p><p class="ja">授業で改良を始め、宿題で二つ以上の改良を仕上げる。</p><p class="en">Start improving the map in class; finish two or more improvements for homework.</p><a class="primary-link" href="week-02-challenge-earthquake-map.ipynb" download><span class="ja">地震地図テンプレートをダウンロード</span><span class="en">Download the map template</span> ↓</a><a class="secondary-link" href="eq.csv" download><span class="ja">地震データ eq.csv（2026年10月7日時点）</span><span class="en">Earthquake data eq.csv · Oct 7, 2026</span> ↓</a><a class="source-link" href="https://earthquake.usgs.gov/earthquakes/feed/v1.0/csv.php" target="_blank" rel="noopener">USGS CSV download ↗</a></div></div>
         </section>

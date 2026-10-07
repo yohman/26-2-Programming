@@ -678,10 +678,8 @@ function agendaWeek(w, defaultOpen = false) {
       <button type="button" class="class-tab ui-tab" role="tab" id="week-02-playground-tab" aria-controls="week-02-playground-panel" aria-selected="false" tabindex="-1">Playground</button>
     </div>
     <div class="class-tab-panel" role="tabpanel" id="week-02-slides-panel" aria-labelledby="week-02-slides-tab">
-      <a class="week-slide-preview" data-lecture-page href="weeks/week-02/lecture.html#slides">
-        <div class="week-slide-cover"><small>WEEK 02 / 10.08</small><h4 class="lang-ja jp" lang="ja">Pythonを動かす。<br>世界を地図にする。</h4><h4 class="lang-en">Make Python work.<br>Map what is happening.</h4><p class="lang-ja jp" lang="ja">Notebook · Python Basics · Earthquake Map</p><p class="lang-en">Notebook · Python Basics · Earthquake Map</p><span class="slide-preview-number">01 / 16</span></div>
-        <div class="week-slide-preview-action"><span class="lang-ja jp" lang="ja">スライドを開く</span><span class="lang-en">Open slides</span><b aria-hidden="true">↗</b></div>
-      </a>
+      <div class="agenda-slide-toolbar"><a class="file-preview" data-lecture-page href="weeks/week-02/lecture.html#slides"><span class="lang-ja jp" lang="ja">プレビュー</span><span class="lang-en">Preview</span> ↗</a></div>
+      <iframe class="agenda-slide-frame" src="weeks/week-02/lecture.html?embedded=1" title="Week 02 lecture slides — Basics and Earthquake Map" loading="lazy" allow="fullscreen" allowfullscreen></iframe>
     </div>
     <div class="class-tab-panel" role="tabpanel" id="week-02-playground-panel" aria-labelledby="week-02-playground-tab" hidden>
       <a class="week-playground-preview" data-lecture-page href="weeks/week-02/lecture.html#playground"><div><small>PYTHON + MARKDOWN</small><h4 class="lang-ja jp" lang="ja">変える。動かす。結果を見る。</h4><h4 class="lang-en">Change it. Run it. See the result.</h4><pre><code>name = "Aoi"\nprint(f"Hello, {name}!")</code></pre><output>Hello, Aoi!</output></div><div class="week-slide-preview-action"><span class="lang-ja jp" lang="ja">Playgroundを開く</span><span class="lang-en">Open Playground</span><b aria-hidden="true">↗</b></div></a>

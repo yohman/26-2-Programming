@@ -2,8 +2,89 @@ const slides = [...document.querySelectorAll('[data-slide]')];
 const slideCount = document.getElementById('slide-count');
 let slideIndex = 0;
 let activeView = 'slides';
+let activePlayground = 'markdown';
 let activeTopic = 0;
 let lastExplanation = null;
+let selectedMarkdownExample = 'intro';
+
+const markdownExamples = {
+  intro: {
+    ja: '# はじめてのNotebook\n今日の目標：Pythonを自分のPCで動かす。',
+    en: '# My first notebook\nToday: run Python on my own computer.'
+  },
+  emphasis: {
+    ja: 'これは **大事な結果** です。\nこの行は *少し強調* します。\n`print()` はコードの名前です。',
+    en: 'This is an **important result**.\nThis is *slightly emphasized*.\n`print()` is the name of a function.'
+  },
+  list: {
+    ja: '## 実行する前に\n- 結果を予想する\n- Code Cellを実行する\n- 出力を確かめる',
+    en: '## Before running\n- Predict the result\n- Run the Code cell\n- Check the output'
+  },
+  reflection: {
+    ja: '## 気づいたこと\n**予想：** 5 + 2 は 7。\n**結果：** 7 が表示された。\n**次に試す：** 数を変えてみる。',
+    en: '## What I noticed\n**Prediction:** 5 + 2 will be 7.\n**Result:** The output was 7.\n**Next:** Change one number.'
+  }
+};
+
+function appendMarkdownInline(parent, source) {
+  const parts = source.split(/(\*\*[^*]+\*\*|\*[^*]+\*|`[^`]+`|\[[^\]]+\]\(https?:\/\/[^\s)]+\))/g);
+  parts.forEach(part => {
+    let element;
+    if (/^\*\*[^*]+\*\*$/.test(part)) {
+      element = document.createElement('strong'); element.textContent = part.slice(2, -2);
+    } else if (/^\*[^*]+\*$/.test(part)) {
+      element = document.createElement('em'); element.textContent = part.slice(1, -1);
+    } else if (/^`[^`]+`$/.test(part)) {
+      element = document.createElement('code'); element.textContent = part.slice(1, -1);
+    } else {
+      const link = part.match(/^\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)$/);
+      if (link) {
+        element = document.createElement('a'); element.href = link[2]; element.textContent = link[1];
+        element.target = '_blank'; element.rel = 'noopener noreferrer';
+      }
+    }
+    parent.append(element || document.createTextNode(part));
+  });
+}
+
+function renderMarkdown() {
+  const preview = document.getElementById('markdown-preview');
+  preview.replaceChildren();
+  let list = null;
+  document.getElementById('markdown-input').value.split(/\r?\n/).forEach(line => {
+    if (!line.trim()) { list = null; return; }
+    const heading = line.match(/^(#{1,3})\s+(.+)$/);
+    const bullet = line.match(/^\s*[-*]\s+(.+)$/);
+    const numbered = line.match(/^\s*\d+\.\s+(.+)$/);
+    if (heading) {
+      list = null;
+      const element = document.createElement(`h${heading[1].length}`);
+      appendMarkdownInline(element, heading[2]); preview.append(element);
+    } else if (bullet || numbered) {
+      const type = bullet ? 'ul' : 'ol';
+      if (!list || list.tagName.toLowerCase() !== type) {
+        list = document.createElement(type); preview.append(list);
+      }
+      const item = document.createElement('li');
+      appendMarkdownInline(item, (bullet || numbered)[1]); list.append(item);
+    } else {
+      list = null;
+      const element = document.createElement(line.startsWith('> ') ? 'blockquote' : 'p');
+      appendMarkdownInline(element, line.replace(/^>\s+/, '')); preview.append(element);
+    }
+  });
+}
+
+function showMarkdownExample(key) {
+  selectedMarkdownExample = key;
+  document.getElementById('markdown-input').value = markdownExamples[key][language()];
+  document.querySelectorAll('[data-markdown-example]').forEach(button => {
+    const selected = button.dataset.markdownExample === key;
+    button.classList.toggle('is-selected', selected);
+    button.setAttribute('aria-pressed', String(selected));
+  });
+  renderMarkdown();
+}
 
 const string = value => JSON.stringify(String(value));
 const number = value => Number(value);
@@ -75,6 +156,9 @@ const topics = [
 
 function language() { return document.documentElement.dataset.language || 'ja'; }
 function setLanguage(value) {
+  const previous = language();
+  const markdownInput = document.getElementById('markdown-input');
+  const swapExample = !markdownInput.value || markdownInput.value === markdownExamples[selectedMarkdownExample][previous];
   document.documentElement.dataset.language=value;
   document.documentElement.lang=value;
   localStorage.setItem('programming-language',value);
@@ -82,6 +166,10 @@ function setLanguage(value) {
   toggle.textContent=value==='ja'?'EN':'日本語';
   toggle.setAttribute('aria-label',value==='ja'?'Switch to English':'日本語に切り替える');
   if (lastExplanation) document.getElementById('playground-explanation').textContent=lastExplanation[value];
+  if (swapExample) {
+    markdownInput.value = markdownExamples[selectedMarkdownExample][value];
+    renderMarkdown();
+  }
 }
 
 function showSlide(index) {
@@ -101,7 +189,20 @@ function showView(view) {
     button.classList.toggle('is-selected',selected);
     button.setAttribute('aria-selected',String(selected));
   });
-  history.replaceState({},'',view==='playground'?'#playground':location.pathname+location.search);
+  history.replaceState({},'',view==='playground'?`#playground-${activePlayground}`:location.pathname+location.search);
+}
+
+function showPlayground(kind) {
+  activePlayground=kind;
+  document.getElementById('markdown-playground').hidden=kind!=='markdown';
+  document.getElementById('python-playground').hidden=kind!=='python';
+  document.querySelectorAll('[data-playground]').forEach(button=>{
+    const selected=button.dataset.playground===kind;
+    button.classList.toggle('is-selected',selected);
+    button.setAttribute('aria-selected',String(selected));
+    button.tabIndex=selected?0:-1;
+  });
+  if (activeView==='playground') history.replaceState({},'',`#playground-${kind}`);
 }
 
 function renderTopic(index) {
@@ -159,6 +260,26 @@ if (returnParam) {
 document.getElementById('language-toggle').addEventListener('click',()=>setLanguage(language()==='ja'?'en':'ja'));
 setLanguage(localStorage.getItem('programming-language')==='en'?'en':'ja');
 document.querySelectorAll('[data-view]').forEach(button=>button.addEventListener('click',()=>showView(button.dataset.view)));
+document.querySelectorAll('[data-playground]').forEach(button=>{
+  button.addEventListener('click',()=>showPlayground(button.dataset.playground));
+  button.addEventListener('keydown',event=>{
+    if (!['ArrowLeft','ArrowRight'].includes(event.key)) return;
+    event.preventDefault();
+    const next=button.dataset.playground==='markdown'?'python':'markdown';
+    showPlayground(next);
+    document.querySelector(`[data-playground="${next}"]`).focus();
+  });
+});
+document.querySelectorAll('[data-markdown-example]').forEach(button=>button.addEventListener('click',()=>showMarkdownExample(button.dataset.markdownExample)));
+document.getElementById('markdown-input').addEventListener('input',()=>{
+  document.querySelectorAll('[data-markdown-example]').forEach(button=>{
+    button.classList.remove('is-selected');
+    button.setAttribute('aria-pressed','false');
+  });
+  renderMarkdown();
+});
+document.querySelector('[data-markdown-example="intro"]').classList.add('is-selected');
+document.querySelector('[data-markdown-example="intro"]').setAttribute('aria-pressed','true');
 document.getElementById('previous-slide').addEventListener('click',()=>showSlide(slideIndex-1));
 document.getElementById('next-slide').addEventListener('click',()=>showSlide(slideIndex+1));
 document.addEventListener('keydown',event=>{
@@ -179,4 +300,5 @@ topics.forEach((topic,index)=>{
 });
 showSlide(0);
 renderTopic(0);
-if (location.hash==='#playground') showView('playground');
+if (location.hash==='#playground' || location.hash==='#playground-python') showPlayground('python');
+if (location.hash.startsWith('#playground')) showView('playground');

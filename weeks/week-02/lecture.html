@@ -9,8 +9,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="lecture.css?v=20261007-notebook">
-  <script src="lecture.js?v=20261007" defer></script>
+  <link rel="stylesheet" href="lecture.css?v=20261007-markdown">
+  <script src="lecture.js?v=20261007-markdown" defer></script>
 </head>
 <body>
   <header class="lecture-header">
@@ -130,8 +130,28 @@
       <nav class="slide-controls" aria-label="Slide navigation"><button id="previous-slide" type="button">← <span class="ja">前へ</span><span class="en">Previous</span></button><span id="slide-count" aria-live="polite">01 / 09</span><button id="next-slide" type="button"><span class="ja">次へ</span><span class="en">Next</span> →</button></nav>
     </div>
     <section id="playground-view" class="view playground" hidden>
-      <div class="playground-intro"><div><p class="slide-kicker">PLAYGROUND / いつでも戻れるPythonの実験室</p><h1><span class="ja">一行変える。結果が変わる。</span><span class="en">Change a value. See the result.</span></h1></div><p class="ja">テーマを選び、値を変えて「実行」を押そう。これは<strong>表示したPythonの動きを再現する練習用シミュレーター</strong>です。自由なPythonコードはNotebookで実行してください。</p><p class="en">Choose a topic, change the inputs, and press Run. This is a <strong>guided simulation</strong> of the shown Python lines. Run your own code in a notebook.</p></div>
-      <div class="playground-grid"><nav id="playground-topics" class="playground-topics" aria-label="Python examples"></nav><div class="playground-workbench"><div id="playground-controls" class="playground-controls"></div><div class="playground-panels"><div class="playground-code"><div class="panel-caption">PYTHON</div><pre><code id="playground-code"></code></pre></div><div class="playground-output"><div class="panel-caption">OUTPUT</div><pre id="playground-output"></pre></div></div><div class="playground-actions"><button id="playground-run" type="button"><span class="ja">実行する</span><span class="en">Run example</span> ▶</button><p id="playground-explanation" aria-live="polite"></p></div></div></div>
+      <nav class="playground-subnav" role="tablist" aria-label="Playground language">
+        <button type="button" role="tab" id="markdown-playground-tab" data-playground="markdown" aria-controls="markdown-playground" aria-selected="true">Markdown <span class="ja">/ 説明を書く</span><span class="en">/ write</span></button>
+        <button type="button" role="tab" id="python-playground-tab" data-playground="python" aria-controls="python-playground" aria-selected="false">Python <span class="ja">/ コードを動かす</span><span class="en">/ run code</span></button>
+      </nav>
+      <div id="markdown-playground" role="tabpanel" aria-labelledby="markdown-playground-tab">
+        <div class="playground-intro"><div><p class="slide-kicker">MARKDOWN PLAYGROUND</p><h1><span class="ja">書いて、すぐに見る。</span><span class="en">Write it. See it.</span></h1></div><p class="ja">左のMarkdownを変えると、右にNotebookのMarkdown Cellと同じように表示されます。見出し、強調、リストを試してみよう。</p><p class="en">Edit the Markdown on the left. See how it would appear in a notebook Markdown cell on the right. Try headings, emphasis, and lists.</p></div>
+        <div class="markdown-examples" aria-label="Markdown examples">
+          <button type="button" data-markdown-example="intro"><span class="ja">見出しと文章</span><span class="en">Heading + text</span></button>
+          <button type="button" data-markdown-example="emphasis"><span class="ja">強調</span><span class="en">Emphasis</span></button>
+          <button type="button" data-markdown-example="list"><span class="ja">リスト</span><span class="en">List</span></button>
+          <button type="button" data-markdown-example="reflection"><span class="ja">観察メモ</span><span class="en">Observation note</span></button>
+        </div>
+        <div class="markdown-workbench">
+          <label class="markdown-source"><span>MARKDOWN CELL</span><textarea id="markdown-input" spellcheck="false" aria-label="Markdown source"></textarea></label>
+          <div class="markdown-rendered"><span><span class="ja">表示結果</span><span class="en">RENDERED CELL</span></span><div id="markdown-preview" class="markdown-preview-content"></div></div>
+        </div>
+        <p class="markdown-hint"><span class="ja">Notebookでは <strong>+ Markdown</strong> でCellを追加し、<strong>Shift + Enter</strong> で表示します。ここではPythonは実行されません。</span><span class="en">In a notebook, add a cell with <strong>+ Markdown</strong> and render it with <strong>Shift + Enter</strong>. This playground does not run Python.</span></p>
+      </div>
+      <div id="python-playground" role="tabpanel" aria-labelledby="python-playground-tab" hidden>
+        <div class="playground-intro"><div><p class="slide-kicker">PYTHON PLAYGROUND</p><h1><span class="ja">一行変える。結果が変わる。</span><span class="en">Change a value. See the result.</span></h1></div><p class="ja">テーマを選び、値を変えて「実行」を押そう。これは<strong>表示したPythonの動きを再現する練習用シミュレーター</strong>です。自由なPythonコードはNotebookで実行してください。</p><p class="en">Choose a topic, change the inputs, and press Run. This is a <strong>guided simulation</strong> of the shown Python lines. Run your own code in a notebook.</p></div>
+        <div class="playground-grid"><nav id="playground-topics" class="playground-topics" aria-label="Python examples"></nav><div class="playground-workbench"><div id="playground-controls" class="playground-controls"></div><div class="playground-panels"><div class="playground-code"><div class="panel-caption">PYTHON</div><pre><code id="playground-code"></code></pre></div><div class="playground-output"><div class="panel-caption">OUTPUT</div><pre id="playground-output"></pre></div></div><div class="playground-actions"><button id="playground-run" type="button"><span class="ja">実行する</span><span class="en">Run example</span> ▶</button><p id="playground-explanation" aria-live="polite"></p></div></div></div>
+      </div>
     </section>
   </main>
 </body>

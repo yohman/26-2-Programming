@@ -25,8 +25,8 @@ main { max-width:1500px; margin:auto; padding:0 clamp(1rem,3vw,2.5rem) 3rem; }
 .slide { min-height:min(74vh,780px); padding:clamp(2rem,5vw,5.5rem); }
 .slide:nth-child(1) { background:#edf2f3; }
 .slide:nth-child(2) { background:#f6f7f3; }
-.slide:nth-child(7) { background:#f1f5f5; }
-.slide:nth-child(8), .slide:nth-child(9) { background:#edf2f3; }
+.slide:nth-child(9) { background:#f1f5f5; }
+.slide:nth-child(10), .slide:nth-child(11) { background:#edf2f3; }
 .slide-kicker { margin:0 0 1.35rem; color:var(--blue); font:700 .72rem var(--mono); letter-spacing:.08em; }
 .slide h1, .slide h2, .playground h1 { max-width:1050px; margin:0 0 2rem; font-weight:800; letter-spacing:-.055em; line-height:1.12; }
 .slide h1 { font-size:clamp(2.8rem,5.7vw,6.8rem); }
@@ -43,6 +43,28 @@ main { max-width:1500px; margin:auto; padding:0 clamp(1rem,3vw,2.5rem) 3rem; }
 .setup-steps { display:grid; gap:.9rem; max-width:900px; margin:0; padding:0; list-style:none; }
 .setup-steps li { display:grid; grid-template-columns:3rem 1fr; gap:1rem; align-items:start; padding:.85rem 1rem; background:#fff; font-size:clamp(1rem,1.8vw,1.3rem); }
 .setup-steps b { color:var(--blue); font:700 1.15rem var(--mono); }
+.slide--notebook { background:#f2f5f5; }
+.notebook-intro { max-width:57rem; margin:-.6rem 0 1.7rem; font-size:clamp(1rem,1.7vw,1.3rem); }
+.cell-comparison { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1rem; max-width:1100px; }
+.cell-example { min-width:0; padding:1.2rem; background:#fff; }
+.cell-example-heading { display:flex; justify-content:space-between; gap:1rem; align-items:baseline; margin-bottom:.8rem; color:#365a73; font-size:.86rem; font-weight:750; }
+.cell-example-heading b { font:750 .72rem var(--mono); letter-spacing:.04em; }
+.cell-example--markdown .cell-example-heading { color:#496c5a; }
+.cell-example pre { margin:0; padding:1rem; background:#e9f0eb; font:clamp(.9rem,1.45vw,1.2rem)/1.5 var(--mono); }
+.cell-example--code pre { background:var(--code); color:#edf4f7; }
+.cell-example-result { display:flex; justify-content:space-between; align-items:center; gap:1rem; min-height:4.5rem; padding:1rem; background:#f1f5f3; }
+.cell-example--code .cell-example-result { background:#e5ebef; }
+.cell-example-result small { color:var(--muted); font:700 .62rem var(--mono); }
+.cell-example-result strong { font:700 clamp(1.3rem,2.7vw,2rem) var(--mono); }
+.cell-example p { margin:1rem 0 0; color:var(--muted); font-size:.92rem; }
+.notebook-sequence { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.75rem; }
+.notebook-step { min-width:0; padding:1.1rem; background:#fff; }
+.notebook-step small { display:block; margin-bottom:.9rem; color:#496c5a; font:750 .7rem var(--mono); }
+.notebook-step--code small { color:#365a73; }
+.notebook-step pre { min-height:6.6rem; margin:0; padding:1rem; overflow-x:auto; background:#e9f0eb; font:clamp(.75rem,1.1vw,.96rem)/1.65 var(--mono); white-space:pre-wrap; overflow-wrap:anywhere; }
+.notebook-step--code pre { background:var(--code); color:#edf4f7; }
+.notebook-step output { display:block; padding:.75rem 1rem; background:#e5ebef; color:var(--blue); font:750 .88rem var(--mono); }
+.notebook-action { max-width:75rem; margin:1.4rem 0 0; padding:1rem 1.2rem; background:#dfe9e5; color:#315d4c; font-size:clamp(.92rem,1.4vw,1.1rem); }
 .comparison { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1.25rem; max-width:950px; }
 .comparison > div { background:var(--blue-light); }
 .comparison pre { margin:0; padding:1.6rem; overflow-x:auto; background:var(--code); color:#ecf4fa; font-size:clamp(1.1rem,2.2vw,1.8rem); }
@@ -93,6 +115,6 @@ main { max-width:1500px; margin:auto; padding:0 clamp(1rem,3vw,2.5rem) 3rem; }
 .playground-actions button { flex:0 0 auto; padding:.75rem 1.15rem; border:0; background:var(--blue); color:#fff; font-size:.84rem; font-weight:750; }
 .playground-actions button:hover { background:var(--ink); }
 .playground-actions p { margin:0; color:var(--muted); font-size:.79rem; }
-@media (max-width:800px) { .lecture-header { grid-template-columns:1fr auto; }.lecture-mark { display:none; }.slide { min-height:0; padding:2rem 1.25rem; }.code-and-note,.predict-layout,.demo-grid,.playground-intro,.playground-grid { grid-template-columns:1fr; }.type-examples { grid-template-columns:1fr; }.playground-topics { display:flex; overflow-x:auto; }.playground-topics button { min-width:8.5rem; }.playground-intro { gap:.7rem; }.predict-questions { padding:1.2rem; }.predict-questions p { display:inline-block; }.demo-map { min-height:14rem; } }
-@media (max-width:520px) { .comparison,.playground-panels { grid-template-columns:1fr; }.lecture-tabs button { flex:1; min-width:0; }.slide h1 { font-size:2.65rem; }.slide h2 { font-size:2.1rem; }.slide-controls button { min-width:0; }.playground-actions { align-items:start; flex-direction:column; } }
+@media (max-width:800px) { .lecture-header { grid-template-columns:1fr auto; }.lecture-mark { display:none; }.slide { min-height:0; padding:2rem 1.25rem; }.code-and-note,.predict-layout,.demo-grid,.playground-intro,.playground-grid { grid-template-columns:1fr; }.type-examples,.notebook-sequence { grid-template-columns:1fr; }.playground-topics { display:flex; overflow-x:auto; }.playground-topics button { min-width:8.5rem; }.playground-intro { gap:.7rem; }.predict-questions { padding:1.2rem; }.predict-questions p { display:inline-block; }.demo-map { min-height:14rem; } }
+@media (max-width:520px) { .comparison,.cell-comparison,.playground-panels { grid-template-columns:1fr; }.lecture-tabs button { flex:1; min-width:0; }.slide h1 { font-size:2.65rem; }.slide h2 { font-size:2.1rem; }.slide-controls button { min-width:0; }.playground-actions { align-items:start; flex-direction:column; } }
 @media print { @page { size: 13.333in 7.5in; margin:0; } body { background:#fff; } .lecture-header,.lecture-tabs,.slide-controls,.playground { display:none !important; } main { max-width:none; padding:0; } .slide,.slide[hidden] { display:block !important; width:100%; min-height:7.5in; break-after:page; padding:.7in; } .slide:last-child { break-after:auto; } }

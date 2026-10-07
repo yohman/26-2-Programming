@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="lecture.css?v=20261007-layout">
+  <link rel="stylesheet" href="lecture.css?v=20261007-notebook">
   <script src="lecture.js?v=20261007" defer></script>
 </head>
 <body>
@@ -42,6 +42,36 @@
           </ol>
           <p class="slide-note ja">止まったら、その画面を見せてください。ここで全員が通過することが大事です。</p>
           <p class="slide-note en">If a step fails, show the screen. Everyone should get through this together.</p>
+        </section>
+        <section class="slide slide--notebook" data-slide hidden>
+          <p class="slide-kicker">JUPYTER NOTEBOOK / 01</p>
+          <h2><span class="ja">同じ文字でも、Cellで仕事が変わる。</span><span class="en">Same text. Different cell.</span></h2>
+          <p class="notebook-intro ja">Notebookは、<strong>説明</strong>と<strong>実行できるコード</strong>を一つの <code>.ipynb</code> ファイルに並べられる。</p>
+          <p class="notebook-intro en">A <code>.ipynb</code> notebook puts <strong>explanations</strong> and <strong>runnable code</strong> in one file.</p>
+          <div class="cell-comparison">
+            <div class="cell-example cell-example--markdown">
+              <div class="cell-example-heading"><b>MARKDOWN</b><span class="ja">説明を書く</span><span class="en">Write an explanation</span></div>
+              <pre><code>2 + 3</code></pre>
+              <div class="cell-example-result"><small class="ja">表示</small><small class="en">RENDERED</small><strong>2 + 3</strong></div>
+              <p class="ja">文字として表示。計算はしない。</p><p class="en">Shown as text. No calculation.</p>
+            </div>
+            <div class="cell-example cell-example--code">
+              <div class="cell-example-heading"><b>CODE</b><span class="ja">Pythonを実行する</span><span class="en">Run Python</span></div>
+              <pre><code>2 + 3</code></pre>
+              <div class="cell-example-result"><small>OUTPUT</small><strong>5</strong></div>
+              <p class="ja">Kernelが計算し、結果を下に出す。</p><p class="en">The kernel calculates and shows the result below.</p>
+            </div>
+          </div>
+        </section>
+        <section class="slide slide--notebook" data-slide hidden>
+          <p class="slide-kicker">JUPYTER NOTEBOOK / 02</p>
+          <h2><span class="ja">説明 → 実行 → 観察</span><span class="en">Explain → run → observe</span></h2>
+          <div class="notebook-sequence">
+            <div class="notebook-step notebook-step--markdown"><small>+ MARKDOWN</small><pre><code class="ja"># はじめてのNotebook&#10;名前を変えると、挨拶はどう変わる？</code><code class="en"># My first notebook&#10;What changes when I change the name?</code></pre></div>
+            <div class="notebook-step notebook-step--code"><small>+ CODE</small><pre><code>name = "Aoi"&#10;print(f"Hello, {name}!")</code></pre><output>Hello, Aoi!</output></div>
+            <div class="notebook-step notebook-step--markdown"><small>+ MARKDOWN</small><pre><code class="ja">## 気づいたこと&#10;名前を変えると、出力も変わった。</code><code class="en">## What I noticed&#10;Changing the name changed the output.</code></pre></div>
+          </div>
+          <p class="notebook-action"><span class="ja">VS Codeで <strong>+ Markdown</strong> または <strong>+ Code</strong> を選ぶ。<strong>Shift + Enter</strong> でCellを実行・表示する。</span><span class="en">In VS Code, choose <strong>+ Markdown</strong> or <strong>+ Code</strong>. Press <strong>Shift + Enter</strong> to run or render a cell.</span></p>
         </section>
         <section class="slide" data-slide hidden>
           <p class="slide-kicker">PYTHON BASICS / 01</p>

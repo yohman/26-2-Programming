@@ -16,13 +16,13 @@ overview_ja: まず全員がNotebookを動かせるようにする。先週の�
 ## Lecture Flow
 EN: | Time | In class |
 | --- | --- |
-| 13:10–13:40 | **Get Python running · 30 min** VS Code → kernel → your first working notebook. |
+| 13:10–13:40 | **Get Python running · 30 min** VS Code → kernel → Markdown and Code cells. |
 | 13:40–14:00 | **Python basics · 20 min** Predict what a few lines of code will print. |
 | 14:00–14:20 | **In-class activity · 20 min** Finish and share your message from the future. |
 | 14:20–14:50 | **Earthquake challenge · 30 min** Predict, run, and change a live map. |
 JP: | 時間 | 授業で行うこと |
 | --- | --- |
-| 13:10–13:40 | **Pythonを動かす · 30分** VS Code → Kernel → 動くNotebook。 |
+| 13:10–13:40 | **Pythonを動かす · 30分** VS Code → Kernel → MarkdownとCodeのCell。 |
 | 13:40–14:00 | **Pythonの基本 · 20分** 短いコードの出力を予想する。 |
 | 14:00–14:20 | **授業内アクティビティ · 20分** 「未来からのメッセージ」を完成させて共有する。 |
 | 14:20–14:50 | **地震地図チャレンジ · 30分** 予想し、動かし、自分で変える。 |

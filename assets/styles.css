@@ -37,6 +37,7 @@ html[data-language="ja"] .lang-ja { display: revert; }
   background: var(--ink); color: #fff; font: 700 .75rem var(--mono); text-decoration: none;
 }
 .skip-link:focus { top: 1rem; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 .eyebrow {
   margin: 0; color: var(--blue); font: 700 .72rem/1.4 var(--mono); letter-spacing: .08em;
 }
@@ -293,6 +294,21 @@ html[data-language="ja"] .lang-ja { display: revert; }
 .pdf-preview { margin: 0; overflow: hidden; border-radius: 8px; background: #fff; box-shadow: 0 9px 28px rgba(0, 0, 0, .08); }
 .pdf-preview img { display: block; width: 100%; height: auto; }
 .pdf-page-status { padding: .85rem 0 0; color: var(--muted); font: 600 .65rem var(--mono); text-align: center; }
+.csv-preview { max-width: 100%; }
+.csv-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: .7rem; }
+.csv-toolbar p { margin: 0; color: var(--muted); font: 700 .7rem var(--mono); }
+.csv-pager { display: flex; align-items: center; gap: .8rem; color: var(--muted); font: 700 .7rem var(--mono); white-space: nowrap; }
+.csv-pager button { padding: .4rem .25rem; border: 0; background: transparent; color: var(--blue); font: inherit; cursor: pointer; }
+.csv-pager button:hover:not(:disabled) { text-decoration: underline; text-underline-offset: 3px; }
+.csv-pager button:disabled { color: #a4aaa8; cursor: default; }
+.csv-table-scroll { max-height: min(70vh, 760px); overflow: auto; background: #fff; }
+.csv-preview table { width: 100%; min-width: max-content; border-collapse: separate; border-spacing: 0; font-size: .76rem; line-height: 1.5; }
+.csv-preview th, .csv-preview td { padding: .5rem .75rem; text-align: left; vertical-align: top; white-space: nowrap; }
+.csv-preview thead th { position: sticky; z-index: 2; top: 0; background: var(--blue); color: #fff; font: 700 .67rem/1.5 var(--mono); }
+.csv-preview tbody tr:nth-child(even) { background: #f3f5f4; }
+.csv-preview tbody tr:hover { background: var(--blue-pale); }
+.csv-preview tbody th { color: var(--muted); font: 600 .7rem/1.5 var(--mono); }
+.csv-preview td.csv-place { max-width: 22rem; white-space: normal; }
 .markdown-preview { max-width: 900px; padding: clamp(1.5rem, 4vw, 3rem); border-radius: 7px; background: #fff; color: #24292f; box-shadow: 0 8px 24px rgba(0, 0, 0, .055); }
 .markdown-preview h2 { margin: 2.1rem 0 .75rem; padding-bottom: .5rem; border-bottom: 1px solid #d0d7de; font-size: 1.75rem; letter-spacing: -.04em; }
 .markdown-preview h3 { margin: 1.65rem 0 .55rem; font-size: 1.18rem; }
@@ -1205,4 +1221,6 @@ html[data-language="en"] .python-history-cue.lang-en { display: block !important
 @media (max-width: 480px) {
   .week-shortcuts { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .35rem; }
   .week-shortcut { padding: .72rem .8rem; }
+  .csv-toolbar { align-items: flex-start; flex-direction: column; gap: .3rem; }
+  .csv-preview th, .csv-preview td { padding: .45rem .55rem; }
 }

@@ -868,6 +868,57 @@ function setupPdfPaging(file, title, pageCount, initialPage) {
   update(currentPage);
 }
 
+function parseCsv(source) {
+  const rows = [];
+  let row = [];
+  let value = '';
+  let quoted = false;
+  const text = source.replace(/^\uFEFF/, '');
+  for (let index = 0; index < text.length; index++) {
+    const char = text[index];
+    if (quoted) {
+      if (char === '"' && text[index + 1] === '"') { value += '"'; index++; }
+      else if (char === '"') quoted = false;
+      else value += char;
+    } else if (char === '"' && value === '') quoted = true;
+    else if (char === ',') { row.push(value); value = ''; }
+    else if (char === '\n' || char === '\r') {
+      row.push(value);
+      if (row.some(cell => cell !== '')) rows.push(row);
+      row = [];
+      value = '';
+      if (char === '\r' && text[index + 1] === '\n') index++;
+    } else value += char;
+  }
+  if (row.length || value !== '') { row.push(value); rows.push(row); }
+  return rows;
+}
+
+function renderCsvPreview(root, source, title, actions, download) {
+  const [columns = [], ...rows] = parseCsv(source);
+  const pageSize = 50;
+  const pageCount = Math.max(1, Math.ceil(rows.length / pageSize));
+  const headings = columns.map(column => `<th scope="col">${escapeHtml(column)}</th>`).join('');
+  root.innerHTML = `<div class="viewer-title"><p class="eyebrow">CSV PREVIEW</p><h1>${escapeHtml(title)}</h1>${actions(download)}</div><section class="csv-preview"><div class="csv-toolbar"><p><span class="lang-ja jp" lang="ja">${rows.length.toLocaleString('ja-JP')}行 · ${columns.length}列</span><span class="lang-en">${rows.length.toLocaleString('en-US')} rows · ${columns.length} columns</span></p><nav class="csv-pager" aria-label="CSV pages"><button type="button" data-csv-prev><span class="lang-ja jp" lang="ja">← 前へ</span><span class="lang-en">← Previous</span></button><span data-csv-page></span><button type="button" data-csv-next><span class="lang-ja jp" lang="ja">次へ →</span><span class="lang-en">Next →</span></button></nav></div><div class="csv-table-scroll"><table><caption class="sr-only">${escapeHtml(title)}</caption><thead><tr><th scope="col">#</th>${headings}</tr></thead><tbody data-csv-rows></tbody></table></div></section>`;
+  const tbody = root.querySelector('[data-csv-rows]');
+  const scroll = root.querySelector('.csv-table-scroll');
+  const previous = root.querySelector('[data-csv-prev]');
+  const next = root.querySelector('[data-csv-next]');
+  const status = root.querySelector('[data-csv-page]');
+  let page = 0;
+  const showPage = () => {
+    const start = page * pageSize;
+    tbody.innerHTML = rows.slice(start, start + pageSize).map((row, offset) => `<tr><th scope="row">${start + offset + 1}</th>${columns.map((column, index) => `<td${column.toLowerCase() === 'place' ? ' class="csv-place"' : ''}>${escapeHtml(row[index] ?? '')}</td>`).join('')}</tr>`).join('');
+    status.textContent = `${page + 1} / ${pageCount}`;
+    previous.disabled = page === 0;
+    next.disabled = page === pageCount - 1;
+    scroll.scrollTo({ top:0, left:0 });
+  };
+  previous.addEventListener('click', () => { if (page > 0) { page--; showPage(); } });
+  next.addEventListener('click', () => { if (page < pageCount - 1) { page++; showPage(); } });
+  showPage();
+}
+
 async function setupFileViewer() {
   const root = document.querySelector('[data-file-viewer]');
   if (!root) return;
@@ -906,6 +957,10 @@ async function setupFileViewer() {
     const response = await fetch(file, { cache:'no-cache' });
     if (!response.ok) throw new Error('File not found');
     const source = await response.text();
+    if (extension === 'csv') {
+      renderCsvPreview(root, source, title, actions, download);
+      return;
+    }
     if (extension === 'ipynb') {
       const notebook = JSON.parse(source);
       const cells = notebook.cells || [];

@@ -577,7 +577,8 @@ function setupLectureTimelineTabs(root = document) {
 
 function section(week, key) { return week.sections.find(item => item.title.toLowerCase().startsWith(key.toLowerCase())); }
 function previewAll() { return new URLSearchParams(location.search).get('preview') === 'all'; }
-function isAvailable(week) { return previewAll() || week.week === 1 || new Date() >= new Date(week.publish_at); }
+function isLocalPreview() { return ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname); }
+function isAvailable(week) { return isLocalPreview() || previewAll() || week.week === 1 || new Date() >= new Date(week.publish_at); }
 
 function releaseDateLabels(value) {
   const date = new Date(value);

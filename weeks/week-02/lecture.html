@@ -21,6 +21,7 @@
   </header>
   <main>
     <div id="slides-view" class="view">
+      <nav class="slide-controls" aria-label="Slide navigation"><div class="slide-nav-group"><button id="previous-slide" type="button">← <span class="ja">前へ</span><span class="en">Previous</span></button><span id="slide-count" aria-live="polite">01 / 16</span><button id="next-slide" type="button"><span class="ja">次へ</span><span class="en">Next</span> →</button></div><button id="slide-fullscreen" class="slide-fullscreen" type="button" aria-pressed="false"><span data-fullscreen-enter>⛶ <span class="ja">全画面</span><span class="en">Full screen</span></span><span data-fullscreen-exit hidden>⛶ <span class="ja">全画面を終了</span><span class="en">Exit full screen</span></span></button></nav>
       <div class="slide-stage" aria-live="polite">
         <section class="slide is-active" data-slide>
           <p class="slide-kicker">WEEK 02 / 10.08</p>
@@ -164,7 +165,6 @@
           <div class="demo-grid"><div class="demo-map" aria-hidden="true"><span class="map-dot dot-1"></span><span class="map-dot dot-2"></span><span class="map-dot dot-3"></span><span class="map-dot dot-4"></span><span class="map-dot dot-5"></span></div><div><p class="ja">USGSからCSVを保存し、一行につきマーカーを一つ置く。</p><p class="en">Download a USGS CSV and place one marker per row.</p><p class="ja">授業で改良を始め、宿題で二つ以上の改良を仕上げる。</p><p class="en">Start improving the map in class; finish two or more improvements for homework.</p><a class="primary-link" href="week-02-challenge-live-earthquake-map.ipynb" download><span class="ja">地震地図テンプレートをダウンロード</span><span class="en">Download the map template</span> ↓</a><a class="secondary-link" href="all-month-earthquakes.csv" download><span class="ja">予備データ（ネット接続できないとき）</span><span class="en">Offline backup data</span> ↓</a><a class="source-link" href="https://earthquake.usgs.gov/earthquakes/feed/v1.0/csv.php" target="_blank" rel="noopener">USGS CSV download ↗</a></div></div>
         </section>
       </div>
-      <nav class="slide-controls" aria-label="Slide navigation"><div class="slide-nav-group"><button id="previous-slide" type="button">← <span class="ja">前へ</span><span class="en">Previous</span></button><span id="slide-count" aria-live="polite">01 / 16</span><button id="next-slide" type="button"><span class="ja">次へ</span><span class="en">Next</span> →</button></div><button id="slide-fullscreen" class="slide-fullscreen" type="button" aria-pressed="false"><span data-fullscreen-enter>⛶ <span class="ja">全画面</span><span class="en">Full screen</span></span><span data-fullscreen-exit hidden>⛶ <span class="ja">全画面を終了</span><span class="en">Exit full screen</span></span></button></nav>
     </div>
     <section id="playground-view" class="view playground" hidden>
       <nav class="playground-subnav ui-tabs" role="tablist" aria-label="Playground language">

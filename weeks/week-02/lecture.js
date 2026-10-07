@@ -1,5 +1,7 @@
 const slides = [...document.querySelectorAll('[data-slide]')];
 const slideCount = document.getElementById('slide-count');
+const slidesView = document.getElementById('slides-view');
+const fullscreenButton = document.getElementById('slide-fullscreen');
 let slideIndex = 0;
 let activeView = 'slides';
 let activePlayground = 'markdown';
@@ -180,6 +182,30 @@ function showSlide(index) {
   document.getElementById('next-slide').disabled=slideIndex===slides.length-1;
 }
 
+function updateFullscreenControl() {
+  const active=document.fullscreenElement===slidesView || slidesView.classList.contains('is-fullscreen-fallback');
+  fullscreenButton.setAttribute('aria-pressed',String(active));
+  fullscreenButton.querySelector('[data-fullscreen-enter]').hidden=active;
+  fullscreenButton.querySelector('[data-fullscreen-exit]').hidden=!active;
+}
+
+async function toggleSlidesFullscreen() {
+  if (document.fullscreenElement===slidesView) {
+    await document.exitFullscreen();
+  } else if (slidesView.classList.contains('is-fullscreen-fallback')) {
+    slidesView.classList.remove('is-fullscreen-fallback');
+    updateFullscreenControl();
+  } else {
+    try {
+      if (!slidesView.requestFullscreen) throw new Error('Fullscreen API unavailable');
+      await slidesView.requestFullscreen();
+    } catch (_) {
+      slidesView.classList.add('is-fullscreen-fallback');
+      updateFullscreenControl();
+    }
+  }
+}
+
 function showView(view) {
   activeView=view;
   document.getElementById('slides-view').hidden=view!=='slides';
@@ -282,7 +308,14 @@ document.querySelector('[data-markdown-example="intro"]').classList.add('is-sele
 document.querySelector('[data-markdown-example="intro"]').setAttribute('aria-pressed','true');
 document.getElementById('previous-slide').addEventListener('click',()=>showSlide(slideIndex-1));
 document.getElementById('next-slide').addEventListener('click',()=>showSlide(slideIndex+1));
+fullscreenButton.addEventListener('click',toggleSlidesFullscreen);
+document.addEventListener('fullscreenchange',updateFullscreenControl);
 document.addEventListener('keydown',event=>{
+  if (event.key==='Escape' && slidesView.classList.contains('is-fullscreen-fallback')) {
+    slidesView.classList.remove('is-fullscreen-fallback');
+    updateFullscreenControl();
+    return;
+  }
   if (activeView!=='slides' || /^(INPUT|TEXTAREA|SELECT)$/.test(event.target.tagName)) return;
   if (event.key==='ArrowRight') showSlide(slideIndex+1);
   if (event.key==='ArrowLeft') showSlide(slideIndex-1);

@@ -166,8 +166,9 @@ button:focus-visible, a:focus-visible { outline:3px solid #be7e32; outline-offse
 .playground-topics button:hover { background:#d9e3e8; }
 .playground-topics button.is-selected { background:var(--blue); color:#fff; }
 .playground-workbench { min-width:0; padding:clamp(1rem,2.5vw,2rem); background:#fff; }
-.playground-controls { display:flex; flex-wrap:wrap; gap:1rem; margin-bottom:1.35rem; }
-.playground-controls label { display:grid; gap:.3rem; min-width:11rem; color:var(--muted); font-size:.76rem; font-weight:700; }
+.playground-toolbar { display:flex; align-items:flex-end; gap:1rem; margin-bottom:1.35rem; }
+.playground-controls { display:flex; flex-wrap:wrap; flex:0 1 auto; min-width:0; gap:1rem; }
+.playground-controls label { display:grid; gap:.3rem; min-width:min(11rem,100%); color:var(--muted); font-size:.76rem; font-weight:700; }
 .playground-controls input, .playground-controls select { width:100%; min-height:2.6rem; padding:.45rem .65rem; border:1px solid #bac7ce; background:#fff; color:var(--ink); font-family:var(--mono); font-size:.85rem; }
 .playground-panels { display:grid; grid-template-columns:minmax(0,1.2fr) minmax(12rem,.8fr); gap:.7rem; }
 .playground-code, .playground-output { min-width:0; min-height:15rem; padding:1.25rem; background:var(--code); color:#e8f0f6; }
@@ -175,8 +176,8 @@ button:focus-visible, a:focus-visible { outline:3px solid #be7e32; outline-offse
 .playground-code pre, .playground-output pre { margin:1rem 0 0; overflow-x:auto; white-space:pre-wrap; overflow-wrap:anywhere; font:clamp(.8rem,1.2vw,1rem)/1.75 var(--mono); }
 .playground-output .panel-caption { color:var(--blue); }
 .playground-actions { display:flex; align-items:center; gap:1rem; margin-top:1.25rem; }
-.playground-actions button { flex:0 0 auto; padding:.75rem 1.15rem; border:0; background:var(--blue); color:#fff; font-size:.84rem; font-weight:750; }
-.playground-actions button:hover { background:var(--ink); }
+#playground-run { flex:0 0 auto; min-height:2.6rem; padding:.45rem .85rem; border:0; background:var(--blue); color:#fff; font-size:.84rem; font-weight:750; }
+#playground-run:hover { background:var(--ink); }
 .playground-actions p { margin:0; color:var(--muted); font-size:.79rem; }
 @media (max-width:800px) { .lecture-header { grid-template-columns:1fr auto; }.lecture-mark { display:none; }.slide { min-height:0; padding:2rem 1.25rem; }.cell-comparison,.code-and-note,.predict-layout,.demo-grid,.playground-intro,.playground-grid { grid-template-columns:1fr; }.type-examples,.notebook-sequence { grid-template-columns:1fr; }.quake-record { grid-template-columns:repeat(2,minmax(0,1fr)); }.playground-topics { display:flex; overflow-x:auto; }.playground-topics button { min-width:8.5rem; }.playground-intro { gap:.7rem; }.predict-questions { padding:1.2rem; }.predict-questions p { display:inline-block; }.demo-map { min-height:14rem; } }
 @media (max-width:650px) { .markdown-workbench,.markdown-example-pair { grid-template-columns:1fr; }.markdown-source, .markdown-rendered { min-height:0; }.markdown-source textarea { min-height:13rem; }.markdown-workbench .markdown-preview-content { min-height:13rem; } }

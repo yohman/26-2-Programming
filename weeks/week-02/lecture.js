@@ -10,7 +10,6 @@ let lastExplanation = null;
 let selectedMarkdownExample = 'intro';
 const embedded = new URLSearchParams(location.search).get('embedded') === '1';
 if (embedded) document.body.classList.add('lecture-embedded');
-const mapStart = slides.findIndex(slide => slide.querySelector('[data-map-start]'));
 
 const markdownExamples = {
   intro: {
@@ -294,11 +293,6 @@ function showSlide(index) {
   slideCount.textContent=`${String(slideIndex+1).padStart(2,'0')} / ${String(slides.length).padStart(2,'0')}`;
   document.getElementById('previous-slide').disabled=slideIndex===0;
   document.getElementById('next-slide').disabled=slideIndex===slides.length-1;
-  document.querySelectorAll('[data-lecture-part]').forEach(button => {
-    const selected = button.dataset.lecturePart === (slideIndex >= mapStart ? 'map' : 'basics');
-    button.setAttribute('aria-pressed', String(selected));
-    button.setAttribute('aria-selected', String(selected));
-  });
   document.querySelector('.slide-stage').scrollTop=0;
 }
 
@@ -438,9 +432,6 @@ document.getElementById('markdown-input').addEventListener('input',()=>{
 });
 document.getElementById('previous-slide').addEventListener('click',()=>showSlide(slideIndex-1));
 document.getElementById('next-slide').addEventListener('click',()=>showSlide(slideIndex+1));
-document.querySelectorAll('[data-lecture-part]').forEach(button => button.addEventListener('click', () => {
-  showSlide(button.dataset.lecturePart === 'map' ? mapStart : 0);
-}));
 window.addEventListener('storage', event => {
   if (event.key === 'programming-language') setLanguage(event.newValue === 'en' ? 'en' : 'ja');
 });

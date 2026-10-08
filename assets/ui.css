@@ -29,11 +29,18 @@ button:disabled { cursor: default; }
 .viewer-back, .project-back, .return-link { display: inline-flex; align-items: center; min-height: 2.5rem; color: var(--blue); font: 750 .8rem var(--sans); letter-spacing: 0; }
 .viewer-back:hover, .project-back:hover, .return-link:hover { text-decoration: underline; text-underline-offset: 4px; }
 
-/* Tabs join their panel. Color identifies the selected state everywhere. */
+/* Section accents are inherited by links, tabs, file actions, and focus rings.
+   Neutral interior surfaces do not introduce another section's color. */
+.course-section--lecture { --blue:#315876; --blue-pale:#e8eef2; --line:#ccd5dc; }
+.course-section--in-class { --blue:#3f6d57; --blue-pale:#e6eee9; --line:#cddbd2; }
+.course-section--homework { --blue:#805730; --blue-pale:#eee7de; --line:#dacfc1; }
+.course-section > header p { color:var(--blue); }
+
+/* Tabs join their panel; neutral inactive tabs, inherited selected accent. */
 .ui-tabs { display: flex; gap: .25rem; margin: 0; padding: 0; width: 100%; overflow-x: auto; }
-.ui-tabs > .ui-tab { flex: 1 0 auto; min-width: 0; min-height: 2.75rem; padding: .75rem 1rem; border: 0; border-top: 3px solid transparent; background: #dce4e7; color: #3f5260; font: 750 .85rem/1.35 var(--sans); text-align: center; cursor: pointer; }
-.ui-tabs > .ui-tab:hover { background: #eaf0f2; color: var(--blue); }
-.ui-tabs > .ui-tab[aria-selected="true"] { border-top-color: var(--blue); background: #fff; color: #173e6f; }
+.ui-tabs > .ui-tab { flex: 1 0 auto; min-width: 0; min-height: 2.75rem; padding: .75rem 1rem; border: 0; border-top: 3px solid transparent; background: #e5e7e6; color: #46504c; font: 750 .85rem/1.35 var(--sans); text-align: center; cursor: pointer; }
+.ui-tabs > .ui-tab:hover { background: #f1f2f1; color: var(--blue); }
+.ui-tabs > .ui-tab[aria-selected="true"] { border-top-color: var(--blue); background: #fff; color: var(--blue); }
 .class-tabs > .class-tab-panel { padding: 1.25rem; background: #fff; }
 .class-tab-list.ui-tabs > .ui-tab { flex: 1 1 0; white-space: normal; overflow-wrap: anywhere; }
 .tutorial-tab-list.ui-tabs { width: fit-content; }
@@ -67,10 +74,10 @@ button:disabled { cursor: default; }
 .lecture-thumbnail h4 { margin:0; color:var(--ink); font:800 clamp(1.4rem,2.7vw,2.5rem)/1.2 var(--sans); letter-spacing:-.04em; }
 .lecture-thumbnail p { margin:0; color:var(--muted); font-size:.75rem; line-height:1.7; }
 .lecture-card-action { margin-top:auto; padding:1rem 1.25rem; }
-.lecture-playground-card { display:flex; flex-direction:column; min-width:0; padding:1.5rem; background:#e3ede7; }
+.lecture-playground-card { display:flex; flex-direction:column; min-width:0; padding:1.5rem; background:#f2f3f3; }
 .lecture-playground-card h4 { margin:.85rem 0 .5rem; font-size:clamp(1.3rem,2vw,1.8rem); line-height:1.3; }
 .lecture-playground-card > p { margin:0; max-width:30rem; color:var(--muted); font-size:.85rem; line-height:1.65; }
-.lecture-playground-card pre { margin:1.25rem 0; padding:0; border:0; background:transparent; color:#274638; font:.9rem/1.7 var(--mono); white-space:pre-wrap; }
+.lecture-playground-card pre { margin:1.25rem 0; padding:0; border:0; background:transparent; color:var(--ink); font:.9rem/1.7 var(--mono); white-space:pre-wrap; }
 .lecture-playground-card .lecture-card-action { padding:0; }
 .homework-deadline { font-size: .85rem; }
 
@@ -90,6 +97,8 @@ button:disabled { cursor: default; }
 .tutorial-link-title strong { font-size: .85rem; line-height: 1.45; }
 .tutorial-number { border: 0; border-radius: 0; background: var(--blue-pale); color: var(--blue); }
 .tutorial-link:first-of-type .tutorial-number { background: var(--blue); }
+.course-section .tutorial-link > b { color:var(--blue); }
+.course-section .tutorial-link:hover { color:var(--blue); background:#f2f3f2; }
 .tutorial-group-label { margin-top: 1rem; font-size: .7rem; }
 
 /* Tutorials and previews use the same readable document surface. */

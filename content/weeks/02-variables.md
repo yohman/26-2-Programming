@@ -99,6 +99,7 @@ JP: 入力を見つけ、値を変え、出力を説明できると、コード�
 ## Resources
 - [Week 02 Lecture — Python Basics & Earthquake Map](weeks/week-02/lecture.html) {lecture}
 - [Week 01 Homework — Message from the Future](weeks/week-01/week-01-homework-message-from-the-future.ipynb) {notebook}
+- [完成例 — 時空郵便局からの手紙](weeks/week-02/week-02-in-class-example-time-post.ipynb) {notebook}
 - [Week 02 Challenge — Earthquake Map](weeks/week-02/week-02-challenge-earthquake-map.ipynb) {challenge}
 - [Earthquake data — eq.csv · 2026-10-07](weeks/week-02/eq.csv) {data}
 - [Week 02 Homework — Earthquake Map](weeks/week-02/week-02-challenge-earthquake-map.ipynb) {homework}

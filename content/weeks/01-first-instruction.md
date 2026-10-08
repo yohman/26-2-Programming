@@ -83,13 +83,11 @@ EN: Write **a message from your future self**. Ask for a name, a goal, and how m
 
 - Try two different sets of answers and note what changed. Make the voice, setting, and advice your own.
 - Run and complete the notebook, including your observations. Submit the `.ipynb` file and one screenshot through UNIPA. Be ready to demonstrate it in Week 02.
-- A completed example is linked below. Use it to see the expected notebook structure, not as text to copy.
 
 JP: **未来の自分から今の自分へのメッセージ**をつくる。名前、目標、何年後かを入力し、未来の年を計算する。答えによって変わる、オリジナルの短い手紙にしよう。
 
 - 二通りの入力で実行し、何が変わったかをメモする。未来の自分の口調や舞台、アドバイスには自分らしさを。
 - ノートブックを最後まで実行し、観察も書き込む。完成した`.ipynb`ファイルとスクリーンショット1枚をUNIPAで提出。Week 02で実演できるようにしておこう。
-- 下の完成例は、Notebookの構成や確認方法の参考用。手紙の設定や文章は自分で考えよう。
 ## Aha!
 EN:
 ```python
@@ -111,5 +109,4 @@ JP: プログラムは、追跡できる形で値を変えていく小さな命�
 - [Week 01 Challenge — Poster & Optional Tiny Tool](weeks/week-01/week-01-challenge-choose-and-create.ipynb) {challenge}
 - [任意課題の参考例 — Study Sprint Planner](weeks/week-01/week-01-homework-example-study-sprint.ipynb) {challenge}
 - [Week 01 Homework — Message from the Future](weeks/week-01/week-01-homework-message-from-the-future.ipynb) {homework}
-- [完成例 — 時空郵便局からの手紙](weeks/week-01/week-01-homework-example-time-post.ipynb) {homework}
 - [Week 01 Setup — Python, VS Code, and Jupyter](weeks/week-01/week-01-setup-python-vscode-jupyter.md) {support}

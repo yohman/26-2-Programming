@@ -4,8 +4,8 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Explore · 2026–2 Programming</title>
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
-<link rel="stylesheet" href="assets/styles.css?v=20261007-ui"><link rel="stylesheet" href="assets/ui.css?v=20261014-explore"><link rel="stylesheet" href="assets/data-explorer/explore.css?v=20261014-pokemon">
-<script src="assets/site.js?v=20261014-explore" defer></script><script src="assets/data-explorer/vendor/protobuf.min.js" defer></script><script src="assets/data-explorer/explore.js?v=20261014-pokemon-usage" defer></script>
+<link rel="stylesheet" href="assets/styles.css?v=20261007-ui"><link rel="stylesheet" href="assets/ui.css?v=20261014-explore"><link rel="stylesheet" href="assets/data-explorer/explore.css?v=20261014-weather">
+<script src="assets/site.js?v=20261014-explore" defer></script><script src="assets/data-explorer/vendor/protobuf.min.js" defer></script><script src="assets/data-explorer/explore.js?v=20261014-weather" defer></script>
 </head>
 <body class="explore-page">
 <a class="skip-link" href="#main">Skip to content</a>
@@ -22,9 +22,10 @@
 <p id="parameter-explanation" class="subtle"></p>
 <details class="request-details" open><summary><span class="lang-ja">リクエストURL</span><span class="lang-en">Request URL</span></summary><code id="request-url"></code></details>
 <div class="response-status"><p id="data-status" role="status" aria-live="polite"></p><button type="button" id="load-snapshot"><span class="lang-ja">保存例を使う</span><span class="lang-en">Use saved example</span></button></div>
-<div class="response-toolbar"><div class="view-modes" role="group" aria-label="Data view"><button type="button" data-view="raw" aria-pressed="false">Raw</button><button type="button" data-view="pretty" aria-pressed="true">Pretty</button><button type="button" data-view="map" aria-pressed="false">Map</button></div><label id="color-control"><input type="checkbox" id="syntax-color" checked><span class="lang-ja">色分け</span><span class="lang-en">Syntax colors</span></label><a id="download-data" hidden download><span class="lang-ja">ダウンロード</span><span class="lang-en">Download</span> ↓</a></div>
+<div class="response-toolbar"><div class="view-modes" role="group" aria-label="Data view"><button type="button" data-view="raw" aria-pressed="false">Raw</button><button type="button" data-view="pretty" aria-pressed="true">Pretty</button><button type="button" data-view="weather" aria-pressed="false" hidden><span class="lang-ja">気温グラフ</span><span class="lang-en">Weather</span></button><button type="button" data-view="map" aria-pressed="false">Map</button></div><label id="color-control"><input type="checkbox" id="syntax-color" checked><span class="lang-ja">色分け</span><span class="lang-en">Syntax colors</span></label><a id="download-data" hidden download><span class="lang-ja">ダウンロード</span><span class="lang-en">Download</span> ↓</a></div>
 <div id="data-output"><pre id="raw-output" hidden><code></code></pre><pre id="pretty-output"><code></code></pre><div id="csv-output" hidden></div><div id="map-output" hidden><div id="map-canvas" aria-label="Data map"></div><p id="map-status" role="status"></p><div class="map-links"><a id="download-geojson" hidden download><span class="lang-ja">地図用GeoJSONを保存</span><span class="lang-en">Download map GeoJSON</span> ↓</a><a href="https://maplibre.org/" target="_blank" rel="noopener">MapLibre</a><a href="https://geojson.io/" target="_blank" rel="noopener">geojson.io ↗</a></div></div></div>
 <section id="usage-output" class="pokemon-usage" hidden aria-label="Pokémon usage example"></section>
+<section id="weather-output" class="weather-visual" hidden aria-label="Weather chart"></section>
 <p id="coordinate-note" class="subtle"></p>
 <aside class="data-aha"><strong>Aha!</strong><p id="data-aha"></p><pre><code id="python-path"></code></pre></aside>
 <p class="subtle"><span class="lang-ja">JSONのobjectをPythonで読むとdict、arrayはlistになる。JSONのnull・true・falseは、PythonではNone・True・False。読み取り専用の探索です。</span><span class="lang-en">Reading JSON in Python converts objects to dicts and arrays to lists. JSON null/true/false become Python None/True/False. This is a read-only explorer.</span> <a href="https://docs.python.org/3/library/json.html" target="_blank" rel="noopener">Python JSON ↗</a></p>

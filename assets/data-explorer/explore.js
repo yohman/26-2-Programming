@@ -7,10 +7,11 @@ const cache = new Map();
 let controller;
 let mapLibrary;
 let gtfsType;
+const weatherPlaces={tokyo:{lat:35.68,lon:139.69,ja:'東京',en:'Tokyo'},kashiwa:{lat:35.86,lon:139.97,ja:'柏',en:'Kashiwa'},osaka:{lat:34.69,lon:135.5,ja:'大阪',en:'Osaka'},sapporo:{lat:43.06,lon:141.35,ja:'札幌',en:'Sapporo'},naha:{lat:26.21,lon:127.68,ja:'那覇',en:'Naha'}};
 const defaults = {
   toeiBus:{},
   toei:{line:'Oedo'},
-  weather:{latitude:'35.68',longitude:'139.69',forecast_days:'1'},
+  weather:{location:'tokyo',latitude:'35.68',longitude:'139.69',forecast_days:'1'},
   earthquakes:{magnitude:'2.5',period:'day'},
   pokemon:{name:'pikachu'},
   transit:{route:'1',limit:'20'},
@@ -27,6 +28,7 @@ const fields = {
     {key:'limit',label:{ja:'$limit · 最大件数',en:'$limit · Maximum rows'},options:[['25','25'],['50','50'],['100','100']]}
   ],
   weather:[
+    {key:'location',label:{ja:'場所',en:'Location'},options:[['tokyo','東京 · Tokyo'],['kashiwa','柏 · Kashiwa'],['osaka','大阪 · Osaka'],['sapporo','札幌 · Sapporo'],['naha','那覇 · Naha'],['custom','座標で指定 · Coordinates']]},
     {key:'latitude',label:{ja:'latitude · 緯度',en:'latitude'},type:'number',min:-90,max:90,step:'any'},
     {key:'longitude',label:{ja:'longitude · 経度',en:'longitude'},type:'number',min:-180,max:180,step:'any'},
     {key:'forecast_days',label:{ja:'forecast_days · 日数',en:'forecast_days'},options:[['1','1'],['2','2'],['3','3']]}
@@ -90,7 +92,14 @@ function renderFields(v = defaults[state.id]) {
     if (field.options) field.options.forEach(([value,title]) => { const option=document.createElement('option'); option.value=value; option.textContent=title; input.append(option); });
     else { input.type=field.type; input.min=field.min; input.max=field.max; input.step=field.step; input.required=true; }
     input.value = v[field.key];
-    input.addEventListener('input',updateRequest);
+    input.addEventListener('input',()=>{
+      if(state.id==='weather') {
+        if(field.key==='location' && weatherPlaces[input.value]) {
+          const place=weatherPlaces[input.value];byId('parameter-fields').querySelector('[name="latitude"]').value=place.lat;byId('parameter-fields').querySelector('[name="longitude"]').value=place.lon;
+        } else if(['latitude','longitude'].includes(field.key)) byId('parameter-fields').querySelector('[name="location"]').value='custom';
+      }
+      updateRequest();
+    });
     label.append(input); byId('parameter-fields').append(label);
   });
   updateRequest();
@@ -226,6 +235,9 @@ function renderViews() {
   byId('csv-output').hidden=state.mode!=='pretty' || state.id!=='holidays';
   byId('map-output').hidden=state.mode!=='map';
   byId('usage-output').hidden=state.mode!=='usage';
+  byId('weather-output').hidden=state.mode!=='weather';
+  const weatherButton=document.querySelector('[data-view="weather"]');weatherButton.hidden=state.id!=='weather';weatherButton.disabled=!hasData;
+  if(state.mode==='weather')renderWeather();
   if(state.mode==='usage')renderPokemonUsage();
   byId('color-control').hidden=state.mode!=='pretty' || state.id==='holidays';
   document.querySelectorAll('[data-view]').forEach(button=>{button.setAttribute('aria-pressed',String(button.dataset.view===state.mode)); if(['map','usage'].includes(button.dataset.view))button.disabled=!hasData || (!pokemon && !state.dataset.map);});
@@ -234,6 +246,40 @@ function renderViews() {
   if(!hasData) {byId('pretty-output').querySelector('code').textContent=''; byId('csv-output').replaceChildren(); return;}
   if(state.id==='holidays')csvTable(); else jsonColors(JSON.stringify(state.data,null,2));
   if(state.mode==='map')mapView();
+}
+function renderWeather() {
+  const host=byId('weather-output');host.replaceChildren();if(!state.data)return;
+  const data=state.data,url=new URL(state.url),lat=Number(url.searchParams.get('latitude')),lon=Number(url.searchParams.get('longitude'));
+  const place=Object.values(weatherPlaces).find(p=>Math.abs(p.lat-lat)<.00001 && Math.abs(p.lon-lon)<.00001);
+  const heading=document.createElement('div');heading.className='weather-summary';
+  const location=document.createElement('div'),title=document.createElement('h3'),coords=document.createElement('p');
+  title.textContent=place?place[locale()]:textFor({ja:'指定した地点',en:'Custom location'});
+  coords.className='subtle';coords.textContent=lat.toFixed(2)+', '+lon.toFixed(2)+' · '+(data.timezone||'');location.append(title,coords);
+  const current=document.createElement('div'),temp=document.createElement('strong'),at=document.createElement('p');
+  temp.textContent=Number.isFinite(data.current?.temperature_2m)?data.current.temperature_2m+' '+(data.current_units?.temperature_2m||'°C'):'—';
+  at.textContent=textFor({ja:'現在のモデル値 · ',en:'Current model value · '})+(data.current?.time||'—').replace('T',' ');current.append(temp,at);heading.append(location,current);
+  const titleChart=document.createElement('h4');titleChart.textContent=textFor({ja:'時間ごとの気温予報',en:'Hourly temperature forecast'});
+  const times=data.hourly?.time||[],temps=data.hourly?.temperature_2m||[];
+  const points=times.map((time,i)=>({time,temp:temps[i],i})).filter(p=>typeof p.temp==='number' && Number.isFinite(p.temp));
+  host.append(heading,titleChart);
+  if(!points.length){const empty=document.createElement('p');empty.textContent=textFor({ja:'表示できる時間別気温がありません。',en:'No hourly temperatures available.'});host.append(empty);return;}
+  const width=760,height=290,left=48,right=22,top=18,bottom=48;
+  const min=Math.floor(Math.min(...points.map(p=>p.temp))-1),max=Math.ceil(Math.max(...points.map(p=>p.temp))+1);
+  const x=i=>left+i/Math.max(1,times.length-1)*(width-left-right),y=t=>height-bottom-(t-min)/(max-min)*(height-top-bottom);
+  const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('viewBox','0 0 '+width+' '+height);svg.setAttribute('role','img');svg.setAttribute('aria-label',textFor({ja:'時間と気温の折れ線グラフ。下のスライダーで値を確認できます。',en:'Temperature versus time. Use the slider below to read values.'}));
+  const el=(tag,attrs,text)=>{const n=document.createElementNS(svg.namespaceURI,tag);Object.entries(attrs).forEach(([k,v])=>n.setAttribute(k,v));if(text!==undefined)n.textContent=text;svg.append(n);return n;};
+  for(let i=0;i<=4;i++){const value=min+(max-min)*i/4;el('line',{x1:left,x2:width-right,y1:y(value),y2:y(value),class:'weather-grid'});el('text',{x:left-10,y:y(value)+4,'text-anchor':'end'},Math.round(value)+'°');}
+  const tickCount=Math.min(5,times.length);
+  for(let i=0;i<tickCount;i++){const index=Math.round(i/Math.max(1,tickCount-1)*(times.length-1));el('text',{x:x(index),y:height-22,'text-anchor':i===0?'start':i===tickCount-1?'end':'middle'},times[index].slice(5).replace('T',' '));}
+  let segment=[];const flush=()=>{if(segment.length)el('polyline',{points:segment.join(' '),class:'weather-line'});segment=[];};
+  times.forEach((_,i)=>{if(typeof temps[i]==='number' && Number.isFinite(temps[i]))segment.push(x(i)+','+y(temps[i]));else flush();});flush();
+  const cursor=el('line',{x1:x(0),x2:x(0),y1:top,y2:height-bottom,class:'weather-cursor'}),dot=el('circle',{cx:0,cy:0,r:5,class:'weather-dot'});
+  const label=document.createElement('label');label.className='weather-hour';const readout=document.createElement('output'),slider=document.createElement('input');slider.type='range';slider.min=0;slider.max=times.length-1;slider.step=1;slider.setAttribute('aria-label',textFor({ja:'予報の時間を選ぶ',en:'Select forecast hour'}));
+  const select=index=>{slider.value=index;const t=temps[index];readout.textContent=times[index].replace('T',' ')+' · '+(typeof t==='number' && Number.isFinite(t)?t+' '+(data.hourly_units?.temperature_2m||'°C'):textFor({ja:'欠損',en:'Missing'}));slider.setAttribute('aria-valuetext',readout.textContent);cursor.setAttribute('x1',x(index));cursor.setAttribute('x2',x(index));dot.setAttribute('cx',x(index));dot.setAttribute('cy',Number.isFinite(t)?y(t):0);dot.setAttribute('visibility',typeof t==='number' && Number.isFinite(t)?'visible':'hidden');};
+  slider.addEventListener('input',()=>select(Number(slider.value)));
+  svg.addEventListener('pointermove',event=>{const rect=svg.getBoundingClientRect();select(Math.max(0,Math.min(times.length-1,Math.round(((event.clientX-rect.left)/rect.width*width-left)/(width-left-right)*(times.length-1)))));});
+  const nowIndex=times.findIndex(time=>time>=data.current?.time);select(nowIndex>=0?nowIndex:0);label.append(readout,slider);host.append(svg,label);
+  const note=document.createElement('p');note.className='subtle';note.textContent=textFor({ja:'時刻は地点の現地時間。予報・現在値は気象モデルの値で、観測値とは限りません。地名は選択した座標のラベルです。',en:'Times use the location’s timezone. Forecast/current values are model data, not necessarily observations. The location name labels the selected coordinates.'});host.append(note);
 }
 function renderPokemonUsage() {
   const host=byId('usage-output'); host.replaceChildren();
@@ -326,6 +372,8 @@ function chooseDataset(id,load=true) {
   state.id=id; state.dataset=state.config.datasets[id]; state.raw=''; state.data=null; state.source=null;
   if(!state.dataset.map && state.mode==='map')state.mode='pretty';
   if(state.mode==='usage' && id!=='pokemon')state.mode='pretty';
+  if(state.mode==='weather' && id!=='weather')state.mode='pretty';
+  if(id==='weather')state.mode='weather';
   if(id==='pokemon')state.mode='usage';
   if(id==='toeiBus')state.mode='map';
   byId('download-data').hidden=true; byId('fetch-data').disabled=false;

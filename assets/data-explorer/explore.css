@@ -52,6 +52,22 @@
 .data-aha p { margin:0; font-size:.85rem; line-height:1.65; }
 .data-aha pre { grid-column:2; margin:0; white-space:pre-wrap; overflow-wrap:anywhere; font:.8rem var(--mono); }
 .explore-page [hidden] { display:none !important; }
+.weather-visual { padding:clamp(1rem,3vw,1.75rem); background:#f1f5f7; }
+.weather-summary { display:flex; align-items:flex-start; justify-content:space-between; gap:1rem; }
+.weather-summary h3 { margin:0; font-size:1.7rem; }
+.weather-summary p { margin:.35rem 0; font-size:.8rem; color:var(--muted); }
+.weather-summary strong { font:600 clamp(1.8rem,4vw,2.8rem) var(--mono); color:var(--blue); }
+.weather-visual h4 { margin:1.5rem 0 .5rem; font-size:.9rem; }
+.weather-visual svg { display:block; width:100%; height:auto; overflow:visible; }
+.weather-visual svg text { fill:#66757d; font:12px var(--mono); }
+.weather-grid { stroke:#d9e2e7; stroke-width:1; }
+.weather-line { fill:none; stroke:#315876; stroke-width:3; stroke-linejoin:round; }
+.weather-cursor { stroke:#8699a5; stroke-width:1; stroke-dasharray:3 4; }
+.weather-dot { fill:#315876; stroke:#fff; stroke-width:2; }
+.weather-hour { display:grid; gap:.65rem; margin-top:.5rem; }
+.weather-hour output { font:.9rem var(--mono); color:var(--ink); }
+.explore-page .weather-hour input[type=range] { width:100%; padding:0; min-height:32px; border:0; accent-color:var(--blue); background:transparent; }
+@media(max-width:550px) { .weather-summary { flex-direction:column; }.weather-visual svg text { font-size:14px; } }
 .pokemon-usage { padding:1.5rem; background:#faf7ec; }
 .pokemon-usage h3 { margin:0 0 .5rem; font-size:1.2rem; }
 .pokemon-usage > p { margin:0; font-size:.85rem; line-height:1.7; }

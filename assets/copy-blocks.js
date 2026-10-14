@@ -35,6 +35,10 @@
         setTimeout(()=>{button.innerHTML=icon;button.title=label();button.setAttribute('aria-label',label());delete button.dataset.copied;},1600);
       });
       host.append(button);
+      // Counter the block's own scrolling without changing its layout or content.
+      const pin=()=>{button.style.transform=`translate(${host.scrollLeft}px, ${host.scrollTop}px)`;};
+      host.addEventListener('scroll',pin,{passive:true});
+      pin();
     });
   }
   function start() {

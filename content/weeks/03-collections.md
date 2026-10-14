@@ -17,24 +17,24 @@ overview: Look inside live bus and weather data. Learn how strings, numbers, lis
 overview_ja: 都営バスや天気の実データから、文字列・数値・リスト・辞書の役割を知る。三つのNotebookで手を動かし、宿題ではAPIデータから自分なりの発見を見せる。
 ---
 ## Exploration
-EN: Fetch bus, weather, music, and other API data. Compare the JSON with maps, charts, and listening links.
-JP: バス・天気・音楽などのAPIデータを取得。JSONの中身と、地図・グラフ・試聴リンクを見比べよう。
+EN: **13:10–13:40 · 30 min.** Follow the bus example (10 min), explore an API of your choice (10 min), then compare its JSON and visual output with a partner (10 min).
+JP: **13:10–13:40 · 30分。** 都営バスを一緒に見る（10分）→ 好きなAPIを探索する（10分）→ JSONと画面のつながりを隣の人と確かめる（10分）。
 
 ## In-Class Part 1
-EN: **Part 1 — Lists · 20 min.** Select, edit, and slice items.
-JP: **Part 1 — リスト · 20分。** 要素を取り出す・編集する・スライスする。
+EN: **13:40–14:00 · Lists.** Explain for 5 min, practice for 15. Focus on exercises 2–3 (indexes and edits); the other exercises are for extra practice.
+JP: **13:40–14:00 · リスト。** 説明5分＋実習15分。今日は練習2・3（添字と編集）を中心に。ほかは余裕があれば。
 
 ## In-Class Part 2
-EN: **Part 2 — Dictionaries · 20 min.** Look up and update values by key.
-JP: **Part 2 — 辞書 · 20分。** キーで値を取り出し、追加・変更する。
+EN: **14:00–14:20 · Dictionaries.** Explain for 5 min, practice for 15. Focus on exercises 1, 3–4: look up values, build a profile, and add favorites.
+JP: **14:00–14:20 · 辞書。** 説明5分＋実習15分。練習1・3・4：値を取り出し、自己紹介とお気に入りをつくる。
 
 ## In-Class Part 3
-EN: **Part 3 — My guide · 30 min.** Combine lists and dictionaries to make your own guide.
-JP: **Part 3 — 私のガイド · 30分。** リストと辞書を組み合わせ、自分のガイドをつくる。
+EN: **14:20–14:45 · My guide.** Explain for 5 min, then create and share for 20. Combine lists and dictionaries.
+JP: **14:20–14:45 · 私のガイド。** 説明5分＋制作・共有20分。リストと辞書を組み合わせる。
 
 ## In-Class Challenge
-EN: Choose a theme, create **three records**, and share with a partner.
-JP: 好きなテーマで**三件**つくり、隣の人に見せよう。
+EN: Choose a theme, create **three records**, and share with a partner. **14:45–14:50:** save your notebook and confirm the homework.
+JP: 好きなテーマで**三件**つくり、隣の人に見せよう。**14:45–14:50**は保存と宿題の確認。
 
 ## Take-Home Assignment
 EN: **A small discovery with real data.**

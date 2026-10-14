@@ -47,6 +47,14 @@
 #map-status,.map-links { font-size:.8rem; color:var(--muted); }
 .map-links { display:flex; gap:1rem; }
 .maplibregl-popup-content { border-radius:0; font: .85rem/1.5 var(--sans); }
+#map-legend { display:flex; flex-wrap:wrap; gap:.55rem 1.2rem; margin:1rem 0; font-size:.8rem; }
+#map-legend span { display:inline-flex; align-items:center; gap:.4rem; }
+#map-legend i { display:inline-block; width:.8rem; height:.8rem; }
+.maplibregl-popup-content dl { display:grid; grid-template-columns:auto minmax(0,1fr); gap:.3rem .7rem; margin:.75rem 0; }
+.maplibregl-popup-content dt { color:var(--muted); }
+.maplibregl-popup-content dd { margin:0; overflow-wrap:anywhere; }
+.maplibregl-popup-content select { width:100%; margin-bottom:.6rem; font-size:.8rem; }
+.maplibregl-popup-content { max-height:390px; overflow-y:auto; }
 .data-aha { display:grid; grid-template-columns:auto minmax(0,1fr); gap:.5rem 1rem; margin:1.5rem 0; padding:1rem 1.25rem; background:#eef1f2; }
 .data-aha strong { color:var(--blue); }
 .data-aha p { margin:0; font-size:.85rem; line-height:1.65; }

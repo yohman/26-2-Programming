@@ -7,6 +7,24 @@ const cache = new Map();
 let controller;
 let mapLibrary;
 let gtfsType;
+let lapdLocations=[];
+let lapdLocationError=false;
+const descentAliases={'B':'Black/African American','Black':'Black/African American','W':'White/Caucasian','White':'White/Caucasian','A - Asian':'Asian','F - Filipino':'Filipino','H - Hispanic':'Hispanic','K - Korean':'Korean','O - Other':'Other','U - Hawaiian':'Hawaiian','X - Unknown':'Unknown'};
+const descentNames=['Hispanic','Black/African American','White/Caucasian','Other Asian','Other','Unknown','Not reported','Asian','American Indian','Asian Indian','Cambodian','Chinese','Filipino','Guamanian','Hawaiian','Japanese','Korean','Laotian','Middle Eastern/Arab','Pacific Islander','Samoan','Vietnamese'];
+const descentColors=['#99743d','#6a73a8','#488b8c','#b66d88','#88796e','#969da3','#c3c7ca','#718747','#a3664f','#9b826b','#5b86ae','#87739b','#ae8158','#657f55','#698f7c','#ae6980','#707a51','#b38b32','#57777c','#9e6f57','#846e97','#819f68'];
+const descentLabel=value=>descentAliases[value]||value||'Not reported';
+const descentColor=value=>descentColors[descentNames.indexOf(value)]||'#777777';
+async function victimLocations(victims,saved,signal) {
+  if(saved) {const res=await fetch('weeks/week-03/explore-data/lapd-victim-locations.json',{signal});if(!res.ok)throw new Error('Location backup unavailable');return res.json();}
+  const ids=[...new Set(victims.map(v=>v.caseno).filter(id=>/^[A-Za-z0-9_-]+$/.test(id||'')))];const rows=[];
+  for(let i=0;i<ids.length;i+=100) {
+    const url=new URL('https://data.lacity.org/resource/k7nn-b2ep.json');
+    url.searchParams.set('$select','caseno,hndrdth_lat,hndrdth_lon');url.searchParams.set('$group','caseno,hndrdth_lat,hndrdth_lon');
+    url.searchParams.set('$where',"caseno in ("+ids.slice(i,i+100).map(id=>"'"+id+"'").join(',')+") AND hndrdth_lat > 0 AND hndrdth_lon < 0");url.searchParams.set('$limit','5000');
+    const res=await fetch(url,{signal,credentials:'omit'});if(!res.ok)throw new Error('Location lookup failed');const batch=await res.json();if(batch.length>=5000)throw new Error('Location lookup truncated');rows.push(...batch);
+  }
+  return rows;
+}
 const weatherPlaces={tokyo:{lat:35.68,lon:139.69,ja:'東京',en:'Tokyo'},kashiwa:{lat:35.86,lon:139.97,ja:'柏',en:'Kashiwa'},osaka:{lat:34.69,lon:135.5,ja:'大阪',en:'Osaka'},sapporo:{lat:43.06,lon:141.35,ja:'札幌',en:'Sapporo'},naha:{lat:26.21,lon:127.68,ja:'那覇',en:'Naha'}};
 const defaults = {
   toeiBus:{},
@@ -25,7 +43,7 @@ const fields = {
   tokyo:[],
   lapd:[
     {key:'area',label:{ja:'地区 · $where',en:'Area · $where'},options:[['all','All areas'],['Central','Central'],['Hollywood','Hollywood'],['Pacific','Pacific'],['Harbor','Harbor']]},
-    {key:'limit',label:{ja:'$limit · 最大件数',en:'$limit · Maximum rows'},options:[['25','25'],['50','50'],['100','100']]}
+    {key:'limit',label:{ja:'$limit · 最大件数',en:'$limit · Maximum rows'},options:[['25','25'],['50','50'],['100','100'],['1000','1,000']]}
   ],
   weather:[
     {key:'location',label:{ja:'場所',en:'Location'},options:[['tokyo','東京 · Tokyo'],['kashiwa','柏 · Kashiwa'],['osaka','大阪 · Osaka'],['sapporo','札幌 · Sapporo'],['naha','那覇 · Naha'],['custom','座標で指定 · Coordinates']]},
@@ -56,9 +74,9 @@ function requestURL(id, v) {
   }
   if(id==='tokyo') return 'https://api.odpt.org/api/v4/odpt:Train?odpt:operator=odpt.Operator:TokyoMetro&odpt:railway=odpt.Railway:TokyoMetro.Yurakucho&acl:consumerKey=YOUR_API_KEY';
   if(id==='lapd') {
-    const url=new URL('https://data.lacity.org/resource/k7nn-b2ep.json');
-    url.searchParams.set('$select','date_occ,area_name,nibr_description,hndrdth_lat,hndrdth_lon');
-    url.searchParams.set('$where','hndrdth_lat > 0 AND hndrdth_lon < 0'+(v.area==='all'?'':" AND trim(area_name) = '"+v.area+"'"));
+    const url=new URL('https://data.lacity.org/resource/gqf2-vm2j.json');
+    url.searchParams.set('$select','caseno,uniquevictimno,date_occ,area_name,victimofslist,vict_age,vict_sex,vict_descent,victim_type,victim_shot');
+    if(v.area!=='all')url.searchParams.set('$where',"trim(area_name) = '"+v.area+"'");
     url.searchParams.set('$order','date_occ DESC'); url.searchParams.set('$limit',v.limit); return url.href;
   }
   if (id === 'weather') {
@@ -176,7 +194,12 @@ function features() {
     const stamp=v.timestamp||state.data.header?.timestamp;
     return point(p.longitude,p.latitude,'Bus '+(v.vehicle?.label||v.vehicle?.id||e.id),'Route '+(v.trip?.route_id||'—')+' · '+p.latitude.toFixed(5)+', '+p.longitude.toFixed(5)+' · '+(stamp?new Date(stamp*1000).toLocaleString('ja-JP',{timeZone:'Asia/Tokyo'})+' JST':'Time not supplied'));
   });
-  if(state.id==='lapd') result=state.data.filter(v=>v.hndrdth_lon && v.hndrdth_lat && valid(Number(v.hndrdth_lon),Number(v.hndrdth_lat)) && Number(v.hndrdth_lat)!==0 && Number(v.hndrdth_lon)!==0).map(v=>point(Number(v.hndrdth_lon),Number(v.hndrdth_lat),v.nibr_description,(v.area_name||'').trim()+' · '+v.date_occ+' · Approximate hundred-block location'));
+  if(state.id==='lapd') {
+    const locations=new Map();lapdLocations.forEach(row=>{const list=locations.get(row.caseno)||new Map();list.set(row.hndrdth_lon+','+row.hndrdth_lat,row);locations.set(row.caseno,list);});
+    result=state.data.flatMap(v=>{const matches=locations.get(v.caseno);if(matches?.size!==1)return [];const row=[...matches.values()][0],lon=Number(row.hndrdth_lon),lat=Number(row.hndrdth_lat);if(!valid(lon,lat)||!lon||!lat)return [];
+      const race=descentLabel(v.vict_descent);const f=point(lon,lat,v.victimofslist,'Approximate hundred-block location');
+      Object.assign(f.properties,{color:descentColor(race),race,descent:v.vict_descent||'',age:v.vict_age||'',sex:v.vict_sex||'',victimType:v.victim_type||'',shot:v.victim_shot||'',date:v.date_occ||'',area:v.area_name||'',caseNo:v.caseno||'',victimId:v.uniquevictimno||''});return [f];});
+  }
   return {type:'FeatureCollection',features:result};
 }
 function loadMapLibrary() {
@@ -192,12 +215,17 @@ function loadMapLibrary() {
 }
 async function mapView() {
   const token=state.token; state.geojson=features();
+  let legend=byId('map-legend');if(!legend){legend=document.createElement('div');legend.id='map-legend';byId('map-status').after(legend);}legend.replaceChildren();legend.hidden=state.id!=='lapd';
+  if(state.id==='lapd') {
+    const counts=new Map();state.geojson.features.forEach(f=>counts.set(f.properties.race,(counts.get(f.properties.race)||0)+1));
+    [...counts].sort((a,b)=>b[1]-a[1]).forEach(([race,count])=>{const item=document.createElement('span'),swatch=document.createElement('i');swatch.style.background=descentColor(race);swatch.setAttribute('aria-hidden','true');item.append(swatch,document.createTextNode(race+' ('+count+')'));legend.append(item);});
+  }
   if(state.geoBlob)URL.revokeObjectURL(state.geoBlob);
   state.geoBlob=URL.createObjectURL(new Blob([JSON.stringify(state.geojson,null,2)],{type:'application/geo+json'}));
   byId('download-geojson').href=state.geoBlob;
   byId('download-geojson').download=state.id+(state.source?.saved?'-saved-example':'')+'.geojson';
   byId('download-geojson').hidden=!state.geojson.features.length;
-  if(!state.geojson.features.length) { byId('map-status').textContent=textFor({ja:'この応答に表示できる座標はありません。運行時間外や空の配信もあります。',en:'This response has no mappable coordinates. The feed may be empty or the route out of service.'}); if(state.map?.getSource('records'))state.map.getSource('records').setData(state.geojson); return; }
+  if(!state.geojson.features.length) { byId('map-status').textContent=state.id==='lapd'?textFor({ja:lapdLocationError?'位置の照合を取得できませんでした。Raw / Prettyは利用できます。':'取得した被害者記録に、一意に照合できる位置がありません。',en:lapdLocationError?'Location lookup failed. Raw / Pretty remain available.':'No victim records have an unambiguous matched location.'}):textFor({ja:'この応答に表示できる座標はありません。運行時間外や空の配信もあります。',en:'This response has no mappable coordinates. The feed may be empty or the route out of service.'}); if(state.map?.getSource('records'))state.map.getSource('records').setData(state.geojson); return; }
   byId('map-status').textContent=textFor({ja:'地図を読み込み中…',en:'Loading map…'});
   try {
     const lib=await loadMapLibrary(); if(token!==state.token || state.mode!=='map') return;
@@ -207,12 +235,23 @@ async function mapView() {
       state.map.on('error',()=>{byId('map-status').textContent=textFor({ja:'背景地図を取得できない場合があります。Raw / Prettyはそのまま使えます。',en:'Some map resources could not load. Raw and Pretty remain available.'});});
       await new Promise(resolve=>state.map.once('load',resolve));
       state.map.addSource('records',{type:'geojson',data:state.geojson});
-      state.map.addLayer({id:'records',type:'circle',source:'records',paint:{'circle-radius':['get','radius'],'circle-color':'#315876','circle-stroke-color':'#fff','circle-stroke-width':1.5}});
+      state.map.addLayer({id:'records',type:'circle',source:'records',paint:{'circle-radius':['get','radius'],'circle-color':['coalesce',['get','color'],'#315876'],'circle-stroke-color':'#fff','circle-stroke-width':1.5}});
       state.map.on('click','records',event=>{
         const f=event.features[0]; const content=document.createElement('div');
         const title=document.createElement('strong'); title.textContent=f.properties.title;
         const detail=document.createElement('p'); detail.textContent=f.properties.detail;
-        content.append(title,detail); new lib.Popup().setLngLat(f.geometry.coordinates).setDOMContent(content).addTo(state.map);
+        if(state.id==='lapd') {
+          const selected=state.geojson.features.find(item=>item.properties.victimId===f.properties.victimId);
+          const coordinates=selected?.geometry.coordinates||f.geometry.coordinates;
+          const records=state.geojson.features.filter(item=>item.geometry.coordinates.every((v,i)=>Math.abs(v-coordinates[i])<.00000001));
+          if(!records.length)return;
+          const body=document.createElement('div');
+          const show=index=>{body.replaceChildren();const p=records[index].properties;const heading=document.createElement('strong');heading.textContent=p.title;body.append(heading);const dl=document.createElement('dl');
+            [[{ja:'被害者記録ID',en:'Victim record'},p.victimId],[{ja:'人種・出自（記録値）',en:'Recorded descent'},p.descent],[{ja:'年齢',en:'Age'},p.age],[{ja:'性別（記録値）',en:'Recorded sex'},p.sex],[{ja:'被害者種別',en:'Victim type'},p.victimType],[{ja:'銃撃（記録値）',en:'Victim shot'},p.shot],[{ja:'発生日',en:'Occurrence date'},p.date],[{ja:'地区',en:'Area'},p.area],[{ja:'事件番号',en:'Case number'},p.caseNo]].forEach(([label,value])=>{const dt=document.createElement('dt'),dd=document.createElement('dd');dt.textContent=textFor(label);dd.textContent=value||textFor({ja:'記載なし',en:'Not reported'});dl.append(dt,dd);});body.append(dl);};
+          if(records.length>1){const select=document.createElement('select');select.setAttribute('aria-label',textFor({ja:'同じ概略位置の被害者記録',en:'Victim records at this approximate location'}));records.forEach((r,i)=>{const o=document.createElement('option');o.value=i;o.textContent=(i+1)+' / '+records.length+' · '+r.properties.victimId;select.append(o);});select.addEventListener('change',()=>show(Number(select.value)));content.append(select);}
+          show(0);content.append(body);const caveat=document.createElement('p');caveat.textContent=textFor({ja:'事件番号でOffensesと照合した概略位置。正確な住所ではありません。',en:'Approximate location joined to Offenses by case number, not an exact address.'});content.append(caveat);
+        } else content.append(title,detail);
+        new lib.Popup({maxWidth:'360px'}).setLngLat(f.geometry.coordinates).setDOMContent(content).addTo(state.map);
       });
     }
     if(token!==state.token || state.mode!=='map') return;
@@ -221,7 +260,7 @@ async function mapView() {
     const bounds=new lib.LngLatBounds(points[0],points[0]); points.slice(1).forEach(p=>bounds.extend(p));
     if(points.length===1)state.map.jumpTo({center:points[0],zoom:10});
     else state.map.fitBounds(bounds,{padding:45,maxZoom:13,duration:0});
-    byId('map-status').textContent=textFor({ja:points.length+'地点 · 同じ応答の座標をGeoJSONにして表示。',en:points.length+' points · coordinates from the same response, rendered as GeoJSON.'});
+    byId('map-status').textContent=state.id==='lapd'?textFor({ja:'取得 '+state.data.length+'件 / 地図 '+points.length+'件。Offensesの座標をcasenoで照合。未照合・複数位置の記録は地図から除外。同じ場所の点は重なります。',en:state.data.length+' fetched / '+points.length+' mapped. Coordinates joined from Offenses by caseno. Unmatched/ambiguous locations omitted; co-located points overlap.'}):textFor({ja:points.length+'地点 · 同じ応答の座標をGeoJSONにして表示。',en:points.length+' points · coordinates from the same response, rendered as GeoJSON.'});
   } catch(error) { byId('map-status').textContent=textFor({ja:'地図を表示できません（WebGLまたは地図ライブラリ）。Raw / Prettyを使ってください。',en:'Map unavailable (WebGL or map-library issue). Use Raw or Pretty instead.'}); }
 }
 function renderViews() {
@@ -243,6 +282,7 @@ function renderViews() {
   document.querySelectorAll('[data-view]').forEach(button=>{button.setAttribute('aria-pressed',String(button.dataset.view===state.mode)); if(['map','usage'].includes(button.dataset.view))button.disabled=!hasData || (!pokemon && !state.dataset.map);});
   byId('raw-output').querySelector('code').textContent=state.raw;
   byId('coordinate-note').textContent=textFor(state.dataset.map_note);
+  if(state.id==='lapd') {const link=document.createElement('a');link.href='https://data.lacity.org/Public-Safety/LAPD-NIBRS-Offenses-Dataset/k7nn-b2ep';link.target='_blank';link.rel='noopener';link.textContent=textFor({ja:' 座標の照合元：Offenses ↗',en:' Coordinate source: Offenses ↗'});byId('coordinate-note').append(link);}
   if(!hasData) {byId('pretty-output').querySelector('code').textContent=''; byId('csv-output').replaceChildren(); return;}
   if(state.id==='holidays')csvTable(); else jsonColors(JSON.stringify(state.data,null,2));
   if(state.mode==='map')mapView();
@@ -321,18 +361,19 @@ function response(raw,url,saved=false,decoded=null,bytes=null) {
 }
 async function fetchData(saved=false) {
   controller?.abort(); controller=new AbortController(); const token=++state.token; const dataset=state.dataset;
+  const requestController=controller;
   if(saved)renderFields(state.id==='holidays'?values():defaults[state.id]);
   const url=requestURL(state.id,values());
-  if(!saved && cache.has(url)) { const record=cache.get(url); response(record.raw,url,false,record.decoded,record.bytes); state.source=record.source; renderStatus(); return; }
+  if(!saved && cache.has(url)) { const record=cache.get(url);lapdLocations=record.locations||[];lapdLocationError=record.locationError||false; response(record.raw,url,false,record.decoded,record.bytes); state.source=record.source; renderStatus(); return; }
   state.raw=''; state.data=null; state.source=null;
   byId('download-data').hidden=true;
   if(state.map?.getSource('records')) state.map.getSource('records').setData({type:'FeatureCollection',features:[]});
   renderViews();
   byId('fetch-data').disabled=true;
   status({ja:saved?'保存例を読み込み中…':'APIに問い合わせ中…',en:saved?'Loading saved example…':'Requesting data…'});
-  const timer=setTimeout(()=>controller.abort(),15000);
+  const timer=setTimeout(()=>requestController.abort(),state.id==='lapd'?45000:15000);
   try {
-    const res=await fetch(saved?dataset.snapshot:url,{signal:controller.signal,credentials:'omit'});
+    const res=await fetch(saved?dataset.snapshot:url,{signal:requestController.signal,credentials:'omit'});
     if(!res.ok)throw new Error('HTTP '+res.status);
     const buffer=await res.arrayBuffer(); if(buffer.byteLength>1500000)throw new Error('Response too large');
     let raw,decoded=null,bytes=null;
@@ -344,8 +385,12 @@ async function fetchData(saved=false) {
       raw=Array.from({length:Math.ceil(bytes.length/16)},(_,row)=>row*16).map(offset=>offset.toString(16).padStart(6,'0')+'  '+[...bytes.slice(offset,offset+16)].map(b=>b.toString(16).padStart(2,'0')).join(' ')).join('\n');
     } else raw=new TextDecoder(dataset.encoding).decode(buffer);
     if(token!==state.token)return;
+    let locations=[],locationError=false;
+    if(state.id==='lapd') {try{locations=await victimLocations(JSON.parse(raw),saved,requestController.signal);}catch(error){if(requestController.signal.aborted)throw error;locationError=true;}}
+    if(token!==state.token)return;
+    lapdLocations=locations;lapdLocationError=locationError;
     response(raw,url,saved,decoded,bytes);
-    if(!saved)cache.set(url,{raw,decoded,bytes,source:state.source});
+    if(!saved)cache.set(url,{raw,decoded,bytes,locations,locationError,source:state.source});
   } catch(error) {
     if(token!==state.token)return;
     status({ja:'取得できませんでした（通信・CORS・配信制限）。「保存例を使う」で実データの保存版を開けます。',en:'Request failed (network, CORS, or provider limits). Use saved example to open a real cached response.'},'error');

@@ -68,19 +68,19 @@
       "map_note":{"ja":"この例には緯度・経度がありません。地図にするには駅データの座標と結合する必要があり、駅間の正確な列車座標が直接届くわけではありません。","en":"This example has no latitude/longitude. Mapping requires joining station coordinates; it does not directly supply precise train coordinates between stations."}
     },
     "lapd": {
-      "title":{"ja":"LAの犯罪記録", "en":"LA crime records"},
+      "title":{"ja":"LAの被害者記録", "en":"LA victim records"},
       "provider":"City of Los Angeles · LAPD",
       "format":"JSON",
-      "docs":"https://data.lacity.org/Public-Safety/LAPD-NIBRS-Offenses-Dataset/k7nn-b2ep",
-      "snapshot":"weeks/week-03/explore-data/lapd.json",
+      "docs":"https://data.lacity.org/Public-Safety/LAPD-NIBRS-Victims-Dataset/gqf2-vm2j",
+      "snapshot":"weeks/week-03/explore-data/lapd-victims.json",
       "snapshot_at":"2026-10-14",
       "encoding":"utf-8",
       "map":true,
-      "summary":{"ja":"LAPDの現行NIBRS犯罪記録。発生日、地区、内容、概略座標だけをAPIで取得。リアルタイム速報ではなく、記録・更新された報告データです。","en":"The current LAPD NIBRS offenses dataset. Request occurrence date, area, description, and approximate coordinates. These are recorded reports, not a real-time incident feed."},
-      "parameters":{"ja":"$select は列、$where は条件、$order は並び順、$limit は最大件数。地区を選んで再取得しよう。発生日の新しい順に取得し、座標の欠損を除外します。少量の取得はキーなしで可能ですが、利用制限があります。","en":"$select chooses fields, $where filters, $order sorts, and $limit caps rows. Select an area and fetch again. Results sort by occurrence date and omit missing coordinates. Small anonymous requests are rate-limited."},
-      "aha":{"ja":"数値に見える座標もJSONでは文字列で届く。Pythonならfloat()で変換。一行は一つのoffenseで、一つの事件に複数行あるため、行数＝事件数ではありません。","en":"Coordinates arrive as JSON strings: Python needs float(). Each row is an offense; one incident can have several rows, so row count is not incident count."},
-      "python":"float(offenses[0][\"hndrdth_lat\"])",
-      "map_note":{"ja":"hndrdth_lon / hndrdth_lat を数値に変換して地図へ。座標はプライバシー保護のため100番地単位の概略位置です。点の多さだけで地域の危険度を判断できません。表示は取得した一部の記録で、全件ではありません。","en":"Convert hndrdth_lon / hndrdth_lat to numbers for mapping. Locations are approximate hundred-block positions for privacy. Point density alone does not measure neighborhood risk. This is a limited sample, not the full dataset."}
+      "summary":{"ja":"LAPDのNIBRS Victims。被害者の年齢・性別・人種／出自の記録と、関連する犯罪区分を読む。MapはOffensesの概略位置を事件番号で照合し、記録された出自別に色分け。リアルタイム速報ではありません。","en":"LAPD NIBRS Victims: recorded age, sex, descent, and associated offenses. Map joins approximate Offenses locations by case number and colors records by published descent. This is not a real-time alert feed."},
+      "parameters":{"ja":"$select は列、$where は地区、$order は並び順、$limit は最大件数（1,000件も選択可）。Raw / PrettyはVictimsの応答そのもの。Mapだけが別のOffenses APIにcasenoで照会します。","en":"$select chooses columns, $where filters area, $order sorts, and $limit caps results, including 1,000. Raw / Pretty retain the Victims response. Only mapping adds a separate Offenses lookup by caseno."},
+      "aha":{"ja":"被害者の情報と位置は別のデータ。同じcasenoを使ってつなぐ。一事件に複数の被害者や犯罪区分があるため、被害者記録の行数と事件数は同じとは限らない。","en":"Victim details and coordinates live in different datasets. caseno connects them. An incident may have multiple victim records and offenses, so row count is not incident count."},
+      "python":"victims[0][\"vict_descent\"]",
+      "map_note":{"ja":"色は公表されたVict Descent（人種・出自）の分類。B/Blackなど同義の表記を凡例で統一し、元の値はポップアップに残す。欠損はNot reported。位置はOffensesから照合した100番地単位の概略位置。一意に照合できない記録は地図から除外。人口や報告率を考慮していない取得サンプルから、集団や地域の危険度は判断できません。","en":"Colors represent published Vict Descent categories. Equivalent labels such as B/Black are normalized in the legend; popups retain original values. Missing values are Not reported. Locations are approximate hundred-block Offenses matches; unmatched/ambiguous records are omitted. This limited sample does not adjust for population or reporting rates and cannot establish group or neighborhood risk."}
     },
     "weather": {
       "title": {

@@ -39,6 +39,8 @@ JP: 今日の目標は**問い・出典URL・取り出した値一つ**をNotebo
 ## Take-Home Assignment
 EN: **A small discovery with real data.**
 
+**Required: put your project title and name in the very first Markdown cell.**
+
 - Choose an Explore example or another public API and a question that interests you.
 - Bring the data into Python, read it using lists/dictionaries, and show something: a summary, table, chart, or map. One is enough.
 - Write a few sentences about your discovery, one value you checked, and a limitation. Include the source URL.
@@ -46,6 +48,8 @@ EN: **A small discovery with real data.**
 Run all cells and save the outputs. Submit your **`.ipynb` and any required files to UNIPA by October 21, 23:59 JST**. The starter below is optional. You are encouraged to create your own `.ipynb` from scratch. A saved JSON response is fine if fetching fails; note when it was retrieved. No API key required. If you use AI, briefly note what it helped with.
 
 JP: **データで見つけた、小さな発見。**
+
+**必須：Notebookの一番上のMarkdown Cellに、作品タイトルと氏名を書いてください。**
 
 - Exploreの例、または別の公開APIから、気になるデータと問いを選ぶ。
 - Pythonに取り込み、リスト・辞書を使って読み、何かを見せる。要約・表・グラフ・地図のどれか一つでOK。

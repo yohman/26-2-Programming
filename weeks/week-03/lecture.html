@@ -113,7 +113,42 @@ latitude = position["latitude"]  # float</code></pre>
 <p class="slide-note"><span class="ja">共通のroute_idで照合する。関連を持つ二つの表が、リレーショナルなデータの基本。車両位置と路線名は別のフィードにある。</span><span class="en">Match the shared route_id. Related tables are the basis of relational data. Vehicle positions and route names come from separate feeds.</span> <a href="https://api-public.odpt.org/api/v4/files/Toei/data/ToeiBus-GTFS.zip" target="_blank" rel="noopener">Toei GTFS · routes.txt ↗</a></p>
 </section>
 <section class="slide slide--cells" data-slide data-part="1" hidden><p class="slide-kicker">WEEK 03 · PART 1</p><h2><span class="ja">プレイリストの「次の曲」</span><span class="en">The next song in your playlist</span></h2><ol class="playlist-demo" aria-label="プレイリスト / Playlist"><li><small>0</small><strong>Lose Yourself <small>Eminem</small></strong></li><li><small>1</small><strong>Dai Dai <small>Shakira &amp; Burna Boy</small></strong></li><li><small>2</small><strong>It Was a Good Day <small>Ice Cube</small></strong></li></ol><p class="slide-note ja">順番がある。曲が増える。並べ替える。身近な仕組みを、Pythonのリストでモデルにしてみる。</p><p class="slide-note en">There is an order. Songs get added or rearranged. We can model this familiar structure with a Python list.</p><p class="slide-question"><span class="ja">最初の曲は、何番目？</span><span class="en">What index names the first song?</span></p></section>
-<section class="slide slide--cells" data-slide data-part="1" hidden><p class="slide-kicker">WEEK 03 · PART 1</p><h2><span class="ja">買い物かごと、先週の地震地図</span><span class="en">A shopping cart and last week’s map</span></h2><div class="application-example"><p><span class="ja">買い物かごの一品</span><span class="en">One item in a shopping cart</span></p><code>{"name": "Notebook", "price": 300, "quantity": 2}</code><p><span class="ja">地震一件の記録</span><span class="en">One earthquake record</span></p><code>{"place": "Kobuk", "mag": 2.7}</code></div><p class="slide-note ja">何件も並ぶ「リスト」と、一件の意味が分かる「辞書」。今日は、その中身を自分で作る。例は授業用の簡略モデルです。</p><p class="slide-note en">A list holds several records. A dictionary gives each field a name. Today we build those structures ourselves. These examples are simplified teaching models.</p></section>
+<section class="slide slide--cells" data-slide data-part="1" hidden>
+<p class="slide-kicker">PLAYLIST · DICTIONARY</p>
+<h2><span class="ja">一曲の情報を、辞書にする</span><span class="en">One song, with its details</span></h2>
+<div class="lecture-notebook-cell"><div class="lecture-cell-toolbar"><span>Python</span><button type="button" data-reveal aria-expanded="false">▶ <span class="ja">結果を表示</span><span class="en">Show result</span></button></div><pre><code>song = {
+    "title": "Lose Yourself",
+    "artist": "Eminem",
+    "tags": ["workout", "hip-hop"]
+}
+
+print(song["artist"])
+print(song["tags"][0])</code></pre></div>
+<pre class="lecture-cell-output" hidden><code>Eminem
+workout</code></pre>
+<p class="slide-note"><span class="ja">キーは項目の名前。値には文字列だけでなく、リストも入る。tagsはこのプレイリスト用につけたラベル。</span><span class="en">Keys name the fields. Values can hold strings or lists. These tags are labels chosen for this playlist.</span></p>
+</section>
+<section class="slide slide--cells bus-story--nested" data-slide data-part="1" hidden>
+<p class="slide-kicker">PLAYLIST · NESTED DICTIONARY</p>
+<h2><span class="ja">三曲を、一つの辞書にまとめる</span><span class="en">Three songs in one dictionary</span></h2>
+<pre class="bus-code"><code>songs = {
+    "Lose Yourself": {
+        "artist": "Eminem",
+        "tags": ["workout", "hip-hop"]
+    },
+    "Dai Dai": {
+        "artist": "Shakira &amp; Burna Boy",
+        "tags": ["workout", "pop"]
+    },
+    "It Was a Good Day": {
+        "artist": "Ice Cube",
+        "tags": ["relax", "hip-hop"]
+    }
+}</code></pre>
+<div class="lecture-notebook-cell"><div class="lecture-cell-toolbar"><span>Python</span><button type="button" data-reveal aria-expanded="false">▶ <span class="ja">結果を表示</span><span class="en">Show result</span></button></div><pre><code>print(songs["Dai Dai"]["artist"])</code></pre></div>
+<pre class="lecture-cell-output" hidden><code>Shakira &amp; Burna Boy</code></pre>
+<p class="slide-note"><span class="ja">外側のキーで曲を選ぶ。内側のキーで、その曲の情報を選ぶ。</span><span class="en">The outer key selects a song. The inner key selects a detail about it.</span></p>
+</section>
 <section class="slide slide--cells" data-slide data-part="1" hidden><p class="slide-kicker">WEEK 03 · PART 1</p><h2><span class="ja">リストと添字</span><span class="en">Lists and indexes</span></h2><div class="lecture-notebook-cell"><div class="lecture-cell-toolbar"><span>Python</span><button type="button" data-reveal aria-expanded="false">▶ <span class="ja">例の結果を表示</span><span class="en">Show example result</span></button></div><pre><code>playlist = [&quot;Lose Yourself&quot;, &quot;Dai Dai&quot;, &quot;It Was a Good Day&quot;]
 print(playlist[0])
 print(playlist[-1])</code></pre></div><pre class="lecture-cell-output" hidden><code>Lose Yourself

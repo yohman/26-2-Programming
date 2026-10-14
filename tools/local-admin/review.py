@@ -193,6 +193,8 @@ def read_roster():
     headers = [normalize(v) for v in rows[header_index]]
     id_column = headers.index('学籍番号')
     name_column = headers.index('学生氏名') if '学生氏名' in headers else headers.index('氏名')
+    roman_column = next((i for i, value in enumerate(headers) if value in {'学生氏名_英語', '氏名_英語', 'Roman name'}), None)
+    kana_column = next((i for i, value in enumerate(headers) if value in {'学生氏名_カナ', '氏名_カナ', 'フリガナ'}), None)
     roster, conflicts, notes = {}, set(), []
     for row in rows[header_index + 1:]:
         if len(row) <= max(id_column, name_column):
@@ -203,9 +205,14 @@ def read_roster():
         name = row[name_column].strip()
         if not re.fullmatch(r'\d{8,12}', student) or not name:
             continue
-        if student in roster and roster[student] != name:
+        roman = normalize(row[roman_column]) if roman_column is not None and len(row) > roman_column else ''
+        kana = normalize(row[kana_column]) if kana_column is not None and len(row) > kana_column else ''
+        hiragana = ''.join(chr(ord(c) - 0x60) if 'ァ' <= c <= 'ヶ' else c for c in kana)
+        if roman in {'-', 'なし'}:
+            roman = ''
+        if student in roster and roster[student]['name'] != name:
             conflicts.add(student)
-        roster[student] = name
+        roster[student] = {'name': name, 'reading': roman or hiragana}
     for student in conflicts:
         del roster[student]
         notes.append('Conflicting roster names; ID left unmatched: ' + student)
@@ -248,10 +255,10 @@ def prepare():
                             entry['table_error'] = 'Could not decode as UTF-8 CSV.'
                     assets.append(entry)
                 title = next((re.sub(r'^#+\s*', '', source(c).splitlines()[0]).strip() for c in (notebook or {}).get('cells', []) if c.get('cell_type') == 'markdown' and source(c).strip()), file.name if file else 'Images / attachments only')
-                record = {'id': digest, 'week': week, 'student': student, 'student_name': roster.get(student), 'title': title, 'file': file.name if file else None, 'notebook': notebook, 'attachments': assets, 'replay': execution}
+                record = {'id': digest, 'week': week, 'student': student, 'student_name': roster.get(student, {}).get('name'), 'student_reading': roster.get(student, {}).get('reading'), 'title': title, 'file': file.name if file else None, 'notebook': notebook, 'attachments': assets, 'replay': execution}
                 (destination / 'submission.json').write_text(json.dumps(record, ensure_ascii=False))
                 counts = {key: sum(c['status'] == key for c in execution['cells']) for key in ['ok', 'error', 'skipped']}
-                submissions.append({'id': digest, 'student': student, 'student_name': roster.get(student), 'title': title, 'file': record['file'], 'attachments': len(files), 'saved_outputs': sum(bool(c.get('outputs')) for c in (notebook or {}).get('cells', [])), 'execution': counts, 'notes': execution['notes']})
+                submissions.append({'id': digest, 'student': student, 'student_name': record['student_name'], 'student_reading': record['student_reading'], 'title': title, 'file': record['file'], 'attachments': len(files), 'saved_outputs': sum(bool(c.get('outputs')) for c in (notebook or {}).get('cells', [])), 'execution': counts, 'notes': execution['notes']})
                 total += 1
         weeks.append({'week': week, 'students': len(groups), 'submissions': submissions})
     submitted_ids = {submission['student'] for week in weeks for submission in week['submissions']}

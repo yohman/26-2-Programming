@@ -43,11 +43,11 @@
       "snapshot_at":"2026-10-14",
       "binary":true,
       "map":true,
-      "summary":{"ja":"今度は、本当に緯度・経度が届く都営バス。登録・APIキーなしで位置データを取得し、地図の点をクリックして車両・座標・報告時刻を見よう。取得した応答を表示し、自動更新はしません。","en":"Toei buses report latitude and longitude directly. Fetch without an account or API key, then click a point for its vehicle, coordinates, and reported time. This displays a captured response, with no automatic refresh."},
+      "summary":{"ja":"今度は、本当に緯度・経度が届く都営バス。登録・APIキーなしで位置データを取得し、地図の点にカーソルを重ねて（スマホではタップして）車両・座標・報告時刻を見よう。取得した応答を表示し、自動更新はしません。","en":"Toei buses report latitude and longitude directly. Fetch without an account or API key, then hover over a point (tap on mobile) for its vehicle, coordinates, and reported time. This displays a captured response, with no automatic refresh."},
       "parameters":{"ja":"このURLは全体のフィードで、ここでは絞り込み引数を使いません。配信形式はJSONではなくProtocol Buffers（バイナリ）。Rawは元のバイトを16進数で表示、PrettyはGTFSの仕様でデコードしたJSON表示、Mapは同じデータの座標を表示します。","en":"This URL returns the full feed; no filter arguments are used here. The response is Protocol Buffers binary, not JSON. Raw shows its original bytes in hexadecimal; Pretty shows JSON decoded using the GTFS schema; Map uses those same coordinates."},
       "aha":{"ja":"同じデータでも、通信するときの形と、人が読むときの形は違う。バイナリ → デコードした辞書とリスト → 地図。車両のtimestampを見れば、その位置がいつ報告されたか分かる。","en":"Wire format and readable format can differ: binary → decoded dictionaries and lists → map. A vehicle timestamp tells us when that position was reported."},
       "python":"feed[\"entity\"][0][\"vehicle\"][\"position\"][\"latitude\"]",
-      "map_note":{"ja":"vehicle.position の longitude / latitude を地図へ。点は配信された報告位置で、現在位置を保証するものではありません。点をクリックして報告時刻を確認。停止中の車両や古い記録が含まれることもあります。","en":"Map vehicle.position.longitude / latitude. Points are reported positions, not a guarantee of a vehicle’s exact current location. Click to check the timestamp; stopped vehicles and older reports may be present."}
+      "map_note":{"ja":"vehicle.position の longitude / latitude を地図へ。点は配信された報告位置で、現在位置を保証するものではありません。点にカーソルを重ねて（スマホではタップして）報告時刻を確認。停止中の車両や古い記録が含まれることもあります。","en":"Map vehicle.position.longitude / latitude. Points are reported positions, not a guarantee of a vehicle’s exact current location. Hover (tap on mobile) to check the timestamp; stopped vehicles and older reports may be present."}
     },
     "toei": {
       "title":{"ja":"都営の電車 · Live", "en":"Toei trains · Live"},
@@ -153,8 +153,8 @@
       },
       "python": "data[\"features\"][0][\"properties\"][\"mag\"]",
       "map_note": {
-        "ja": "GeoJSONの coordinates は [経度, 緯度, 深さ]。MapLibreは先頭の二つを使う。Foliumの location=[緯度, 経度] とは順番が逆。",
-        "en": "GeoJSON coordinates use [longitude, latitude, depth]. MapLibre uses the first two. Folium’s location=[latitude, longitude] reverses that order."
+        "ja": "円はM2.5で半径3px、M5で約17px、M6で約34px。大きさはマグニチュードを見分けるための表示で、被害範囲ではありません。GeoJSONの座標は[経度, 緯度, 深さ]、Foliumは[緯度, 経度]。",
+        "en": "Circle radii: M2.5 = 3px, M5 ≈ 17px, M6 ≈ 34px. Size distinguishes magnitudes, not affected areas. GeoJSON uses [longitude, latitude, depth]; Folium uses [latitude, longitude]."
       }
     },
     "pokemon": {
@@ -215,7 +215,7 @@
       "python": "vehicles[\"data\"][0][\"attributes\"][\"latitude\"]",
       "map_note": {
         "ja": "各車両の attributes.longitude / latitude をGeoJSONのPointに変換する。地図の点をクリックすると報告時刻も見られる。",
-        "en": "Convert each vehicle’s attributes.longitude / latitude into a GeoJSON Point. Click a point to see its reported time."
+        "en": "Convert each vehicle’s attributes.longitude / latitude into a GeoJSON Point. Hover over a point (tap on mobile) to see its reported time."
       }
     },
     "holidays": {

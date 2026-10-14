@@ -6,6 +6,15 @@ const state = { config:null, week:null, id:null, dataset:null, raw:'', data:null
 const cache = new Map();
 let controller;
 let mapLibrary;
+let mapPopup=null, popupTimer=null, hoveredRecord=null;
+function closeMapPopup() {
+  clearTimeout(popupTimer);
+  mapPopup?.remove();mapPopup=null;hoveredRecord=null;
+}
+function schedulePopupClose() {
+  clearTimeout(popupTimer);
+  popupTimer=setTimeout(closeMapPopup,180);
+}
 let gtfsType;
 let lapdLocations=[];
 let lapdLocationError=false;
@@ -196,7 +205,12 @@ function features() {
   const valid=(lon,lat)=> typeof lon==='number' && typeof lat==='number' && Number.isFinite(lon) && Number.isFinite(lat) && Math.abs(lon)<=180 && Math.abs(lat)<=90;
   const point=(lon,lat,title,detail,mag=0)=>({type:'Feature',geometry:{type:'Point',coordinates:[lon,lat]},properties:{title:String(title||''),detail:String(detail||''),radius:Math.max(5,Math.min(14,Number(mag)||5))}});
   let result=[];
-  if(state.id==='earthquakes') result=(state.data.features||[]).filter(f=>f.geometry?.type==='Point' && valid(...f.geometry.coordinates)).map(f=>point(...f.geometry.coordinates.slice(0,2),f.properties?.place,'M '+f.properties?.mag+' · '+new Date(f.properties?.time).toISOString(),f.properties?.mag));
+  if(state.id==='earthquakes') result=(state.data.features||[]).filter(f=>f.geometry?.type==='Point' && valid(...f.geometry.coordinates)).map(f=>{
+    const feature=point(...f.geometry.coordinates.slice(0,2),f.properties?.place,'M '+f.properties?.mag+' · '+new Date(f.properties?.time).toISOString());
+    const magnitude=Number(f.properties?.mag);
+    feature.properties.radius=Number.isFinite(magnitude)?Math.max(2,Math.min(64,3*Math.pow(2,magnitude-2.5))):3;
+    return feature;
+  });
   if(state.id==='weather' && valid(state.data.longitude,state.data.latitude)) result=[point(state.data.longitude,state.data.latitude,'Forecast location',state.data.current?.time+' · '+state.data.current?.temperature_2m+' °C')];
   if(state.id==='transit') result=(state.data.data||[]).filter(v=>valid(v.attributes?.longitude,v.attributes?.latitude)).map(v=>point(v.attributes.longitude,v.attributes.latitude,'Vehicle '+(v.attributes.label||v.id),'Route '+(v.relationships?.route?.data?.id||'')+' · '+v.attributes.updated_at));
   if(state.id==='toeiBus') result=(state.data.entity||[]).filter(e=>valid(e.vehicle?.position?.longitude,e.vehicle?.position?.latitude)).map(e=>{
@@ -246,8 +260,13 @@ async function mapView() {
       await new Promise(resolve=>state.map.once('load',resolve));
       state.map.addSource('records',{type:'geojson',data:state.geojson});
       state.map.addLayer({id:'records',type:'circle',source:'records',paint:{'circle-radius':['get','radius'],'circle-color':['coalesce',['get','color'],'#315876'],'circle-stroke-color':'#fff','circle-stroke-width':1.5}});
-      state.map.on('click','records',event=>{
-        const f=event.features[0]; const content=document.createElement('div');
+      const showPopup=event=>{
+        const f=event.features?.[0];if(!f)return;
+        clearTimeout(popupTimer);
+        const key=JSON.stringify([f.geometry.coordinates,f.properties]);
+        if(key===hoveredRecord && mapPopup?.isOpen())return;
+        closeMapPopup();hoveredRecord=key;
+        const content=document.createElement('div');
         const title=document.createElement('strong'); title.textContent=f.properties.title;
         const detail=document.createElement('p'); detail.textContent=f.properties.detail;
         if(state.id==='lapd') {
@@ -261,11 +280,30 @@ async function mapView() {
           if(records.length>1){const select=document.createElement('select');select.setAttribute('aria-label',textFor({ja:'同じ概略位置の被害者記録',en:'Victim records at this approximate location'}));records.forEach((r,i)=>{const o=document.createElement('option');o.value=i;o.textContent=(i+1)+' / '+records.length+' · '+r.properties.victimId;select.append(o);});select.addEventListener('change',()=>show(Number(select.value)));content.append(select);}
           show(0);content.append(body);const caveat=document.createElement('p');caveat.textContent=textFor({ja:'事件番号でOffensesと照合した概略位置。正確な住所ではありません。',en:'Approximate location joined to Offenses by case number, not an exact address.'});content.append(caveat);
         } else content.append(title,detail);
-        new lib.Popup({maxWidth:'360px'}).setLngLat(f.geometry.coordinates).setDOMContent(content).addTo(state.map);
+        const coordinates=[...f.geometry.coordinates];
+        while(Math.abs(event.lngLat.lng-coordinates[0])>180)coordinates[0]+=event.lngLat.lng>coordinates[0]?360:-360;
+        mapPopup=new lib.Popup({maxWidth:'360px'}).setLngLat(coordinates).setDOMContent(content).addTo(state.map);
+        const element=mapPopup.getElement();
+        element.addEventListener('mouseenter',()=>clearTimeout(popupTimer));
+        element.addEventListener('mouseleave',schedulePopupClose);
+      };
+      state.map.on('mousemove','records',event=>{
+        state.map.getCanvas().style.cursor='pointer';showPopup(event);
       });
+      state.map.on('mouseleave','records',()=>{
+        state.map.getCanvas().style.cursor='';schedulePopupClose();
+      });
+      // Touch devices retain tap-to-open; mouse users only need to hover.
+      state.map.on('click','records',event=>{
+        if(window.matchMedia('(hover: none)').matches || event.originalEvent?.sourceCapabilities?.firesTouchEvents)showPopup(event);
+      });
+      state.map.on('movestart',closeMapPopup);
     }
     if(token!==state.token || state.mode!=='map') return;
     state.map.resize(); state.map.getSource('records').setData(state.geojson);
+    state.map.setPaintProperty('records','circle-opacity',state.id==='earthquakes' ? .45 : .9);
+    state.map.setPaintProperty('records','circle-stroke-opacity',state.id==='earthquakes' ? .65 : 1);
+    state.map.setPaintProperty('records','circle-stroke-width',state.id==='earthquakes'?1:1.5);
     const points=state.geojson.features.map(f=>f.geometry.coordinates);
     const bounds=new lib.LngLatBounds(points[0],points[0]); points.slice(1).forEach(p=>bounds.extend(p));
     if(points.length===1)state.map.jumpTo({center:points[0],zoom:10});
@@ -274,6 +312,7 @@ async function mapView() {
   } catch(error) { byId('map-status').textContent=textFor({ja:'地図を表示できません（WebGLまたは地図ライブラリ）。Raw / Prettyを使ってください。',en:'Map unavailable (WebGL or map-library issue). Use Raw or Pretty instead.'}); }
 }
 function renderViews() {
+  if(state.mode!=='map')closeMapPopup();
   const hasData=state.data!==null;
   const pokemon=state.id==='pokemon';
   const usage=pokemon || state.id==='music';
@@ -413,6 +452,7 @@ function response(raw,url,saved=false,decoded=null,bytes=null) {
   renderStatus(); renderViews();
 }
 async function fetchData(saved=false) {
+  closeMapPopup();
   controller?.abort(); controller=new AbortController(); const token=++state.token; const dataset=state.dataset;
   const requestController=controller;
   if(saved)renderFields(state.id==='holidays'?values():defaults[state.id]);
@@ -466,6 +506,7 @@ function metadata() {
   byId('raw-link').querySelector('.lang-en').textContent=d.documentation_example?'Raw documentation example':'Provider’s raw data';
 }
 function chooseDataset(id,load=true) {
+  closeMapPopup();
   controller?.abort(); ++state.token;
   state.id=id; state.dataset=state.config.datasets[id]; state.raw=''; state.data=null; state.source=null;
   if(!state.dataset.map && state.mode==='map')state.mode='pretty';

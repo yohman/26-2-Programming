@@ -1,0 +1,11 @@
+.copyable-block { position:relative; }
+pre.copyable-block,#request-url.copyable-block,.application-example > code.copyable-block { padding-right:3.5rem !important; }
+.block-copy { position:absolute; top:.35rem; right:.35rem; z-index:1; display:inline-flex; align-items:center; justify-content:center; width:36px; height:36px; min-width:36px; padding:0; border:0; border-radius:0; background:rgba(255,255,255,.94); color:#52636e; cursor:pointer; font:700 18px/1 sans-serif; }
+.block-copy:hover { color:#202a31; background:#dfe7eb; }
+.block-copy:focus-visible { outline:2px solid #315876; outline-offset:2px; }
+.block-copy[data-copied] { color:#356a58; }
+.copyable-table { padding-top:2.75rem; }
+.copyable-editor > .block-copy { top:.3rem; }
+.copy-fallback { position:fixed; top:0; left:-10000px; }
+@media(pointer:coarse) { .block-copy { width:44px; height:44px; }pre.copyable-block,#request-url.copyable-block,.application-example > code.copyable-block { padding-right:3.75rem !important; } }
+@media print { .block-copy { display:none !important; } }

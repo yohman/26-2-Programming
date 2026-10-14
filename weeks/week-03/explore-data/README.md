@@ -1,5 +1,7 @@
 # Real data snapshots
 
+Main classroom example: **Toei train locations**, using the key-free public endpoint. `toei.json` is an Oedo Line response retrieved 2026-10-14, not an automatically updating feed. Source: https://api-public.odpt.org/api/v4/odpt:Train?odpt:operator=odpt.Operator:Toei&odpt:railway=odpt.Railway:Toei.Oedo . Provider: 東京都交通局・公共交通オープンデータ協議会, CC BY 4.0. Official catalog: https://ckan.odpt.org/dataset/r_train_location-toei . Positions use station IDs, not latitude/longitude. Original `dc:date` and `dct:valid` are retained.
+
 Retrieved on 2026-10-14 for classroom use. These are saved examples, not live feeds. The explorer fetches providers directly when requested; the saved-example button restores the default parameters and labels the response as saved. No automatic polling.
 
 - `weather.json`: Open-Meteo, Tokyo, one day, current/hourly temperature. https://api.open-meteo.com/v1/forecast?latitude=35.68&longitude=139.69&current=temperature_2m&hourly=temperature_2m&forecast_days=1&timezone=Asia%2FTokyo

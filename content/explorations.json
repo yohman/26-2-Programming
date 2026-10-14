@@ -8,6 +8,7 @@
         "en": "Explore data on the web"
       },
       "examples": [
+        "toei",
         "weather",
         "earthquakes",
         "pokemon",
@@ -19,6 +20,21 @@
     }
   ],
   "datasets": {
+    "toei": {
+      "title":{"ja":"都営の電車 · Live", "en":"Toei trains · Live"},
+      "provider":"東京都交通局・公共交通オープンデータ協議会 · CC BY 4.0",
+      "format":"JSON-LD",
+      "docs":"https://ckan.odpt.org/dataset/r_train_location-toei",
+      "snapshot":"weeks/week-03/explore-data/toei.json",
+      "snapshot_at":"2026-10-14",
+      "encoding":"utf-8",
+      "map":false,
+      "summary":{"ja":"いま都営の電車はどこにいる？ 登録・APIキーなしで、実際の列車位置を取得する。路線を選び、RawとPrettyで同じデータの見え方を比べよう。自動更新はせず、取得した時点の応答を読む。","en":"Where are Toei trains now? Fetch actual train positions without registration or an API key. Select a line and compare Raw with Pretty. This is a captured response, not an automatically updating tracker."},
+      "parameters":{"ja":"odpt:operator=odpt.Operator:Toei は事業者。odpt:railway で路線を絞る。浅草線・三田線・新宿線・大江戸線・荒川線から選び「取得する」。三田線の目黒〜白金高輪は対象外。","en":"odpt:operator selects Toei; odpt:railway filters the line. Choose Asakusa, Mita, Shinjuku, Oedo, or Arakawa and fetch. Mita coverage excludes Meguro–Shirokane-takanawa."},
+      "aha":{"ja":"応答全体はリスト。一件の電車は辞書。trains[0] で最初の電車、その中のキーで路線や駅を取り出せる。dc:date はデータの時刻、dct:valid は有効期限。","en":"The response is a list; each train is a dictionary. trains[0] selects a train, then a key selects its line or station. dc:date is the data timestamp; dct:valid is its validity limit."},
+      "python":"trains[0][\"odpt:fromStation\"]",
+      "map_note":{"ja":"位置は odpt:fromStation（出発駅／停車駅）と odpt:toStation（次の駅）で表す。toStation が null の記録もある。緯度・経度は含まれないため、地図化には駅座標との結合が必要。列車の正確なGPS位置ではありません。","en":"Positions use fromStation and toStation IDs; some toStation values are null. No latitude/longitude is supplied. Mapping requires joining station coordinates, not treating the response as exact train GPS positions."}
+    },
     "tokyo": {
       "title": {"ja":"東京メトロ", "en":"Tokyo Metro"},
       "provider":"東京メトロ · ODPT",

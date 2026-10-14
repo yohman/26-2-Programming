@@ -33,8 +33,8 @@ JP: | 時間 | 説明の後に、自分で試す |
 | 14:20–14:50 | **Part 3 チャレンジ** 「私の〇〇ガイド」をつくる。 |
 
 ## Exploration
-EN: **Real data, right in your browser.** Fetch weather, earthquakes, Pokémon forms, and Boston’s vehicle positions. Compare Raw / Pretty / Map. Japanese holiday CSV shows a different format. No account or installation needed; saved examples are clearly labelled.
-JP: **ブラウザーで、実データを開く。** 天気、地震、ポケモン、ボストンの車両位置を取得し、Raw / Pretty / Mapで比べる。日本の祝日CSVで別の形式も見る。アカウント・インストールは不要。保存例はライブと区別して表示。
+EN: **Start with Toei’s live train data.** Choose a Tokyo line and fetch its train positions—no account or key needed. The response is a list of dictionaries. Compare Raw / Pretty, then explore weather, earthquakes, Pokémon, and LA crime records; use Map where coordinates are provided. Saved examples are clearly labelled.
+JP: **まず、都営の電車の実データから。** 路線を選び、列車位置を取得。登録・APIキーは不要。応答は「辞書が入ったリスト」。Raw / Prettyで比べてから、天気・地震・ポケモン・LAの犯罪記録も探索する。座標があるデータはMapへ。保存例はライブと区別して表示。
 
 ## In-Class Part 1
 EN: **Part 1 — Lists · 20 min.** Work through scores, indexing, list edits, and slicing. Complete four short exercises. Download the notebook, select your kernel, and run from the top.

@@ -7,6 +7,7 @@ const cache = new Map();
 let controller;
 let mapLibrary;
 const defaults = {
+  toei:{line:'Oedo'},
   weather:{latitude:'35.68',longitude:'139.69',forecast_days:'1'},
   earthquakes:{magnitude:'2.5',period:'day'},
   pokemon:{name:'pikachu'},
@@ -16,6 +17,7 @@ const defaults = {
   holidays:{year:'2026'}
 };
 const fields = {
+  toei:[{key:'line',label:{ja:'路線 · odpt:railway',en:'Line · odpt:railway'},options:[['Oedo','大江戸線 · Oedo'],['Asakusa','浅草線 · Asakusa'],['Mita','三田線 · Mita'],['Shinjuku','新宿線 · Shinjuku'],['Arakawa','東京さくらトラム · Arakawa'],['all','全路線 · All lines']]}],
   tokyo:[],
   lapd:[
     {key:'area',label:{ja:'地区 · $where',en:'Area · $where'},options:[['all','All areas'],['Central','Central'],['Hollywood','Hollywood'],['Pacific','Pacific'],['Harbor','Harbor']]},
@@ -40,6 +42,12 @@ const fields = {
 
 function values() { return Object.fromEntries([...byId('parameter-fields').querySelectorAll('[name]')].map(field => [field.name,field.value])); }
 function requestURL(id, v) {
+  if(id==='toei') {
+    const url=new URL('https://api-public.odpt.org/api/v4/odpt:Train');
+    url.searchParams.set('odpt:operator','odpt.Operator:Toei');
+    if(v.line!=='all')url.searchParams.set('odpt:railway','odpt.Railway:Toei.'+v.line);
+    return url.href;
+  }
   if(id==='tokyo') return 'https://api.odpt.org/api/v4/odpt:Train?odpt:operator=odpt.Operator:TokyoMetro&odpt:railway=odpt.Railway:TokyoMetro.Yurakucho&acl:consumerKey=YOUR_API_KEY';
   if(id==='lapd') {
     const url=new URL('https://data.lacity.org/resource/k7nn-b2ep.json');

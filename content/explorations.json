@@ -12,11 +12,46 @@
         "earthquakes",
         "pokemon",
         "transit",
+        "tokyo",
+        "lapd",
         "holidays"
       ]
     }
   ],
   "datasets": {
+    "tokyo": {
+      "title": {"ja":"東京メトロ", "en":"Tokyo Metro"},
+      "provider":"東京メトロ · ODPT",
+      "format":"JSON-LD",
+      "docs":"https://developer.odpt.org/documents",
+      "snapshot":"weeks/week-03/explore-data/tokyo-metro-doc-example.json",
+      "snapshot_at":"2017-11-28 · API仕様書の例",
+      "snapshot_source":"https://developer.odpt.org/documents",
+      "encoding":"utf-8",
+      "map":false,
+      "browser_fetch":false,
+      "documentation_example":true,
+      "summary":{"ja":"東京メトロの列車位置もAPIで配信。ライブ取得にはODPTの利用登録とAPIキーが必要なため、ここでは公式仕様書の有楽町線の応答例を読む。現在の運行状況ではありません。","en":"Tokyo Metro publishes train positions through ODPT. Live requests require registration and an API key; here we inspect the official Yurakucho Line documentation example, not current service."},
+      "parameters":{"ja":"odpt:operator=odpt.Operator:TokyoMetro で事業者、odpt:railway=odpt.Railway:TokyoMetro.Yurakucho で路線を指定。acl:consumerKey=YOUR_API_KEY は自分のキーに置き換える部分。このサイトにはキーを入力・保存しません。「Raw」は仕様書の応答例を開きます。","en":"odpt:operator selects Tokyo Metro; odpt:railway selects the Yurakucho Line. Replace YOUR_API_KEY in acl:consumerKey only in your own request. This site neither accepts nor stores keys. Raw opens the documentation response example."},
+      "aha":{"ja":"位置は緯度・経度ではなく「どの駅から、どの駅へ」で表せる。odpt:fromStation と odpt:toStation は別の駅データとつなぐためのID。","en":"A position can be described as from one station to another rather than coordinates. fromStation and toStation are IDs that link to station records."},
+      "python":"trains[0][\"odpt:fromStation\"]",
+      "map_note":{"ja":"この例には緯度・経度がありません。地図にするには駅データの座標と結合する必要があり、駅間の正確な列車座標が直接届くわけではありません。","en":"This example has no latitude/longitude. Mapping requires joining station coordinates; it does not directly supply precise train coordinates between stations."}
+    },
+    "lapd": {
+      "title":{"ja":"LAの犯罪記録", "en":"LA crime records"},
+      "provider":"City of Los Angeles · LAPD",
+      "format":"JSON",
+      "docs":"https://data.lacity.org/Public-Safety/LAPD-NIBRS-Offenses-Dataset/k7nn-b2ep",
+      "snapshot":"weeks/week-03/explore-data/lapd.json",
+      "snapshot_at":"2026-10-14",
+      "encoding":"utf-8",
+      "map":true,
+      "summary":{"ja":"LAPDの現行NIBRS犯罪記録。発生日、地区、内容、概略座標だけをAPIで取得。リアルタイム速報ではなく、記録・更新された報告データです。","en":"The current LAPD NIBRS offenses dataset. Request occurrence date, area, description, and approximate coordinates. These are recorded reports, not a real-time incident feed."},
+      "parameters":{"ja":"$select は列、$where は条件、$order は並び順、$limit は最大件数。地区を選んで再取得しよう。発生日の新しい順に取得し、座標の欠損を除外します。少量の取得はキーなしで可能ですが、利用制限があります。","en":"$select chooses fields, $where filters, $order sorts, and $limit caps rows. Select an area and fetch again. Results sort by occurrence date and omit missing coordinates. Small anonymous requests are rate-limited."},
+      "aha":{"ja":"数値に見える座標もJSONでは文字列で届く。Pythonならfloat()で変換。一行は一つのoffenseで、一つの事件に複数行あるため、行数＝事件数ではありません。","en":"Coordinates arrive as JSON strings: Python needs float(). Each row is an offense; one incident can have several rows, so row count is not incident count."},
+      "python":"float(offenses[0][\"hndrdth_lat\"])",
+      "map_note":{"ja":"hndrdth_lon / hndrdth_lat を数値に変換して地図へ。座標はプライバシー保護のため100番地単位の概略位置です。点の多さだけで地域の危険度を判断できません。表示は取得した一部の記録で、全件ではありません。","en":"Convert hndrdth_lon / hndrdth_lat to numbers for mapping. Locations are approximate hundred-block positions for privacy. Point density alone does not measure neighborhood risk. This is a limited sample, not the full dataset."}
+    },
     "weather": {
       "title": {
         "ja": "天気",

@@ -11,9 +11,16 @@ const defaults = {
   earthquakes:{magnitude:'2.5',period:'day'},
   pokemon:{name:'pikachu'},
   transit:{route:'1',limit:'20'},
+  tokyo:{},
+  lapd:{area:'all',limit:'50'},
   holidays:{year:'2026'}
 };
 const fields = {
+  tokyo:[],
+  lapd:[
+    {key:'area',label:{ja:'地区 · $where',en:'Area · $where'},options:[['all','All areas'],['Central','Central'],['Hollywood','Hollywood'],['Pacific','Pacific'],['Harbor','Harbor']]},
+    {key:'limit',label:{ja:'$limit · 最大件数',en:'$limit · Maximum rows'},options:[['25','25'],['50','50'],['100','100']]}
+  ],
   weather:[
     {key:'latitude',label:{ja:'latitude · 緯度',en:'latitude'},type:'number',min:-90,max:90,step:'any'},
     {key:'longitude',label:{ja:'longitude · 経度',en:'longitude'},type:'number',min:-180,max:180,step:'any'},
@@ -33,6 +40,13 @@ const fields = {
 
 function values() { return Object.fromEntries([...byId('parameter-fields').querySelectorAll('[name]')].map(field => [field.name,field.value])); }
 function requestURL(id, v) {
+  if(id==='tokyo') return 'https://api.odpt.org/api/v4/odpt:Train?odpt:operator=odpt.Operator:TokyoMetro&odpt:railway=odpt.Railway:TokyoMetro.Yurakucho&acl:consumerKey=YOUR_API_KEY';
+  if(id==='lapd') {
+    const url=new URL('https://data.lacity.org/resource/k7nn-b2ep.json');
+    url.searchParams.set('$select','date_occ,area_name,nibr_description,hndrdth_lat,hndrdth_lon');
+    url.searchParams.set('$where','hndrdth_lat > 0 AND hndrdth_lon < 0'+(v.area==='all'?'':" AND trim(area_name) = '"+v.area+"'"));
+    url.searchParams.set('$order','date_occ DESC'); url.searchParams.set('$limit',v.limit); return url.href;
+  }
   if (id === 'weather') {
     const url = new URL('https://api.open-meteo.com/v1/forecast');
     Object.entries({latitude:v.latitude,longitude:v.longitude,current:'temperature_2m',hourly:'temperature_2m',forecast_days:v.forecast_days,timezone:'Asia/Tokyo'}).forEach(([k,value]) => url.searchParams.set(k,value));
@@ -50,7 +64,7 @@ function requestURL(id, v) {
 function updateRequest() {
   const url = requestURL(state.id,values());
   byId('request-url').textContent = url;
-  byId('raw-link').href = url;
+  byId('raw-link').href = state.dataset.documentation_example ? state.dataset.snapshot : url;
   if (state.id === 'holidays' && state.data) renderViews();
   if (state.data && state.url !== url) status({ja:'新しい条件は未取得です。「取得する」を押してください。下は前の応答です。',en:'New parameters have not been fetched. Press Fetch data. The view below is the previous response.'},'pending');
 }
@@ -74,6 +88,10 @@ function renderStatus() {
   if (!state.source) return;
   const time=state.source.at;
   if (state.source.saved) {
+    if(state.dataset.documentation_example) {
+      status({ja:'公式仕様書の応答例 · '+state.dataset.snapshot_at+' · ライブデータではありません。',en:'Official documentation response example · dated 2017-11-28 · not live.'},'snapshot');
+      return;
+    }
     status({ja:'保存例 · '+state.dataset.snapshot_at+'取得 · 自動更新ではありません。初期条件のデータを表示中。',en:'Saved example · retrieved '+state.dataset.snapshot_at+' · not live. Showing the default request.'},'snapshot');
     if (state.dataset.snapshot_source) {
       const source=document.createElement('a'); source.href=state.dataset.snapshot_source; source.target='_blank'; source.rel='noopener'; source.textContent=textFor({ja:' 配信元リポジトリの保存データ ↗',en:' Provider repository snapshot ↗'}); byId('data-status').append(source);
@@ -128,6 +146,7 @@ function features() {
   if(state.id==='earthquakes') result=(state.data.features||[]).filter(f=>f.geometry?.type==='Point' && valid(...f.geometry.coordinates)).map(f=>point(...f.geometry.coordinates.slice(0,2),f.properties?.place,'M '+f.properties?.mag+' · '+new Date(f.properties?.time).toISOString(),f.properties?.mag));
   if(state.id==='weather' && valid(state.data.longitude,state.data.latitude)) result=[point(state.data.longitude,state.data.latitude,'Forecast location',state.data.current?.time+' · '+state.data.current?.temperature_2m+' °C')];
   if(state.id==='transit') result=(state.data.data||[]).filter(v=>valid(v.attributes?.longitude,v.attributes?.latitude)).map(v=>point(v.attributes.longitude,v.attributes.latitude,'Vehicle '+(v.attributes.label||v.id),'Route '+(v.relationships?.route?.data?.id||'')+' · '+v.attributes.updated_at));
+  if(state.id==='lapd') result=state.data.filter(v=>v.hndrdth_lon && v.hndrdth_lat && valid(Number(v.hndrdth_lon),Number(v.hndrdth_lat)) && Number(v.hndrdth_lat)!==0 && Number(v.hndrdth_lon)!==0).map(v=>point(Number(v.hndrdth_lon),Number(v.hndrdth_lat),v.nibr_description,(v.area_name||'').trim()+' · '+v.date_occ+' · Approximate hundred-block location'));
   return {type:'FeatureCollection',features:result};
 }
 function loadMapLibrary() {
@@ -231,6 +250,13 @@ function metadata() {
   byId('data-aha').textContent=textFor(d.aha); byId('python-path').textContent=d.python;
   byId('fetch-data').querySelector('.lang-ja').textContent=d.browser_fetch===false?'保存例を読み直す':'取得する';
   byId('fetch-data').querySelector('.lang-en').textContent=d.browser_fetch===false?'Reload saved example':'Fetch data';
+  if(d.documentation_example) {
+    byId('fetch-data').querySelector('.lang-ja').textContent='仕様書の例を読む';
+    byId('fetch-data').querySelector('.lang-en').textContent='Read documentation example';
+  }
+  byId('load-snapshot').hidden=d.browser_fetch===false;
+  byId('raw-link').querySelector('.lang-ja').textContent=d.documentation_example?'仕様書のRaw例':'提供元のRawデータ';
+  byId('raw-link').querySelector('.lang-en').textContent=d.documentation_example?'Raw documentation example':'Provider’s raw data';
 }
 function chooseDataset(id,load=true) {
   controller?.abort(); ++state.token;

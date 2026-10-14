@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="ja" data-language="ja"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Local Admin · Programming</title><link rel="icon" href="../favicon.svg">
+<link rel="stylesheet" href="../assets/styles.css"><link rel="stylesheet" href="../assets/ui.css">
+<link rel="stylesheet" href="admin.css">
+<script src="../assets/site.js" defer></script><script src="admin.js" defer></script>
+</head><body class="admin-page">
+<header class="site-header"><a href="../agenda.html?open=03" class="viewer-back">← 授業予定</a><div class="header-tools"><span class="admin-local-label">LOCAL ONLY</span></div></header>
+<main class="wrap admin-main"><div class="admin-heading"><div><p class="eyebrow">PROGRAMMING · ADMIN</p><h1>提出課題</h1></div><button id="refresh" type="button">フォルダを再読み込み</button></div>
+<p class="admin-note">学生の原本は変更しません。保存済みの出力と、ネットワークを無効にして再実行した結果を分けて表示します。</p>
+<p id="admin-status" role="status"></p><nav id="admin-weeks" aria-label="Weeks"></nav><div id="admin-content"></div></main>
+</body></html>

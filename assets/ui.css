@@ -181,3 +181,5 @@ button:disabled { cursor: default; }
   .lecture-explore-layout { grid-template-columns:1fr; }
   .lecture-explore-layout .lecture-inline-deck { height:480px; }
 }
+.local-admin-link { margin-left:auto; padding:.5rem .75rem; color:var(--muted); font:650 .8rem var(--sans); text-decoration:none; }
+.local-admin-link:hover { background:var(--surface-muted); color:var(--ink); }

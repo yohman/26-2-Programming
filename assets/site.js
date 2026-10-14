@@ -814,6 +814,16 @@ function setupPreviewLinks() {
 }
 
 function setupMenu() {
+  if (isLocalPreview()) {
+    const tools = document.querySelector('.header-tools') || document.querySelector('.site-header');
+    if (tools && !tools.querySelector('.local-admin-link')) {
+      const link = document.createElement('a');
+      link.className = 'local-admin-link';
+      link.href = 'http://127.0.0.1:8766/admin/';
+      link.textContent = 'Admin';
+      tools.prepend(link);
+    }
+  }
   const button = document.querySelector('.menu-toggle'), nav = document.querySelector('.site-nav');
   if (!button || !nav) return;
   button.addEventListener('click', () => { const open = nav.classList.toggle('open'); button.setAttribute('aria-expanded', String(open)); });

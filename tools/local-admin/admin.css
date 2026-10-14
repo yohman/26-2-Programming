@@ -1,0 +1,35 @@
+.admin-main { padding-top:2.5rem; padding-bottom:5rem; }
+.admin-heading { display:flex; justify-content:space-between; align-items:center; gap:1rem; }
+.admin-heading h1 { margin:.4rem 0; font-size:2rem; }
+.admin-local-label { font:700 .7rem var(--mono); color:var(--muted); }
+.admin-page button,.admin-page input,.admin-page select { border-radius:0; font:inherit; }
+.admin-page button,.admin-button { display:inline-flex; padding:.65rem 1rem; border:1px solid var(--line); background:#fff; color:var(--blue); text-decoration:none; cursor:pointer; }
+.admin-page button:hover,.admin-button:hover { background:var(--surface-muted); }
+.admin-page button[aria-pressed="true"] { background:var(--blue); border-color:var(--blue); color:#fff; }
+.admin-note,#admin-status { font-size:.85rem; color:var(--muted); line-height:1.6; }
+#admin-weeks { display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:.5rem; margin:2rem 0; }
+#admin-weeks a { display:grid; gap:.35rem; padding:.8rem; background:#e9eceb; color:var(--ink); text-decoration:none; }
+#admin-weeks a[aria-current="page"] { background:var(--blue); color:#fff; }
+#admin-weeks strong { font:700 1.2rem var(--mono); }#admin-weeks small { font-size:.7rem; }
+.admin-toolbar { display:flex; gap:1rem; justify-content:space-between; align-items:center; margin:1.5rem 0; }
+.admin-toolbar h2 { margin:0; font-size:1.3rem; }.admin-toolbar input { padding:.6rem; border:1px solid var(--line); background:#fff; max-width:18rem; }
+.submission-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr)); gap:1rem; }
+.submission-card { padding:1.4rem; background:#fff; scroll-margin-top:6rem; }
+.submission-card h3 { margin:.6rem 0; font-size:1rem; line-height:1.5; }
+.submission-card .student-id { font:700 1.05rem var(--mono); color:var(--blue); }
+.submission-card p { color:var(--muted); font-size:.8rem; margin:.5rem 0 1rem; line-height:1.6; }
+.submission-card .admin-button { border:0; background:var(--blue); color:#fff; }
+.submission-actions { display:flex; flex-wrap:wrap; align-items:center; gap:.7rem; margin:1rem 0 1.5rem; }
+.submission-heading h2 { margin:.7rem 0; font-size:1.5rem; }.submission-heading p { color:var(--muted); font-size:.85rem; overflow-wrap:anywhere; }
+.review-tabs { display:flex; gap:.5rem; flex-wrap:wrap; margin:1.5rem 0; }
+.review-output iframe { display:block; width:100%; height:580px; border:0; background:#fff; margin:.75rem 0; }
+.review-output img { display:block; max-width:100%; height:auto; margin:1rem 0; }
+.review-output pre,.review-code { padding:1rem; background:#edf1f3; font:.85rem/1.6 var(--mono); white-space:pre-wrap; overflow-wrap:anywhere; overflow:auto; }
+.review-output pre { background:#fff; }.review-code code { font:inherit; }
+.review-cell { margin:1.5rem 0; }.review-cell > summary { cursor:pointer; padding:.7rem 0; font-size:.85rem; font-weight:700; }
+.review-markdown { padding:1.5rem; background:#fff; line-height:1.8; }.review-markdown h1 { font-size:1.7rem; }.review-markdown h2 { font-size:1.3rem; }
+.review-warning { padding:.85rem 1rem; background:#f5ede0; color:#72542e; font-size:.85rem; line-height:1.6; }
+.review-legend { color:var(--muted); font-size:.85rem; margin-bottom:1.5rem; }
+.attachment-table { overflow:auto; background:#fff; }.attachment-table table { width:100%; border-collapse:collapse; font:.8rem/1.5 var(--sans); white-space:nowrap; }.attachment-table td,.attachment-table th { padding:.6rem .8rem; text-align:left; border-bottom:1px solid #eee; }
+.attachment-list details { margin:1rem 0; }.attachment-list summary { padding:.8rem 0; cursor:pointer; font-weight:650; overflow-wrap:anywhere; }.attachment-list a { display:inline-block; margin:.7rem 0; }
+@media(max-width:700px) { #admin-weeks { grid-template-columns:repeat(4,minmax(0,1fr)); }.admin-toolbar,.admin-heading { align-items:flex-start; flex-direction:column; }.review-output iframe { height:450px; } }

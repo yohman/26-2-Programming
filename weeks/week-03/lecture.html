@@ -149,6 +149,13 @@ workout</code></pre>
 <pre class="lecture-cell-output" hidden><code>Shakira &amp; Burna Boy</code></pre>
 <p class="slide-note"><span class="ja">外側のキーで曲を選ぶ。内側のキーで、その曲の情報を選ぶ。</span><span class="en">The outer key selects a song. The inner key selects a detail about it.</span></p>
 </section>
+<section class="slide slide--cells" data-slide data-part="1" hidden>
+<p class="slide-kicker">QUICK QUIZ · <span class="ja">まず考えてみよう</span><span class="en">Think first</span></p>
+<h2><span class="ja">最初と最後の曲を選ぶには？</span><span class="en">How would you select the first and last songs?</span></h2>
+<pre class="bus-code"><code>playlist = ["Lose Yourself", "Dai Dai", "It Was a Good Day"]</code></pre>
+<p class="slide-lead"><span class="ja">二つのprintを書いてみよう。添字は何を使う？</span><span class="en">Write two print statements. Which indexes would you use?</span></p>
+<p class="slide-note"><span class="ja">30秒考えて、隣の人と比べよう。次のスライドで確認。</span><span class="en">Take 30 seconds, then compare with a neighbor. Check the next slide.</span></p>
+</section>
 <section class="slide slide--cells" data-slide data-part="1" hidden><p class="slide-kicker">WEEK 03 · PART 1</p><h2><span class="ja">リストと添字</span><span class="en">Lists and indexes</span></h2><div class="lecture-notebook-cell"><div class="lecture-cell-toolbar"><span>Python</span><button type="button" data-reveal aria-expanded="false">▶ <span class="ja">例の結果を表示</span><span class="en">Show example result</span></button></div><pre><code>playlist = [&quot;Lose Yourself&quot;, &quot;Dai Dai&quot;, &quot;It Was a Good Day&quot;]
 print(playlist[0])
 print(playlist[-1])</code></pre></div><pre class="lecture-cell-output" hidden><code>Lose Yourself
@@ -164,6 +171,15 @@ members.append(&quot;え&quot;)
 members.remove(&quot;い&quot;)
 members[0] = &quot;なにか&quot;
 print(members)</code></pre></div><pre class="lecture-cell-output" hidden><code>['なにか', 'う', 'え']</code></pre><p class="slide-note ja">再実行するときは、最初の代入も一緒に。どの状態から始まるかを確かめよう。</p><p class="slide-note en">Rerun the initial assignment too. Check which state the program starts from.</p></section>
+<section class="slide slide--cells" data-slide data-part="1" hidden>
+<p class="slide-kicker">QUICK QUIZ · <span class="ja">まず考えてみよう</span><span class="en">Think first</span></p>
+<h2><span class="ja">この二つ、何が出る？</span><span class="en">What will these two lines print?</span></h2>
+<pre class="bus-code"><code>a = [0, 10, 20, 30, 40]
+print(a[0:3])
+print(a[1:1])</code></pre>
+<p class="slide-lead"><span class="ja">実行せずに、二つの結果を予想しよう。</span><span class="en">Predict both results without running the code.</span></p>
+<p class="slide-note"><span class="ja">30秒考えて、隣の人と比べよう。次のスライドで確認。</span><span class="en">Take 30 seconds, then compare with a neighbor. Check the next slide.</span></p>
+</section>
 <section class="slide slide--cells" data-slide data-part="1" hidden><p class="slide-kicker">WEEK 03 · PART 1</p><h2><span class="ja">スライスの終点は含まない</span><span class="en">A slice excludes its end position</span></h2><div class="lecture-notebook-cell"><div class="lecture-cell-toolbar"><span>Python</span><button type="button" data-reveal aria-expanded="false">▶ <span class="ja">例の結果を表示</span><span class="en">Show example result</span></button></div><pre><code>a = [0, 10, 20, 30, 40]
 print(a[0:3])
 print(a[1:1])</code></pre></div><pre class="lecture-cell-output" hidden><code>[0, 10, 20]
@@ -173,6 +189,13 @@ print(a[1:1])</code></pre></div><pre class="lecture-cell-output" hidden><code>[0
 print(scores[&quot;Math&quot;])
 print(scores[&quot;English&quot;])</code></pre></div><pre class="lecture-cell-output" hidden><code>90
 70</code></pre><p class="slide-note ja">辞書はキーと値の組。作るときは { }、取り出すときは [ ]。番号を覚える代わりに、名前で選べる。</p><p class="slide-note en">A dictionary pairs keys with values. Create it with { }; retrieve a value with [ ]. Choose by name instead of remembering a position.</p></section>
+<section class="slide slide--cells" data-slide data-part="2" hidden>
+<p class="slide-kicker">QUICK QUIZ · <span class="ja">まず考えてみよう</span><span class="en">Think first</span></p>
+<h2><span class="ja">新しい点数を追加するには？</span><span class="en">How would you add a new score?</span></h2>
+<pre class="bus-code"><code>scores = {"Math": 90, "English": 70}</code></pre>
+<p class="slide-lead"><span class="ja">Programmingを65点で追加し、Englishを80点に変更する。二行でどう書く？</span><span class="en">Add Programming with 65, then change English to 80. How would you write the two lines?</span></p>
+<p class="slide-note"><span class="ja">30秒考えて、隣の人と比べよう。次のスライドで確認。</span><span class="en">Take 30 seconds, then compare with a neighbor. Check the next slide.</span></p>
+</section>
 <section class="slide slide--cells" data-slide data-part="2" hidden><p class="slide-kicker">WEEK 03 · PART 2</p><h2><span class="ja">追加も変更も、キーで指定</span><span class="en">Keys identify additions and changes</span></h2><div class="lecture-notebook-cell"><div class="lecture-cell-toolbar"><span>Python</span><button type="button" data-reveal aria-expanded="false">▶ <span class="ja">例の結果を表示</span><span class="en">Show example result</span></button></div><pre><code>scores = {&quot;Math&quot;: 90, &quot;English&quot;: 70}
 scores[&quot;Programming&quot;] = 65
 scores[&quot;English&quot;] = 80
@@ -180,11 +203,16 @@ del scores[&quot;Math&quot;]
 print(scores)</code></pre></div><pre class="lecture-cell-output" hidden><code>{'English': 80, 'Programming': 65}</code></pre><p class="slide-note ja">存在しないキーへの代入は追加、既存のキーへの代入は変更。</p><p class="slide-note en">Assigning a new key adds an entry. Assigning an existing key changes its value.</p></section>
 <section class="slide slide--cells" data-slide data-part="2" hidden><p class="slide-kicker">WEEK 03 · PART 2</p><h2><span class="ja">KeyErrorにも手がかりがある</span><span class="en">A KeyError gives you a clue</span></h2><div class="lecture-notebook-cell"><div class="lecture-cell-toolbar"><span>Python</span><button type="button" data-reveal aria-expanded="false">▶ <span class="ja">例の結果を表示</span><span class="en">Show example result</span></button></div><pre><code>profile = {&quot;name&quot;: &quot;Yuki&quot;, &quot;year&quot;: 1}
 print(profile[&quot;Name&quot;])</code></pre></div><pre class="lecture-cell-output" hidden><code>KeyError: 'Name'</code></pre><p class="slide-note ja">「name」と「Name」は違うキー。AIに聞く前に、辞書にあるキーと照合してみよう。修正は <code>profile["name"]</code>。</p><p class="slide-note en">“name” and “Name” are different keys. Compare the lookup with the dictionary before asking for help. Fix: <code>profile["name"]</code>.</p></section>
-<section class="slide slide--cells" data-slide data-part="2" hidden><p class="slide-kicker">WEEK 03 · PART 2</p><h2><span class="ja">辞書の中の、お気に入りリスト</span><span class="en">A favorites list inside a dictionary</span></h2><div class="lecture-notebook-cell"><div class="lecture-cell-toolbar"><span>Python</span><button type="button" data-reveal aria-expanded="false">▶ <span class="ja">例の結果を表示</span><span class="en">Show example result</span></button></div><pre><code>myinfo = {
-    &quot;name&quot;: &quot;Aoi&quot;,
-    &quot;foods&quot;: [&quot;ramen&quot;, &quot;sushi&quot;, &quot;pizza&quot;]
-}
-print(myinfo[&quot;foods&quot;][2])</code></pre></div><pre class="lecture-cell-output" hidden><code>pizza</code></pre><p class="slide-note ja">まずfoodsのリストを取り出し、その2番目の添字を選ぶ。元教材の自己紹介の例です。</p><p class="slide-note en">First retrieve the foods list, then select index 2. This follows the original profile example.</p></section>
+<section class="slide slide--cells" data-slide data-part="2" hidden>
+<p class="slide-kicker">QUICK QUIZ · <span class="ja">まず考えてみよう</span><span class="en">Think first</span></p>
+<h2><span class="ja">好きな食べ物、一つじゃないよね？</span><span class="en">More than one favorite food?</span></h2>
+<pre class="bus-code"><code>myinfo = {"name": "Aoi"}</code></pre>
+<p class="slide-lead"><span class="ja">foodsというキーを追加したい。ラーメン・すし・ピザを、一つのキーにどう入れる？</span><span class="en">Add a key called foods. How could you store ramen, sushi, and pizza under that one key?</span></p>
+<p class="slide-note"><span class="ja">30秒考えて、隣の人と比べよう。次のスライドで確認。</span><span class="en">Take 30 seconds, then compare with a neighbor. Check the next slide.</span></p>
+</section>
+<section class="slide slide--cells" data-slide data-part="2" hidden><p class="slide-kicker">WEEK 03 · PART 2</p><h2><span class="ja">辞書の中の、お気に入りリスト</span><span class="en">A favorites list inside a dictionary</span></h2><div class="lecture-notebook-cell"><div class="lecture-cell-toolbar"><span>Python</span><button type="button" data-reveal aria-expanded="false">▶ <span class="ja">例の結果を表示</span><span class="en">Show example result</span></button></div><pre><code>myinfo = {&quot;name&quot;: &quot;Aoi&quot;}
+myinfo[&quot;foods&quot;] = [&quot;ramen&quot;, &quot;sushi&quot;, &quot;pizza&quot;]
+print(myinfo[&quot;foods&quot;][2])</code></pre></div><pre class="lecture-cell-output" hidden><code>pizza</code></pre><p class="slide-note ja">一つのキーに、リストを値として入れる。foodsでリストを取り出し、[2]で三つ目の食べ物を選ぶ。同じキーを使い直すと、前の値は上書きされる。</p><p class="slide-note en">One key can hold a list as its value. foods retrieves the list; [2] selects the third food. Reusing the same key overwrites its previous value.</p></section>
 <section class="slide slide--cells" data-slide data-part="2" hidden><p class="slide-kicker">WEEK 03 · PART 2</p><h2><span class="ja">Part 2：自分で試す</span><span class="en">Part 2: your turn</span></h2><p class="slide-lead"><span class="ja">13:55–14:15 · 科目の点数、身長データの修正、自己紹介とお気に入り。</span><span class="en">13:55–14:15 · Subject scores, height-data edits, and a profile with favorites.</span></p><a class="download-notebook" href="week-03-in-class-part-02-dictionaries.ipynb" download>↓ <span class="ja">Part 2 のNotebookをダウンロード</span><span class="en">Download Part 2 notebook</span></a><p class="slide-note ja">VS Codeで開き、Kernelを選んで上から実行。予想と気づきをMarkdownに残そう。</p><p class="slide-note en">Open in VS Code, select a kernel, and work from the top. Keep predictions and observations in Markdown.</p></section>
 <section class="slide slide--cells" data-slide data-part="3" hidden><p class="slide-kicker">WEEK 03 · PART 3</p><h2><span class="ja">地震一件を、辞書で読む</span><span class="en">Reading one earthquake dictionary</span></h2><div class="lecture-notebook-cell"><div class="lecture-cell-toolbar"><span>Python</span><button type="button" data-reveal aria-expanded="false">▶ <span class="ja">例の結果を表示</span><span class="en">Show example result</span></button></div><pre><code>earthquakes = [
     {&quot;place&quot;: &quot;Kobuk&quot;, &quot;mag&quot;: 2.7},

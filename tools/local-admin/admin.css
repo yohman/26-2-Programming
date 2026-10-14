@@ -16,7 +16,7 @@
 .submission-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr)); gap:1rem; }
 .submission-card { padding:1.4rem; background:#fff; scroll-margin-top:6rem; }
 .submission-card h3 { margin:.6rem 0; font-size:1rem; line-height:1.5; }
-.submission-card .student-id { font:700 1.05rem var(--mono); color:var(--blue); }
+.student-name { font:700 1.15rem var(--sans); color:var(--blue); }
 .submission-card p { color:var(--muted); font-size:.8rem; margin:.5rem 0 1rem; line-height:1.6; }
 .submission-card .admin-button { border:0; background:var(--blue); color:#fff; }
 .submission-actions { display:flex; flex-wrap:wrap; align-items:center; gap:.7rem; margin:1rem 0 1.5rem; }

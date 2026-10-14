@@ -10,6 +10,8 @@ Open <http://127.0.0.1:8766/admin/>. The course header shows **Admin** only on l
 
 Put each UNIPA export in `admin/week02`, `admin/week03`, etc. Keep the exported filenames. Click **フォルダを再読み込み** to index new files. Unchanged notebooks reuse cached replay results. Student IDs in filenames associate notebooks and attachments; multiple notebooks are kept separately. An export spreadsheet is not required.
 
+Place the student roster in `admin/roster.csv`. The importer finds the student-table header (even below course information), matches 学籍番号 to 学生氏名/氏名, and displays names. UTF-8 and CP932 exports are supported. Missing or conflicting matches remain explicitly marked rather than guessed. The roster stays local and ignored by Git.
+
 The entire `admin/` folder is ignored by Git: originals, exports, generated pages, review JSON, and the Python environment must never be committed or copied to GitHub Pages. Only the reusable tool and the local-only menu code are tracked.
 
 ## Preview and execution

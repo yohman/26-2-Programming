@@ -20,6 +20,7 @@ import subprocess
 import sys
 import tempfile
 import threading
+import unicodedata
 from datetime import datetime
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import unquote, urlsplit
@@ -172,7 +173,47 @@ def replay(notebook, files, folder, digest):
     return result
 
 
+def read_roster():
+    path = ADMIN / 'roster.csv'
+    if not path.exists():
+        return {}, ['roster.csv not found; student IDs shown.']
+    raw = path.read_bytes()
+    for encoding in ['utf-8-sig', 'cp932']:
+        try:
+            rows = list(csv.reader(io.StringIO(raw.decode(encoding))))
+            break
+        except UnicodeError:
+            continue
+    else:
+        return {}, ['roster.csv encoding is unsupported.']
+    normalize = lambda value: unicodedata.normalize('NFKC', value).strip()
+    header_index = next((i for i, row in enumerate(rows) if '学籍番号' in [normalize(v) for v in row] and any(normalize(v) in {'学生氏名', '氏名'} for v in row)), None)
+    if header_index is None:
+        return {}, ['roster.csv: 学籍番号 / 学生氏名 columns not found.']
+    headers = [normalize(v) for v in rows[header_index]]
+    id_column = headers.index('学籍番号')
+    name_column = headers.index('学生氏名') if '学生氏名' in headers else headers.index('氏名')
+    roster, conflicts, notes = {}, set(), []
+    for row in rows[header_index + 1:]:
+        if len(row) <= max(id_column, name_column):
+            continue
+        student = normalize(row[id_column]).lstrip("'")
+        if re.fullmatch(r'\d{8,12}\.0', student):
+            student = student[:-2]
+        name = row[name_column].strip()
+        if not re.fullmatch(r'\d{8,12}', student) or not name:
+            continue
+        if student in roster and roster[student] != name:
+            conflicts.add(student)
+        roster[student] = name
+    for student in conflicts:
+        del roster[student]
+        notes.append('Conflicting roster names; ID left unmatched: ' + student)
+    return roster, notes
+
+
 def prepare():
+    roster, roster_notes = read_roster()
     OUTPUT.mkdir(parents=True, exist_ok=True)
     for name in ['index.html', 'admin.js', 'admin.css']:
         shutil.copy2(UI / name, ADMIN / name)
@@ -207,13 +248,14 @@ def prepare():
                             entry['table_error'] = 'Could not decode as UTF-8 CSV.'
                     assets.append(entry)
                 title = next((re.sub(r'^#+\s*', '', source(c).splitlines()[0]).strip() for c in (notebook or {}).get('cells', []) if c.get('cell_type') == 'markdown' and source(c).strip()), file.name if file else 'Images / attachments only')
-                record = {'id': digest, 'week': week, 'student': student, 'title': title, 'file': file.name if file else None, 'notebook': notebook, 'attachments': assets, 'replay': execution}
+                record = {'id': digest, 'week': week, 'student': student, 'student_name': roster.get(student), 'title': title, 'file': file.name if file else None, 'notebook': notebook, 'attachments': assets, 'replay': execution}
                 (destination / 'submission.json').write_text(json.dumps(record, ensure_ascii=False))
                 counts = {key: sum(c['status'] == key for c in execution['cells']) for key in ['ok', 'error', 'skipped']}
-                submissions.append({'id': digest, 'student': student, 'title': title, 'file': record['file'], 'attachments': len(files), 'saved_outputs': sum(bool(c.get('outputs')) for c in (notebook or {}).get('cells', [])), 'execution': counts, 'notes': execution['notes']})
+                submissions.append({'id': digest, 'student': student, 'student_name': roster.get(student), 'title': title, 'file': record['file'], 'attachments': len(files), 'saved_outputs': sum(bool(c.get('outputs')) for c in (notebook or {}).get('cells', [])), 'execution': counts, 'notes': execution['notes']})
                 total += 1
         weeks.append({'week': week, 'students': len(groups), 'submissions': submissions})
-    manifest = {'generated': datetime.now().astimezone().isoformat(), 'weeks': weeks}
+    submitted_ids = {submission['student'] for week in weeks for submission in week['submissions']}
+    manifest = {'generated': datetime.now().astimezone().isoformat(), 'weeks': weeks, 'roster': {'matched': len(submitted_ids & roster.keys()), 'unmatched': sorted(submitted_ids - roster.keys()), 'notes': roster_notes}}
     (OUTPUT / 'index.json').write_text(json.dumps(manifest, ensure_ascii=False))
     print('Prepared', total, 'submission previews.', flush=True)
     return manifest

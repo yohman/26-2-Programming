@@ -217,17 +217,52 @@ async function mapView() {
 }
 function renderViews() {
   const hasData=state.data!==null;
+  const pokemon=state.id==='pokemon';
+  const visualButton=document.querySelector('[data-view="map"], [data-view="usage"]');
+  visualButton.dataset.view=pokemon?'usage':'map';
+  visualButton.textContent=pokemon?'Usage':'Map';
   byId('raw-output').hidden=state.mode!=='raw';
   byId('pretty-output').hidden=state.mode!=='pretty' || state.id==='holidays';
   byId('csv-output').hidden=state.mode!=='pretty' || state.id!=='holidays';
   byId('map-output').hidden=state.mode!=='map';
+  byId('usage-output').hidden=state.mode!=='usage';
+  if(state.mode==='usage')renderPokemonUsage();
   byId('color-control').hidden=state.mode!=='pretty' || state.id==='holidays';
-  document.querySelectorAll('[data-view]').forEach(button=>{button.setAttribute('aria-pressed',String(button.dataset.view===state.mode)); if(button.dataset.view==='map')button.disabled=!state.dataset.map || !hasData;});
+  document.querySelectorAll('[data-view]').forEach(button=>{button.setAttribute('aria-pressed',String(button.dataset.view===state.mode)); if(['map','usage'].includes(button.dataset.view))button.disabled=!hasData || (!pokemon && !state.dataset.map);});
   byId('raw-output').querySelector('code').textContent=state.raw;
   byId('coordinate-note').textContent=textFor(state.dataset.map_note);
   if(!hasData) {byId('pretty-output').querySelector('code').textContent=''; byId('csv-output').replaceChildren(); return;}
   if(state.id==='holidays')csvTable(); else jsonColors(JSON.stringify(state.data,null,2));
   if(state.mode==='map')mapView();
+}
+function renderPokemonUsage() {
+  const host=byId('usage-output'); host.replaceChildren();
+  if(!state.data)return;
+  const data=state.data;
+  const title=document.createElement('h3');title.textContent=textFor({ja:'JSONから、ポケモン図鑑のカードへ',en:'From JSON to a Pokédex card'});
+  const intro=document.createElement('p');intro.textContent=textFor({ja:'上でポケモンを選んで取得。画像の向きや色を変えてみよう。下のカードは、同じAPI応答からつくっています。',en:'Choose a Pokémon above and fetch. Try another sprite view or color. This card is built from the same API response.'});
+  const card=document.createElement('div');card.className='pokemon-card';
+  const image=document.createElement('img');image.width=192;image.height=192;image.alt=data.name||'Pokémon';
+  const info=document.createElement('div');
+  const name=document.createElement('h4');name.textContent=data.name||'—';
+  const types=document.createElement('p');types.textContent=(data.types||[]).map(t=>t.type?.name).filter(Boolean).join(' / ');
+  const controls=document.createElement('div');controls.className='pokemon-sprite-controls';
+  const note=document.createElement('p');note.className='subtle';note.setAttribute('role','status');
+  let selected='front_default';
+  const variants=[['front_default',{ja:'正面',en:'Front'}],['back_default',{ja:'後ろ',en:'Back'}],['front_shiny',{ja:'色違い · 正面',en:'Shiny · front'}],['back_shiny',{ja:'色違い · 後ろ',en:'Shiny · back'}]];
+  const update=()=>{
+    const path=data.sprites?.[selected];let safe=false;
+    try{const url=new URL(path);safe=url.protocol==='https:' && url.hostname==='raw.githubusercontent.com';if(safe)image.src=url.href;}catch(_){}
+    image.hidden=!safe;
+    note.textContent=safe?'sprites["'+selected+'"]':textFor({ja:'この画像は提供されていません。',en:'This sprite is not available.'});
+    controls.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.sprite===selected)));
+  };
+  variants.forEach(([key,label])=>{const button=document.createElement('button');button.type='button';button.dataset.sprite=key;button.textContent=textFor(label);button.disabled=!data.sprites?.[key];button.addEventListener('click',()=>{selected=key;update();});controls.append(button);});
+  image.addEventListener('error',()=>{image.hidden=true;note.textContent=textFor({ja:'画像を読み込めませんでした。名前とタイプは同じ応答から表示しています。',en:'The sprite could not load. Name and types still come from the same response.'});});
+  info.append(name,types,controls,note);card.append(image,info);
+  const keys=document.createElement('dl');keys.className='pokemon-field-guide';
+  [['pokemon["name"]',{ja:'カードの名前',en:'Card name'}],['pokemon["types"][0]["type"]["name"]',{ja:'最初のタイプ',en:'First type'}],['pokemon["sprites"]["front_default"]',{ja:'画像のURL → 画像として表示',en:'Image URL → displayed sprite'}]].forEach(([key,label])=>{const term=document.createElement('dt'),code=document.createElement('code'),description=document.createElement('dd');code.textContent=key;term.append(code);description.textContent=textFor(label);keys.append(term,description);});
+  host.append(title,intro,card,keys);update();
 }
 function response(raw,url,saved=false,decoded=null,bytes=null) {
   state.raw=raw; state.url=url;
@@ -290,6 +325,8 @@ function chooseDataset(id,load=true) {
   controller?.abort(); ++state.token;
   state.id=id; state.dataset=state.config.datasets[id]; state.raw=''; state.data=null; state.source=null;
   if(!state.dataset.map && state.mode==='map')state.mode='pretty';
+  if(state.mode==='usage' && id!=='pokemon')state.mode='pretty';
+  if(id==='pokemon')state.mode='usage';
   if(id==='toeiBus')state.mode='map';
   byId('download-data').hidden=true; byId('fetch-data').disabled=false;
   document.querySelectorAll('[data-dataset]').forEach(button=>{

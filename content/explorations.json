@@ -171,8 +171,8 @@
       },
       "python": "pokemon[\"types\"][0][\"type\"][\"name\"]",
       "map_note": {
-        "ja": "この応答には緯度・経度がないので、地図には変換しません。",
-        "en": "This response has no latitude/longitude, so it is not converted into a map."
+        "ja": "Usageは、応答の名前・タイプ・画像URLを使った図鑑カード。画像の切り替えには新しいAPI取得は不要です。",
+        "en": "Usage builds a Pokédex card from the response’s name, types, and sprite URLs. Switching sprites needs no new API request."
       }
     },
     "transit": {

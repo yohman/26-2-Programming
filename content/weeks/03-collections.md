@@ -71,3 +71,4 @@ JP: リストは順番、辞書は意味で取り出す。組み合わせると�
 - [Part 2 — 辞書 / Dictionaries](weeks/week-03/week-03-in-class-part-02-dictionaries.ipynb) {part-2}
 - [Part 3 — 宿題スターター（任意） / Homework starter (optional)](weeks/week-03/week-03-homework-data-discovery.ipynb) {part-3}
 - [任意のスターター / Optional starter — データで見つけた、小さな発見](weeks/week-03/week-03-homework-data-discovery.ipynb) {homework}
+- [完成例用の保存データ（通信できないとき） / Example data (offline fallback)](weeks/week-03/weather-kashiwa-example.json) {homework}

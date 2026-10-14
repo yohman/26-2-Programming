@@ -21,20 +21,20 @@ EN: **Start with Toei’s live bus map.** Fetch reported latitude/longitude with
 JP: **まず、都営バスのライブ地図から。** 登録・APIキーなしで、報告された緯度・経度を取得。MapからPrettyへ切り替えてデコードされたデータを見て、駅IDで位置を表す電車とも比べる。天気・地震・ポケモン・LAの犯罪記録も探索。保存例はライブと区別して表示。
 
 ## In-Class Part 1
-EN: **Part 1 — Lists · 20 min.** Work through scores, indexing, list edits, and slicing. Complete four short exercises. Download the notebook, select your kernel, and run from the top.
-JP: **Part 1 — リスト · 20分。** 点数の合計から、添字・要素の編集・スライスへ。四つの練習に取り組む。Notebookをダウンロードし、Kernelを選んで上から実行する。
+EN: **Part 1 — Lists · 20 min.** Select, edit, and slice items.
+JP: **Part 1 — リスト · 20分。** 要素を取り出す・編集する・スライスする。
 
 ## In-Class Part 2
-EN: **Part 2 — Dictionaries · 20 min.** Retrieve scores by subject, update height data, and build a profile with a list inside it. Tuples are optional.
-JP: **Part 2 — 辞書 · 20分。** 科目名で点数を取り出し、身長データを修正。リストを含む自己紹介もつくる。タプルはOptional。
+EN: **Part 2 — Dictionaries · 20 min.** Look up and update values by key.
+JP: **Part 2 — 辞書 · 20分。** キーで値を取り出し、追加・変更する。
 
 ## In-Class Part 3
-EN: **Part 3 — My guide · last 30 min.** Read a list of earthquake dictionaries, then use the same structure for a collection of your own. Homework is a separate real-data investigation.
-JP: **Part 3 — 私のガイド · 最後の30分。** 地震の「辞書のリスト」を読み、同じ構造で自分のコレクションをつくる。宿題は別の実データ探索。
+EN: **Part 3 — My guide · 30 min.** Combine lists and dictionaries to make your own guide.
+JP: **Part 3 — 私のガイド · 30分。** リストと辞書を組み合わせ、自分のガイドをつくる。
 
 ## In-Class Challenge
-EN: Choose a theme and audience: cafés, games, music, study spots, or an imagined world. Create **three records** in a list of dictionaries. Use the supplied display loop, try one update/addition, and show a partner. No GitHub setup, CSV, or new packages required.
-JP: カフェ、ゲーム、音楽、勉強場所、架空の世界など、テーマと見せたい相手を決める。「辞書のリスト」で**三件**つくる。用意した表示用のループを使い、一つ更新・追加して隣の人に見せる。GitHubの設定、CSV、追加パッケージは不要。
+EN: Choose a theme, create **three records**, and share with a partner.
+JP: 好きなテーマで**三件**つくり、隣の人に見せよう。
 
 ## Take-Home Assignment
 EN: **A small discovery with real data.**

@@ -32,12 +32,17 @@ const defaults = {
   weather:{location:'tokyo',latitude:'35.68',longitude:'139.69',forecast_days:'1'},
   earthquakes:{magnitude:'2.5',period:'day'},
   pokemon:{name:'pikachu'},
+  music:{term:'Eminem Lose Yourself',limit:'5'},
   transit:{route:'1',limit:'20'},
   tokyo:{},
   lapd:{area:'all',limit:'50'},
   holidays:{year:'2026'}
 };
 const fields = {
+  music:[
+    {key:'term',label:{ja:'term · 曲名・アーティスト',en:'term · Song or artist'},type:'text'},
+    {key:'limit',label:{ja:'limit · 最大件数',en:'limit · Maximum results'},options:[['5','5'],['10','10'],['20','20']]}
+  ],
   toeiBus:[],
   toei:[{key:'line',label:{ja:'路線 · odpt:railway',en:'Line · odpt:railway'},options:[['Oedo','大江戸線 · Oedo'],['Asakusa','浅草線 · Asakusa'],['Mita','三田線 · Mita'],['Shinjuku','新宿線 · Shinjuku'],['Arakawa','東京さくらトラム · Arakawa'],['all','全路線 · All lines']]}],
   tokyo:[],
@@ -65,6 +70,11 @@ const fields = {
 
 function values() { return Object.fromEntries([...byId('parameter-fields').querySelectorAll('[name]')].map(field => [field.name,field.value])); }
 function requestURL(id, v) {
+  if(id==='music') {
+    const url=new URL('https://itunes.apple.com/search');
+    Object.entries({term:v.term,entity:'song',country:'US',limit:v.limit}).forEach(([key,value])=>url.searchParams.set(key,value));
+    return url.href;
+  }
   if(id==='toeiBus') return 'https://api-public.odpt.org/api/v4/gtfs/realtime/ToeiBus';
   if(id==='toei') {
     const url=new URL('https://api-public.odpt.org/api/v4/odpt:Train');
@@ -266,9 +276,10 @@ async function mapView() {
 function renderViews() {
   const hasData=state.data!==null;
   const pokemon=state.id==='pokemon';
+  const usage=pokemon || state.id==='music';
   const visualButton=document.querySelector('[data-view="map"], [data-view="usage"]');
-  visualButton.dataset.view=pokemon?'usage':'map';
-  visualButton.textContent=pokemon?'Usage':'Map';
+  visualButton.dataset.view=usage?'usage':'map';
+  visualButton.textContent=state.id==='music'?textFor({ja:'曲を聴く',en:'Listen'}):pokemon?'Usage':'Map';
   byId('raw-output').hidden=state.mode!=='raw';
   byId('pretty-output').hidden=state.mode!=='pretty' || state.id==='holidays';
   byId('csv-output').hidden=state.mode!=='pretty' || state.id!=='holidays';
@@ -277,9 +288,9 @@ function renderViews() {
   byId('weather-output').hidden=state.mode!=='weather';
   const weatherButton=document.querySelector('[data-view="weather"]');weatherButton.hidden=state.id!=='weather';weatherButton.disabled=!hasData;
   if(state.mode==='weather')renderWeather();
-  if(state.mode==='usage')renderPokemonUsage();
+  if(state.mode==='usage') { if(state.id==='music')renderMusicUsage(); else renderPokemonUsage(); }
   byId('color-control').hidden=state.mode!=='pretty' || state.id==='holidays';
-  document.querySelectorAll('[data-view]').forEach(button=>{button.setAttribute('aria-pressed',String(button.dataset.view===state.mode)); if(['map','usage'].includes(button.dataset.view))button.disabled=!hasData || (!pokemon && !state.dataset.map);});
+  document.querySelectorAll('[data-view]').forEach(button=>{button.setAttribute('aria-pressed',String(button.dataset.view===state.mode)); if(['map','usage'].includes(button.dataset.view))button.disabled=!hasData || (!usage && !state.dataset.map);});
   byId('raw-output').querySelector('code').textContent=state.raw;
   byId('coordinate-note').textContent=textFor(state.dataset.map_note);
   if(state.id==='lapd') {const link=document.createElement('a');link.href='https://data.lacity.org/Public-Safety/LAPD-NIBRS-Offenses-Dataset/k7nn-b2ep';link.target='_blank';link.rel='noopener';link.textContent=textFor({ja:' 座標の照合元：Offenses ↗',en:' Coordinate source: Offenses ↗'});byId('coordinate-note').append(link);}
@@ -322,6 +333,7 @@ function renderWeather() {
   const note=document.createElement('p');note.className='subtle';note.textContent=textFor({ja:'時刻は地点の現地時間。予報・現在値は気象モデルの値で、観測値とは限りません。地名は選択した座標のラベルです。',en:'Times use the location’s timezone. Forecast/current values are model data, not necessarily observations. The location name labels the selected coordinates.'});host.append(note);
 }
 function renderPokemonUsage() {
+  byId('usage-output').setAttribute('aria-label','Pokémon usage example');
   const host=byId('usage-output'); host.replaceChildren();
   if(!state.data)return;
   const data=state.data;
@@ -349,6 +361,47 @@ function renderPokemonUsage() {
   const keys=document.createElement('dl');keys.className='pokemon-field-guide';
   [['pokemon["name"]',{ja:'カードの名前',en:'Card name'}],['pokemon["types"][0]["type"]["name"]',{ja:'最初のタイプ',en:'First type'}],['pokemon["sprites"]["front_default"]',{ja:'画像のURL → 画像として表示',en:'Image URL → displayed sprite'}]].forEach(([key,label])=>{const term=document.createElement('dt'),code=document.createElement('code'),description=document.createElement('dd');code.textContent=key;term.append(code);description.textContent=textFor(label);keys.append(term,description);});
   host.append(title,intro,card,keys);update();
+}
+function renderMusicUsage() {
+  const host=byId('usage-output');
+  host.replaceChildren();
+  host.setAttribute('aria-label',textFor({ja:'音楽データの使用例',en:'Music data usage example'}));
+  if(!state.data)return;
+  const songs=(state.data?.results||[]).filter(song=>song.kind==='song');
+  if(!songs.length) {
+    const note=document.createElement('p');
+    note.textContent=textFor({ja:'曲が見つかりません。別の曲名で検索してみよう。',en:'No songs found. Try another song title.'});
+    host.append(note);return;
+  }
+  const grid=document.createElement('div');grid.className='music-results';
+  songs.forEach(song=>{
+    const card=document.createElement('article');card.className='music-result';
+    const image=document.createElement('img');
+    try {
+      const artwork=new URL(song.artworkUrl100);
+      if(artwork.protocol==='https:' && artwork.hostname.endsWith('.mzstatic.com')) {
+        image.src=artwork.href;image.alt='';image.loading='lazy';image.width=100;image.height=100;card.append(image);
+      }
+    } catch (_) {}
+    const details=document.createElement('div');
+    const title=document.createElement('h3');title.textContent=song.trackName;
+    const artist=document.createElement('p');artist.textContent=song.artistName;
+    const album=document.createElement('p');album.className='subtle';album.textContent=song.collectionName;
+    details.append(title,artist,album);
+    try {
+      const url=new URL(song.trackViewUrl);
+      if(url.protocol==='https:' && ['music.apple.com','itunes.apple.com'].includes(url.hostname)) {
+        const link=document.createElement('a');link.href=url.href;link.target='_blank';link.rel='noopener';
+        link.textContent=textFor({ja:'Apple Musicで試聴 ↗',en:'Listen on Apple Music ↗'});
+        details.append(link);
+      }
+    } catch (_) {}
+    card.append(details);grid.append(card);
+  });
+  host.append(grid);
+  const note=document.createElement('p');note.className='subtle';
+  note.textContent=textFor({ja:'resultsはリスト、一曲は辞書。trackNameが曲名、artistNameが歌手、trackViewUrlが試聴ページへのリンク。試聴の提供状況は地域や曲によって異なります。',en:'results is a list; each song is a dictionary. trackName gives the title, artistName the artist, and trackViewUrl the listening page. Preview availability varies by region and song.'});
+  host.append(note);
 }
 function response(raw,url,saved=false,decoded=null,bytes=null) {
   state.raw=raw; state.url=url;
@@ -416,10 +469,11 @@ function chooseDataset(id,load=true) {
   controller?.abort(); ++state.token;
   state.id=id; state.dataset=state.config.datasets[id]; state.raw=''; state.data=null; state.source=null;
   if(!state.dataset.map && state.mode==='map')state.mode='pretty';
-  if(state.mode==='usage' && id!=='pokemon')state.mode='pretty';
+  if(state.mode==='usage' && !['pokemon','music'].includes(id))state.mode='pretty';
   if(state.mode==='weather' && id!=='weather')state.mode='pretty';
   if(id==='weather')state.mode='weather';
   if(id==='pokemon')state.mode='usage';
+  if(id==='music')state.mode='usage';
   if(id==='toeiBus')state.mode='map';
   byId('download-data').hidden=true; byId('fetch-data').disabled=false;
   document.querySelectorAll('[data-dataset]').forEach(button=>{

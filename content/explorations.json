@@ -13,12 +13,28 @@
         "weather",
         "earthquakes",
         "pokemon",
+        "music",
         "transit",
         "lapd"
       ]
     }
   ],
   "datasets": {
+    "music": {
+      "title":{"ja":"音楽 · API","en":"Music · API"},
+      "provider":"Apple · iTunes Search API",
+      "format":"JSON",
+      "docs":"https://performance-partners.apple.com/search-api",
+      "snapshot":"weeks/week-03/explore-data/music.json",
+      "snapshot_at":"2026-10-15",
+      "encoding":"utf-8",
+      "map":false,
+      "summary":{"ja":"曲名やアーティストで検索。JSONを読むと、曲名・歌手・アルバム・試聴ページへのリンクが見つかる。","en":"Search by song or artist. The JSON contains titles, artists, albums, and links to listening pages."},
+      "parameters":{"ja":"termは検索語、entity=songは曲のみ、limitは最大件数。country=USで米国ストアを検索。APIキーは不要。曲名を書き換えて「取得する」。","en":"term sets the search phrase, entity=song selects songs, and limit caps the results. country=US searches the US store. No API key needed. Edit the search phrase and fetch."},
+      "aha":{"ja":"曲を並べる画面も、元はリストと辞書。リンクも文字列として届く。","en":"A song browser starts with lists and dictionaries. Even its listening links arrive as strings."},
+      "python":"music[\"results\"][0][\"trackName\"]\nmusic[\"results\"][0][\"artistName\"]\nmusic[\"results\"][0][\"trackViewUrl\"]",
+      "map_note":{"ja":"座標の代わりにtrackViewUrlを使って試聴ページへ。Raw・Pretty・曲を聴くは、同じ応答の違う見せ方。","en":"Use trackViewUrl to open a listening page instead of plotting coordinates. Raw, Pretty, and Listen are different views of the same response."}
+    },
     "toeiBus": {
       "title":{"ja":"都営バス · Map", "en":"Toei buses · Map"},
       "provider":"東京都交通局・公共交通オープンデータ協議会 · CC BY 4.0",

@@ -24,4 +24,23 @@
 .homework-slide-list { padding-left:1.3rem; font-size:clamp(1rem,1.6vw,1.35rem); line-height:1.7; }
 .homework-slide-list li { margin-bottom:.65rem; }
 .week-three-lecture .slide-controls { position:sticky; top:0; z-index:2; background:var(--paper); }
+.week-three-lecture .bus-code { margin:1rem 0; padding:1.25rem 1.5rem; background:#f1f5f7; color:#202a31; font:clamp(1rem,2.05vw,1.9rem)/1.55 var(--mono); white-space:pre-wrap; overflow-wrap:anywhere; }
+.week-three-lecture .bus-story .lecture-notebook-cell { max-width:none; }
+.week-three-lecture .bus-story .lecture-notebook-cell pre,.week-three-lecture .bus-story .lecture-cell-output { font-size:clamp(1rem,1.65vw,1.6rem); }
+.bus-format-flow { list-style:none; padding:0; display:grid; gap:1.5rem; margin:2rem 0; }
+.bus-format-flow li { display:flex; align-items:baseline; gap:2rem; }
+.bus-format-flow strong { min-width:15rem; color:var(--blue); font:600 clamp(1.4rem,2.7vw,2.6rem) var(--mono); }
+.bus-format-flow span { font-size:clamp(1rem,1.8vw,1.7rem); }
+.bus-big-value { display:flex; align-items:baseline; flex-wrap:wrap; gap:1.5rem; margin:1.5rem 0 2rem; }
+.bus-big-value code { padding:0; background:transparent; color:var(--blue); font:600 clamp(2.8rem,6.5vw,6rem) var(--mono); }
+.bus-big-value span { color:var(--muted); font:clamp(1rem,2vw,1.8rem) var(--mono); }
+.week-three-lecture .bus-story--nested .bus-code { font-size:clamp(.95rem,1.5vw,1.45rem); line-height:1.45; }
+.bus-relations { display:grid; gap:1.5rem; margin:1.5rem 0; }
+.bus-relations h3 { margin:0 0 .5rem; font-size:1.1rem; }
+.bus-relations table { width:100%; border-collapse:collapse; font:clamp(1rem,1.8vw,1.7rem) var(--mono); }
+.bus-relations th,.bus-relations td { padding:.65rem 1rem; text-align:left; background:#f3f5f6; }
+.bus-relations th { color:var(--muted); font-weight:500; }
+.bus-relations .bus-key { background:#e3edf2; color:var(--blue); font-weight:700; }
+.bus-source { font-size:.85rem !important; }
+@media(max-width:650px) { .bus-format-flow li { display:grid; gap:.3rem; }.bus-relations { overflow-x:auto; }.bus-relations table { min-width:400px; } }
 @media print { .week-three-lecture .slide[hidden] { display:block !important; } .week-three-lecture .lecture-cell-output[hidden] { display:block !important; } }

@@ -11,9 +11,9 @@ document.querySelectorAll('[data-explore-link]').forEach(link => link.addEventLi
   url.searchParams.set('return', location.pathname + location.search);
   link.href = url.href;
 }));
-document.querySelectorAll('.lecture-notebook-cell pre code').forEach(code => {
+document.querySelectorAll('.lecture-notebook-cell pre code, .bus-code code').forEach(code => {
   const source = code.textContent;
-  const pattern = /("[^"\n]*"|'[^'\n]*')|\b(for|in|del)\b|\b(print|sum|len)\b|\b(\d+(?:\.\d+)?)\b/g;
+  const pattern = /("[^"\n]*"|'[^'\n]*')|\b(for|in|del)\b|\b(print|sum|len|type|int|float)\b|\b(\d+(?:\.\d+)?)\b/g;
   let position = 0;
   code.replaceChildren();
   for (const match of source.matchAll(pattern)) {

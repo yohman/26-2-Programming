@@ -6,8 +6,8 @@
 <link rel="icon" type="image/svg+xml" href="../../favicon.svg">
 <link rel="stylesheet" href="../week-02/lecture.css?v=20261014-explore-opening">
 <link rel="stylesheet" href="../../assets/ui.css?v=20261014-explore-opening">
-<link rel="stylesheet" href="lecture.css?v=20261014-explore-opening">
-<script src="lecture.js?v=20261014-explore-opening" defer></script>
+<link rel="stylesheet" href="lecture.css?v=20261014-bus-types">
+<script src="lecture.js?v=20261014-bus-types" defer></script>
 </head>
 <body class="lecture-page week-three-lecture">
 <header class="lecture-header"><a class="return-link" id="lecture-return" href="../../agenda.html?open=03#week-03"><span class="ja">← 授業予定に戻る</span><span class="en">← Back to agenda</span></a><span class="lecture-mark">WEEK 03 · COLLECTIONS</span><button class="language-toggle" id="language-toggle" type="button" aria-label="Switch to English">EN</button></header>
@@ -32,7 +32,97 @@
 <table class="format-table"><thead><tr><th>Web</th><th>Python</th><th><span class="ja">例</span><span class="en">Example</span></th></tr></thead><tbody><tr><td>JSON object <code>{ }</code></td><td>dict</td><td><code>{"mag": 2.7}</code></td></tr><tr><td>JSON array <code>[ ]</code></td><td>list</td><td><code>[18.1, 17.8, 17.7]</code></td></tr><tr><td>JSON <code>null / true / false</code></td><td><code>None / True / False</code></td><td><span class="ja">読み込むと変換される</span><span class="en">Converted on reading</span></td></tr><tr><td>CSV</td><td><span class="ja">行を辞書として読める</span><span class="en">Rows can be read as dicts</span></td><td><span class="ja">日付, 祝日名</span><span class="en">Date, holiday</span></td></tr><tr><td>GeoJSON</td><td><span class="ja">座標を持つ辞書やリスト</span><span class="en">Dicts/lists with coordinates</span></td><td><code>[longitude, latitude]</code></td></tr></tbody></table>
 <p class="slide-note"><span class="ja">GeoJSONの座標は経度が先。Foliumのlocationは緯度が先。この約束を守ると、同じ記録を違う道具で使える。</span><span class="en">GeoJSON coordinates put longitude first; Folium location puts latitude first. Respecting these conventions lets different tools use the records.</span></p>
 <p class="slide-note"><span class="ja">ここからは、その中身を自分でつくる。説明と実習を三回繰り返そう。</span><span class="en">Now build the structures yourself, with three explain-and-practice rounds.</span> <a href="https://docs.python.org/3/library/json.html" target="_blank" rel="noopener">Python JSON ↗</a> · <a href="https://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php" target="_blank" rel="noopener">USGS GeoJSON ↗</a></p>
-</section><section class="slide slide--cells" data-slide data-part="1" hidden><p class="slide-kicker">WEEK 03 · PART 1</p><h2><span class="ja">プレイリストの「次の曲」</span><span class="en">The next song in your playlist</span></h2><ol class="playlist-demo" aria-label="架空のプレイリスト / Illustrative playlist"><li><small>0</small><strong>朝の散歩</strong></li><li><small>1</small><strong>帰り道</strong></li><li><small>2</small><strong>あと一駅</strong></li></ol><p class="slide-note ja">順番がある。曲が増える。並べ替える。身近な仕組みを、Pythonのリストでモデルにしてみる。</p><p class="slide-note en">There is an order. Songs get added or rearranged. We can model this familiar structure with a Python list.</p><p class="slide-question"><span class="ja">最初の曲は、何番目？</span><span class="en">What index names the first song?</span></p></section>
+</section>
+<section class="slide slide--cells bus-story" data-slide data-part="0" hidden>
+<h2><span class="ja">バスアプリの裏側</span><span class="en">Inside a bus app</span></h2>
+<ol class="bus-format-flow"><li><strong>GTFS-Realtime</strong><span class="ja">通信する形：バイナリ</span><span class="en">Wire format: binary</span></li><li><strong>Python</strong><span class="ja">デコードして、辞書とリストへ</span><span class="en">Decode, then convert to dicts and lists</span></li><li><strong>Map</strong><span class="ja">緯度・経度を使って点を置く</span><span class="en">Use coordinates to place a point</span></li></ol>
+<p class="slide-question"><span class="ja">地図の点の中には、何が入っている？</span><span class="en">What information sits behind a map point?</span></p>
+<p class="slide-note"><span class="ja">ここからは10月14日の保存データ。デコードの道具は用意済み。読むのは、これから学ぶPythonの型。</span><span class="en">We use the October 14 saved response. A supplied decoder handles the format. The decoded data uses the Python types we are about to learn.</span> <a href="../../explore.html?week=03&amp;example=toeiBus" data-explore-link>Explore ↗</a></p>
+</section>
+<section class="slide slide--cells bus-story" data-slide data-part="0" hidden>
+<h2><span class="ja">何台も並べる：list</span><span class="en">Several buses: list</span></h2>
+<pre class="bus-code"><code>bus_ids = ["D329", "M401"]
+
+bus_ids[0]  # "D329"</code></pre>
+<p class="slide-question"><span class="ja">最初の一台は、添字0</span><span class="en">Index 0 selects the first bus</span></p>
+<p class="slide-note"><span class="ja">配列のように値を並べる。Pythonでは、この [ ] の型はlist。JSONではarrayと呼ぶ。ここでは車両IDだけを抜き出した。</span><span class="en">Python calls this [ ] collection a list. JSON calls its corresponding structure an array. Here we extracted only the vehicle IDs.</span></p>
+</section>
+<section class="slide slide--cells bus-story" data-slide data-part="0" hidden>
+<h2><span class="ja">一台の情報：dict</span><span class="en">One bus record: dict</span></h2>
+<pre class="bus-code"><code>bus = {
+    "id": "D329",
+    "route_id": "006",
+    "latitude": 35.659,
+    "longitude": 139.714,
+    "timestamp": 1791976507
+}</code></pre>
+<p class="slide-note"><span class="ja">キーに名前、値に情報。実データから必要な項目を抜き出した授業用の形。座標は小数第3位に丸めています。</span><span class="en">Keys name the fields; values hold the information. This teaching record selects fields from the real response and rounds coordinates to three decimal places.</span></p>
+</section>
+<section class="slide slide--cells bus-story" data-slide data-part="0" hidden>
+<h2><span class="ja">小数の位置：float</span><span class="en">Coordinates with decimals: float</span></h2>
+<div class="bus-big-value"><code>35.659</code><span>latitude</span></div>
+<div class="lecture-notebook-cell"><div class="lecture-cell-toolbar"><span>Python</span><button type="button" data-reveal aria-expanded="false">▶ <span class="ja">型を確認</span><span class="en">Check the type</span></button></div><pre><code>print(type(bus["latitude"]))</code></pre></div><pre class="lecture-cell-output" hidden><code>&lt;class 'float'&gt;</code></pre>
+<p class="slide-note"><span class="ja">緯度と経度は小数を含む数値。文字列にせず、数値として地図に渡せる。</span><span class="en">Latitude and longitude are numbers with decimals. The map can use these numeric values.</span></p>
+</section>
+<section class="slide slide--cells bus-story" data-slide data-part="0" hidden>
+<h2><span class="ja">数字に見えても：str</span><span class="en">Digits can be text: str</span></h2>
+<div class="bus-big-value"><code>"006"</code><span>route_id</span></div>
+<pre class="bus-code"><code>print(type(bus["route_id"]))
+# &lt;class 'str'&gt;
+
+print(int("006"))  # 6</code></pre>
+<p class="slide-question"><span class="ja">IDの「006」は、計算する6とは違う</span><span class="en">The ID “006” has a different job from the number 6</span></p>
+<p class="slide-note"><span class="ja">文字列なら先頭の0を保てる。学籍番号や郵便番号も同じ。勝手に数値へ変えると、別データとの照合に失敗することがある。</span><span class="en">Strings preserve leading zeros, as student IDs and postal codes may need. Converting an ID to a number can break a match with another dataset.</span></p>
+</section>
+<section class="slide slide--cells bus-story" data-slide data-part="0" hidden>
+<h2><span class="ja">報告された時刻：int</span><span class="en">The reported time: int</span></h2>
+<div class="bus-big-value"><code>1791976507</code><span>timestamp</span></div>
+<pre class="bus-code"><code>print(type(bus["timestamp"]))
+# &lt;class 'int'&gt;</code></pre>
+<p class="slide-lead"><span class="ja">2026年10月14日 20:15:07 JST</span><span class="en">October 14, 2026, 20:15:07 JST</span></p>
+<p class="slide-note"><span class="ja">Unix時刻は1970年1月1日00:00 UTCからの秒数。このフィードは整数で渡す。「いま取得した」と「いま報告された」は別。</span><span class="en">Unix time counts seconds since January 1, 1970, 00:00 UTC. This feed supplies an integer. Retrieval time and position-report time can differ.</span></p>
+</section>
+<section class="slide slide--cells bus-story bus-story--nested" data-slide data-part="0" hidden>
+<h2><span class="ja">辞書の中にリスト、その中に辞書</span><span class="en">A dictionary holding a list of dictionaries</span></h2>
+<pre class="bus-code"><code>feed = {
+    "entity": [
+        {"id": "D329", "vehicle": {
+            "trip": {"route_id": "006"},
+            "position": {"latitude": 35.659,
+                         "longitude": 139.714}
+        }}
+    ]
+}</code></pre>
+<p class="slide-note"><span class="ja">実際の入れ子を、一台と必要なキーだけに省略。entityのリストには、同じ形の辞書が何台分も並ぶ。</span><span class="en">The real nesting, shortened to one vehicle and selected keys. The entity list holds more dictionaries with this structure.</span></p>
+</section>
+<section class="slide slide--cells bus-story" data-slide data-part="0" hidden>
+<h2><span class="ja">大きなデータも、一段ずつ</span><span class="en">One level at a time</span></h2>
+<pre class="bus-code"><code>buses = feed["entity"]          # list
+first = buses[0]                 # dict
+vehicle = first["vehicle"]       # dict
+position = vehicle["position"]   # dict
+latitude = position["latitude"]  # float</code></pre>
+<div class="lecture-notebook-cell"><div class="lecture-cell-toolbar"><span>Python</span><button type="button" data-reveal aria-expanded="false">▶ <span class="ja">値を確認</span><span class="en">Show the value</span></button></div><pre><code>print(feed["entity"][0]["vehicle"]["position"]["latitude"])</code></pre></div><pre class="lecture-cell-output" hidden><code>35.659</code></pre>
+<p class="slide-note"><span class="ja">[0]で順番を選ぶ。["キー"]で名前を選ぶ。長い式も、一段ずつなら読める。</span><span class="en">[0] chooses by position. ["key"] chooses by name. A long lookup follows these small steps.</span></p>
+</section>
+<section class="slide slide--cells bus-story" data-slide data-part="0" hidden>
+<h2><span class="ja">二つのデータを、IDでつなぐ</span><span class="en">A shared ID connects two datasets</span></h2>
+<div class="bus-relations"><div><h3><span class="ja">車両の記録</span><span class="en">Vehicle records</span></h3><table><thead><tr><th>id</th><th class="bus-key">route_id</th><th>latitude</th></tr></thead><tbody><tr><td>D329</td><td class="bus-key">006</td><td>35.659</td></tr><tr><td>M401</td><td class="bus-key">006</td><td>35.670</td></tr></tbody></table></div><div><h3><span class="ja">路線の記録</span><span class="en">Route records</span></h3><table><thead><tr><th class="bus-key">route_id</th><th>route_short_name</th></tr></thead><tbody><tr><td class="bus-key">006</td><td>都０１（Ｔ０１）</td></tr></tbody></table></div></div>
+<p class="slide-question"><span class="ja">同じ路線に、何台ものバス</span><span class="en">Many buses share one route</span></p>
+<p class="slide-note"><span class="ja">共通のroute_idで照合する。関連を持つ二つの表が、リレーショナルなデータの基本。車両位置と路線名は別のフィードにある。</span><span class="en">Match the shared route_id. Related tables are the basis of relational data. Vehicle positions and route names come from separate feeds.</span> <a href="https://api-public.odpt.org/api/v4/files/Toei/data/ToeiBus-GTFS.zip" target="_blank" rel="noopener">Toei GTFS · routes.txt ↗</a></p>
+</section>
+<section class="slide slide--cells bus-story" data-slide data-part="0" hidden>
+<h2><span class="ja">IDを、路線名にする</span><span class="en">Looking up the route name</span></h2>
+<pre class="bus-code"><code>routes = {
+    "006": {"name": "都０１（Ｔ０１）"}
+}
+
+route_id = feed["entity"][0]["vehicle"]["trip"]["route_id"]</code></pre>
+<div class="lecture-notebook-cell"><div class="lecture-cell-toolbar"><span>Python</span><button type="button" data-reveal aria-expanded="false">▶ <span class="ja">つないだ結果</span><span class="en">Show the match</span></button></div><pre><code>print(routes[route_id]["name"])</code></pre></div><pre class="lecture-cell-output" hidden><code>都０１（Ｔ０１）</code></pre>
+<p class="slide-note"><span class="ja">routes.txtの一行を、IDで引ける辞書に整理した授業用の例。これからの実習で、この部品を自分でつくる。</span><span class="en">A teaching example indexes one routes.txt row by ID. The coming exercises let you build these pieces yourself.</span></p>
+<p class="slide-note bus-source"><span class="ja">データ：東京都交通局・公共交通オープンデータ協議会（CC BY 4.0）。位置は10月14日の保存例、座標は丸めています。</span><span class="en">Data: Tokyo Metropolitan Bureau of Transportation / ODPT, CC BY 4.0. Positions are saved October 14 examples with rounded coordinates.</span></p>
+</section>
+<section class="slide slide--cells" data-slide data-part="1" hidden><p class="slide-kicker">WEEK 03 · PART 1</p><h2><span class="ja">プレイリストの「次の曲」</span><span class="en">The next song in your playlist</span></h2><ol class="playlist-demo" aria-label="架空のプレイリスト / Illustrative playlist"><li><small>0</small><strong>朝の散歩</strong></li><li><small>1</small><strong>帰り道</strong></li><li><small>2</small><strong>あと一駅</strong></li></ol><p class="slide-note ja">順番がある。曲が増える。並べ替える。身近な仕組みを、Pythonのリストでモデルにしてみる。</p><p class="slide-note en">There is an order. Songs get added or rearranged. We can model this familiar structure with a Python list.</p><p class="slide-question"><span class="ja">最初の曲は、何番目？</span><span class="en">What index names the first song?</span></p></section>
 <section class="slide slide--cells" data-slide data-part="1" hidden><p class="slide-kicker">WEEK 03 · PART 1</p><h2><span class="ja">買い物かごと、先週の地震地図</span><span class="en">A shopping cart and last week’s map</span></h2><div class="application-example"><p><span class="ja">買い物かごの一品</span><span class="en">One item in a shopping cart</span></p><code>{"name": "Notebook", "price": 300, "quantity": 2}</code><p><span class="ja">地震一件の記録</span><span class="en">One earthquake record</span></p><code>{"place": "Kobuk", "mag": 2.7}</code></div><p class="slide-note ja">何件も並ぶ「リスト」と、一件の意味が分かる「辞書」。今日は、その中身を自分で作る。例は授業用の簡略モデルです。</p><p class="slide-note en">A list holds several records. A dictionary gives each field a name. Today we build those structures ourselves. These examples are simplified teaching models.</p></section>
 <section class="slide slide--cells" data-slide data-part="1" hidden><p class="slide-kicker">WEEK 03 · PART 1</p><h2><span class="ja">リストと添字</span><span class="en">Lists and indexes</span></h2><div class="lecture-notebook-cell"><div class="lecture-cell-toolbar"><span>Python</span><button type="button" data-reveal aria-expanded="false">▶ <span class="ja">例の結果を表示</span><span class="en">Show example result</span></button></div><pre><code>playlist = [&quot;朝の散歩&quot;, &quot;帰り道&quot;, &quot;あと一駅&quot;]
 print(playlist[0])

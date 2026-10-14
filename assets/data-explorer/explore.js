@@ -67,7 +67,7 @@ const fields = {
   ],
   earthquakes:[
     {key:'magnitude',label:{ja:'最小マグニチュード',en:'Minimum magnitude'},options:[['2.5','M2.5+'],['4.5','M4.5+']]},
-    {key:'period',label:{ja:'期間',en:'Window'},options:[['hour','1 hour'],['day','24 hours'],['week','7 days']]}
+    {key:'period',label:{ja:'期間',en:'Window'},options:[['hour','1 hour'],['day','24 hours'],['week','7 days'],['month','30 days']]}
   ],
   pokemon:[{key:'name',label:{ja:'フォーム名',en:'Form name'},options:[['pikachu','pikachu'],['bulbasaur','bulbasaur'],['charmander','charmander']]}],
   transit:[

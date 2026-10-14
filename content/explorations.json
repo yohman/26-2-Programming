@@ -9,7 +9,6 @@
       },
       "examples": [
         "toeiBus",
-        "toei",
         "weather",
         "earthquakes",
         "pokemon",

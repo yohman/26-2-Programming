@@ -36,6 +36,7 @@ async function victimLocations(victims,saved,signal) {
 }
 const weatherPlaces={tokyo:{lat:35.68,lon:139.69,ja:'東京',en:'Tokyo'},kashiwa:{lat:35.86,lon:139.97,ja:'柏',en:'Kashiwa'},osaka:{lat:34.69,lon:135.5,ja:'大阪',en:'Osaka'},sapporo:{lat:43.06,lon:141.35,ja:'札幌',en:'Sapporo'},naha:{lat:26.21,lon:127.68,ja:'那覇',en:'Naha'}};
 const defaults = {
+  players:{query:'Shohei Ohtani'},
   sports:{league:'epl',date:''},
   toeiBus:{},
   toei:{line:'Oedo'},
@@ -49,6 +50,7 @@ const defaults = {
   holidays:{year:'2026'}
 };
 const fields = {
+  players:[{key:'query',label:{ja:'選手名（英字）',en:'Player name'},type:'text'}],
   sports:[
     {key:'league',label:{ja:'競技・リーグ',en:'Sport / league'},options:[['epl','EPL · Premier League'],['laliga','La Liga'],['mlb','MLB'],['mlbPlayoffs','MLB · Playoffs'],['nba','NBA'],['nfl','NFL'],['nhl','NHL']]},
     {key:'date',label:{ja:'日付（空欄＝ESPNの最新表示）',en:'Date (blank = ESPN default)'},type:'date',optional:true}
@@ -84,6 +86,10 @@ const fields = {
 
 function values() { return Object.fromEntries([...byId('parameter-fields').querySelectorAll('[name]')].map(field => [field.name,field.value])); }
 function requestURL(id, v) {
+  if(id==='players') {
+    const url=new URL('https://site.api.espn.com/apis/common/v3/search');
+    url.searchParams.set('query',v.query);url.searchParams.set('limit','10');url.searchParams.set('type','player');return url.href;
+  }
   if(id==='sports') {
     const paths={epl:'soccer/eng.1',laliga:'soccer/esp.1',mlb:'baseball/mlb',mlbPlayoffs:'baseball/mlb',nba:'basketball/nba',nfl:'football/nfl',nhl:'hockey/nhl'};
     const url=new URL('https://site.api.espn.com/apis/site/v2/sports/'+(paths[v.league]||paths.epl)+'/scoreboard');
@@ -326,10 +332,10 @@ function renderViews() {
   if(state.mode!=='map')closeMapPopup();
   const hasData=state.data!==null;
   const pokemon=state.id==='pokemon';
-  const usage=pokemon || ['music','sports'].includes(state.id);
+  const usage=pokemon || ['music','sports','players'].includes(state.id);
   const visualButton=document.querySelector('[data-view="map"], [data-view="usage"]');
   visualButton.dataset.view=usage?'usage':'map';
-  visualButton.textContent=state.id==='sports'?textFor({ja:'スコア',en:'Scores'}):state.id==='music'?textFor({ja:'曲を聴く',en:'Listen'}):pokemon?'Usage':'Map';
+  visualButton.textContent=state.id==='players'?textFor({ja:'選手プロフィール',en:'Player bio'}):state.id==='sports'?textFor({ja:'スコア',en:'Scores'}):state.id==='music'?textFor({ja:'曲を聴く',en:'Listen'}):pokemon?'Usage':'Map';
   byId('raw-output').hidden=state.mode!=='raw';
   byId('pretty-output').hidden=state.mode!=='pretty' || state.id==='holidays';
   byId('csv-output').hidden=state.mode!=='pretty' || state.id!=='holidays';
@@ -338,7 +344,7 @@ function renderViews() {
   byId('weather-output').hidden=state.mode!=='weather';
   const weatherButton=document.querySelector('[data-view="weather"]');weatherButton.hidden=state.id!=='weather';weatherButton.disabled=!hasData;
   if(state.mode==='weather')renderWeather();
-  if(state.mode==='usage') { if(state.id==='sports')renderSportsUsage(); else if(state.id==='music')renderMusicUsage(); else renderPokemonUsage(); }
+  if(state.mode==='usage') { if(state.id==='players')renderPlayerSearch(); else if(state.id==='sports')renderSportsUsage(); else if(state.id==='music')renderMusicUsage(); else renderPokemonUsage(); }
   byId('color-control').hidden=state.mode!=='pretty' || state.id==='holidays';
   document.querySelectorAll('[data-view]').forEach(button=>{button.setAttribute('aria-pressed',String(button.dataset.view===state.mode)); if(['map','usage'].includes(button.dataset.view))button.disabled=!hasData || (!usage && !state.dataset.map);});
   byId('raw-output').querySelector('code').textContent=state.raw;
@@ -492,6 +498,71 @@ function renderSportsUsage() {
   });
   host.append(grid);
 }
+const playerProfiles=new Map();
+let playerSelection=0;
+function renderPlayerSearch() {
+  const host=byId('usage-output');host.replaceChildren();
+  host.setAttribute('aria-label',textFor({ja:'選手検索とプロフィール',en:'Player search and bio'}));
+  if(!state.data)return;
+  const players=(state.data.items||[]).filter(player=>player.type==='player');
+  if(!players.length){const p=document.createElement('p');p.textContent=textFor({ja:'選手が見つかりません。英字の名前で検索してみよう。',en:'No players found. Try the name in English.'});host.append(p);return;}
+  const label=document.createElement('label');label.className='player-picker';
+  const caption=document.createElement('span');caption.textContent=textFor({ja:'検索結果から選ぶ',en:'Choose a player'});
+  const select=document.createElement('select');
+  players.forEach((player,index)=>{const option=document.createElement('option');option.value=index;option.textContent=player.displayName+' · '+(player.label||player.league||'');select.append(option);});
+  label.append(caption,select);
+  const bio=document.createElement('section');bio.className='player-bio';bio.setAttribute('aria-live','polite');
+  host.append(label,bio);
+  select.addEventListener('change',()=>loadPlayerBio(players[Number(select.value)],bio));
+  loadPlayerBio(players[0],bio);
+}
+async function loadPlayerBio(player,host) {
+  const selection=++playerSelection,token=state.token,saved=state.source?.saved;
+  host.textContent=textFor({ja:'プロフィールを取得中…',en:'Loading player bio…'});
+  if(!/^[a-z0-9.-]+$/i.test(player.sport||'') || !/^[a-z0-9.-]+$/i.test(player.league||'') || !/^\d+$/.test(player.id||''))return;
+  const url='https://site.api.espn.com/apis/common/v3/sports/'+player.sport+'/'+player.league+'/athletes/'+player.id;
+  let data=null,error=false;
+  try{
+    const key=saved?'saved-'+player.id:url;
+    if(playerProfiles.has(key))data=playerProfiles.get(key);
+    else {
+      const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),12000);
+      try {
+        const response=await fetch(saved && player.id==='39832'?'weeks/week-03/explore-data/player-bio.json':url,{signal:controller.signal,credentials:'omit'});
+        if(!response.ok)throw new Error('Profile unavailable');
+        data=await response.json();playerProfiles.set(key,data);
+      } finally {clearTimeout(timer);}
+    }
+  }catch(_){error=true;}
+  if(selection!==playerSelection || token!==state.token || !host.isConnected)return;
+  host.replaceChildren();
+  const athlete=data?.athlete||player,team=athlete.team?.displayName||player.teamRelationships?.[0]?.displayName;
+  const header=document.createElement('div');header.className='player-bio-header';
+  try {const url=new URL(athlete.headshot?.href||player.headshot?.href);if(url.protocol==='https:'&&url.hostname==='a.espncdn.com'){const image=document.createElement('img');image.src=url.href;image.alt=athlete.displayName;header.append(image);}}catch(_){}
+  const intro=document.createElement('div'),title=document.createElement('h3');title.textContent=athlete.displayName;
+  const summary=document.createElement('p');summary.textContent=[team,athlete.position?.displayName||athlete.position?.name,athlete.jersey?'#'+athlete.jersey:null].filter(Boolean).join(' · ');
+  intro.append(title,summary);header.append(intro);host.append(header);
+  const facts=document.createElement('dl');facts.className='player-bio-facts';
+  const birth=athlete.birthPlace;
+  const birthplace=typeof birth==='string'?birth:[birth?.city,birth?.state,birth?.country].filter(Boolean).join(', ');
+  const rows=[
+    [{ja:'年齢',en:'Age'},athlete.age],
+    [{ja:'生年月日',en:'Born'},athlete.dateOfBirth?.split('T')[0]],
+    [{ja:'出身地',en:'Birthplace'},birthplace],
+    [{ja:'身長',en:'Height'},athlete.displayHeight],
+    [{ja:'体重',en:'Weight'},athlete.displayWeight],
+    [{ja:'デビュー年',en:'Debut year'},athlete.debutYear],
+    [{ja:'リーグ',en:'League'},player.league?.toUpperCase()]
+  ];
+  rows.forEach(([label,value])=>{if(value===undefined||value===null||value==='')return;const dt=document.createElement('dt'),dd=document.createElement('dd');dt.textContent=textFor(label);dd.textContent=String(value);facts.append(dt,dd);});host.append(facts);
+  const note=document.createElement('p');note.className='subtle';note.textContent=textFor(error?{ja:'詳細を取得できないため、検索結果にある情報のみ表示しています。',en:'Profile request failed; showing available search fields only.'}:saved?{ja:'保存プロフィール · 2026-10-15取得。現在の所属や年齢とは異なる場合があります。',en:'Saved profile retrieved 2026-10-15; team or age may have changed.'}:{ja:'ESPNの応答にある項目のみ表示。未提供の情報は省略しています。',en:'Only fields supplied by ESPN are shown; unavailable details are omitted.'});host.append(note);
+  const profileLink=(athlete.links||player.links||[]).find(link=>link.rel?.includes('bio')&&link.href?.startsWith('https://www.espn.com/'))||(player.links||[]).find(link=>link.href?.startsWith('https://www.espn.com/'));
+  if(profileLink){const a=document.createElement('a');a.href=profileLink.href;a.target='_blank';a.rel='noopener';a.textContent=textFor({ja:'ESPNの選手ページ ↗',en:'Player on ESPN ↗'});host.append(a);}
+  const source=document.createElement('details'),heading=document.createElement('summary');heading.textContent=textFor({ja:'プロフィールのAPI・JSON',en:'Profile API & JSON'});source.append(heading);
+  const api=document.createElement('a');api.href=url;api.target='_blank';api.rel='noopener';api.textContent=url;source.append(api);
+  if(data){const pre=document.createElement('pre'),code=document.createElement('code');code.textContent=JSON.stringify(data.athlete||data,null,2);pre.append(code);source.append(pre);}
+  host.append(source);
+}
 function response(raw,url,saved=false,decoded=null,bytes=null) {
   state.raw=raw; state.url=url;
   state.data=decoded || (state.id==='holidays'?parseCSV(raw):JSON.parse(raw));
@@ -560,12 +631,13 @@ function chooseDataset(id,load=true) {
   controller?.abort(); ++state.token;
   state.id=id; state.dataset=state.config.datasets[id]; state.raw=''; state.data=null; state.source=null;
   if(!state.dataset.map && state.mode==='map')state.mode='pretty';
-  if(state.mode==='usage' && !['pokemon','music','sports'].includes(id))state.mode='pretty';
+  if(state.mode==='usage' && !['pokemon','music','sports','players'].includes(id))state.mode='pretty';
   if(state.mode==='weather' && id!=='weather')state.mode='pretty';
   if(id==='weather')state.mode='weather';
   if(id==='pokemon')state.mode='usage';
   if(id==='music')state.mode='usage';
   if(id==='sports')state.mode='usage';
+  if(id==='players')state.mode='usage';
   if(id==='toeiBus')state.mode='map';
   byId('download-data').hidden=true; byId('fetch-data').disabled=false;
   document.querySelectorAll('[data-dataset]').forEach(button=>{

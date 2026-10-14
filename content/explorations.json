@@ -14,11 +14,27 @@
         "pokemon",
         "music",
         "sports",
+        "players",
         "lapd"
       ]
     }
   ],
   "datasets": {
+    "players": {
+      "title":{"ja":"選手検索 · Bio","en":"Player Search · Bio"},
+      "provider":"ESPN · public player search / profile feeds (undocumented)",
+      "format":"JSON",
+      "docs":"https://www.espn.com/",
+      "snapshot":"weeks/week-03/explore-data/players.json",
+      "snapshot_at":"2026-10-15",
+      "encoding":"utf-8",
+      "map":false,
+      "summary":{"ja":"気になる選手を検索して、プロフィールをつくる。写真・チーム・ポジション・年齢などを、APIの辞書から取り出す。","en":"Search for a player and build a bio from API fields: photo, team, position, age, and more."},
+      "parameters":{"ja":"英字の選手名で検索（例：Shohei Ohtani、LeBron James、Lionel Messi）。検索結果から選ぶと、IDでプロフィールを取得。非公開仕様のため、提供状況が変わる場合があります。","en":"Search a name in English, e.g. Shohei Ohtani, LeBron James, or Lionel Messi. Selecting a result fetches a profile by ID. These undocumented endpoints may change."},
+      "aha":{"ja":"検索で名前を見つけ、IDで詳細を取得する。二つのAPIを同じIDでつなぐと、選手のプロフィールになる。","en":"Search finds a name; its ID retrieves the details. Joining two APIs by ID builds a player bio."},
+      "python":"search[\"items\"][0][\"id\"]\nprofile[\"athlete\"][\"displayName\"]\nprofile[\"athlete\"][\"position\"][\"displayName\"]",
+      "map_note":{"ja":"Raw / Prettyは検索の応答。選手プロフィールは別のAPIの応答から作成。下の「プロフィールのAPI・JSON」で詳細を確認できます。","en":"Raw / Pretty show the search response. The bio uses a separate profile response, available under Profile API & JSON."}
+    },
     "sports": {
       "title":{"ja":"ESPN · スポーツ","en":"ESPN · Sports"},
       "provider":"ESPN · public scoreboard feed (undocumented)",

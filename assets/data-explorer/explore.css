@@ -106,3 +106,14 @@
 .sports-team strong { font:700 1.6rem var(--mono); }
 .sports-team.is-winner span { font-weight:750; }
 .sports-game a { display:inline-block; margin-top:.75rem; color:var(--blue); font-weight:700; font-size:.85rem; }
+.player-picker { display:grid; gap:.5rem; max-width:34rem; margin-bottom:1.5rem; }
+.player-picker select { width:100%; padding:.7rem; border:1px solid var(--line); border-radius:0; background:#fff; font:inherit; }
+.player-bio { padding:clamp(1rem,3vw,2rem); background:#fff; }
+.player-bio-header { display:flex; align-items:center; gap:1.5rem; margin-bottom:1.5rem; }
+.player-bio-header img { width:clamp(90px,20vw,160px); height:140px; object-fit:contain; }
+.player-bio-header h3 { margin:0 0 .5rem; font-size:clamp(1.4rem,3vw,2rem); }
+.player-bio-header p { margin:0; color:var(--muted); }
+.player-bio-facts { display:grid; grid-template-columns:max-content 1fr; gap:.65rem 2rem; margin:0 0 1.5rem; }
+.player-bio-facts dt { color:var(--muted); }.player-bio-facts dd { margin:0; }
+.player-bio details { margin-top:1.5rem; }.player-bio details > a { display:block; margin:1rem 0; overflow-wrap:anywhere; }
+.player-bio pre { max-height:400px; overflow:auto; font-size:.85rem; }

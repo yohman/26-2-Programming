@@ -673,7 +673,10 @@ function agendaWeek(w, defaultOpen = false) {
   const challengeFiles = resources ? resourcesHtml(resources.body, ['challenge']) : '';
   const sharedFiles = resources ? resourcesHtml(resources.body, ['support','data']) : '';
   const homeworkFiles = resources ? resourcesHtml(resources.body, ['homework']) : '';
-  const resourceBlock = (files, showLabel = true) => files ? `<div class="section-resources">${showLabel ? '<p class="resources-label"><span class="lang-en">FILES</span><span class="lang-ja jp" lang="ja">使用するファイル</span></p>' : ''}${files}</div>` : '';
+  const resourceBlock = (files, showLabel = true) => {
+    const optional = files === homeworkFiles && w.homework_starter_optional === 'true';
+    return files ? `<div class="section-resources">${showLabel ? `<p class="resources-label"><span class="lang-en">${optional ? 'OPTIONAL STARTER' : 'FILES'}</span><span class="lang-ja jp" lang="ja">${optional ? '参考ファイル（任意）' : '使用するファイル'}</span></p>` : ''}${files}</div>` : '';
+  };
   const explorationPanel = exploration ? `<section class="week-exploration"><div><p class="eyebrow">EXPLORE</p>${bilingualHtml(exploration.body)}</div><a class="file-preview" data-lecture-page href="explore.html?week=${String(w.week).padStart(2,'0')}"><span class="lang-ja jp">データを探索する</span><span class="lang-en">Explore real data</span> ↗</a></section>` : '';
   const classTabs = [];
   if (setupCheck) classTabs.push({ key:'setup', en:'Setup check', ja:'環境チェック', content:`<div class="class-task">${bilingualHtml(setupCheck.body)}</div>` });

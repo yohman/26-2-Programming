@@ -10,6 +10,7 @@ title: Collections: a playlist, a record, your own guide.
 title_ja: リストと辞書で、私のガイドをつくる。
 course_date: 2026-10-15
 homework_due: 2026-10-21T23:59:00+09:00
+homework_starter_optional: true
 course_time: 13:10–14:50
 overview: Explore real data, then practice lists, dictionaries, and combining them. Build a personal guide in class; investigate API data for homework.
 overview_ja: 実データをのぞいてから、リスト・辞書・組み合わせを実習。授業では「私の〇〇ガイド」、宿題ではAPIデータで小さな発見を。
@@ -59,7 +60,7 @@ EN: **A small discovery with real data.**
 - Bring the data into Python, read it using lists/dictionaries, and show something: a summary, table, chart, or map. One is enough.
 - Write a few sentences about your discovery, one value you checked, and a limitation. Include the source URL.
 
-Run all cells and save the outputs. Submit your **`.ipynb` and any required files to UNIPA by October 21, 23:59 JST**. The starter is optional. A saved JSON response is fine if fetching fails; note when it was retrieved. No API key required. If you use AI, briefly note what it helped with.
+Run all cells and save the outputs. Submit your **`.ipynb` and any required files to UNIPA by October 21, 23:59 JST**. The starter below is optional. You are encouraged to create your own `.ipynb` from scratch. A saved JSON response is fine if fetching fails; note when it was retrieved. No API key required. If you use AI, briefly note what it helped with.
 
 JP: **データで見つけた、小さな発見。**
 
@@ -67,7 +68,7 @@ JP: **データで見つけた、小さな発見。**
 - Pythonに取り込み、リスト・辞書を使って読み、何かを見せる。要約・表・グラフ・地図のどれか一つでOK。
 - 発見したこと、確かめた値、データの限界を短く書く。出典URLも添える。
 
-全Cellを実行し、出力を保存。**10月21日(水) 23:59までに、`.ipynb`と必要なファイルをUNIPAへ。** スターターの使用は自由。取得できなければ保存したJSONでもOK（取得日を記載）。APIキーは不要。AIを使った場合は、何に使ったか一言添える。
+全Cellを実行し、出力を保存。**10月21日(水) 23:59までに、`.ipynb`と必要なファイルをUNIPAへ。** 下のスターターは任意です。**自分で新しい`.ipynb`を一から作ることも歓迎・おすすめです。** 取得できなければ保存したJSONでもOK（取得日を記載）。APIキーは不要。AIを使った場合は、何に使ったか一言添える。
 
 ## Aha!
 EN: `guide[0]["name"]` makes two choices: the first record, then its name.
@@ -82,4 +83,4 @@ JP: リストは順番、辞書は意味で取り出す。組み合わせると�
 - [Part 1 — リスト / Lists](weeks/week-03/week-03-in-class-part-01-lists.ipynb) {part-1}
 - [Part 2 — 辞書 / Dictionaries](weeks/week-03/week-03-in-class-part-02-dictionaries.ipynb) {part-2}
 - [Part 3 — 私のガイド / My Guide](weeks/week-03/week-03-in-class-part-03-my-guide.ipynb) {part-3}
-- [宿題 — データで見つけた、小さな発見 / A Small Data Discovery](weeks/week-03/week-03-homework-data-discovery.ipynb) {homework}
+- [任意のスターター / Optional starter — データで見つけた、小さな発見](weeks/week-03/week-03-homework-data-discovery.ipynb) {homework}

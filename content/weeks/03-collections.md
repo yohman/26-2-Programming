@@ -6,33 +6,74 @@ preview: true
 phase: WRITE
 practice_mix: Human 80% · AI 20%
 practice_mix_ja: 人 80% · AI 20%
-title: Collections and versioned work.
-title_ja: コレクションとバージョン管理。
+title: Collections: a playlist, a record, your own guide.
+title_ja: リストと辞書で、私のガイドをつくる。
 course_date: 2026-10-15
 homework_due: 2026-10-21T23:59:00+09:00
 course_time: 13:10–14:50
-overview: Keep related information together with lists and dictionaries, then begin making changes you can trace.
-overview_ja: リストと辞書で関係する情報をまとめ、変更を追跡できる形で作業を始める。
+overview: Three explain-and-do rounds: lists, dictionaries, then combining them. Begin a personal recommendation guide in class and finish it at home.
+overview_ja: 説明して、手を動かす。リスト、辞書、組み合わせの三回に分けて学ぶ。最後に「私の〇〇ガイド」を作り始め、宿題で仕上げる。
 ---
 ## Lecture Flow
-EN: 0–20: lists/dictionaries; 20–30: indexing and keys; 30–70: profile-data notebook; 70–100: repository challenge.
-JP: 0〜20分：リスト／辞書、20〜30分：添字とキー、30〜70分：プロフィールデータノートブック、70〜100分：リポジトリチャレンジ。
-## In-Class Notebook
-EN: **Week 03 In-Class — Collections and Versioned Work.** Build a list and dictionary, trace lookups, use AI to critique a broken lookup, then make and review a small profile-data addition yourself.
-JP: **Week 03 In-Class — Collections and Versioned Work。** リストと辞書を作り検索を追い、壊れた検索をAIに批評させ、プロフィールデータへの小さな追加を自分で行い、結果を確認する。
+EN: | Time | Explain, then do |
+| --- | --- |
+| 13:10–13:25 | **Part 1 lecture** Playlists, scores, and lists. |
+| 13:25–13:45 | **Part 1 notebook** Indexing, totals, edits, and slicing. |
+| 13:45–13:55 | **Part 2 lecture** Names and values: dictionaries. |
+| 13:55–14:15 | **Part 2 notebook** Retrieve, add, change, and combine values. |
+| 14:15–14:20 | **Part 3 lecture** Earthquake records and your own collection. |
+| 14:20–14:50 | **Part 3 challenge** Build a personal recommendation guide. |
+JP: | 時間 | 説明の後に、自分で試す |
+| --- | --- |
+| 13:10–13:25 | **Part 1 講義** プレイリスト・点数・リスト。 |
+| 13:25–13:45 | **Part 1 実習** 添字・合計・編集・スライス。 |
+| 13:45–13:55 | **Part 2 講義** 名前と値を組にする辞書。 |
+| 13:55–14:15 | **Part 2 実習** 値を取り出し、追加・変更する。 |
+| 14:15–14:20 | **Part 3 講義** 地震のデータから、自分のコレクションへ。 |
+| 14:20–14:50 | **Part 3 チャレンジ** 「私の〇〇ガイド」をつくる。 |
+
+## In-Class Part 1
+EN: **Part 1 — Lists · 20 min.** Work through scores, indexing, list edits, and slicing. Complete four short exercises. Download the notebook, select your kernel, and run from the top.
+JP: **Part 1 — リスト · 20分。** 点数の合計から、添字・要素の編集・スライスへ。四つの練習に取り組む。Notebookをダウンロードし、Kernelを選んで上から実行する。
+
+## In-Class Part 2
+EN: **Part 2 — Dictionaries · 20 min.** Retrieve scores by subject, update the original height example, and build a profile with a list inside it. Tuples are optional.
+JP: **Part 2 — 辞書 · 20分。** 科目名で点数を取り出し、元教材の身長データを修正。リストを含む自己紹介もつくる。タプルはOptional。
+
+## In-Class Part 3
+EN: **Part 3 — My guide · last 30 min.** Read a list of earthquake dictionaries, then use the same structure for a collection of your own. This notebook continues into homework.
+JP: **Part 3 — 私のガイド · 最後の30分。** 地震の「辞書のリスト」を読み、同じ構造で自分のコレクションをつくる。このNotebookを宿題まで使う。
+
 ## In-Class Challenge
-EN: Final 30 minutes: publish a “me” repository with a structured profile, three links, and one commit.
-JP: 最後の30分：構造化プロフィール、三つのリンク、一つのコミットを含む「me」リポジトリを公開する。
+EN: Choose a theme and audience: cafés, games, music, study spots, or an imagined world. Create **three records** in a list of dictionaries. Use the supplied display loop, try one update/addition, and show a partner. No GitHub setup, CSV, or new packages required.
+JP: カフェ、ゲーム、音楽、勉強場所、架空の世界など、テーマと見せたい相手を決める。「辞書のリスト」で**三件**つくる。用意した表示用のループを使い、一つ更新・追加して隣の人に見せる。GitHubの設定、CSV、追加パッケージは不要。
+
 ## Take-Home Assignment
-EN: Add one collection-driven feature to the profile. Submit repository and commit URLs plus 200字 explaining a review decision.
-JP: プロフィールにコレクションを使う機能を一つ追加する。リポジトリURL、コミットURL、レビュー判断の説明200字を提出。
+EN: **Finish your “My ___ Guide” in the Part 3 notebook.**
+
+- Include **at least five records**, each with a name and two or more useful details.
+- Keep code that retrieves a value by index/key and updates or adds a record. Show the result.
+- In Markdown, explain the audience, a design decision, one check, and feedback or something noticed on rereading.
+- Run all cells and save outputs. Submit the completed **Part 3 `.ipynb` to UNIPA**. Include external files only if you used them. Parts 1 and 2 are class practice, not additional homework submissions.
+
+JP: **Part 3のNotebookで「私の〇〇ガイド」を完成させる。**
+
+- **五件以上**。各項目に名前と、役立つ情報を二つ以上入れる。
+- 添字・キーで値を取り出すコードと、更新または追加のコードを残す。結果も表示する。
+- Markdownに、見せたい相手・工夫の理由・確認したこと・感想または読み直して気づいた点を書く。
+- 全Cellを実行し、出力を保存。完成した**Part 3の`.ipynb`をUNIPAへ提出**。外部ファイルを使った場合だけ一緒に添付する。Part 1・2は授業内練習で、宿題として別途提出する必要はありません。
+
 ## Aha!
-EN: An index or key is an address, not a guess.
-JP: 添字やキーは推測ではなく住所である。
+EN: `guide[0]["name"]` makes two choices: the first record, then its name.
+JP: `guide[0]["name"]`は二回選んでいる。最初の一件、その中の名前。
+
 ## Takeaway
-EN: Good structure makes changes reviewable.
-JP: 良い構造があると、変更をレビューできる。
+EN: Lists organize by position; dictionaries organize by meaning. Combining them lets the same code handle many records.
+JP: リストは順番、辞書は意味で取り出す。組み合わせると、同じコードで何件も扱える。
+
 ## Resources
-- [Week 03 In-Class — Collections and Versioned Work](weeks/week-03/week-03-in-class-collections.ipynb) {fundamentals}
-- [Lecture PDF](weeks/week-03/lecture.pdf) {lecture}
-- [Git & GitHub tutorial](https://github.com/yohman/tutorials/blob/main/git_github_setup_jp.md) {support}
+- [Week 03 Lecture — Lists, Dictionaries & My Guide](weeks/week-03/lecture.html) {lecture}
+- [Part 1 — リスト / Lists](weeks/week-03/week-03-in-class-part-01-lists.ipynb) {part-1}
+- [Part 2 — 辞書 / Dictionaries](weeks/week-03/week-03-in-class-part-02-dictionaries.ipynb) {part-2}
+- [Part 3 — 私のガイド / My Guide](weeks/week-03/week-03-in-class-part-03-my-guide.ipynb) {part-3}
+- [宿題 — 私の〇〇ガイド / My Guide](weeks/week-03/week-03-in-class-part-03-my-guide.ipynb) {homework}

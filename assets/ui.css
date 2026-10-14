@@ -42,6 +42,9 @@ button:disabled { cursor: default; }
 .ui-tabs > .ui-tab:hover { background: #f1f2f1; color: var(--blue); }
 .ui-tabs > .ui-tab[aria-selected="true"] { border-top-color: var(--blue); background: #fff; color: var(--blue); }
 .class-tabs > .class-tab-panel { padding: 1.25rem; background: #fff; }
+.practice-rounds { display:grid; gap:1.75rem; }
+.practice-round h4 { margin:0 0 .5rem; color:var(--blue); font:700 .8rem var(--mono); }
+.practice-round .section-resources { background:rgba(255,255,255,.6); }
 .class-tab-list.ui-tabs > .ui-tab { flex: 1 1 0; white-space: normal; overflow-wrap: anywhere; }
 .tutorial-tab-list.ui-tabs { width: fit-content; }
 .tutorial-tabs [role="tabpanel"] { background: #fff; }

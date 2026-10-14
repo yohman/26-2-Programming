@@ -171,3 +171,13 @@ button:disabled { cursor: default; }
 @media print { .week-shortcuts, .lecture-view-nav, .python-topic-select { display: none; } }
 .lecture-inline-deck { display:block; width:100%; height:clamp(440px,48vw,680px); border:0; background:#fff; }
 #week-03 .lecture-slide-card { grid-column:1 / -1; }
+.lecture-explore-layout { grid-column:1 / -1; display:grid; grid-template-columns:minmax(0,2.4fr) minmax(220px,1fr); gap:1.5rem; align-items:start; }
+#week-03 .lecture-explore-layout .lecture-slide-card { grid-column:auto; }
+.lecture-section-title { margin:0; padding:1rem 1.25rem; color:var(--blue); font-size:1rem; }
+.lecture-explore-layout .week-exploration { grid-column:auto; display:flex; flex-direction:column; align-items:flex-start; padding:1.5rem; background:#f4f5f5; }
+.lecture-explore-layout .week-exploration .eyebrow { font:700 1rem var(--sans); letter-spacing:0; }
+.lecture-explore-layout .lecture-inline-deck { height:560px; }
+@media(max-width:850px) {
+  .lecture-explore-layout { grid-template-columns:1fr; }
+  .lecture-explore-layout .lecture-inline-deck { height:480px; }
+}

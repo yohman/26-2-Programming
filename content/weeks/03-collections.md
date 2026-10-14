@@ -17,8 +17,8 @@ overview: Look inside live bus and weather data. Learn how strings, numbers, lis
 overview_ja: 都営バスや天気の実データから、文字列・数値・リスト・辞書の役割を知る。三つのNotebookで手を動かし、宿題ではAPIデータから自分なりの発見を見せる。
 ---
 ## Exploration
-EN: **Start with Toei’s live bus map.** Fetch reported latitude/longitude without an account or key. Switch from Map to Pretty to reveal the decoded records, then compare trains, which report station IDs instead. Explore weather, earthquakes, Pokémon, and LA crime records too. Saved examples are clearly labelled.
-JP: **まず、都営バスのライブ地図から。** 登録・APIキーなしで、報告された緯度・経度を取得。MapからPrettyへ切り替えてデコードされたデータを見て、駅IDで位置を表す電車とも比べる。天気・地震・ポケモン・LAの犯罪記録も探索。保存例はライブと区別して表示。
+EN: Fetch bus, weather, music, and other API data. Compare the JSON with maps, charts, and listening links.
+JP: バス・天気・音楽などのAPIデータを取得。JSONの中身と、地図・グラフ・試聴リンクを見比べよう。
 
 ## In-Class Part 1
 EN: **Part 1 — Lists · 20 min.** Select, edit, and slice items.

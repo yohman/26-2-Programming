@@ -1,5 +1,6 @@
 ---
 week: 3
+publication_hold: true
 publish_at: 2026-10-13T09:00:00+09:00
 preview: true
 phase: WRITE

@@ -579,7 +579,7 @@ function setupLectureTimelineTabs(root = document) {
 function section(week, key) { return week.sections.find(item => item.title.toLowerCase().startsWith(key.toLowerCase())); }
 function previewAll() { return new URLSearchParams(location.search).get('preview') === 'all'; }
 function isLocalPreview() { return ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname); }
-function isAvailable(week) { return isLocalPreview() || previewAll() || week.week === 1 || new Date() >= new Date(week.publish_at); }
+function isAvailable(week) { return isLocalPreview() || (week.publication_hold !== 'true' && (previewAll() || week.week === 1 || new Date() >= new Date(week.publish_at))); }
 
 function releaseDateLabels(value) {
   const date = new Date(value);
@@ -641,6 +641,7 @@ function agendaWeek(w, defaultOpen = false) {
   const summary = `<div class="week-index"><span class="week-number">${String(w.week).padStart(2,'0')}</span>${courseScheduleHtml(w)}</div><div class="week-summary-copy"><span class="week-phase">${escapeHtml(w.phase)}</span><span class="week-title lang-en">${escapeHtml(w.title)}</span><span class="week-title lang-ja jp" lang="ja">${escapeHtml(w.title_ja || '')}</span>${overview}</div>`;
 
   if (!available) {
+    if (w.publication_hold === 'true') return `<article class="week week--locked" id="${id}"><div class="week-summary">${summary}<span class="week-release"><span class="lang-en">Materials coming soon</span><span class="lang-ja jp" lang="ja">教材は準備中</span></span></div></article>`;
     const release = releaseDateLabels(w.publish_at);
     return `<article class="week week--locked" id="${id}"><div class="week-summary">${summary}<span class="week-release"><span class="lang-en">Available ${escapeHtml(release.en)}</span><span class="lang-ja jp" lang="ja">${escapeHtml(release.ja)} 公開</span></span></div></article>`;
   }

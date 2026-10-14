@@ -2,7 +2,7 @@
 <html lang="ja" data-language="ja">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Week 03 Lecture · Lists, Dictionaries & My Guide</title>
+<title>Week 03 Lecture · APIs, Lists & Dictionaries</title>
 <link rel="icon" type="image/svg+xml" href="../../favicon.svg">
 <link rel="stylesheet" href="../week-02/lecture.css?v=20261014-explore-opening">
 <link rel="stylesheet" href="../../assets/ui.css?v=20261014-explore-opening">
@@ -219,13 +219,24 @@ print(myinfo[&quot;foods&quot;][2])</code></pre></div><pre class="lecture-cell-o
     {&quot;place&quot;: &quot;Preston&quot;, &quot;mag&quot;: 2.66}
 ]
 print(earthquakes[0][&quot;mag&quot;])</code></pre></div><pre class="lecture-cell-output" hidden><code>2.7</code></pre><p class="slide-note ja">Aha! <code>[0]</code>で最初の辞書、<code>["mag"]</code>でその大きさ。地名はWeek 02のeq.csvから授業用に短縮しています。</p><p class="slide-note en">Aha! <code>[0]</code> selects the first dictionary; <code>["mag"]</code> selects its magnitude. Place names are shortened from Week 02’s eq.csv.</p></section>
-<section class="slide slide--cells" data-slide data-part="3" hidden><p class="slide-kicker">WEEK 03 · PART 3</p><h2><span class="ja">同じ構造で、自分のガイド</span><span class="en">Your guide uses the same structure</span></h2><div class="lecture-notebook-cell"><div class="lecture-cell-toolbar"><span>Python</span><button type="button" data-reveal aria-expanded="false">▶ <span class="ja">例の結果を表示</span><span class="en">Show example result</span></button></div><pre><code>guide = [
-    {&quot;name&quot;: &quot;窓ぎわの席&quot;, &quot;note&quot;: &quot;朝は静か&quot;},
-    {&quot;name&quot;: &quot;木陰のベンチ&quot;, &quot;note&quot;: &quot;晴れた日に&quot;}
-]
-for item in guide:
-    print(f&quot;{item['name']}：{item['note']}&quot;)</code></pre></div><pre class="lecture-cell-output" hidden><code>窓ぎわの席：朝は静か
-木陰のベンチ：晴れた日に</code></pre><p class="slide-note ja">地震でも勉強場所でも、一件ずつ取り出す仕組みは同じ。すべての辞書でキーをそろえると、同じコードを使える。</p><p class="slide-note en">Earthquakes and study spots use the same record-by-record pattern. Consistent keys let the same code handle every item.</p></section>
-<section class="slide slide--cells" data-slide data-part="3" hidden><p class="slide-kicker">WEEK 03 · PART 3</p><h2><span class="ja">Part 3：自分で試す</span><span class="en">Part 3: your turn</span></h2><p class="slide-lead"><span class="ja">14:25–14:45 · 「私の〇〇ガイド」。三件作って見せ合う。最後の5分で保存と宿題の確認。</span><span class="en">14:25–14:45 · My ___ Guide: create three records and share. Save and confirm homework in the final 5 minutes.</span></p><a class="download-notebook" href="week-03-in-class-part-03-my-guide.ipynb" download>↓ <span class="ja">Part 3 のNotebookをダウンロード</span><span class="en">Download Part 3 notebook</span></a><p class="slide-note ja">VS Codeで開き、Kernelを選んで上から実行。予想と気づきをMarkdownに残そう。</p><p class="slide-note en">Open in VS Code, select a kernel, and work from the top. Keep predictions and observations in Markdown.</p></section>
-<section class="slide slide--cells" data-slide data-part="3" hidden><p class="slide-kicker">HOMEWORK</p><h2><span class="ja">データで見つけた、小さな発見</span><span class="en">A small discovery with real data</span></h2><ul class="homework-slide-list"><li><span class="ja">気になるAPIデータと、自分の問いを選ぶ。</span><span class="en">Choose API data and a question that interests you.</span></li><li><span class="ja">Pythonで読み、要約・表・グラフ・地図のどれかで見せる。</span><span class="en">Read it in Python. Show a summary, table, chart, or map.</span></li><li><span class="ja">発見・確かめた値・データの限界を短く書く。出典URLも。</span><span class="en">Briefly explain a finding, a checked value, and a limitation. Include the source URL.</span></li></ul><p class="slide-question"><span class="ja">10月21日(水) 23:59 · 実行済み.ipynbをUNIPAへ</span><span class="en">Oct 21, 23:59 JST · Executed .ipynb to UNIPA</span></p><a class="download-notebook" href="week-03-homework-data-discovery.ipynb" download>↓ <span class="ja">スターターNotebook</span><span class="en">Starter notebook</span></a><p class="slide-note ja">Exploreの例でも、別の公開APIでもOK。取得できなければ保存JSONを使う。授業内ガイドの提出は不要。</p><p class="slide-note en">Use an Explore example or another public API. A saved JSON response is fine if fetching fails. The in-class guide is not a homework submission.</p></section></div></div></main>
+<section class="slide slide--cells" data-slide data-part="3" hidden>
+<p class="slide-kicker">PART 3 · HOMEWORK KICK-START</p>
+<h2><span class="ja">Exploreから、自分の問いへ</span><span class="en">From Explore to your own question</span></h2>
+<ol class="homework-slide-list">
+<li><span class="ja">気になったAPIを一つ選ぶ。JSONがおすすめ。</span><span class="en">Choose one API that interests you. JSON is recommended.</span></li>
+<li><span class="ja">「何を知りたい？」をMarkdownに一文で書く。</span><span class="en">Write one question in a Markdown cell.</span></li>
+<li><span class="ja">リクエストURLをコピーし、Pythonで読み込む。</span><span class="en">Copy the request URL and load it in Python.</span></li>
+<li><span class="ja">リスト・辞書から、気になる値を一つ取り出す。</span><span class="en">Extract one useful value from a list or dictionary.</span></li>
+</ol>
+<p class="slide-note"><span class="ja">例：柏は何時が一番暖かい？ 好きな選手の情報は何が分かる？ 完成は家で。まず一つ動かそう。</span><span class="en">When is Kashiwa warmest? What can you learn about a favorite player? Finish at home; get one small step working now.</span></p>
+</section>
+<section class="slide slide--cells" data-slide data-part="3" hidden>
+<p class="slide-kicker">PART 3 · YOUR TURN</p>
+<h2><span class="ja">今日、ここまでできればOK</span><span class="en">Your goal before leaving</span></h2>
+<p class="slide-lead"><span class="ja">14:25–14:45 · 問い・出典URL・取り出した値一つ。</span><span class="en">14:25–14:45 · A question, a source URL, and one extracted value.</span></p>
+<a class="download-notebook" href="week-03-homework-data-discovery.ipynb" download>↓ <span class="ja">宿題スターター（任意）</span><span class="en">Homework starter (optional)</span></a>
+<p class="slide-note"><span class="ja">自分で新しい.ipynbをつくってもOK。取得できなければExploreからJSONを保存して読む。都営バスのPBはJSONではないので、今日は別の例を選ぼう。</span><span class="en">You can create your own .ipynb. If fetching fails, save JSON from Explore and load it locally. Toei bus PB is not JSON; choose another example today.</span></p>
+<p class="slide-question"><span class="ja">次に何を調べる？ 隣の人に伝えて、保存しよう。</span><span class="en">What will you investigate next? Tell a partner and save your work.</span></p>
+</section>
+<section class="slide slide--cells" data-slide data-part="3" hidden><p class="slide-kicker">HOMEWORK</p><h2><span class="ja">データで見つけた、小さな発見</span><span class="en">A small discovery with real data</span></h2><ul class="homework-slide-list"><li><span class="ja">気になるAPIデータと、自分の問いを選ぶ。</span><span class="en">Choose API data and a question that interests you.</span></li><li><span class="ja">Pythonで読み、要約・表・グラフ・地図のどれかで見せる。</span><span class="en">Read it in Python. Show a summary, table, chart, or map.</span></li><li><span class="ja">発見・確かめた値・データの限界を短く書く。出典URLも。</span><span class="en">Briefly explain a finding, a checked value, and a limitation. Include the source URL.</span></li></ul><p class="slide-question"><span class="ja">10月21日(水) 23:59 · 実行済み.ipynbをUNIPAへ</span><span class="en">Oct 21, 23:59 JST · Executed .ipynb to UNIPA</span></p><a class="download-notebook" href="week-03-homework-data-discovery.ipynb" download>↓ <span class="ja">スターターNotebook</span><span class="en">Starter notebook</span></a><p class="slide-note ja">Exploreの例でも、別の公開APIでもOK。取得できなければ保存JSONを使う。授業内で始めたNotebookを、そのまま完成させて提出。</p><p class="slide-note en">Use an Explore example or another public API. A saved JSON response is fine if fetching fails. Finish and submit the same notebook you started in class.</p></section></div></div></main>
 </body></html>

@@ -29,12 +29,12 @@ EN: **14:00–14:20 · Dictionaries.** Explain for 5 min, practice for 15. Focus
 JP: **14:00–14:20 · 辞書。** 説明5分＋実習15分。練習1・3・4：値を取り出し、自己紹介とお気に入りをつくる。
 
 ## In-Class Part 3
-EN: **14:20–14:45 · My guide.** Explain for 5 min, then create and share for 20. Combine lists and dictionaries.
-JP: **14:20–14:45 · 私のガイド。** 説明5分＋制作・共有20分。リストと辞書を組み合わせる。
+EN: **14:20–14:45 · Start your homework.** A 5-minute demo, then 20 minutes to choose an API and question, load its JSON, and extract one useful value. Use the optional starter or create your own notebook.
+JP: **14:20–14:45 · 宿題を始める。** デモ5分＋作業20分。APIと問いを選び、JSONを読み込み、気になる値を一つ取り出す。スターターでも、自分でつくるNotebookでもOK。
 
 ## In-Class Challenge
-EN: Choose a theme, create **three records**, and share with a partner. **14:45–14:50:** save your notebook and confirm the homework.
-JP: 好きなテーマで**三件**つくり、隣の人に見せよう。**14:45–14:50**は保存と宿題の確認。
+EN: Before leaving: save your notebook with **a question, a source URL, and one value you extracted**. Tell a partner what you will investigate next. **14:45–14:50:** save and ask questions. Continue this same notebook at home.
+JP: 今日の目標は**問い・出典URL・取り出した値一つ**をNotebookに残すこと。次に調べたいことを隣の人に伝えよう。**14:45–14:50**は保存と質問。このNotebookを家で続きを進める。
 
 ## Take-Home Assignment
 EN: **A small discovery with real data.**
@@ -65,5 +65,5 @@ JP: リストは順番、辞書は意味で取り出す。組み合わせると�
 - [Week 03 Lecture — APIs, Data Types & Collections](weeks/week-03/lecture.html) {lecture}
 - [Part 1 — リスト / Lists](weeks/week-03/week-03-in-class-part-01-lists.ipynb) {part-1}
 - [Part 2 — 辞書 / Dictionaries](weeks/week-03/week-03-in-class-part-02-dictionaries.ipynb) {part-2}
-- [Part 3 — 私のガイド / My Guide](weeks/week-03/week-03-in-class-part-03-my-guide.ipynb) {part-3}
+- [Part 3 — 宿題スターター（任意） / Homework starter (optional)](weeks/week-03/week-03-homework-data-discovery.ipynb) {part-3}
 - [任意のスターター / Optional starter — データで見つけた、小さな発見](weeks/week-03/week-03-homework-data-discovery.ipynb) {homework}

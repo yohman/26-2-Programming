@@ -1,5 +1,7 @@
 # Real data snapshots
 
+`toei-bus.pb`: key-free Toei bus GTFS-Realtime vehicle positions, retrieved 2026-10-14 from https://api-public.odpt.org/api/v4/gtfs/realtime/ToeiBus . Provider: 東京都交通局・公共交通オープンデータ協議会, CC BY 4.0. Catalog: https://ckan.odpt.org/dataset/b_bus_gtfs_rt-toei . Original binary bytes retained; Raw is hexadecimal, Pretty decodes the message using the official schema and Protobuf.js 7.5.4. Map uses vehicle position coordinates and displays report timestamps. No automatic polling. Schema and dependency license notices are retained under `assets/data-explorer/vendor/`. Schema source: https://github.com/google/transit/blob/master/gtfs-realtime/proto/gtfs-realtime.proto . Protobuf.js: https://github.com/protobufjs/protobuf.js . These are browser assets, not build dependencies.
+
 Main classroom example: **Toei train locations**, using the key-free public endpoint. `toei.json` is an Oedo Line response retrieved 2026-10-14, not an automatically updating feed. Source: https://api-public.odpt.org/api/v4/odpt:Train?odpt:operator=odpt.Operator:Toei&odpt:railway=odpt.Railway:Toei.Oedo . Provider: 東京都交通局・公共交通オープンデータ協議会, CC BY 4.0. Official catalog: https://ckan.odpt.org/dataset/r_train_location-toei . Positions use station IDs, not latitude/longitude. Original `dc:date` and `dct:valid` are retained.
 
 Retrieved on 2026-10-14 for classroom use. These are saved examples, not live feeds. The explorer fetches providers directly when requested; the saved-example button restores the default parameters and labels the response as saved. No automatic polling.

@@ -6,7 +6,9 @@ const state = { config:null, week:null, id:null, dataset:null, raw:'', data:null
 const cache = new Map();
 let controller;
 let mapLibrary;
+let gtfsType;
 const defaults = {
+  toeiBus:{},
   toei:{line:'Oedo'},
   weather:{latitude:'35.68',longitude:'139.69',forecast_days:'1'},
   earthquakes:{magnitude:'2.5',period:'day'},
@@ -17,6 +19,7 @@ const defaults = {
   holidays:{year:'2026'}
 };
 const fields = {
+  toeiBus:[],
   toei:[{key:'line',label:{ja:'路線 · odpt:railway',en:'Line · odpt:railway'},options:[['Oedo','大江戸線 · Oedo'],['Asakusa','浅草線 · Asakusa'],['Mita','三田線 · Mita'],['Shinjuku','新宿線 · Shinjuku'],['Arakawa','東京さくらトラム · Arakawa'],['all','全路線 · All lines']]}],
   tokyo:[],
   lapd:[
@@ -42,6 +45,7 @@ const fields = {
 
 function values() { return Object.fromEntries([...byId('parameter-fields').querySelectorAll('[name]')].map(field => [field.name,field.value])); }
 function requestURL(id, v) {
+  if(id==='toeiBus') return 'https://api-public.odpt.org/api/v4/gtfs/realtime/ToeiBus';
   if(id==='toei') {
     const url=new URL('https://api-public.odpt.org/api/v4/odpt:Train');
     url.searchParams.set('odpt:operator','odpt.Operator:Toei');
@@ -105,7 +109,11 @@ function renderStatus() {
       const source=document.createElement('a'); source.href=state.dataset.snapshot_source; source.target='_blank'; source.rel='noopener'; source.textContent=textFor({ja:' 配信元リポジトリの保存データ ↗',en:' Provider repository snapshot ↗'}); byId('data-status').append(source);
     }
   }
-  else status({ja:'API応答取得：'+time+' · '+state.dataset.format+' · '+new TextEncoder().encode(state.raw).length.toLocaleString()+' bytes · 自動更新なし',en:'Response fetched: '+time+' · '+state.dataset.format+' · '+new TextEncoder().encode(state.raw).length.toLocaleString()+' bytes · no automatic refresh'});
+  else status({ja:'API応答取得：'+time+' · '+state.dataset.format+' · '+state.source.bytes.toLocaleString()+' bytes · 自動更新なし',en:'Response fetched: '+time+' · '+state.dataset.format+' · '+state.source.bytes.toLocaleString()+' bytes · no automatic refresh'});
+  if(state.id==='toeiBus' && state.data.header?.timestamp) {
+    const at=new Date(state.data.header.timestamp*1000).toLocaleString('ja-JP',{timeZone:'Asia/Tokyo'})+' JST';
+    byId('data-status').append(document.createTextNode(textFor({ja:' · フィード時刻：'+at,en:' · Feed timestamp: '+at})));
+  }
 }
 function parseCSV(source) {
   const rows=[]; let row=[],field='',quoted=false;
@@ -154,6 +162,11 @@ function features() {
   if(state.id==='earthquakes') result=(state.data.features||[]).filter(f=>f.geometry?.type==='Point' && valid(...f.geometry.coordinates)).map(f=>point(...f.geometry.coordinates.slice(0,2),f.properties?.place,'M '+f.properties?.mag+' · '+new Date(f.properties?.time).toISOString(),f.properties?.mag));
   if(state.id==='weather' && valid(state.data.longitude,state.data.latitude)) result=[point(state.data.longitude,state.data.latitude,'Forecast location',state.data.current?.time+' · '+state.data.current?.temperature_2m+' °C')];
   if(state.id==='transit') result=(state.data.data||[]).filter(v=>valid(v.attributes?.longitude,v.attributes?.latitude)).map(v=>point(v.attributes.longitude,v.attributes.latitude,'Vehicle '+(v.attributes.label||v.id),'Route '+(v.relationships?.route?.data?.id||'')+' · '+v.attributes.updated_at));
+  if(state.id==='toeiBus') result=(state.data.entity||[]).filter(e=>valid(e.vehicle?.position?.longitude,e.vehicle?.position?.latitude)).map(e=>{
+    const v=e.vehicle,p=v.position;
+    const stamp=v.timestamp||state.data.header?.timestamp;
+    return point(p.longitude,p.latitude,'Bus '+(v.vehicle?.label||v.vehicle?.id||e.id),'Route '+(v.trip?.route_id||'—')+' · '+p.latitude.toFixed(5)+', '+p.longitude.toFixed(5)+' · '+(stamp?new Date(stamp*1000).toLocaleString('ja-JP',{timeZone:'Asia/Tokyo'})+' JST':'Time not supplied'));
+  });
   if(state.id==='lapd') result=state.data.filter(v=>v.hndrdth_lon && v.hndrdth_lat && valid(Number(v.hndrdth_lon),Number(v.hndrdth_lat)) && Number(v.hndrdth_lat)!==0 && Number(v.hndrdth_lon)!==0).map(v=>point(Number(v.hndrdth_lon),Number(v.hndrdth_lat),v.nibr_description,(v.area_name||'').trim()+' · '+v.date_occ+' · Approximate hundred-block location'));
   return {type:'FeatureCollection',features:result};
 }
@@ -216,20 +229,20 @@ function renderViews() {
   if(state.id==='holidays')csvTable(); else jsonColors(JSON.stringify(state.data,null,2));
   if(state.mode==='map')mapView();
 }
-function response(raw,url,saved=false) {
+function response(raw,url,saved=false,decoded=null,bytes=null) {
   state.raw=raw; state.url=url;
-  state.data=state.id==='holidays'?parseCSV(raw):JSON.parse(raw);
-  state.source={saved,at:new Date().toLocaleString('ja-JP',{timeZone:'Asia/Tokyo'})+' JST'};
+  state.data=decoded || (state.id==='holidays'?parseCSV(raw):JSON.parse(raw));
+  state.source={saved,bytes:bytes?.byteLength || new TextEncoder().encode(raw).length,at:new Date().toLocaleString('ja-JP',{timeZone:'Asia/Tokyo'})+' JST'};
   if(state.blob)URL.revokeObjectURL(state.blob);
-  state.blob=URL.createObjectURL(new Blob([raw],{type:state.id==='holidays'?'text/csv;charset=utf-8':'application/json;charset=utf-8'}));
-  byId('download-data').href=state.blob; byId('download-data').download=state.id+(saved?'-saved-example':'')+(state.id==='holidays'?'.csv':state.dataset.format==='GeoJSON'?'.geojson':'.json'); byId('download-data').hidden=false;
+  state.blob=URL.createObjectURL(new Blob([bytes||raw],{type:bytes?'application/octet-stream':state.id==='holidays'?'text/csv;charset=utf-8':'application/json;charset=utf-8'}));
+  byId('download-data').href=state.blob; byId('download-data').download=state.id+(saved?'-saved-example':'')+(bytes?'.pb':state.id==='holidays'?'.csv':state.dataset.format==='GeoJSON'?'.geojson':'.json'); byId('download-data').hidden=false;
   renderStatus(); renderViews();
 }
 async function fetchData(saved=false) {
   controller?.abort(); controller=new AbortController(); const token=++state.token; const dataset=state.dataset;
   if(saved)renderFields(state.id==='holidays'?values():defaults[state.id]);
   const url=requestURL(state.id,values());
-  if(!saved && cache.has(url)) { const record=cache.get(url); response(record.raw,url); state.source=record.source; renderStatus(); return; }
+  if(!saved && cache.has(url)) { const record=cache.get(url); response(record.raw,url,false,record.decoded,record.bytes); state.source=record.source; renderStatus(); return; }
   state.raw=''; state.data=null; state.source=null;
   byId('download-data').hidden=true;
   if(state.map?.getSource('records')) state.map.getSource('records').setData({type:'FeatureCollection',features:[]});
@@ -241,10 +254,17 @@ async function fetchData(saved=false) {
     const res=await fetch(saved?dataset.snapshot:url,{signal:controller.signal,credentials:'omit'});
     if(!res.ok)throw new Error('HTTP '+res.status);
     const buffer=await res.arrayBuffer(); if(buffer.byteLength>1500000)throw new Error('Response too large');
-    const raw=new TextDecoder(dataset.encoding).decode(buffer);
+    let raw,decoded=null,bytes=null;
+    if(dataset.binary) {
+      if(!gtfsType)gtfsType=fetch('assets/data-explorer/vendor/gtfs-realtime.proto').then(r=>{if(!r.ok)throw new Error('Schema unavailable');return r.text();}).then(proto=>protobuf.parse(proto,{keepCase:true}).root.lookupType('transit_realtime.FeedMessage')).catch(error=>{gtfsType=null;throw error;});
+      const type=await gtfsType;
+      bytes=new Uint8Array(buffer);
+      decoded=type.toObject(type.decode(bytes),{longs:Number,enums:String});
+      raw=Array.from({length:Math.ceil(bytes.length/16)},(_,row)=>row*16).map(offset=>offset.toString(16).padStart(6,'0')+'  '+[...bytes.slice(offset,offset+16)].map(b=>b.toString(16).padStart(2,'0')).join(' ')).join('\n');
+    } else raw=new TextDecoder(dataset.encoding).decode(buffer);
     if(token!==state.token)return;
-    response(raw,url,saved);
-    if(!saved)cache.set(url,{raw,source:state.source});
+    response(raw,url,saved,decoded,bytes);
+    if(!saved)cache.set(url,{raw,decoded,bytes,source:state.source});
   } catch(error) {
     if(token!==state.token)return;
     status({ja:'取得できませんでした（通信・CORS・配信制限）。「保存例を使う」で実データの保存版を開けます。',en:'Request failed (network, CORS, or provider limits). Use saved example to open a real cached response.'},'error');
@@ -270,6 +290,7 @@ function chooseDataset(id,load=true) {
   controller?.abort(); ++state.token;
   state.id=id; state.dataset=state.config.datasets[id]; state.raw=''; state.data=null; state.source=null;
   if(!state.dataset.map && state.mode==='map')state.mode='pretty';
+  if(id==='toeiBus')state.mode='map';
   byId('download-data').hidden=true; byId('fetch-data').disabled=false;
   document.querySelectorAll('[data-dataset]').forEach(button=>{
     const active=button.dataset.dataset===id;

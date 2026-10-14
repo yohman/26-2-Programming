@@ -1,5 +1,9 @@
 # Weekly course content
 
+## Explore
+
+`explore.html?week=03` provides read-only API/CSV exploration. Edit `content/explorations.json` to choose each week's examples, bilingual explanations, source links, and saved snapshots. Add `## Exploration` with `EN:` / `JP:` text to a weekly Markdown file to show its Explore link in the lecture panel. The Explore page respects the week's publication controls, including `publication_hold: true`; localhost can preview held material. Saved examples are dated and never labelled live. API filters belong to the request; the holiday year filter only changes the browser's table. New widget types or API builders live in `assets/data-explorer/explore.js`. No keys, proxy, polling, or build are required.
+
 Each file in `content/weeks/` is the live, editable source for one teaching week. The site reads these Markdown files directly when it loads—there is no build step.
 
 `content/course-guide.md` drives `guide.html`: edit it to update learning goals, submission rules, and grading. The current plan is twelve 3-point assignments in Weeks 01–12 (60%), a Week 13 project (20%), and a Week 14 individual in-class challenge (20%). Keep the guide, `content/final-project.md`, and Weeks 10–14 aligned if this policy changes.

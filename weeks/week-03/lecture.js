@@ -6,6 +6,11 @@ const next = document.getElementById('next-slide');
 const fullscreen = document.getElementById('slide-fullscreen');
 const query = new URLSearchParams(location.search);
 let slideIndex = 0;
+document.querySelectorAll('[data-explore-link]').forEach(link => link.addEventListener('click', () => {
+  const url = new URL(link.href);
+  url.searchParams.set('return', location.pathname + location.search);
+  link.href = url.href;
+}));
 document.querySelectorAll('.lecture-notebook-cell pre code').forEach(code => {
   const source = code.textContent;
   const pattern = /("[^"\n]*"|'[^'\n]*')|\b(for|in|del)\b|\b(print|sum|len)\b|\b(\d+(?:\.\d+)?)\b/g;

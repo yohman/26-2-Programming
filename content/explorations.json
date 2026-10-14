@@ -1,0 +1,173 @@
+{
+  "weeks": [
+    {
+      "week": 3,
+      "content": "03-collections.md",
+      "title": {
+        "ja": "Webのデータをのぞく",
+        "en": "Explore data on the web"
+      },
+      "examples": [
+        "weather",
+        "earthquakes",
+        "pokemon",
+        "transit",
+        "holidays"
+      ]
+    }
+  ],
+  "datasets": {
+    "weather": {
+      "title": {
+        "ja": "天気",
+        "en": "Weather"
+      },
+      "provider": "Open-Meteo",
+      "format": "JSON",
+      "docs": "https://open-meteo.com/en/docs",
+      "snapshot": "weeks/week-03/explore-data/weather.json",
+      "snapshot_at": "2026-10-14",
+      "encoding": "utf-8",
+      "map": true,
+      "summary": {
+        "ja": "天気アプリの数字を、そのままデータで受け取る。気温のリストは合計や平均にも使える。",
+        "en": "Receive weather values as data. The temperature list can also be used for totals and averages."
+      },
+      "parameters": {
+        "ja": "latitude / longitude は地点、forecast_days は日数。current と hourly は欲しい項目を指定。URLの ? から後ろが問い合わせ条件。",
+        "en": "latitude / longitude choose a location; forecast_days chooses the number of days. current and hourly select variables. Query arguments follow ? in the URL."
+      },
+      "aha": {
+        "ja": "時刻のリストと気温のリスト。同じ添字が同じ時間を指す。予報値は観測値とは限りません。",
+        "en": "The time and temperature arrays match by index. Forecast values are not necessarily observations."
+      },
+      "python": "weather[\"hourly\"][\"temperature_2m\"][0]",
+      "map_note": {
+        "ja": "応答に含まれる longitude・latitude を [経度, 緯度] に並べて地点を置く。点は予報の地点で、地震や車両ではありません。",
+        "en": "Arrange the response’s longitude and latitude as [longitude, latitude]. This point represents the forecast location, not an earthquake or vehicle."
+      }
+    },
+    "earthquakes": {
+      "title": {
+        "ja": "地震",
+        "en": "Earthquakes"
+      },
+      "provider": "USGS",
+      "format": "GeoJSON",
+      "docs": "https://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php",
+      "snapshot": "weeks/week-03/explore-data/earthquakes.geojson",
+      "snapshot_at": "2026-10-14",
+      "encoding": "utf-8",
+      "map": true,
+      "summary": {
+        "ja": "先週と同じ地震の記録を、今度はGeoJSONで読む。地図にもPythonにも渡せる。",
+        "en": "Read earthquake records in GeoJSON this time. The same data can be used by maps and Python."
+      },
+      "parameters": {
+        "ja": "マグニチュードと期間で配信ファイルを選ぶ。2.5_day.geojson は過去24時間のM2.5以上。これはURLのパスを変える方式で、? の引数ではありません。",
+        "en": "Choose a feed file by magnitude and time window. 2.5_day.geojson means M2.5+ in the past day. These choices change the URL path, not query arguments."
+      },
+      "aha": {
+        "ja": "features はリスト。その一件が辞書で、properties に地名や大きさがある。配信範囲や取得時刻が違えば、先週のCSVと件数も変わる。",
+        "en": "features is an array. Each record contains properties such as place and magnitude. Different feed windows or retrieval times need not match last week’s CSV."
+      },
+      "python": "data[\"features\"][0][\"properties\"][\"mag\"]",
+      "map_note": {
+        "ja": "GeoJSONの coordinates は [経度, 緯度, 深さ]。MapLibreは先頭の二つを使う。Foliumの location=[緯度, 経度] とは順番が逆。",
+        "en": "GeoJSON coordinates use [longitude, latitude, depth]. MapLibre uses the first two. Folium’s location=[latitude, longitude] reverses that order."
+      }
+    },
+    "pokemon": {
+      "title": {
+        "ja": "ポケモン",
+        "en": "Pokémon"
+      },
+      "provider": "PokéAPI",
+      "format": "JSON",
+      "docs": "https://pokeapi.co/docs/v2#pokemon-forms",
+      "snapshot": "weeks/week-03/explore-data/pokemon.json",
+      "snapshot_at": "2026-10-14",
+      "encoding": "utf-8",
+      "map": false,
+      "snapshot_source": "https://raw.githubusercontent.com/PokeAPI/api-data/master/data/api/v2/pokemon-form/25/index.json",
+      "summary": {
+        "ja": "ピカチュウの名前、タイプ、画像のURLもデータ。今回は小さめのpokemon-formエンドポイントを使う。",
+        "en": "Names, types, and image URLs are data too. This example uses the smaller pokemon-form endpoint."
+      },
+      "parameters": {
+        "ja": "URLの末尾にフォーム名を入れる。pikachu を bulbasaur に変えると、取得する対象が変わる。APIの配信制限で取得できない場合は保存例を使う。",
+        "en": "The form name goes at the end of the URL. Change pikachu to bulbasaur to request a different record. Use the saved example if the API blocks the request."
+      },
+      "aha": {
+        "ja": "画像そのものではなく、画像のある場所も文字列で届く。types の中には、さらに type という辞書がある。",
+        "en": "The response can contain a URL rather than the image itself. The types array contains another nested object named type."
+      },
+      "python": "pokemon[\"types\"][0][\"type\"][\"name\"]",
+      "map_note": {
+        "ja": "この応答には緯度・経度がないので、地図には変換しません。",
+        "en": "This response has no latitude/longitude, so it is not converted into a map."
+      }
+    },
+    "transit": {
+      "title": {
+        "ja": "いま走るバス・電車",
+        "en": "Buses and trains now"
+      },
+      "provider": "MBTA · Boston",
+      "format": "JSON",
+      "docs": "https://api-v3.mbta.com/docs/swagger",
+      "snapshot": "weeks/week-03/explore-data/transit.json",
+      "snapshot_at": "2026-10-14",
+      "encoding": "utf-8",
+      "map": true,
+      "summary": {
+        "ja": "ボストンの公共交通。バスや電車の位置がJSONで届く。「取得」を押すたび、その時点の応答を見る。",
+        "en": "Boston public transit returns vehicle positions as JSON. Fetch again to request another response; the map does not refresh automatically."
+      },
+      "parameters": {
+        "ja": "filter[route] で路線、page[limit] で最大件数を選ぶ。1はバス路線、Redは地下鉄。実験はAPIキーなしで可能ですが、アクセス回数に制限があります。",
+        "en": "filter[route] selects a route; page[limit] caps the result count. 1 is a bus route and Red is a subway line. Keyless experiments have stricter rate limits."
+      },
+      "aha": {
+        "ja": "lat/lonとupdated_atで「どこに、いついたか」が分かる。保存例は2026年10月14日の記録で、いまの位置ではありません。運行時間外は0件になることも。",
+        "en": "Latitude/longitude and updated_at tell us where and when. The saved October 14 example is not a current position. Off-hours may return no vehicles."
+      },
+      "python": "vehicles[\"data\"][0][\"attributes\"][\"latitude\"]",
+      "map_note": {
+        "ja": "各車両の attributes.longitude / latitude をGeoJSONのPointに変換する。地図の点をクリックすると報告時刻も見られる。",
+        "en": "Convert each vehicle’s attributes.longitude / latitude into a GeoJSON Point. Click a point to see its reported time."
+      }
+    },
+    "holidays": {
+      "title": {
+        "ja": "日本の祝日",
+        "en": "Japanese holidays"
+      },
+      "provider": "内閣府 · Cabinet Office",
+      "format": "CSV",
+      "docs": "https://www8.cao.go.jp/chosei/shukujitsu/gaiyou.html",
+      "snapshot": "weeks/week-03/explore-data/holidays.csv",
+      "snapshot_at": "2026-10-14",
+      "encoding": "shift_jis",
+      "map": false,
+      "summary": {
+        "ja": "カレンダーの祝日を、日付と名前の表として公開。これはAPIではなく、公開CSVファイルの例。",
+        "en": "Calendar holidays published as a table of dates and names. This example is a public CSV file, not an API."
+      },
+      "parameters": {
+        "ja": "公開CSVにフィルター引数はありません。提供元がCORSによる直接読み込みに対応しないため、ここでは日付付き保存例を表示。最新ファイルは「提供元のRawデータ」から取得。「表示年」はブラウザー内だけで絞り込む。",
+        "en": "This public CSV has no filter arguments and does not allow direct cross-origin browser reads. This panel uses a dated saved copy; get the latest file via Provider’s raw data. Display year filters locally."
+      },
+      "aha": {
+        "ja": "JSONは入れ子を表現しやすく、CSVは行と列を表現しやすい。ファイルの文字コードも読むときの約束の一つ。",
+        "en": "JSON suits nested structures; CSV suits rows and columns. Character encoding is another agreement needed to read a file."
+      },
+      "python": "# csv.DictReaderで、一行を辞書として読める",
+      "map_note": {
+        "ja": "日付と祝日名のデータなので、地図に置く座標はありません。",
+        "en": "Dates and holiday names do not supply geographic coordinates."
+      },
+      "browser_fetch": false
+    }
+  }
+}

@@ -71,6 +71,10 @@ button:disabled { cursor: default; }
 .week-slide-preview-action { min-height: 2.75rem; font-size: .85rem; }
 .course-section--lecture > header { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem; }
 .lecture-offerings { grid-column:1 / -1; display:grid; grid-template-columns:1.15fr 1fr; gap:1rem; }
+.week-exploration { grid-column:1 / -1; display:flex; justify-content:space-between; align-items:center; gap:1.5rem; padding:1.25rem; background:#f2f3f3; }
+.week-exploration .eyebrow { margin:0 0 .4rem; }
+.week-exploration p { margin:.4rem 0 0; font-size:.85rem; line-height:1.65; }
+.week-exploration .file-preview { flex:none; }
 .lecture-slide-card { min-width:0; display:flex; flex-direction:column; background:#fff; }
 .lecture-thumbnail { display:flex; flex-direction:column; justify-content:center; gap:1rem; aspect-ratio:16 / 9; padding:clamp(1.25rem,3vw,2.5rem); background:#f5f4ef; }
 .lecture-thumbnail small, .lecture-playground-card > small { color:var(--blue); font:700 .65rem var(--mono); letter-spacing:.06em; }
@@ -149,6 +153,7 @@ button:disabled { cursor: default; }
   .playground-grid .playground-topics { display: none; }
 }
 @media (max-width: 560px) {
+  .week-exploration { flex-direction:column; align-items:flex-start; }
   .lecture-offerings { grid-template-columns:1fr; }
   .week-lecture-agenda { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem 1.25rem; padding: 1rem; }
   .site-header { flex-wrap: wrap; gap: .25rem 1rem; padding-block: .6rem; }

@@ -17,7 +17,7 @@ overview_ja: 説明して、手を動かす。リスト、辞書、組み合わ�
 ## Lecture Flow
 EN: | Time | Explain, then do |
 | --- | --- |
-| 13:10–13:25 | **Part 1 lecture** Playlists, scores, and lists. |
+| 13:10–13:25 | **Opening + Part 1** Explore real web data; recognize lists. |
 | 13:25–13:45 | **Part 1 notebook** Indexing, totals, edits, and slicing. |
 | 13:45–13:55 | **Part 2 lecture** Names and values: dictionaries. |
 | 13:55–14:15 | **Part 2 notebook** Retrieve, add, change, and combine values. |
@@ -25,12 +25,16 @@ EN: | Time | Explain, then do |
 | 14:20–14:50 | **Part 3 challenge** Build a personal recommendation guide. |
 JP: | 時間 | 説明の後に、自分で試す |
 | --- | --- |
-| 13:10–13:25 | **Part 1 講義** プレイリスト・点数・リスト。 |
+| 13:10–13:25 | **導入＋Part 1 講義** Webの実データを探索し、リストを見つける。 |
 | 13:25–13:45 | **Part 1 実習** 添字・合計・編集・スライス。 |
 | 13:45–13:55 | **Part 2 講義** 名前と値を組にする辞書。 |
 | 13:55–14:15 | **Part 2 実習** 値を取り出し、追加・変更する。 |
 | 14:15–14:20 | **Part 3 講義** 地震のデータから、自分のコレクションへ。 |
 | 14:20–14:50 | **Part 3 チャレンジ** 「私の〇〇ガイド」をつくる。 |
+
+## Exploration
+EN: **Real data, right in your browser.** Fetch weather, earthquakes, Pokémon forms, and Boston’s vehicle positions. Compare Raw / Pretty / Map. Japanese holiday CSV shows a different format. No account or installation needed; saved examples are clearly labelled.
+JP: **ブラウザーで、実データを開く。** 天気、地震、ポケモン、ボストンの車両位置を取得し、Raw / Pretty / Mapで比べる。日本の祝日CSVで別の形式も見る。アカウント・インストールは不要。保存例はライブと区別して表示。
 
 ## In-Class Part 1
 EN: **Part 1 — Lists · 20 min.** Work through scores, indexing, list edits, and slicing. Complete four short exercises. Download the notebook, select your kernel, and run from the top.

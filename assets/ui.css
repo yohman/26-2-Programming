@@ -169,3 +169,5 @@ button:disabled { cursor: default; }
 }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { transition-duration: 0s !important; animation-duration: 0s !important; } }
 @media print { .week-shortcuts, .lecture-view-nav, .python-topic-select { display: none; } }
+.lecture-inline-deck { display:block; width:100%; height:clamp(440px,48vw,680px); border:0; background:#fff; }
+#week-03 .lecture-slide-card { grid-column:1 / -1; }

@@ -5,11 +5,20 @@ const previous = document.getElementById('previous-slide');
 const next = document.getElementById('next-slide');
 const fullscreen = document.getElementById('slide-fullscreen');
 const query = new URLSearchParams(location.search);
+const embedded = query.get('embed') === '1';
+if (embedded) {
+  document.body.classList.add('lecture-embedded');
+  previous.textContent = '‹';
+  next.textContent = '›';
+  previous.setAttribute('aria-label', '前のスライド / Previous slide');
+  next.setAttribute('aria-label', '次のスライド / Next slide');
+  document.querySelectorAll('[data-explore-link]').forEach(link => { link.target = '_top'; });
+}
 let slideIndex = 0;
 document.querySelectorAll('[data-explore-link]').forEach(link => link.addEventListener('click', () => {
   const url = new URL(link.href);
   if (query.has('p')) url.searchParams.set('p', '');
-  url.searchParams.set('return', location.pathname + location.search);
+  url.searchParams.set('return', embedded ? '../../agenda.html?open=03#week-03' : location.pathname + location.search);
   link.href = url.href;
 }));
 document.querySelectorAll('.lecture-notebook-cell pre code, .bus-code code').forEach(code => {

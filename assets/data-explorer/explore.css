@@ -98,3 +98,11 @@
 .music-result h3 { margin:0 0 .35rem; font-size:1.05rem; line-height:1.4; }
 .music-result p { margin:.25rem 0; }
 .music-result a { display:inline-block; margin-top:.6rem; color:var(--blue); font-weight:700; }
+.sports-results { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr)); gap:1rem; }
+.sports-game { padding:1.25rem; background:#fff; }
+.sports-status { margin:0 0 1rem; color:var(--muted); font-size:.8rem; }
+.sports-status[data-state="in"] { color:#a23c35; font-weight:700; }
+.sports-team { display:flex; justify-content:space-between; align-items:baseline; gap:1rem; margin:.6rem 0; }
+.sports-team strong { font:700 1.6rem var(--mono); }
+.sports-team.is-winner span { font-weight:750; }
+.sports-game a { display:inline-block; margin-top:.75rem; color:var(--blue); font-weight:700; font-size:.85rem; }

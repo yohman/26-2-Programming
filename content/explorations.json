@@ -13,11 +13,27 @@
         "earthquakes",
         "pokemon",
         "music",
+        "sports",
         "lapd"
       ]
     }
   ],
   "datasets": {
+    "sports": {
+      "title":{"ja":"ESPN · スポーツ","en":"ESPN · Sports"},
+      "provider":"ESPN · public scoreboard feed (undocumented)",
+      "format":"JSON",
+      "docs":"https://www.espn.com/scoreboard",
+      "snapshot":"weeks/week-03/explore-data/sports.json",
+      "snapshot_at":"2026-10-15",
+      "encoding":"utf-8",
+      "map":false,
+      "summary":{"ja":"EPL・La Liga・MLB・NBAなどの試合データを読む。スコア表示とJSONを切り替えて、同じデータが画面になる仕組みを見よう。","en":"Explore EPL, La Liga, MLB, NBA, and other scoreboards. Switch between scores and JSON to see how the same data becomes a screen."},
+      "parameters":{"ja":"リーグを選び「取得する」。日付は任意。空欄ではESPNが選ぶ日程、指定するとdates=YYYYMMDDで取得。MLB Playoffsは同じMLB応答からポストシーズンのみ表示（Raw / Prettyは全応答）。非公開仕様のエンドポイントなので変更される場合があります。","en":"Choose a league and fetch. Date is optional: blank uses ESPN’s default schedule; a date adds dates=YYYYMMDD. MLB Playoffs filters the MLB response to postseason games (Raw / Pretty retain the full response). This undocumented endpoint may change."},
+      "aha":{"ja":"eventsは試合のリスト。一試合の辞書の中にcompetitions、その中にcompetitorsというチームのリストがある。","en":"events is a list of games. Each game dictionary holds competitions, which in turn hold a competitors list of teams."},
+      "python":"scores[\"events\"][0][\"competitions\"][0][\"competitors\"][0][\"team\"][\"displayName\"]",
+      "map_note":{"ja":"自動更新ではありません。最新情報は「取得する」で再取得。日時はJST。試合のない日は、次の予定が返ることもあります。保存例はEPLの固定データです。","en":"No automatic polling. Fetch again to refresh. Times use JST. On days without games, the default feed may return upcoming fixtures. The saved example is a fixed EPL response."}
+    },
     "music": {
       "title":{"ja":"音楽 · API","en":"Music · API"},
       "provider":"Apple · iTunes Search API",

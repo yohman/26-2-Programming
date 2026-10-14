@@ -57,6 +57,7 @@ try {
 } catch (_) {}
 
 function showSlide(index) {
+  stopSongPreview();
   slideIndex = Math.max(0, Math.min(slides.length - 1, index));
   slides.forEach((slide, i) => { slide.hidden = i !== slideIndex; });
   document.getElementById('slide-count').textContent = String(slideIndex + 1).padStart(2, '0') + ' / ' + slides.length;
@@ -116,4 +117,43 @@ document.querySelectorAll('[data-reveal]').forEach((button, index) => {
     button.setAttribute('aria-expanded', String(!output.hidden));
   });
 });
+const songAudio = new Audio();
+songAudio.preload = 'none';
+let activeSongButton = null;
+let songRequest = 0;
+function stopSongPreview() {
+  songRequest++;
+  songAudio.pause();
+  if (activeSongButton) {
+    activeSongButton.textContent = '▶';
+    activeSongButton.setAttribute('aria-pressed', 'false');
+  }
+  activeSongButton = null;
+}
+document.querySelectorAll('[data-audio-preview]').forEach(button => {
+  button.addEventListener('click', async () => {
+    const wasPlaying = activeSongButton === button;
+    stopSongPreview();
+    const status = document.querySelector('.song-preview-status');
+    status.textContent = '';
+    if (wasPlaying) return;
+    activeSongButton = button;
+    const request = songRequest;
+    songAudio.src = button.dataset.audioPreview;
+    button.textContent = 'Ⅱ';
+    button.setAttribute('aria-pressed', 'true');
+    try { await songAudio.play(); }
+    catch (_) {
+      if (request !== songRequest) return;
+      stopSongPreview();
+      status.textContent = document.documentElement.lang === 'ja'
+        ? '試聴できません。アーティスト名のリンクからApple Musicを開いてください。'
+        : 'Preview unavailable. Open Apple Music using the artist link.';
+    }
+  });
+});
+songAudio.addEventListener('timeupdate', () => { if (songAudio.currentTime >= 20) stopSongPreview(); });
+songAudio.addEventListener('ended', stopSongPreview);
+window.addEventListener('pagehide', stopSongPreview);
+document.addEventListener('visibilitychange', () => { if (document.hidden) stopSongPreview(); });
 showSlide(Math.max(0, (Number(query.get('slide')) || 1) - 1));

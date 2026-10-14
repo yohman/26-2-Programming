@@ -57,3 +57,12 @@
 .week-three-lecture.lecture-embedded .slide-fullscreen { display:none; }
 .week-three-lecture.lecture-embedded .slide { min-height:100%; padding:1.75rem 3.25rem 3rem; }
 .week-three-lecture.lecture-embedded .slide h2 { font-size:clamp(1.5rem,3.4vw,2.8rem); }
+.playlist-song { min-width:0; }
+.playlist-song-title { display:flex; align-items:center; gap:.75rem; }
+.playlist-song > a { display:inline-block; margin-top:.3rem; color:var(--muted); font-size:1rem; text-decoration:none; }
+.playlist-song > a:hover { text-decoration:underline; }
+.song-preview { flex:none; width:44px; height:44px; padding:0; border:0; border-radius:0; background:#e8eef2; color:var(--blue); cursor:pointer; font-size:1rem; }
+.song-preview:hover,.song-preview[aria-pressed="true"] { background:var(--blue); color:#fff; }
+.song-preview:focus-visible { outline:2px solid var(--blue); outline-offset:3px; }
+.song-preview-credit,.song-preview-status { color:var(--muted); font-size:.8rem; }
+.song-preview-status:empty { display:none; }

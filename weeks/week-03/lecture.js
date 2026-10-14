@@ -8,6 +8,7 @@ const query = new URLSearchParams(location.search);
 let slideIndex = 0;
 document.querySelectorAll('[data-explore-link]').forEach(link => link.addEventListener('click', () => {
   const url = new URL(link.href);
+  if (query.has('p')) url.searchParams.set('p', '');
   url.searchParams.set('return', location.pathname + location.search);
   link.href = url.href;
 }));

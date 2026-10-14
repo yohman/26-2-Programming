@@ -577,9 +577,21 @@ function setupLectureTimelineTabs(root = document) {
 }
 
 function section(week, key) { return week.sections.find(item => item.title.toLowerCase().startsWith(key.toLowerCase())); }
-function previewAll() { return new URLSearchParams(location.search).get('preview') === 'all'; }
+function previewAll() { return new URLSearchParams(location.search).has('p'); }
 function isLocalPreview() { return ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname); }
-function isAvailable(week) { return isLocalPreview() || (week.publication_hold !== 'true' && (previewAll() || week.week === 1 || new Date() >= new Date(week.publish_at))); }
+function isAvailable(week) { return isLocalPreview() || previewAll() || (week.publication_hold !== 'true' && (week.week === 1 || new Date() >= new Date(week.publish_at))); }
+function preservePreviewParameter(event) {
+  if (!previewAll() || !(event.target instanceof Element)) return;
+  const link = event.target.closest('a[href]');
+  if (!link) return;
+  const url = new URL(link.href, location.href);
+  if (url.origin === location.origin && url.protocol === location.protocol && /(?:\.html|\/)$/i.test(url.pathname)) {
+    url.searchParams.set('p', '');
+    link.href = url.href;
+  }
+}
+document.addEventListener('click', preservePreviewParameter, true);
+document.addEventListener('auxclick', preservePreviewParameter, true);
 
 function releaseDateLabels(value) {
   const date = new Date(value);

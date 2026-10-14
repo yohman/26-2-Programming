@@ -20,7 +20,7 @@ publish_at: 2026-09-29T09:00:00+09:00
 preview: true
 ```
 
-`publish_at` uses Japan time. Week 01 is available; later weeks stay collapsed and locked until their `publish_at` time. Use `?preview=all` on `agenda.html` to inspect every week before release. The legacy `preview:` front-matter field is not used by the current renderer.
+`publish_at` uses Japan time. Week 01 is available; later weeks stay collapsed and locked until their `publish_at` time. Add `?p` (or `&p` after existing parameters) to preview every week, overriding both scheduled dates and `publication_hold: true`. The presence of `p` is sufficient; no value is required. Preview mode follows internal page links. Localhost always permits expansion. The old `preview=all` parameter and legacy `preview:` front-matter field are no longer used. This is a preview convenience, not access control: anyone with the preview URL can use it.
 
 The two programming practices are intentional: every week requires independent tracing and writing; AI may support bounded completion and review, with the student responsible for checking every result. Every `Take-Home Assignment` must state what is due, how to submit, and what demonstrates individual understanding.
 

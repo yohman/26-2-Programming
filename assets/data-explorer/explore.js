@@ -18,6 +18,8 @@ function schedulePopupClose() {
 let gtfsType;
 let lapdLocations=[];
 let lapdLocationError=false;
+let highlightedDescent=null;
+let satelliteMap=false;
 const descentAliases={'B':'Black/African American','Black':'Black/African American','W':'White/Caucasian','White':'White/Caucasian','A - Asian':'Asian','F - Filipino':'Filipino','H - Hispanic':'Hispanic','K - Korean':'Korean','O - Other':'Other','U - Hawaiian':'Hawaiian','X - Unknown':'Unknown'};
 const descentNames=['Hispanic','Black/African American','White/Caucasian','Other Asian','Other','Unknown','Not reported','Asian','American Indian','Asian Indian','Cambodian','Chinese','Filipino','Guamanian','Hawaiian','Japanese','Korean','Laotian','Middle Eastern/Arab','Pacific Islander','Samoan','Vietnamese'];
 // Stable categorical colors, not a severity scale. Unknown values stay neutral.
@@ -282,12 +284,46 @@ function loadMapLibrary() {
   });
   return mapLibrary;
 }
+function applyMapHighlight() {
+  const map=state.map;if(!map?.getLayer('records'))return;
+  const focused=state.id==='lapd' && highlightedDescent;
+  const selected=['==',['get','race'],highlightedDescent||''];
+  map.setPaintProperty('records','circle-opacity',focused?['case',selected,1,.12]:(state.id==='earthquakes' ? .45 : state.id==='lapd' ? 1 : .9));
+  map.setPaintProperty('records','circle-stroke-opacity',focused?['case',selected,1,.12]:(state.id==='earthquakes' ? .65 : 1));
+  map.setLayoutProperty('records','circle-sort-key',focused?['case',selected,1,0]:0);
+  byId('map-legend')?.querySelectorAll('button').forEach(button=>{
+    const active=(button.dataset.category||null)===highlightedDescent;
+    button.setAttribute('aria-pressed',String(active));
+    button.classList.toggle('is-dimmed',Boolean(highlightedDescent && !active));
+  });
+}
+function mapControls() {
+  let controls=byId('map-basemap');
+  if(!controls){controls=document.createElement('div');controls.id='map-basemap';controls.setAttribute('role','group');byId('map-canvas').before(controls);}
+  controls.setAttribute('aria-label',textFor({ja:'背景地図',en:'Basemap'}));controls.replaceChildren();
+  [[false,{ja:'地図',en:'Street'}],[true,{ja:'衛星写真',en:'Satellite'}]].forEach(([satellite,label])=>{
+    const button=document.createElement('button');button.type='button';button.textContent=textFor(label);button.setAttribute('aria-pressed',String(satelliteMap===satellite));
+    button.addEventListener('click',()=>{
+      satelliteMap=satellite;
+      if(state.map?.getLayer('satellite-imagery'))state.map.setLayoutProperty('satellite-imagery','visibility',satellite?'visible':'none');
+      mapControls();
+    });controls.append(button);
+  });
+}
 async function mapView() {
   const token=state.token; state.geojson=features();
+  mapControls();
   let legend=byId('map-legend');if(!legend){legend=document.createElement('div');legend.id='map-legend';byId('map-status').after(legend);}legend.replaceChildren();legend.hidden=state.id!=='lapd';
   if(state.id==='lapd') {
     const counts=new Map();state.geojson.features.forEach(f=>counts.set(f.properties.race,(counts.get(f.properties.race)||0)+1));
-    [...counts].sort((a,b)=>b[1]-a[1]).forEach(([race,count])=>{const item=document.createElement('span'),swatch=document.createElement('i');swatch.style.background=descentColor(race);swatch.setAttribute('aria-hidden','true');item.append(swatch,document.createTextNode(race+' ('+count+')'));legend.append(item);});
+    if(!counts.has(highlightedDescent))highlightedDescent=null;
+    const all=document.createElement('button');all.type='button';all.textContent=textFor({ja:'すべて',en:'All'});all.setAttribute('aria-pressed',String(!highlightedDescent));
+    all.addEventListener('click',()=>{highlightedDescent=null;closeMapPopup();applyMapHighlight();});legend.append(all);
+    [...counts].sort((a,b)=>b[1]-a[1]).forEach(([race,count])=>{
+      const item=document.createElement('button'),swatch=document.createElement('i');item.type='button';item.dataset.category=race;item.setAttribute('aria-pressed',String(highlightedDescent===race));
+      swatch.style.background=descentColor(race);swatch.setAttribute('aria-hidden','true');item.append(swatch,document.createTextNode(race+' ('+count+')'));
+      item.addEventListener('click',()=>{highlightedDescent=highlightedDescent===race?null:race;closeMapPopup();applyMapHighlight();});legend.append(item);
+    });
   }
   if(state.geoBlob)URL.revokeObjectURL(state.geoBlob);
   state.geoBlob=URL.createObjectURL(new Blob([JSON.stringify(state.geojson,null,2)],{type:'application/geo+json'}));
@@ -305,8 +341,10 @@ async function mapView() {
       await new Promise(resolve=>state.map.once('load',resolve));
       state.map.addSource('records',{type:'geojson',data:state.geojson});
       state.map.addLayer({id:'records',type:'circle',source:'records',paint:{'circle-radius':['get','radius'],'circle-color':['coalesce',['get','color'],'#315876'],'circle-stroke-color':'#fff','circle-stroke-width':1.5}});
+      state.map.addSource('satellite-imagery',{type:'raster',tiles:['https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'],tileSize:256,maxzoom:19,attribution:'Imagery © Esri, Vantor, Earthstar Geographics, and the GIS User Community'});
+      state.map.addLayer({id:'satellite-imagery',type:'raster',source:'satellite-imagery',layout:{visibility:satelliteMap?'visible':'none'}},'records');
       const showPopup=event=>{
-        const f=event.features?.[0];if(!f)return;
+        const f=state.id==='lapd' && highlightedDescent?event.features?.find(feature=>feature.properties.race===highlightedDescent):event.features?.[0];if(!f){schedulePopupClose();return;}
         clearTimeout(popupTimer);
         const key=JSON.stringify([f.geometry.coordinates,f.properties]);
         if(key===hoveredRecord && mapPopup?.isOpen())return;
@@ -317,7 +355,7 @@ async function mapView() {
         if(state.id==='lapd') {
           const selected=state.geojson.features.find(item=>item.properties.victimId===f.properties.victimId);
           const coordinates=selected?.geometry.coordinates||f.geometry.coordinates;
-          const records=state.geojson.features.filter(item=>item.geometry.coordinates.every((v,i)=>Math.abs(v-coordinates[i])<.00000001));
+          const records=state.geojson.features.filter(item=>(!highlightedDescent || item.properties.race===highlightedDescent) && item.geometry.coordinates.every((v,i)=>Math.abs(v-coordinates[i])<.00000001));
           if(!records.length)return;
           const body=document.createElement('div');
           const show=index=>{body.replaceChildren();const p=records[index].properties;const heading=document.createElement('strong');heading.textContent=p.title;body.append(heading);const dl=document.createElement('dl');
@@ -346,8 +384,7 @@ async function mapView() {
     }
     if(token!==state.token || state.mode!=='map') return;
     state.map.resize(); state.map.getSource('records').setData(state.geojson);
-    state.map.setPaintProperty('records','circle-opacity',state.id==='earthquakes' ? .45 : state.id==='lapd' ? 1 : .9);
-    state.map.setPaintProperty('records','circle-stroke-opacity',state.id==='earthquakes' ? .65 : 1);
+    applyMapHighlight();
     state.map.setPaintProperty('records','circle-stroke-width',state.id==='earthquakes'?1:1.5);
     const points=state.geojson.features.map(f=>f.geometry.coordinates);
     const bounds=new lib.LngLatBounds(points[0],points[0]); points.slice(1).forEach(p=>bounds.extend(p));
@@ -708,6 +745,7 @@ function metadata() {
 }
 function chooseDataset(id,load=true) {
   closeMapPopup();
+  if(id!==state.id)highlightedDescent=null;
   controller?.abort(); ++state.token;
   state.id=id; state.dataset=state.config.datasets[id]; state.raw=''; state.data=null; state.source=null;
   if(!state.dataset.map && state.mode==='map')state.mode='pretty';

@@ -1,4 +1,4 @@
-/* Read-only API explorer. No keys, proxies, or background polling. */
+/* Read-only API explorer. No stored credentials, proxies, or background polling. */
 const byId = id => document.getElementById(id);
 const locale = () => document.documentElement.dataset.language === 'en' ? 'en' : 'ja';
 const textFor = value => typeof value === 'string' ? value : value?.[locale()] || '';
@@ -36,6 +36,7 @@ async function victimLocations(victims,saved,signal) {
 }
 const weatherPlaces={tokyo:{lat:35.68,lon:139.69,ja:'東京',en:'Tokyo'},kashiwa:{lat:35.86,lon:139.97,ja:'柏',en:'Kashiwa'},osaka:{lat:34.69,lon:135.5,ja:'大阪',en:'Osaka'},sapporo:{lat:43.06,lon:141.35,ja:'札幌',en:'Sapporo'},naha:{lat:26.21,lon:127.68,ja:'那覇',en:'Naha'}};
 const defaults = {
+  books:{q:'intitle:鬼滅の刃',langRestrict:'ja',maxResults:'6',apiKey:''},
   players:{query:'Shohei Ohtani'},
   sports:{league:'epl',date:''},
   toeiBus:{},
@@ -50,6 +51,12 @@ const defaults = {
   holidays:{year:'2026'}
 };
 const fields = {
+  books:[
+    {key:'q',label:{ja:'q · 本・著者を検索',en:'q · Book or author'},type:'text'},
+    {key:'langRestrict',label:{ja:'言語',en:'Language'},options:[['ja','日本語'],['en','English'],['','All']]},
+    {key:'maxResults',label:{ja:'maxResults · 最大件数',en:'maxResults · Maximum results'},options:[['6','6'],['12','12'],['20','20']]},
+    {key:'apiKey',label:{ja:'APIキー（任意・保存しません）',en:'API key (optional, never stored)'},type:'password',optional:true}
+  ],
   players:[{key:'query',label:{ja:'選手名（英字）',en:'Player name'},type:'text'}],
   sports:[
     {key:'league',label:{ja:'競技・リーグ',en:'Sport / league'},options:[['epl','EPL · Premier League'],['laliga','La Liga'],['mlb','MLB'],['mlbPlayoffs','MLB · Playoffs'],['nba','NBA'],['nfl','NFL'],['nhl','NHL']]},
@@ -86,6 +93,12 @@ const fields = {
 
 function values() { return Object.fromEntries([...byId('parameter-fields').querySelectorAll('[name]')].map(field => [field.name,field.value])); }
 function requestURL(id, v) {
+  if(id==='books') {
+    const url=new URL('https://www.googleapis.com/books/v1/volumes');
+    url.searchParams.set('q',v.q);url.searchParams.set('maxResults',v.maxResults);
+    if(v.langRestrict)url.searchParams.set('langRestrict',v.langRestrict);
+    return url.href;
+  }
   if(id==='players') {
     const url=new URL('https://site.api.espn.com/apis/common/v3/search');
     url.searchParams.set('query',v.query);url.searchParams.set('limit','10');url.searchParams.set('type','player');return url.href;
@@ -154,8 +167,18 @@ function renderFields(v = defaults[state.id]) {
       }
       updateRequest();
     });
+    if(field.type==='password')input.autocomplete='off';
     label.append(input); byId('parameter-fields').append(label);
   });
+  if(state.id==='books') {
+    const examples=document.createElement('div');examples.className='book-search-examples';
+    ['鬼滅の刃','君の名は。','君たちはどう生きるか'].forEach(title=>{
+      const button=document.createElement('button');button.type='button';button.textContent=title;
+      button.addEventListener('click',()=>{byId('parameter-fields').querySelector('[name="q"]').value='intitle:'+title;updateRequest();fetchData(!values().apiKey.trim(),true);});
+      examples.append(button);
+    });
+    byId('parameter-fields').append(examples);
+  }
   updateRequest();
 }
 function status(message,kind='live') { byId('data-status').textContent = textFor(message); byId('data-status').dataset.kind=kind; }
@@ -163,6 +186,10 @@ function renderStatus() {
   if (!state.source) return;
   const time=state.source.at;
   if (state.source.saved) {
+    if(state.dataset.classroom_example) {
+      status({ja:'授業用サンプル · Google Booksの書誌ページから作成 · APIの実応答ではありません。',en:'Classroom sample · compiled from Google Books bibliographic pages · not a captured API response.'},'snapshot');
+      return;
+    }
     if(state.dataset.documentation_example) {
       status({ja:'公式仕様書の応答例 · '+state.dataset.snapshot_at+' · ライブデータではありません。',en:'Official documentation response example · dated 2017-11-28 · not live.'},'snapshot');
       return;
@@ -332,10 +359,10 @@ function renderViews() {
   if(state.mode!=='map')closeMapPopup();
   const hasData=state.data!==null;
   const pokemon=state.id==='pokemon';
-  const usage=pokemon || ['music','sports','players'].includes(state.id);
+  const usage=pokemon || ['music','sports','players','books'].includes(state.id);
   const visualButton=document.querySelector('[data-view="map"], [data-view="usage"]');
   visualButton.dataset.view=usage?'usage':'map';
-  visualButton.textContent=state.id==='players'?textFor({ja:'選手プロフィール',en:'Player bio'}):state.id==='sports'?textFor({ja:'スコア',en:'Scores'}):state.id==='music'?textFor({ja:'曲を聴く',en:'Listen'}):pokemon?'Usage':'Map';
+  visualButton.textContent=state.id==='books'?textFor({ja:'本棚',en:'Bookshelf'}):state.id==='players'?textFor({ja:'選手プロフィール',en:'Player bio'}):state.id==='sports'?textFor({ja:'スコア',en:'Scores'}):state.id==='music'?textFor({ja:'曲を聴く',en:'Listen'}):pokemon?'Usage':'Map';
   byId('raw-output').hidden=state.mode!=='raw';
   byId('pretty-output').hidden=state.mode!=='pretty' || state.id==='holidays';
   byId('csv-output').hidden=state.mode!=='pretty' || state.id!=='holidays';
@@ -344,7 +371,7 @@ function renderViews() {
   byId('weather-output').hidden=state.mode!=='weather';
   const weatherButton=document.querySelector('[data-view="weather"]');weatherButton.hidden=state.id!=='weather';weatherButton.disabled=!hasData;
   if(state.mode==='weather')renderWeather();
-  if(state.mode==='usage') { if(state.id==='players')renderPlayerSearch(); else if(state.id==='sports')renderSportsUsage(); else if(state.id==='music')renderMusicUsage(); else renderPokemonUsage(); }
+  if(state.mode==='usage') { if(state.id==='books')renderBooksUsage(); else if(state.id==='players')renderPlayerSearch(); else if(state.id==='sports')renderSportsUsage(); else if(state.id==='music')renderMusicUsage(); else renderPokemonUsage(); }
   byId('color-control').hidden=state.mode!=='pretty' || state.id==='holidays';
   document.querySelectorAll('[data-view]').forEach(button=>{button.setAttribute('aria-pressed',String(button.dataset.view===state.mode)); if(['map','usage'].includes(button.dataset.view))button.disabled=!hasData || (!usage && !state.dataset.map);});
   byId('raw-output').querySelector('code').textContent=state.raw;
@@ -563,6 +590,47 @@ async function loadPlayerBio(player,host) {
   if(data){const pre=document.createElement('pre'),code=document.createElement('code');code.textContent=JSON.stringify(data.athlete||data,null,2);pre.append(code);source.append(pre);}
   host.append(source);
 }
+function renderBooksUsage() {
+  const host=byId('usage-output');host.replaceChildren();
+  host.setAttribute('aria-label',textFor({ja:'本の検索結果',en:'Book results'}));
+  if(!state.data)return;
+  const books=state.data.items||[];
+  if(!books.length) {
+    const note=document.createElement('p');note.textContent=textFor({ja:'本が見つかりません。検索語を変えてみよう。',en:'No books found. Try another search.'});host.append(note);return;
+  }
+  const grid=document.createElement('div');grid.className='book-results';
+  books.forEach(book=>{
+    const info=book.volumeInfo||{};
+    const card=document.createElement('article');card.className='book-result';
+    const cover=document.createElement('div');cover.className='book-cover';
+    const missing=()=>{cover.replaceChildren();const label=document.createElement('span');label.textContent=textFor({ja:'表紙なし',en:'No cover'});cover.append(label);};
+    missing();
+    try {
+      const imageURL=new URL(info.imageLinks?.thumbnail||info.imageLinks?.smallThumbnail);
+      if(['http:','https:'].includes(imageURL.protocol) && /^(books\.google\.(com|co\.jp)|books\.googleusercontent\.com)$/.test(imageURL.hostname)) {
+        imageURL.protocol='https:';
+        const image=document.createElement('img');image.src=imageURL.href;image.alt=info.title||'';image.loading='lazy';image.addEventListener('error',missing,{once:true});cover.replaceChildren(image);
+      }
+    }catch(_){}
+    const details=document.createElement('div');
+    const title=document.createElement('h3');title.textContent=info.title||textFor({ja:'タイトル不明',en:'Untitled'});
+    const author=document.createElement('p');author.className='book-author';author.textContent=(info.authors||[]).join(' / ')||textFor({ja:'著者情報なし',en:'Author unavailable'});
+    details.append(title,author);
+    const facts=document.createElement('p');facts.className='subtle';
+    facts.textContent=[info.publisher,info.publishedDate,info.pageCount?info.pageCount+textFor({ja:'ページ',en:' pages'}):null,info.language].filter(Boolean).join(' · ');details.append(facts);
+    const isbn=(info.industryIdentifiers||[]).find(id=>id.type==='ISBN_13');
+    if(isbn){const p=document.createElement('p');p.className='subtle';p.textContent='ISBN '+isbn.identifier;details.append(p);}
+    if(info.description){const p=document.createElement('p');p.className='book-description';p.textContent=(new DOMParser().parseFromString(info.description,'text/html').body.textContent||'').slice(0,240);details.append(p);}
+    try {
+      const url=new URL(info.infoLink||'https://books.google.com/books?id='+encodeURIComponent(book.id));
+      if(['http:','https:'].includes(url.protocol) && /^(books\.google\.(com|co\.jp)|play\.google\.com)$/.test(url.hostname)) {
+        url.protocol='https:';const link=document.createElement('a');link.href=url.href;link.target='_blank';link.rel='noopener';link.textContent=textFor({ja:'Google Booksで見る ↗',en:'View on Google Books ↗'});details.append(link);
+      }
+    }catch(_){}
+    card.append(cover,details);grid.append(card);
+  });
+  host.append(grid);
+}
 function response(raw,url,saved=false,decoded=null,bytes=null) {
   state.raw=raw; state.url=url;
   state.data=decoded || (state.id==='holidays'?parseCSV(raw):JSON.parse(raw));
@@ -572,11 +640,11 @@ function response(raw,url,saved=false,decoded=null,bytes=null) {
   byId('download-data').href=state.blob; byId('download-data').download=state.id+(saved?'-saved-example':'')+(bytes?'.pb':state.id==='holidays'?'.csv':state.dataset.format==='GeoJSON'?'.geojson':'.json'); byId('download-data').hidden=false;
   renderStatus(); renderViews();
 }
-async function fetchData(saved=false) {
+async function fetchData(saved=false,keepFields=false) {
   closeMapPopup();
   controller?.abort(); controller=new AbortController(); const token=++state.token; const dataset=state.dataset;
   const requestController=controller;
-  if(saved)renderFields(state.id==='holidays'?values():defaults[state.id]);
+  if(saved && !keepFields)renderFields(state.id==='holidays'?values():defaults[state.id]);
   const url=requestURL(state.id,values());
   if(!saved && cache.has(url)) { const record=cache.get(url);lapdLocations=record.locations||[];lapdLocationError=record.locationError||false; response(record.raw,url,false,record.decoded,record.bytes); state.source=record.source; renderStatus(); return; }
   state.raw=''; state.data=null; state.source=null;
@@ -587,7 +655,11 @@ async function fetchData(saved=false) {
   status({ja:saved?'保存例を読み込み中…':'APIに問い合わせ中…',en:saved?'Loading saved example…':'Requesting data…'});
   const timer=setTimeout(()=>requestController.abort(),state.id==='lapd'?45000:15000);
   try {
-    const res=await fetch(saved?dataset.snapshot:url,{signal:requestController.signal,credentials:'omit'});
+    let fetchURL=saved?dataset.snapshot:url;
+    if(!saved && state.id==='books' && values().apiKey) {
+      const authenticated=new URL(url);authenticated.searchParams.set('key',values().apiKey.trim());fetchURL=authenticated.href;
+    }
+    const res=await fetch(fetchURL,{signal:requestController.signal,credentials:'omit'});
     if(!res.ok)throw new Error('HTTP '+res.status);
     const buffer=await res.arrayBuffer(); if(buffer.byteLength>1500000)throw new Error('Response too large');
     let raw,decoded=null,bytes=null;
@@ -598,6 +670,11 @@ async function fetchData(saved=false) {
       decoded=type.toObject(type.decode(bytes),{longs:Number,enums:String});
       raw=Array.from({length:Math.ceil(bytes.length/16)},(_,row)=>row*16).map(offset=>offset.toString(16).padStart(6,'0')+'  '+[...bytes.slice(offset,offset+16)].map(b=>b.toString(16).padStart(2,'0')).join(' ')).join('\n');
     } else raw=new TextDecoder(dataset.encoding).decode(buffer);
+    if(saved && state.id==='books' && keepFields) {
+      const sample=JSON.parse(raw),query=values().q.replace(/^intitle:/,'');
+      sample.items=sample.items.filter(book=>book.volumeInfo.title.includes(query));
+      raw=JSON.stringify(sample,null,2);
+    }
     if(token!==state.token)return;
     let locations=[],locationError=false;
     if(state.id==='lapd') {try{locations=await victimLocations(JSON.parse(raw),saved,requestController.signal);}catch(error){if(requestController.signal.aborted)throw error;locationError=true;}}
@@ -607,7 +684,7 @@ async function fetchData(saved=false) {
     if(!saved)cache.set(url,{raw,decoded,bytes,locations,locationError,source:state.source});
   } catch(error) {
     if(token!==state.token)return;
-    status({ja:'取得できませんでした（通信・CORS・配信制限）。「保存例を使う」で実データの保存版を開けます。',en:'Request failed (network, CORS, or provider limits). Use saved example to open a real cached response.'},'error');
+    status(state.id==='books'?{ja:'Google Booksを取得できませんでした。APIキー・利用上限を確認するか、「授業用サンプル」を開いてください。',en:'Google Books request failed. Check your API key or quota, or open the classroom sample.'}:{ja:'取得できませんでした（通信・CORS・配信制限）。「保存例を使う」で実データの保存版を開けます。',en:'Request failed (network, CORS, or provider limits). Use saved example to open a real cached response.'},'error');
   } finally {clearTimeout(timer); if(token===state.token)byId('fetch-data').disabled=false;}
 }
 function metadata() {
@@ -623,6 +700,8 @@ function metadata() {
     byId('fetch-data').querySelector('.lang-en').textContent='Read documentation example';
   }
   byId('load-snapshot').hidden=d.browser_fetch===false;
+  byId('load-snapshot').querySelector('.lang-ja').textContent=d.classroom_example?'授業用サンプル':'保存例を使う';
+  byId('load-snapshot').querySelector('.lang-en').textContent=d.classroom_example?'Classroom sample':'Use saved example';
   byId('raw-link').querySelector('.lang-ja').textContent=d.documentation_example?'仕様書のRaw例':'提供元のRawデータ';
   byId('raw-link').querySelector('.lang-en').textContent=d.documentation_example?'Raw documentation example':'Provider’s raw data';
 }
@@ -631,13 +710,14 @@ function chooseDataset(id,load=true) {
   controller?.abort(); ++state.token;
   state.id=id; state.dataset=state.config.datasets[id]; state.raw=''; state.data=null; state.source=null;
   if(!state.dataset.map && state.mode==='map')state.mode='pretty';
-  if(state.mode==='usage' && !['pokemon','music','sports','players'].includes(id))state.mode='pretty';
+  if(state.mode==='usage' && !['pokemon','music','sports','players','books'].includes(id))state.mode='pretty';
   if(state.mode==='weather' && id!=='weather')state.mode='pretty';
   if(id==='weather')state.mode='weather';
   if(id==='pokemon')state.mode='usage';
   if(id==='music')state.mode='usage';
   if(id==='sports')state.mode='usage';
   if(id==='players')state.mode='usage';
+  if(id==='books')state.mode='usage';
   if(id==='toeiBus')state.mode='map';
   byId('download-data').hidden=true; byId('fetch-data').disabled=false;
   document.querySelectorAll('[data-dataset]').forEach(button=>{
@@ -647,7 +727,7 @@ function chooseDataset(id,load=true) {
   });
   metadata(); renderFields(); renderViews();
   const url=new URL(location.href); url.searchParams.set('week',String(state.week.week).padStart(2,'0')); url.searchParams.set('example',id); history.replaceState(null,'',url);
-  if(load)fetchData(state.dataset.browser_fetch===false);
+  if(load)fetchData(state.dataset.browser_fetch===false || state.dataset.classroom_example===true);
 }
 function chooseWeek(week,example) {
   state.week=week; byId('dataset-tabs').replaceChildren();

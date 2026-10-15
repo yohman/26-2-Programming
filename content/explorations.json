@@ -13,6 +13,7 @@
         "earthquakes",
         "pokemon",
         "music",
+        "books",
         "sports",
         "players",
         "lapd"
@@ -20,6 +21,22 @@
     }
   ],
   "datasets": {
+    "books": {
+      "title":{"ja":"本 · Google Books","en":"Books · Google Books"},
+      "provider":"Google Books",
+      "format":"JSON",
+      "docs":"https://developers.google.com/books/docs/v1/using",
+      "snapshot":"weeks/week-03/explore-data/books.json",
+      "snapshot_at":"2026-10-15",
+      "classroom_example":true,
+      "encoding":"utf-8",
+      "map":false,
+      "summary":{"ja":"本の検索結果を、本棚に。タイトル・著者・出版日・表紙のURLを、JSONから取り出して表示する。","en":"Turn search results into a bookshelf. Extract titles, authors, publication dates, and cover URLs from JSON."},
+      "parameters":{"ja":"qは検索語。intitle:でタイトル、inauthor:で著者を絞れます。langRestrict=jaは日本語、maxResultsは最大件数。ライブ検索にはGoogle Books APIキーが必要な場合があります。キーはこのページでのみ使い、保存しません。最初は書誌ページから作った授業用サンプルを表示します（APIの実応答ではありません）。","en":"q is the search phrase; intitle: and inauthor: narrow it to titles or authors. langRestrict=ja selects Japanese; maxResults caps results. Live search may require a Google Books API key, used only on this page and never stored. Initially, a classroom sample compiled from bibliographic pages is shown—not a captured API response."},
+      "aha":{"ja":"表紙もデータ。imageLinksのURLを画像として表示すれば、辞書のリストが本棚になる。","en":"A cover is data too. Display the imageLinks URL as an image and a list of dictionaries becomes a bookshelf."},
+      "python":"books[\"items\"][0][\"volumeInfo\"][\"title\"]\nbooks[\"items\"][0][\"volumeInfo\"][\"authors\"]\nbooks[\"items\"][0][\"volumeInfo\"][\"imageLinks\"][\"thumbnail\"]",
+      "map_note":{"ja":"版によって情報・表紙・プレビューの有無が違います。リンク先のGoogle Booksで確認しよう。","en":"Metadata, covers, and previews vary by edition. Check each book on Google Books."}
+    },
     "players": {
       "title":{"ja":"選手検索 · Bio","en":"Player Search · Bio"},
       "provider":"ESPN · public player search / profile feeds (undocumented)",

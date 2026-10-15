@@ -117,3 +117,15 @@
 .player-bio-facts dt { color:var(--muted); }.player-bio-facts dd { margin:0; }
 .player-bio details { margin-top:1.5rem; }.player-bio details > a { display:block; margin:1rem 0; overflow-wrap:anywhere; }
 .player-bio pre { max-height:400px; overflow:auto; font-size:.85rem; }
+.book-search-examples { grid-column:1/-1; display:flex; flex-wrap:wrap; gap:.5rem; }
+.book-search-examples button { border:0; border-radius:0; background:#e8e6df; color:var(--ink); padding:.55rem .8rem; font:inherit; font-size:.85rem; cursor:pointer; }
+.book-search-examples button:hover,.book-search-examples button:focus-visible { background:var(--ink); color:#fff; }
+.book-results { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr)); gap:1.5rem; }
+.book-result { display:grid; grid-template-columns:100px minmax(0,1fr); align-items:start; gap:1.25rem; padding:1.25rem; background:#fff; }
+.book-cover { display:flex; justify-content:center; align-items:center; width:100px; min-height:140px; background:#f0efea; font-size:.75rem; color:var(--muted); }
+.book-cover img { width:100%; max-height:160px; object-fit:contain; }
+.book-result h3 { margin:0 0 .45rem; font-size:1.1rem; line-height:1.5; }
+.book-result p { margin:.45rem 0; font-size:.85rem; line-height:1.6; }
+.book-result .book-author { font-weight:650; }
+.book-result a { display:inline-block; margin-top:.7rem; color:var(--blue); font-size:.85rem; font-weight:700; }
+@media(max-width:420px) { .book-result { grid-template-columns:75px minmax(0,1fr); gap:.85rem; padding:1rem; }.book-cover { width:75px; min-height:110px; } }

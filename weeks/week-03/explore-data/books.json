@@ -1,0 +1,45 @@
+{
+  "_classroomExample": "Google Booksの書誌ページから2026-10-15に作成した、APIと同じ構造の授業用サンプル。APIの実応答ではありません。各infoLinkが情報源です。",
+  "items": [
+    {
+      "id": "Mj1cDAAAQBAJ",
+      "volumeInfo": {
+        "title": "鬼滅の刃 1",
+        "authors": ["吾峠呼世晴"],
+        "publisher": "集英社",
+        "publishedDate": "2016-06-03",
+        "pageCount": 197,
+        "language": "ja",
+        "imageLinks": {"thumbnail": "https://books.google.com/books/content?id=Mj1cDAAAQBAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api"},
+        "infoLink": "https://books.google.com/books?id=Mj1cDAAAQBAJ"
+      }
+    },
+    {
+      "id": "aYP2vwEACAAJ",
+      "volumeInfo": {
+        "title": "小説君の名は。: 新海誠ライブラリー",
+        "authors": ["新海誠"],
+        "publisher": "汐文社",
+        "publishedDate": "2018",
+        "pageCount": 257,
+        "language": "ja",
+        "industryIdentifiers": [{"type": "ISBN_13", "identifier": "9784811325026"}],
+        "imageLinks": {"thumbnail": "https://books.google.com/books/content?id=aYP2vwEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api"},
+        "infoLink": "https://books.google.com/books?id=aYP2vwEACAAJ"
+      }
+    },
+    {
+      "id": "hKxDYAAACAAJ",
+      "volumeInfo": {
+        "title": "君たちはどう生きるか",
+        "authors": ["吉野源三郎"],
+        "publisher": "ポプラ社",
+        "publishedDate": "2015",
+        "pageCount": 308,
+        "language": "ja",
+        "imageLinks": {"thumbnail": "https://books.google.com/books/content?id=hKxDYAAACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api"},
+        "infoLink": "https://books.google.com/books?id=hKxDYAAACAAJ"
+      }
+    }
+  ]
+}

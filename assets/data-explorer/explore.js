@@ -20,7 +20,8 @@ let lapdLocations=[];
 let lapdLocationError=false;
 const descentAliases={'B':'Black/African American','Black':'Black/African American','W':'White/Caucasian','White':'White/Caucasian','A - Asian':'Asian','F - Filipino':'Filipino','H - Hispanic':'Hispanic','K - Korean':'Korean','O - Other':'Other','U - Hawaiian':'Hawaiian','X - Unknown':'Unknown'};
 const descentNames=['Hispanic','Black/African American','White/Caucasian','Other Asian','Other','Unknown','Not reported','Asian','American Indian','Asian Indian','Cambodian','Chinese','Filipino','Guamanian','Hawaiian','Japanese','Korean','Laotian','Middle Eastern/Arab','Pacific Islander','Samoan','Vietnamese'];
-const descentColors=['#99743d','#6a73a8','#488b8c','#b66d88','#88796e','#969da3','#c3c7ca','#718747','#a3664f','#9b826b','#5b86ae','#87739b','#ae8158','#657f55','#698f7c','#ae6980','#707a51','#b38b32','#57777c','#9e6f57','#846e97','#819f68'];
+// Stable categorical colors, not a severity scale. Unknown values stay neutral.
+const descentColors=['#e76f00','#6d3fc0','#0072ce','#008b80','#d33178','#697580','#a1a8ae','#008b80','#a64b00','#b35399','#216c9c','#8752b0','#bc5b00','#427d45','#008a9b','#b63d64','#6269bf','#bd7c00','#00766c','#a64835','#7e4d93','#4f7f26'];
 const descentLabel=value=>descentAliases[value]||value||'Not reported';
 const descentColor=value=>descentColors[descentNames.indexOf(value)]||'#777777';
 async function victimLocations(victims,saved,signal) {
@@ -266,7 +267,7 @@ function features() {
     const locations=new Map();lapdLocations.forEach(row=>{const list=locations.get(row.caseno)||new Map();list.set(row.hndrdth_lon+','+row.hndrdth_lat,row);locations.set(row.caseno,list);});
     result=state.data.flatMap(v=>{const matches=locations.get(v.caseno);if(matches?.size!==1)return [];const row=[...matches.values()][0],lon=Number(row.hndrdth_lon),lat=Number(row.hndrdth_lat);if(!valid(lon,lat)||!lon||!lat)return [];
       const race=descentLabel(v.vict_descent);const f=point(lon,lat,v.victimofslist,'Approximate hundred-block location');
-      Object.assign(f.properties,{color:descentColor(race),race,descent:v.vict_descent||'',age:v.vict_age||'',sex:v.vict_sex||'',victimType:v.victim_type||'',shot:v.victim_shot||'',date:v.date_occ||'',area:v.area_name||'',caseNo:v.caseno||'',victimId:v.uniquevictimno||''});return [f];});
+      Object.assign(f.properties,{radius:7,color:descentColor(race),race,descent:v.vict_descent||'',age:v.vict_age||'',sex:v.vict_sex||'',victimType:v.victim_type||'',shot:v.victim_shot||'',date:v.date_occ||'',area:v.area_name||'',caseNo:v.caseno||'',victimId:v.uniquevictimno||''});return [f];});
   }
   return {type:'FeatureCollection',features:result};
 }
@@ -345,7 +346,7 @@ async function mapView() {
     }
     if(token!==state.token || state.mode!=='map') return;
     state.map.resize(); state.map.getSource('records').setData(state.geojson);
-    state.map.setPaintProperty('records','circle-opacity',state.id==='earthquakes' ? .45 : .9);
+    state.map.setPaintProperty('records','circle-opacity',state.id==='earthquakes' ? .45 : state.id==='lapd' ? 1 : .9);
     state.map.setPaintProperty('records','circle-stroke-opacity',state.id==='earthquakes' ? .65 : 1);
     state.map.setPaintProperty('records','circle-stroke-width',state.id==='earthquakes'?1:1.5);
     const points=state.geojson.features.map(f=>f.geometry.coordinates);

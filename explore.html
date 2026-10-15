@@ -4,8 +4,8 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Explore · 2026–2 Programming</title>
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
-<link rel="stylesheet" href="assets/styles.css?v=20261007-ui"><link rel="stylesheet" href="assets/ui.css?v=20261015-local-admin"><link rel="stylesheet" href="assets/data-explorer/explore.css?v=20261015-map-controls">
-<script src="assets/site.js?v=20261015-local-admin" defer></script><script src="assets/data-explorer/vendor/protobuf.min.js" defer></script><script src="assets/data-explorer/explore.js?v=20261015-map-controls" defer></script>
+<link rel="stylesheet" href="assets/styles.css?v=20261007-ui"><link rel="stylesheet" href="assets/ui.css?v=20261015-local-admin"><link rel="stylesheet" href="assets/data-explorer/explore.css?v=20261015-ai">
+<script src="assets/site.js?v=20261015-local-admin" defer></script><script src="assets/data-explorer/vendor/protobuf.min.js" defer></script><script src="assets/data-explorer/explore.js?v=20261015-ai" defer></script>
 <link rel="stylesheet" href="assets/copy-blocks.css?v=20261014"><script src="assets/copy-blocks.js?v=20261014-pinned" defer></script>
 </head>
 <body class="explore-page">
@@ -19,6 +19,7 @@
 <div id="dataset-panel" role="tabpanel">
 <header class="data-heading"><div><p id="provider"></p><h2 id="data-title"></h2></div><div class="source-links"><a id="docs-link" target="_blank" rel="noopener"><span class="lang-ja">提供元・APIの説明</span><span class="lang-en">Source & API docs</span> ↗</a><a id="raw-link" target="_blank" rel="noopener"><span class="lang-ja">提供元のRawデータ</span><span class="lang-en">Provider’s raw data</span> ↗</a></div></header>
 <p id="data-summary"></p>
+<section id="ai-output" hidden aria-label="AI experiment"></section>
 <form id="request-form"><div id="parameter-fields"></div><button type="submit" id="fetch-data"><span class="lang-ja">取得する</span><span class="lang-en">Fetch data</span> ↓</button></form>
 <p id="parameter-explanation" class="subtle"></p>
 <details class="request-details" open><summary><span class="lang-ja">リクエストURL</span><span class="lang-en">Request URL</span></summary><code id="request-url"></code></details>

@@ -20,6 +20,7 @@ let lapdLocations=[];
 let lapdLocationError=false;
 let highlightedDescent=null;
 let satelliteMap=false;
+let aiModulePromise;
 const descentAliases={'B':'Black/African American','Black':'Black/African American','W':'White/Caucasian','White':'White/Caucasian','A - Asian':'Asian','F - Filipino':'Filipino','H - Hispanic':'Hispanic','K - Korean':'Korean','O - Other':'Other','U - Hawaiian':'Hawaiian','X - Unknown':'Unknown'};
 const descentNames=['Hispanic','Black/African American','White/Caucasian','Other Asian','Other','Unknown','Not reported','Asian','American Indian','Asian Indian','Cambodian','Chinese','Filipino','Guamanian','Hawaiian','Japanese','Korean','Laotian','Middle Eastern/Arab','Pacific Islander','Samoan','Vietnamese'];
 // Stable categorical colors, not a severity scale. Unknown values stay neutral.
@@ -39,6 +40,7 @@ async function victimLocations(victims,saved,signal) {
 }
 const weatherPlaces={tokyo:{lat:35.68,lon:139.69,ja:'東京',en:'Tokyo'},kashiwa:{lat:35.86,lon:139.97,ja:'柏',en:'Kashiwa'},osaka:{lat:34.69,lon:135.5,ja:'大阪',en:'Osaka'},sapporo:{lat:43.06,lon:141.35,ja:'札幌',en:'Sapporo'},naha:{lat:26.21,lon:127.68,ja:'那覇',en:'Naha'}};
 const defaults = {
+  ai:{},
   books:{q:'intitle:鬼滅の刃',langRestrict:'ja',maxResults:'6',apiKey:''},
   players:{query:'Shohei Ohtani'},
   sports:{league:'epl',date:''},
@@ -54,6 +56,7 @@ const defaults = {
   holidays:{year:'2026'}
 };
 const fields = {
+  ai:[],
   books:[
     {key:'q',label:{ja:'q · 本・著者を検索',en:'q · Book or author'},type:'text'},
     {key:'langRestrict',label:{ja:'言語',en:'Language'},options:[['ja','日本語'],['en','English'],['','All']]},
@@ -96,6 +99,7 @@ const fields = {
 
 function values() { return Object.fromEntries([...byId('parameter-fields').querySelectorAll('[name]')].map(field => [field.name,field.value])); }
 function requestURL(id, v) {
+  if(id==='ai')return 'https://huggingface.co/Xenova/distilbert-base-multilingual-cased-sentiments-student';
   if(id==='books') {
     const url=new URL('https://www.googleapis.com/books/v1/volumes');
     url.searchParams.set('q',v.q);url.searchParams.set('maxResults',v.maxResults);
@@ -395,6 +399,11 @@ async function mapView() {
 }
 function renderViews() {
   if(state.mode!=='map')closeMapPopup();
+  if(state.id==='ai') {
+    aiModulePromise ||= import('./ai.js?v=20261015');
+    aiModulePromise.then(module=>{if(state.id==='ai')module.mountAI(byId('ai-output'),locale());}).catch(()=>{byId('ai-output').textContent=textFor({ja:'AIを読み込めませんでした。ページを再読み込みしてください。',en:'Could not load AI. Please reload the page.'});});
+    return;
+  }
   const hasData=state.data!==null;
   const pokemon=state.id==='pokemon';
   const usage=pokemon || ['music','sports','players','books'].includes(state.id);
@@ -748,6 +757,8 @@ function chooseDataset(id,load=true) {
   if(id!==state.id)highlightedDescent=null;
   controller?.abort(); ++state.token;
   state.id=id; state.dataset=state.config.datasets[id]; state.raw=''; state.data=null; state.source=null;
+  byId('explorer').dataset.example=id;
+  byId('ai-output').hidden=id!=='ai';
   if(!state.dataset.map && state.mode==='map')state.mode='pretty';
   if(state.mode==='usage' && !['pokemon','music','sports','players','books'].includes(id))state.mode='pretty';
   if(state.mode==='weather' && id!=='weather')state.mode='pretty';
@@ -766,7 +777,7 @@ function chooseDataset(id,load=true) {
   });
   metadata(); renderFields(); renderViews();
   const url=new URL(location.href); url.searchParams.set('week',String(state.week.week).padStart(2,'0')); url.searchParams.set('example',id); history.replaceState(null,'',url);
-  if(load)fetchData(state.dataset.browser_fetch===false || state.dataset.classroom_example===true);
+  if(load && id!=='ai')fetchData(state.dataset.browser_fetch===false || state.dataset.classroom_example===true);
 }
 function chooseWeek(week,example) {
   state.week=week; byId('dataset-tabs').replaceChildren();

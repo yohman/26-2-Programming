@@ -14,6 +14,7 @@
         "pokemon",
         "music",
         "books",
+        "ai",
         "sports",
         "players",
         "lapd"
@@ -21,6 +22,18 @@
     }
   ],
   "datasets": {
+    "ai": {
+      "title":{"ja":"AI · 文章を読む","en":"AI · Read a sentence"},
+      "provider":"Transformers.js · DistilBERT · browser inference",
+      "format":"Text → predictions → JSON",
+      "docs":"https://huggingface.co/lxyuan/distilbert-base-multilingual-cased-sentiments-student",
+      "map":false,
+      "summary":{"ja":"同じ文章を、人とAIはどう読む？ 日本語や英語の短い文章を入れて、positive・neutral・negativeの予測を比べよう。APIキー・アカウントは不要。","en":"Do you and AI read a sentence the same way? Enter a short Japanese or English sentence and compare positive, neutral, and negative predictions. No API key or account needed."},
+      "parameters":"",
+      "aha":"",
+      "python":"",
+      "map_note":""
+    },
     "books": {
       "title":{"ja":"本 · Google Books","en":"Books · Google Books"},
       "provider":"Google Books",

@@ -35,6 +35,7 @@ Put **your project title and name in the first Markdown cell**.
 - Choose a purpose: a campus guide, study companion, game character, or your own idea.
 - Make a working conversation with **three or more distinct response paths**, a fallback for unknown input, and a way to end the conversation.
 - Use `if / elif / else`. A rule-based notebook bot is enough. No AI API, website, or extra package is required.
+- The starter keeps the bot's profile in a dictionary and replies in a dictionary of lists. Give at least three topics your own replies. A robot face is included; animation, memory, and random replies are optional challenges.
 - Show **three test conversations**, including unexpected input. Write a few sentences about one design choice and one limitation. If AI helped, note what you checked yourself.
 
 Run all cells and save the outputs and your observations. Submit the **`.ipynb` plus required files to UNIPA by October 28 (Wed), 23:59 JST**. The starter is optional. Make the purpose, wording, and responses your own.
@@ -46,6 +47,7 @@ JP: **自分らしい、ちゃんと動くチャットボット。**
 - 大学案内、勉強の相棒、ゲームのキャラクターなど、誰のために何をするBotか決める。
 - **三つ以上の返答パターン**、想定外の入力への返事、会話を終える方法を用意する。
 - `if / elif / else`を使う。Notebookで動くルール型BotでOK。AIのAPI・Webサイト・追加パッケージは不要。
+- スターターはプロフィールが辞書、返事が「辞書＋リスト」。三つ以上の話題を自分らしい返事に変えよう。Botの顔も付いています。アニメーション・会話の記憶・ランダムな返事は任意のChallenge。
 - **会話のテストを三つ**残す（想定外の入力を含む）。工夫と、まだできないことを数行書く。AIを使った場合は、自分で何を確認したかも一言。
 
 全Cellを実行し、出力・観察メモを保存。**10月28日(水) 23:59までに、`.ipynb`と必要なファイルをUNIPAへ提出。** スターターは任意。テーマや言葉づかい、返事に自分らしさを出そう。

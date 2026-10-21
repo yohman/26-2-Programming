@@ -58,9 +58,11 @@ function cellsFor(record) {
 }
 function renderResults(record) {
   const host=document.createElement('div'),cells=cellsFor(record);
+  const recovered=record.replay.cells.flatMap(cell=>cell.outputs.filter(o=>o.metadata?.local_widget_preview));
   const htmlOutputs=cells.flatMap(cell=>cell.outputs.filter(o=>o.data?.['text/html']).map(output=>({output,index:cell.index})));
   const latest=htmlOutputs.at(-1);
   host.innerHTML='<p class="review-legend">'+(selectedMode==='saved'?'提出時にNotebookに保存されていた出力。':'元コードをローカルで再実行した出力。CSVの別名対応・スキップ・エラーは下記に記載。原本の修正ではありません。')+'</p>';
+  if(selectedMode==='saved'&&recovered.length){const label=document.createElement('h3');label.textContent='インタラクティブHTML';const note=document.createElement('p');note.className='review-legend';note.textContent='保存済みWidgetは単独では表示できないため、提出コードからローカルで再現。選択肢を切り替えられます。';host.append(label,note);recovered.forEach(output=>host.append(outputElement(output)));}
   if(latest){const label=document.createElement('h3');label.textContent='最後のHTML出力 · Cell '+(latest.index+1);host.append(label,outputElement(latest.output));}
   else {const p=document.createElement('p');p.textContent='この表示にはHTML出力がありません。「Notebook」で各Cellを確認できます。';host.append(p);}
   cells.filter(cell=>cell.outputs.some(o=>!o.data?.['text/html'])).forEach(cell=>{

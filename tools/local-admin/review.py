@@ -139,7 +139,7 @@ def worker(job):
     payload = json.loads(Path(job).read_text())
     namespace = {'__name__': '__main__'}
     results = []
-    allowed = {'csv', 'folium', 'branca', 'pandas', 'numpy', 'datetime', 'json', 'math', 'pathlib', 'IPython', 'urllib', 'matplotlib', 'zoneinfo', 'uuid'}
+    allowed = {'csv', 'folium', 'branca', 'pandas', 'numpy', 'datetime', 'json', 'math', 'pathlib', 'IPython', 'urllib', 'matplotlib', 'zoneinfo', 'uuid', 'ipywidgets'}
     # urllib can only return pre-fetched, allowlisted JSON. The OS sandbox still denies network.
     import urllib.request
     def cached_urlopen(request, *args, **kwargs):
@@ -151,10 +151,21 @@ def worker(job):
     urllib.request.urlopen = cached_urlopen
     # Capture common display()/IFrame outputs without starting a Jupyter kernel.
     import types
+    import base64
+    def embed_local_images(markup):
+        def replace(match):
+            src = html.unescape(match.group(2))
+            if urlsplit(src).scheme or src.startswith('//'): return match.group(0)
+            path = (Path.cwd() / unquote(src)).resolve()
+            if not path.is_relative_to(Path.cwd()) or path.suffix.lower() not in {'.jpg', '.jpeg', '.png', '.gif', '.webp'}: return match.group(0)
+            if not path.is_file(): return '<span style="color:#777">画像未提出：' + html.escape(src) + '</span>'
+            mime = 'jpeg' if path.suffix.lower() in {'.jpg', '.jpeg'} else path.suffix[1:].lower()
+            return match.group(0).replace(match.group(1) + match.group(2) + match.group(1), '"data:image/' + mime + ';base64,' + base64.b64encode(path.read_bytes()).decode() + '"', 1)
+        return re.sub(r'<img\b[^>]*\bsrc\s*=\s*([\"\x27])(.*?)\1[^>]*>', replace, str(markup), flags=re.I)
     display_module = types.ModuleType('IPython.display')
     class LocalHTML:
         def __init__(self, data='', **kwargs): self.data = data
-        def _repr_html_(self): return str(self.data)
+        def _repr_html_(self): return embed_local_images(self.data)
     class LocalImage:
         def __init__(self, data=None, url=None, filename=None, **kwargs):
             self.data, self.url, self.filename = data, url, filename
@@ -184,6 +195,40 @@ def worker(job):
     display_module.display, display_module.IFrame, display_module.HTML = display, LocalFrame, LocalHTML
     display_module.Image = LocalImage
     namespace['display'] = display
+    # A bounded offline adapter, not a live Jupyter widget kernel. Each choice
+    # runs inside the same OS sandbox, then switches pre-rendered HTML locally.
+    widgets = types.ModuleType('ipywidgets')
+    class LocalDropdown:
+        def __init__(self, options=(), value=None, description='', **kwargs):
+            items = list(options.items()) if isinstance(options, dict) else list(options)
+            if not items or len(items) > 20: raise ValueError('Offline dropdown supports 1–20 choices.')
+            self.options = [(str(item[0]), item[1]) if isinstance(item, (tuple, list)) and len(item) == 2 else (str(item), item) for item in items]
+            self.value = value if value is not None else self.options[0][1]
+            self.description = description
+    def local_interact(function, **controls):
+        if len(controls) != 1 or not isinstance(next(iter(controls.values())), LocalDropdown):
+            raise PermissionError('Offline widget preview supports one Dropdown only.')
+        name, control = next(iter(controls.items()))
+        options, panels = [], []
+        for index, (label, value) in enumerate(control.options):
+            start = len(result['outputs'])
+            try:
+                function(**{name: value})
+                outputs = result['outputs'][start:]
+                content = ''.join(o.get('data', {}).get('text/html', '') for o in outputs)
+                if not content: content = '<pre>' + html.escape(str(outputs)) + '</pre>'
+            except Exception as error:
+                content = '<p>' + html.escape(type(error).__name__ + ': ' + str(error)) + '</p>'
+            finally:
+                del result['outputs'][start:]
+            selected = value == control.value
+            options.append('<option value="' + str(index) + '"' + (' selected' if selected else '') + '>' + html.escape(label) + '</option>')
+            panels.append('<section data-widget-choice="' + str(index) + '"' + ('' if selected else ' hidden') + '>' + content + '</section>')
+        markup = '<div><label style="display:block;margin:12px 0;font:16px sans-serif">' + html.escape(control.description) + ' <select onchange="this.closest(\'div\').querySelectorAll(\'[data-widget-choice]\').forEach(p=>p.hidden=p.dataset.widgetChoice!==this.value)">' + ''.join(options) + '</select></label>' + ''.join(panels) + '</div>'
+        result['outputs'].append({'output_type': 'display_data', 'metadata': {'local_widget_preview': True}, 'data': {'text/html': markup}})
+        result['message'] = 'Dropdown choices pre-rendered in the offline sandbox; this is a local reconstruction, not saved student output.'
+    widgets.Dropdown, widgets.interact = LocalDropdown, local_interact
+    sys.modules['ipywidgets'] = widgets
     # Jupyter exposes display() globally. Resolve Windows-only absolute paths
     # solely to an exact-name attachment already copied into this student's job.
     import builtins

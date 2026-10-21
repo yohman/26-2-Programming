@@ -6,6 +6,30 @@ const params=new URLSearchParams(location.search);
 const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const joined=value=>Array.isArray(value)?value.join(''):value||'';
 const fileURL=path=>'./'+path.split('/').map(encodeURIComponent).join('/');
+const heartsStorageKey='programming-admin-hearts-v1';
+let hearts=new Set();
+try { hearts=new Set(JSON.parse(localStorage.getItem(heartsStorageKey)||'[]')); } catch {}
+// Generated preview IDs change after a re-import; the original submission identity does not.
+const heartKey=(record,week=record.week)=>JSON.stringify([Number(week),record.student,record.file||'']);
+function heartButton(record,week=record.week,onChange=()=>{}) {
+  const button=document.createElement('button');
+  button.className='submission-heart';
+  const update=()=>{
+    const selected=hearts.has(heartKey(record,week));
+    button.setAttribute('aria-pressed',String(selected));
+    button.setAttribute('aria-label',selected?'ハートを外す':'授業で紹介する候補に追加');
+    button.innerHTML='<span aria-hidden="true">'+(selected?'♥':'♡')+'</span> '+(selected?'紹介候補':'候補にする');
+  };
+  update();
+  button.onclick=()=>{
+    const key=heartKey(record,week),next=new Set(hearts);
+    next.has(key)?next.delete(key):next.add(key);
+    try { localStorage.setItem(heartsStorageKey,JSON.stringify([...next])); }
+    catch { document.getElementById('admin-status').textContent='保存できませんでした。ブラウザーのローカルストレージを有効にしてください。';return; }
+    hearts=next;update();onChange();
+  };
+  return button;
+}
 const policy="default-src 'none'; script-src 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com https://code.jquery.com https://maxcdn.bootstrapcdn.com; style-src 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com https://maxcdn.bootstrapcdn.com https://fonts.googleapis.com; img-src data: blob: https://raw.githubusercontent.com/PokeAPI/sprites/ https://tile.openstreetmap.org https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com https://server.arcgisonline.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com; font-src data: https://fonts.gstatic.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; frame-src about: data: blob:; connect-src 'none'; form-action 'none'; base-uri 'none'";
 function outputElement(output) {
   const wrapper=document.createElement('div');wrapper.className='review-output';
@@ -74,6 +98,7 @@ function renderSubmission(record) {
   currentSubmission=record;
   adminRoot.innerHTML='<a href="?week='+record.week+'#submission-'+esc(record.id)+'">← Week '+String(record.week).padStart(2,'0')+' の一覧</a><header class="submission-heading"><p class="student-name">'+esc(record.student_name||('名簿未一致 · '+record.student))+'</p>'+(record.student_reading?'<span class="student-reading">'+esc(record.student_reading)+'</span>':'')+'<p>学籍番号：'+esc(record.student)+'</p><h2>'+esc(record.title)+'</h2><p>'+esc(record.file||'Notebookなし')+'</p></header><div class="submission-actions"><button data-mode="saved" aria-pressed="'+(selectedMode==='saved')+'">提出時の出力</button><button data-mode="replay" aria-pressed="'+(selectedMode==='replay')+'">ローカル再実行</button></div><nav class="review-tabs"><button data-tab="results" aria-pressed="'+(selectedTab==='results')+'">結果</button><button data-tab="notebook" aria-pressed="'+(selectedTab==='notebook')+'">Notebook</button><button data-tab="files" aria-pressed="'+(selectedTab==='files')+'">添付ファイル</button></nav><div id="submission-body"></div>';
   document.getElementById('submission-body').append(selectedTab==='files'?renderAttachments(record):selectedTab==='notebook'?renderNotebook(record):renderResults(record));
+  adminRoot.querySelector('.submission-actions').prepend(heartButton(record));
   adminRoot.querySelectorAll('[data-mode]').forEach(button=>button.onclick=()=>{selectedMode=button.dataset.mode;renderSubmission(record);});
   adminRoot.querySelectorAll('[data-tab]').forEach(button=>button.onclick=()=>{selectedTab=button.dataset.tab;renderSubmission(record);});
 }
@@ -81,7 +106,31 @@ function renderWeek(week) {
   const data=manifest.weeks.find(w=>w.week===week);
   adminRoot.innerHTML='<div class="admin-toolbar"><h2>Week '+String(week).padStart(2,'0')+' · '+(data?data.students+'人 / '+data.submissions.length+'プレビュー':'未取り込み')+'</h2><input id="student-search" placeholder="氏名・学籍番号・ファイル名で検索" aria-label="Search submissions"></div><div class="submission-grid"></div>';
   const cards=query=>{const host=adminRoot.querySelector('.submission-grid');host.replaceChildren();(data?.submissions||[]).filter(s=>((s.student_name||'')+' '+(s.student_reading||'')+' '+s.student+' '+s.title+' '+s.file).toLowerCase().includes(query.toLowerCase())).forEach(s=>{const card=document.createElement('article');card.className='submission-card';card.id='submission-'+s.id;card.innerHTML='<span class="student-name" title="学籍番号：'+esc(s.student)+'">'+esc(s.student_name||('名簿未一致 · '+s.student))+'</span>'+(s.student_reading?'<span class="student-reading">'+esc(s.student_reading)+'</span>':'')+'<h3>'+esc(s.title)+'</h3><p>'+s.attachments+'添付 · 保存済み出力 '+s.saved_outputs+' Cell<br>再実行 '+s.execution.ok+' Cell · エラー '+s.execution.error+' · スキップ '+s.execution.skipped+'</p><a class="admin-button" href="?week='+week+'&id='+s.id+'">課題をプレビュー →</a>';host.append(card);});};cards('');
-  adminRoot.querySelector('input').oninput=e=>cards(e.target.value);
+  const search=adminRoot.querySelector('input');
+  const filter=document.createElement('button');
+  filter.className='heart-filter';filter.setAttribute('aria-pressed','false');
+  const controls=document.createElement('div');controls.className='admin-filters';
+  search.replaceWith(controls);controls.append(search,filter);
+  let heartedOnly=false;
+  const redraw=()=>{
+    cards(search.value);
+    filter.textContent='♥ のみ ('+(data?.submissions||[]).filter(s=>hearts.has(heartKey(s,week))).length+')';
+    filter.setAttribute('aria-pressed',String(heartedOnly));
+    adminRoot.querySelectorAll('.submission-card').forEach(card=>{
+      const record=data.submissions.find(s=>'submission-'+s.id===card.id);
+      if(heartedOnly&&!hearts.has(heartKey(record,week))){card.remove();return;}
+      card.prepend(heartButton(record,week,redraw));
+    });
+    if(!adminRoot.querySelector('.submission-card')){
+      const empty=document.createElement('p');empty.className='review-legend';
+      empty.textContent=heartedOnly?'紹介候補がありません。各課題の♡で追加できます。':'一致する課題がありません。';
+      adminRoot.querySelector('.submission-grid').append(empty);
+    }
+  };
+  filter.onclick=()=>{heartedOnly=!heartedOnly;redraw();};
+  search.oninput=redraw;redraw();
+  const note=document.createElement('p');note.className='review-legend';note.textContent='ハートはこのブラウザーに保存されます（学生には公開されません）。';
+  adminRoot.querySelector('.admin-toolbar').after(note);
 }
 async function loadAdmin() {
   if(!localAdmin){document.querySelector('main').textContent='Local access only.';return;}

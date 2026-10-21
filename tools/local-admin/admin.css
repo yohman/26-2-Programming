@@ -15,6 +15,14 @@
 .admin-toolbar h2 { margin:0; font-size:1.3rem; }.admin-toolbar input { padding:.6rem; border:1px solid var(--line); background:#fff; max-width:18rem; }
 .submission-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr)); gap:1rem; }
 .submission-card { padding:1.4rem; background:#fff; scroll-margin-top:6rem; }
+.submission-card > .submission-heart { display:flex; margin:0 0 1rem auto; }
+.admin-page .submission-heart { align-items:center; gap:.35rem; padding:.4rem .6rem; border-color:transparent; color:var(--muted); font-size:.8rem; white-space:nowrap; }
+.submission-heart span { font-size:1.3rem; line-height:1; }
+.admin-page .submission-heart[aria-pressed="true"] { background:#fbecef; border-color:transparent; color:#a82e49; }
+.admin-page .submission-heart:hover { background:#fbecef; color:#a82e49; }
+.admin-filters { display:flex; flex-wrap:wrap; align-items:center; gap:.6rem; }
+.admin-filters .heart-filter { white-space:nowrap; }
+.admin-page button:focus-visible { outline:2px solid var(--blue); outline-offset:3px; }
 .submission-card h3 { margin:.6rem 0; font-size:1rem; line-height:1.5; }
 .student-name { font:700 1.15rem var(--sans); color:var(--blue); }
 .student-reading { display:block; margin:.3rem 0 .8rem; color:var(--muted); font:500 .8rem/1.5 var(--sans); }

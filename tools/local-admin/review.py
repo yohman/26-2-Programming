@@ -511,7 +511,14 @@ class Handler(SimpleHTTPRequestHandler):
         if not LOCK.acquire(blocking=False):
             self.send_error(409, 'Review preparation already running'); return
         try:
-            prepare(); self.send_response(200); self.end_headers(); self.wfile.write(b'OK')
+            prepare()
+            state = ADMIN / '.gallery-hearts.json'
+            if state.exists():
+                from gallery_export import publish
+                publish(json.loads(state.read_text()))
+            self.send_response(200); self.end_headers(); self.wfile.write(b'OK')
+        except Exception:
+            self.send_error(500, 'Import or public gallery update failed; retry refresh.')
         finally:
             LOCK.release()
 

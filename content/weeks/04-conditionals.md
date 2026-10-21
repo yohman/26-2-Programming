@@ -1,6 +1,6 @@
 ---
 week: 4
-publish_at: 2026-10-20T09:00:00+09:00
+publish_at: 2026-10-22T12:00:00+09:00
 preview: true
 phase: WRITE
 practice_mix: Human 75% · AI 25%

@@ -1,5 +1,5 @@
 /* The public feed contains only explicitly selected, exported notebook content. */
-let galleryVersion='',galleryRecords=[];
+let galleryVersion='',galleryRecords=[],galleryTag='';
 const galleryHost=document.getElementById('gallery-content');
 function thumbnail(record) {
   const widget=record.replay.cells.flatMap(c=>c.outputs).find(o=>o.data?.['text/html']);
@@ -37,9 +37,13 @@ function renderGallery() {
 }
 async function updateGallery() {
   try {
-    const response=await fetch('submissions/gallery.json?t='+Date.now(),{cache:'no-store'});
+    const url='submissions/gallery.json?t='+Date.now();
+    // Recheck small headers, not multi-megabyte notebook images, every ten seconds.
+    if(galleryTag){const probe=await fetch(url,{method:'HEAD',cache:'no-store'});if(probe.ok&&(probe.headers.get('etag')||probe.headers.get('last-modified'))===galleryTag)return;}
+    const response=await fetch(url,{cache:'no-store'});
     if(!response.ok)throw new Error('Gallery unavailable');
     const data=await response.json();
+    galleryTag=response.headers.get('etag')||response.headers.get('last-modified')||'';
     if(data.updated!==galleryVersion){galleryVersion=data.updated;galleryRecords=data.submissions;renderGallery();}
   } catch(error){if(!galleryVersion)document.getElementById('gallery-status').textContent='作品を読み込めませんでした。しばらくしてから再度お試しください。';}
 }

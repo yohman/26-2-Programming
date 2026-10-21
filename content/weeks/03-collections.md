@@ -1,5 +1,7 @@
 ---
 week: 3
+gallery_title_ja: データで見つけた、小さな発見
+gallery_title: A small discovery with real data
 publication_hold: false
 lecture_deck_only: true
 publish_at: 2026-10-13T09:00:00+09:00

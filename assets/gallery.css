@@ -11,6 +11,12 @@
 .gallery-card h2 { font-size:1.15rem; line-height:1.5; margin:.75rem 0 .35rem; }
 .gallery-card p { font-size:.85rem; margin:.25rem 0; color:var(--muted); }
 .gallery-week { margin:2.5rem 0 1rem; font:600 .9rem var(--mono); color:var(--blue); }
+.gallery-week-picker { display:flex; align-items:center; flex-wrap:wrap; gap:.7rem; margin:1.5rem 0; }
+.gallery-week-picker label { color:var(--muted); font-size:.85rem; }
+.gallery-week-picker select { max-width:100%; padding:.65rem 2rem .65rem .8rem; border:1px solid #bfc8cc; border-radius:0; background:#fff; color:var(--ink); font:inherit; }
+.gallery-assignment { margin:2rem 0 1.5rem; }
+.gallery-assignment h2 { font-size:clamp(1.3rem,3vw,1.8rem); margin:.4rem 0; }
+.gallery-assignment p { color:var(--muted); font-size:.85rem; }
 #gallery-back { display:inline-block; margin-bottom:1.5rem; }
 #gallery-back[hidden] { display:none; }
 .gallery-notebook-title { margin:1.5rem 0; }

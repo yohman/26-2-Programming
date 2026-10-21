@@ -1,5 +1,7 @@
 ---
 week: 2
+gallery_title_ja: Earthquake Map — 自分の地震地図をつくる
+gallery_title: Earthquake Map — Make it your own
 publish_at: 2026-10-06T09:00:00+09:00
 preview: true
 phase: WRITE

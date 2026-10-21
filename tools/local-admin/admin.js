@@ -94,7 +94,7 @@ function renderNotebook(record) {
   if(!record.notebook)return renderAttachments(record);
   const host=document.createElement('div');host.className='review-notebook';
   cellsFor(record).forEach(({cell,index,run,outputs})=>{
-    if(cell.cell_type==='markdown') {const section=document.createElement('section');section.className='review-markdown';section.innerHTML=markdownHtml(joined(cell.source).replace(/^(\s*)\* /gm,'$1- '));section.querySelectorAll('a').forEach(a=>{if(!['http:','https:'].includes(new URL(a.href,location.href).protocol)){a.removeAttribute('href');}a.target='_blank';a.rel='noopener noreferrer';});host.append(section);return;}
+    if(cell.cell_type==='markdown') {const section=document.createElement('section');section.className='review-markdown';section.innerHTML=notebookMarkdownHtml(joined(cell.source));section.querySelectorAll('a').forEach(a=>{if(!['http:','https:'].includes(new URL(a.href,location.href).protocol)){a.removeAttribute('href');}a.target='_blank';a.rel='noopener noreferrer';});host.append(section);return;}
     const section=document.createElement('section');section.className='notebook-code-cell';
     const count=selectedMode==='saved'?cell.execution_count:null;
     section.setAttribute('aria-label','Cell '+(index+1)+' · '+(cell.cell_type==='code'?'Python':'Raw'));
@@ -106,6 +106,13 @@ function renderNotebook(record) {
     if(selectedMode==='replay'&&run?.message){const note=document.createElement('p');note.className='review-warning';note.textContent=run.message;outputHost.append(note);}
     section.append(outputHost);host.append(section);
   });return host;
+}
+function notebookMarkdownHtml(source) {
+  // Keep blank lines inside fenced examples instead of treating them as paragraphs.
+  return source.split(/(^```[^\n]*\n[\s\S]*?^```\s*$)/gm).map(part=>{
+    const fence=part.match(/^```([^\n]*)\n([\s\S]*?)\n```\s*$/);
+    return fence?'<pre class="review-code"><code>'+(/^(python|py)?\s*$/.test(fence[1])?notebookCodeHtml(fence[2]):esc(fence[2]))+'</code></pre>':markdownHtml(part.replace(/^(\s*)\* /gm,'$1- '));
+  }).join('');
 }
 function notebookCodeHtml(source) {
   // Tokenize before escaping so entities and HTML inside Python strings stay intact.

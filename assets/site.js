@@ -1024,14 +1024,8 @@ async function setupFileViewer() {
     if (extension === 'ipynb') {
       const notebook = JSON.parse(source);
       const cells = notebook.cells || [];
-      const visibleCells = cells;
-      const notebookText = value => Array.isArray(value) ? value.join('') : (value || '');
-      const preview = visibleCells.map(cell => {
-        if (cell.cell_type !== 'code') return `<section class="notebook-cell markdown-cell"><div class="cell-label">Markdown</div><div class="notebook-markdown">${markdownHtml(notebookText(cell.source))}</div></section>`;
-        const output = (cell.outputs || []).map(item => notebookText(item.text || item.data?.['text/plain'])).filter(Boolean).join('\n');
-        return `<section class="notebook-cell code-cell"><div class="cell-label"><span>▶</span> Code</div><div class="notebook-code-content"><pre class="code-block"><code>${numberedCodeHtml(notebookText(cell.source))}</code></pre>${output ? `<div class="notebook-output"><span>OUTPUT</span><pre>${escapeHtml(output)}</pre></div>` : ''}</div></section>`;
-      }).join('');
-      root.innerHTML = `<div class="viewer-title"><p class="eyebrow">JUPYTER NOTEBOOK · ${cells.length} CELLS</p><h1>${escapeHtml(title)}</h1>${actions(download)}</div><section class="notebook-shell"><header class="notebook-toolbar"><span class="notebook-tab">${escapeHtml(file.split('/').pop())}</span><span class="notebook-readonly"><span class="lang-ja jp" lang="ja">プレビュー · 読み取り専用</span><span class="lang-en">Preview · Read only</span></span></header><article class="notebook-preview">${preview}</article></section>`;
+      root.innerHTML = `<div class="viewer-title"><p class="eyebrow">JUPYTER NOTEBOOK · ${cells.length} CELLS</p><h1>${escapeHtml(title)}</h1>${actions(download)}</div><section class="course-notebook-preview" aria-label="Notebook preview"><p class="notebook-readonly"><span class="lang-ja jp" lang="ja">プレビュー · 読み取り専用</span><span class="lang-en">Preview · Read only</span></p></section>`;
+      root.querySelector('.course-notebook-preview').append(renderNotebook({notebook,replay:{cells:[]},attachments:[]}));
       return;
     }
     if (isTutorial) {

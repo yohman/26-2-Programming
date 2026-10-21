@@ -16,20 +16,20 @@ overview: Practice if/else and elif, trace a rock-paper-scissors game, and start
 overview_ja: Notebookでif・else・elifを試す。じゃんけんの仕組みを読み解き、自分のチャットボットをつくり始める。
 ---
 ## In-Class Part 1
-EN: **13:10–13:35 · Two possible replies.** Slides for 10 minutes, then practice for 15. Notebook 3.1–3.3 and exercises 1–3: comparisons, if/else, and indentation.
-JP: **13:10–13:35 · 返事を二つに分ける。** 講義10分＋実習15分。Notebookの3.1〜3.3、例題1〜3。比較・if/else・インデントを試す。
+EN: **Comparisons · if / else**
+JP: **比較・if / else**
 
 ## In-Class Part 2
-EN: **13:35–14:05 · Several conditions.** Slides for 10 minutes, then practice for 20. Continue the same notebook: in, and/or/not, elif, and exercises 4–6. Test values on both sides of a boundary.
-JP: **13:35–14:05 · 条件を組み合わせる。** 講義10分＋実習20分。同じNotebookの続き：in・and/or/not・elif、例題4〜6。境界の前後で結果を確かめる。
+EN: **elif · in · and / or / not**
+JP: **elif・in・and / or / not**
 
 ## In-Class Part 3
-EN: **14:05–14:20 · Inside rock-paper-scissors.** Play the slide demo, then trace how Python chooses a result. The notebook’s game example is extra practice.
-JP: **14:05〜14:20 · じゃんけんの裏側。** スライドのゲームを試し、Pythonのどの条件が勝敗を決めるか読む。Notebook末尾のゲーム例は、余裕があれば。
+EN: **Rock-paper-scissors**
+JP: **じゃんけん**
 
 ## In-Class Challenge
-EN: **14:20–14:50 · Start your chatbot.** Choose its purpose and create responses, including a fallback for unexpected input. Use the optional starter or your own notebook. Spend the final 5 minutes testing with a partner. Continue this project for homework.
-JP: **14:20〜14:50 · チャットボットをつくり始める。** 誰のためのBotか決め、入力に応じた返事と、想定外の入力への返事をつくる。任意のスターターでも、自作NotebookでもOK。最後の5分は隣の人に試してもらう。この続きを宿題にする。
+EN: **Chatbot**
+JP: **チャットボット**
 
 ## Take-Home Assignment
 EN: **A chatbot with your own personality.**

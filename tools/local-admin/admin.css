@@ -51,6 +51,7 @@
 .notebook-input { display:grid; grid-template-columns:3.5rem minmax(0,1fr); align-items:start; }
 .notebook-prompt { padding:1rem .6rem 0 0; text-align:right; color:#77808b; font:.8rem/1.6 var(--mono); }
 .review-notebook .review-code { margin:0; background:#f5f6f8; border:1px solid #dce0e5; white-space:pre; overflow-wrap:normal; tab-size:4; }
+.review-notebook .syntax-string { color:#23623f; }.review-notebook .syntax-keyword { color:#6b36a1; }.review-notebook .syntax-function { color:#175a92; }.review-notebook .syntax-number,.review-notebook .syntax-constant { color:#945220; }.review-notebook .syntax-comment { color:#69727c; }
 .notebook-cell-outputs { margin-left:3.5rem; min-width:0; }
 .notebook-cell-outputs .review-output pre { margin:.5rem 0; padding:.6rem 0; }
 .notebook-replay-note { margin:.75rem 0 .25rem; color:var(--muted); font-size:.75rem; }

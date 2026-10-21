@@ -1,0 +1,14 @@
+.decision-examples { display:flex; flex-wrap:wrap; gap:1rem 3rem; margin:2rem 0; }
+.decision-examples > div { display:grid; gap:.75rem; font-size:1.1rem; }
+.decision-examples strong { font-size:3.5rem; font-weight:400; }
+.janken-demo { background:#f1f5f7; padding:clamp(1rem,3vw,2rem); margin-top:1.5rem; }
+.janken-buttons { display:flex; flex-wrap:wrap; gap:1rem; }
+.janken-buttons button { display:grid; justify-items:center; gap:.5rem; padding:1rem 2rem; border:0; border-radius:0; font:inherit; background:#fff; color:var(--ink); cursor:pointer; }
+.janken-buttons b { font-size:3rem; font-weight:400; }
+.janken-buttons button:hover,.janken-buttons button:focus-visible { outline:2px solid var(--blue); outline-offset:2px; }
+#janken-result { font-size:clamp(1rem,2vw,1.6rem); min-height:2em; }
+#janken-rule { font:.95rem var(--mono); white-space:pre-wrap; }
+.week-four-lecture .compact-code .bus-code { font-size:clamp(.85rem,1.35vw,1.25rem); line-height:1.45; }
+.week-four-lecture .lecture-notebook-cell pre { white-space:pre-wrap; overflow-wrap:anywhere; }
+.week-four-lecture .slide button { border-radius:0; }
+.syntax-comment { color:#67747d; }

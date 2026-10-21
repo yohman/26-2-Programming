@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="ja" data-language="ja"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Week 04 Lecture · Conditions, Janken & Chatbots</title>
+<link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+<link rel="stylesheet" href="../week-02/lecture.css?v=20261021"><link rel="stylesheet" href="../../assets/ui.css?v=20261021">
+<link rel="stylesheet" href="../week-03/lecture.css?v=20261015-audio"><link rel="stylesheet" href="lecture.css?v=20261021">
+<script src="lecture.js?v=20261021" defer></script>
+<link rel="stylesheet" href="../../assets/copy-blocks.css?v=20261014"><script src="../../assets/copy-blocks.js?v=20261014-pinned" defer></script>
+</head><body class="lecture-page week-three-lecture week-four-lecture">
+<header class="lecture-header"><a class="return-link" id="lecture-return" href="../../agenda.html?open=04#week-04"><span class="ja">← 授業予定に戻る</span><span class="en">← Back to agenda</span></a><span class="lecture-mark">WEEK 04 · CONDITIONS</span><button class="language-toggle" id="language-toggle" type="button" aria-label="Switch to English">EN</button></header>
+<main><div id="slides-view" class="view"><nav class="slide-controls" aria-label="Slide navigation"><div class="slide-nav-group"><button id="previous-slide" type="button">← <span class="ja">前へ</span><span class="en">Previous</span></button><span id="slide-count" aria-live="polite"></span><button id="next-slide" type="button"><span class="ja">次へ</span><span class="en">Next</span> →</button></div><button id="slide-fullscreen" class="slide-fullscreen" type="button" aria-pressed="false">⛶ <span class="ja">全画面</span><span class="en">Fullscreen</span></button></nav><div class="slide-stage"><section class="slide slide--cells " data-slide hidden><h2><span class="ja">アプリの「もしも」</span><span class="en">The “if” inside an app</span></h2><p class="slide-lead"><span class="ja">雨なら傘。空席があれば予約。手が同じなら、あいこ。</span><span class="en">Rain? Bring an umbrella. A seat available? Book it. Same hand? A draw.</span></p><div class="decision-examples"><div><strong>☂</strong><span class="ja">降水確率 ≥ 60%</span><span class="en">Rain probability ≥ 60%</span></div><div><strong>🎟</strong><span class="ja">空席数 &gt; 0</span><span class="en">Seats left &gt; 0</span></div><div><strong>✊</strong><span class="ja">自分の手 == 相手の手</span><span class="en">Your hand == their hand</span></div></div><p class="slide-note"><span class="ja">先週のリストと辞書に、判断するルールを足そう。</span><span class="en">Add decision rules to last week’s lists and dictionaries.</span></p></section>
+<section class="slide slide--cells " data-slide hidden><h2><span class="ja">条件の答えは二つ</span><span class="en">A condition has two answers</span></h2><div class="lecture-notebook-cell"><div class="lecture-cell-toolbar"><span>Python</span><button type="button" data-reveal aria-expanded="false">▶ <span class="ja">結果を見る</span><span class="en">Show output</span></button></div><pre><code>score = 60
+print(score &gt;= 60)
+print(score &lt; 60)</code></pre></div><pre class="lecture-cell-output" hidden><code>True
+False</code></pre><p class="slide-note"><span class="ja">True＝成り立つ。False＝成り立たない。59や61では？</span><span class="en">True means the condition holds. False means it does not. Try 59 or 61.</span></p></section>
+<section class="slide slide--cells " data-slide hidden><h2><span class="ja">代入と比較</span><span class="en">Assignment and comparison</span></h2><pre class="bus-code"><code>score = 60       # 値を入れる
+print(score == 60)  # 等しいか調べる</code></pre><p class="slide-note"><span class="ja"><code>=</code>は代入、<code>==</code>は比較。</span><span class="en"><code>=</code> assigns a value. <code>==</code> compares values.</span></p></section>
+<section class="slide slide--cells " data-slide hidden><h2><span class="ja">if と else</span><span class="en">if and else</span></h2><div class="lecture-notebook-cell"><div class="lecture-cell-toolbar"><span>Python</span><button type="button" data-reveal aria-expanded="false">▶ <span class="ja">結果を見る</span><span class="en">Show output</span></button></div><pre><code>number = 7
+if number == 7:
+    print(&quot;ラッキーセブン！&quot;)
+else:
+    print(&quot;別の数字だね。&quot;)</code></pre></div><pre class="lecture-cell-output" hidden><code>ラッキーセブン！</code></pre><p class="slide-note"><span class="ja">条件の後ろにコロン。成り立つ側だけを実行する。</span><span class="en">A colon follows the condition. Only the matching branch runs.</span></p></section>
+<section class="slide slide--cells " data-slide hidden><h2><span class="ja">Quick Quiz：最後の一行</span><span class="en">Quick Quiz: the last line</span></h2><div class="lecture-notebook-cell"><div class="lecture-cell-toolbar"><span>Python</span><button type="button" data-reveal aria-expanded="false">▶ <span class="ja">結果を見る</span><span class="en">Show output</span></button></div><pre><code>number = 3
+if number == 7:
+    print(&quot;ラッキー！&quot;)
+else:
+    print(&quot;別の数字&quot;)
+print(&quot;また遊ぼう&quot;)</code></pre></div><pre class="lecture-cell-output" hidden><code>別の数字
+また遊ぼう</code></pre><p class="slide-note"><span class="ja">字下げした行は、その条件の中。元に戻った行は、分岐の外。</span><span class="en">Indented lines belong to a branch. Dedented lines are outside it.</span></p></section>
+<section class="slide slide--cells" data-slide hidden><h2><span class="ja">ifだけ、という選択</span><span class="en">An if without else</span></h2><div class="lecture-notebook-cell"><div class="lecture-cell-toolbar"><span>Python</span><button type="button" data-reveal aria-expanded="false">▶ <span class="ja">結果を見る</span><span class="en">Show output</span></button></div><pre><code>rain = False
+if rain:
+    print("傘を持っていこう")
+print("いってらっしゃい")</code></pre></div><pre class="lecture-cell-output" hidden><code>いってらっしゃい</code></pre><p class="slide-note"><span class="ja">雨でないときは何も足さない。elseは必要なときだけ書けばよい。</span><span class="en">When there is no rain, no extra message is needed. Add else only when you need another action.</span></p></section>
+<section class="slide slide--cells " data-slide hidden><h2><span class="ja">比較の道具</span><span class="en">Comparison operators</span></h2><table class="format-table"><thead><tr><th>Python</th><th><span class="ja">意味</span><span class="en">Meaning</span></th><th><span class="ja">例</span><span class="en">Example</span></th></tr></thead><tbody><tr><td><code>==</code></td><td><span class="ja">等しい</span><span class="en">equal</span></td><td><code>7 == 7</code></td></tr><tr><td><code>!=</code></td><td><span class="ja">等しくない</span><span class="en">not equal</span></td><td><code>7 != 3</code></td></tr><tr><td><code>&gt; / &lt;</code></td><td><span class="ja">より大きい / 小さい</span><span class="en">greater / less</span></td><td><code>score &gt; 60</code></td></tr><tr><td><code>&gt;= / &lt;=</code></td><td><span class="ja">以上 / 以下</span><span class="en">at least / at most</span></td><td><code>score &gt;= 60</code></td></tr></tbody></table><p class="slide-note"><span class="ja">60点以上の条件で、59・60・61を試す。60を落とさない。</span><span class="en">For a passing score of 60, test 59, 60, and 61. Do not lose the boundary.</span></p></section>
+<section class="slide slide--cells " data-slide hidden><h2><span class="ja">Part 1：自分で分岐を書く</span><span class="en">Part 1: write a branch</span></h2><p class="slide-lead">13:20–13:35 · 15 min</p><p><span class="ja">Notebookの3.1〜3.3、例題1〜3。</span><span class="en">Notebook sections 3.1–3.3, exercises 1–3.</span></p><ol class="homework-slide-list"><li><span class="ja">0の前後で返事を変える。</span><span class="en">Change the reply around zero.</span></li><li><span class="ja">一つの分岐で二行出力する。</span><span class="en">Print two lines inside a branch.</span></li><li><span class="ja">59・60・61点で合否を確かめる。</span><span class="en">Check pass/fail at 59, 60, and 61.</span></li></ol><a class="download-notebook" href="week-04-in-class-conditionals.ipynb" download><span class="ja">Notebookをダウンロード</span><span class="en">Download notebook</span> ↓</a></section>
+<section class="slide slide--cells " data-slide hidden><h2><span class="ja">in：含まれている？</span><span class="en">in: is it included?</span></h2><div class="lecture-notebook-cell"><div class="lecture-cell-toolbar"><span>Python</span><button type="button" data-reveal aria-expanded="false">▶ <span class="ja">結果を見る</span><span class="en">Show output</span></button></div><pre><code>choices = [&quot;グー&quot;, &quot;チョキ&quot;, &quot;パー&quot;]
+print(&quot;グー&quot; in choices)
+
+message = &quot;今日はつかれた&quot;
+print(&quot;つかれた&quot; in message)
+
+profile = {&quot;name&quot;: &quot;Aoi&quot;}
+print(&quot;name&quot; in profile)</code></pre></div><pre class="lecture-cell-output" hidden><code>True
+True
+True</code></pre><p class="slide-note"><span class="ja">リストは要素、文字列は一部分、辞書はキーを調べる。</span><span class="en">For lists, in checks elements. For strings, a substring. For dictionaries, keys.</span></p></section>
+<section class="slide slide--cells " data-slide hidden><h2><span class="ja">and・or・not</span><span class="en">and, or, not</span></h2><pre class="bus-code"><code>score = 75
+print(score &gt;= 0 and score &lt;= 100)  # 両方
+print(score &lt; 0 or score &gt; 100)     # どちらか
+print(not (score &gt;= 60))           # 反対</code></pre><p class="slide-note"><span class="ja">結果を予想してから、scoreを−1・0・100・101に変えてみよう。</span><span class="en">Predict first, then change score to −1, 0, 100, and 101.</span></p></section>
+<section class="slide slide--cells " data-slide hidden><h2><span class="ja">キーを確かめてから読む</span><span class="en">Check the key before reading</span></h2><div class="lecture-notebook-cell"><div class="lecture-cell-toolbar"><span>Python</span><button type="button" data-reveal aria-expanded="false">▶ <span class="ja">結果を見る</span><span class="en">Show output</span></button></div><pre><code>menu = {&quot;カレー&quot;: 500, &quot;うどん&quot;: 350}
+order = &quot;カレー&quot;
+if order in menu:
+    print(f&quot;{menu[order]}円です。&quot;)
+else:
+    print(&quot;そのメニューはありません。&quot;)</code></pre></div><pre class="lecture-cell-output" hidden><code>500円です。</code></pre><p class="slide-note"><span class="ja">辞書を読む前の確認で、存在しないキーのエラーを防げる。</span><span class="en">Checking membership avoids looking up a key that does not exist.</span></p></section>
+<section class="slide slide--cells " data-slide hidden><h2><span class="ja">elif：もう一つの条件</span><span class="en">elif: another condition</span></h2><div class="lecture-notebook-cell"><div class="lecture-cell-toolbar"><span>Python</span><button type="button" data-reveal aria-expanded="false">▶ <span class="ja">結果を見る</span><span class="en">Show output</span></button></div><pre><code>temperature = 22
+if temperature &gt;= 30:
+    print(&quot;半袖で出かけよう&quot;)
+elif temperature &gt;= 20:
+    print(&quot;羽織るものがあると安心&quot;)
+else:
+    print(&quot;暖かくして出かけよう&quot;)</code></pre></div><pre class="lecture-cell-output" hidden><code>羽織るものがあると安心</code></pre><p class="slide-note"><span class="ja">上から順に調べ、最初に当てはまった一つだけ実行する。</span><span class="en">Check from the top. Run only the first matching branch.</span></p></section>
+<section class="slide slide--cells " data-slide hidden><h2><span class="ja">Quick Quiz：90点なのに？</span><span class="en">Quick Quiz: but the score is 90</span></h2><div class="lecture-notebook-cell"><div class="lecture-cell-toolbar"><span>Python</span><button type="button" data-reveal aria-expanded="false">▶ <span class="ja">結果を見る</span><span class="en">Show output</span></button></div><pre><code>score = 90
+if score &gt;= 60:
+    print(&quot;合格&quot;)
+elif score &gt;= 90:
+    print(&quot;すばらしい！&quot;)</code></pre></div><pre class="lecture-cell-output" hidden><code>合格</code></pre><p class="slide-note"><span class="ja">二つ目の条件まで進む？ 条件の順番を直してみよう。</span><span class="en">Will execution reach the second condition? How would you reorder it?</span></p></section>
+<section class="slide slide--cells " data-slide hidden><h2><span class="ja">広い条件より、先に</span><span class="en">Specific conditions first</span></h2><div class="lecture-notebook-cell"><div class="lecture-cell-toolbar"><span>Python</span><button type="button" data-reveal aria-expanded="false">▶ <span class="ja">結果を見る</span><span class="en">Show output</span></button></div><pre><code>score = 90
+if score &gt;= 90:
+    print(&quot;すばらしい！&quot;)
+elif score &gt;= 60:
+    print(&quot;合格&quot;)
+else:
+    print(&quot;もう一度挑戦&quot;)</code></pre></div><pre class="lecture-cell-output" hidden><code>すばらしい！</code></pre><p class="slide-note"><span class="ja">ifを二つ並べると、それぞれ独立に判定する。elifなら一つに決まる。</span><span class="en">Two separate if statements each run their own test. An elif chain selects one branch.</span></p></section>
+<section class="slide slide--cells " data-slide hidden><h2><span class="ja">Part 2：条件を組み合わせる</span><span class="en">Part 2: combine conditions</span></h2><p class="slide-lead">13:45–14:05 · 20 min</p><p><span class="ja">同じNotebookの続き。例題4〜6。</span><span class="en">Continue the same notebook, exercises 4–6.</span></p><ol class="homework-slide-list"><li><span class="ja">キーがあれば、辞書の値を表示する。</span><span class="en">Display a dictionary value if its key exists.</span></li><li><span class="ja">範囲外の判定をorで書く。</span><span class="en">Use or to detect an out-of-range value.</span></li><li><span class="ja">リストの長さで、少なすぎる・ちょうどよい・多すぎるを分ける。</span><span class="en">Classify list lengths as too few, acceptable, or too many.</span></li></ol><p class="slide-note"><span class="ja">例題6の境界は3・4・9・10個。余裕があればFun Examplesへ。</span><span class="en">Exercise 6 boundaries: 3, 4, 9, and 10 items. Fun Examples are optional.</span></p></section>
+<section class="slide slide--cells " data-slide hidden><h2><span class="ja">じゃんけんの勝敗</span><span class="en">Rock, paper, scissors</span></h2><p><span class="ja">手を選んでから、どの条件が動いたか確かめよう。</span><span class="en">Choose a hand, then check which condition matched.</span></p><div class="janken-demo"><div class="janken-buttons"><button type="button" data-hand="グー"><b>✊</b><span class="ja">グー</span><span class="en">Rock</span></button><button type="button" data-hand="チョキ"><b>✌</b><span class="ja">チョキ</span><span class="en">Scissors</span></button><button type="button" data-hand="パー"><b>✋</b><span class="ja">パー</span><span class="en">Paper</span></button></div><p id="janken-result" role="status"><span class="ja">あなたの手は？</span><span class="en">Your move?</span></p><code id="janken-rule">if / elif / else</code></div><p class="slide-note"><span class="ja">ブラウザーのデモはJavaScript。同じルールを、次のPythonで読み解く。</span><span class="en">The browser demo uses JavaScript. The next slides unpack the same rules in Python.</span></p></section>
+<section class="slide slide--cells " data-slide hidden><h2><span class="ja">① 相手の手を決める</span><span class="en">1. Choose the computer’s hand</span></h2><pre class="bus-code"><code>import random
+
+choices = [&quot;グー&quot;, &quot;チョキ&quot;, &quot;パー&quot;]
+computer = random.choice(choices)
+print(computer)</code></pre><p class="slide-note"><span class="ja">先週のlistから一つ選ぶ。random.choiceは実行するたびに選び直す。同じ手が続くこともある。</span><span class="en">random.choice picks one item from last week’s list. Repeated hands are possible.</span></p></section>
+<section class="slide slide--cells " data-slide hidden><h2><span class="ja">② 入力を受け取る</span><span class="en">2. Read the player’s hand</span></h2><pre class="bus-code"><code>player = input(&quot;グー・チョキ・パー：&quot;).strip()
+
+if player not in choices:
+    print(&quot;グー・チョキ・パーで入力してね。&quot;)</code></pre><p class="slide-note"><span class="ja">文字列のまま判定すれば、数字への変換エラーを避けられる。.strip()は前後の空白を取り除く。</span><span class="en">Keeping input as text avoids number-conversion errors. .strip() removes surrounding whitespace.</span></p></section>
+<section class="slide slide--cells " data-slide hidden><h2><span class="ja">③ 同じ手なら、あいこ</span><span class="en">3. Same hand, a draw</span></h2><pre class="bus-code"><code>if player not in choices:
+    print(&quot;入力を確認してね&quot;)
+elif player == computer:
+    print(&quot;あいこ！&quot;)</code></pre><p class="slide-note"><span class="ja">入力の確認を先にする。正しい入力なら、次は同じ手か調べる。</span><span class="en">Validate first. For a valid hand, check whether the two hands match.</span></p></section>
+<section class="slide slide--cells " data-slide hidden><h2><span class="ja">④ 勝つ組み合わせ</span><span class="en">4. Winning combinations</span></h2><pre class="bus-code"><code>elif (
+    (player == &quot;グー&quot; and computer == &quot;チョキ&quot;)
+    or (player == &quot;チョキ&quot; and computer == &quot;パー&quot;)
+    or (player == &quot;パー&quot; and computer == &quot;グー&quot;)
+):
+    print(&quot;あなたの勝ち！&quot;)
+else:
+    print(&quot;コンピュータの勝ち！&quot;)</code></pre><p class="slide-note"><span class="ja">一つの勝ち方はand、三つの勝ち方をorでつなぐ。残る正しい入力は負け。</span><span class="en">Each winning pair uses and. The three pairs connect with or. Remaining valid pairs lose.</span></p></section>
+<section class="slide slide--cells compact-code" data-slide hidden><h2><span class="ja">じゃんけんの全体</span><span class="en">The complete game</span></h2><pre class="bus-code"><code>import random
+choices = [&quot;グー&quot;, &quot;チョキ&quot;, &quot;パー&quot;]
+computer = random.choice(choices)
+player = input(&quot;グー・チョキ・パー：&quot;).strip()
+print(f&quot;相手の手：{computer}&quot;)
+
+if player not in choices:
+    print(&quot;入力を確認してね&quot;)
+elif player == computer:
+    print(&quot;あいこ！&quot;)
+elif (
+    (player == &quot;グー&quot; and computer == &quot;チョキ&quot;)
+    or (player == &quot;チョキ&quot; and computer == &quot;パー&quot;)
+    or (player == &quot;パー&quot; and computer == &quot;グー&quot;)
+):
+    print(&quot;あなたの勝ち！&quot;)
+else:
+    print(&quot;コンピュータの勝ち！&quot;)</code></pre></section>
+<section class="slide slide--cells " data-slide hidden><h2><span class="ja">運まかせにせずテストする</span><span class="en">Test without relying on luck</span></h2><table class="format-table"><thead><tr><th><span class="ja">自分 / 相手</span><span class="en">Player / computer</span></th><th>グー</th><th>チョキ</th><th>パー</th></tr></thead><tbody><tr><th>グー</th><td><span class="ja">あいこ</span><span class="en">Draw</span></td><td><span class="ja">勝ち</span><span class="en">Win</span></td><td><span class="ja">負け</span><span class="en">Lose</span></td></tr><tr><th>チョキ</th><td><span class="ja">負け</span><span class="en">Lose</span></td><td><span class="ja">あいこ</span><span class="en">Draw</span></td><td><span class="ja">勝ち</span><span class="en">Win</span></td></tr><tr><th>パー</th><td><span class="ja">勝ち</span><span class="en">Win</span></td><td><span class="ja">負け</span><span class="en">Lose</span></td><td><span class="ja">あいこ</span><span class="en">Draw</span></td></tr></tbody></table><p class="slide-note"><span class="ja">一時的にcomputer = &quot;チョキ&quot;にして、狙った組み合わせを試す。「石」や空欄も試す。</span><span class="en">Temporarily set computer = &quot;チョキ&quot; to test a chosen pair. Also try an invalid hand or blank input.</span></p></section>
+<section class="slide slide--cells " data-slide hidden><h2><span class="ja">同じ仕組みで、会話する</span><span class="en">The same rules can reply</span></h2><pre class="bus-code"><code>message = input(&quot;あなた：&quot;)
+if &quot;こんにちは&quot; in message:
+    print(&quot;Bot：こんにちは！&quot;)
+elif &quot;つかれた&quot; in message:
+    print(&quot;Bot：少し休憩しよう。&quot;)
+else:
+    print(&quot;Bot：もう少し詳しく教えて。&quot;)</code></pre><p class="slide-note"><span class="ja">じゃんけんは手に応じて勝敗を返す。Botは入力の言葉に応じて返事を変える。</span><span class="en">The game maps hands to outcomes. The bot maps words to replies.</span></p></section>
+<section class="slide slide--cells " data-slide hidden><h2><span class="ja">ルールの順番が、性格になる</span><span class="en">Rule order shapes the reply</span></h2><div class="lecture-notebook-cell"><div class="lecture-cell-toolbar"><span>Python</span><button type="button" data-reveal aria-expanded="false">▶ <span class="ja">結果を見る</span><span class="en">Show output</span></button></div><pre><code>message = &quot;こんにちは。今日はつかれた&quot;
+if &quot;つかれた&quot; in message:
+    print(&quot;まずはひと休みしよう。&quot;)
+elif &quot;こんにちは&quot; in message:
+    print(&quot;こんにちは！&quot;)</code></pre></div><pre class="lecture-cell-output" hidden><code>まずはひと休みしよう。</code></pre><p class="slide-note"><span class="ja">二つの言葉が入っていたら、どちらに先に反応してほしい？</span><span class="en">If both keywords appear, which should your bot respond to first?</span></p></section>
+<section class="slide slide--cells " data-slide hidden><h2><span class="ja">最後の30分：自分のBot</span><span class="en">Final 30 minutes: your bot</span></h2><p class="slide-lead">14:20–14:50</p><ol class="homework-slide-list"><li><span class="ja">誰のために、何をするBotか決める。</span><span class="en">Choose who the bot is for and what it does.</span></li><li><span class="ja">返答を自分の言葉に変え、話題を一つ足す。</span><span class="en">Rewrite replies in your own voice and add a topic.</span></li><li><span class="ja">最後の5分は、隣の人に想定外の言葉を入れてもらう。</span><span class="en">In the last 5 minutes, ask a partner to try unexpected input.</span></li></ol><a class="download-notebook" href="week-04-homework-chatbot.ipynb" download><span class="ja">任意のスターター</span><span class="en">Optional starter</span> ↓</a><p class="slide-note"><span class="ja">スターターのwhileとbreakは会話を続ける準備済みの部分。今日は分岐に集中。</span><span class="en">The starter supplies while and break to repeat the conversation. Focus on the branches today.</span></p></section>
+<section class="slide slide--cells " data-slide hidden><h2><span class="ja">Homework：あなたのチャットボット</span><span class="en">Homework: your chatbot</span></h2><ul class="homework-slide-list"><li><span class="ja">三つ以上の返答パターン＋想定外の入力への返事＋終了方法。</span><span class="en">At least three response paths, a fallback, and a way to exit.</span></li><li><span class="ja">会話のテスト三つと、工夫・限界を短く記録する。</span><span class="en">Save three test conversations and a short note on design and limitations.</span></li><li><span class="ja">一番上にタイトル・氏名。実行済みの.ipynbをUNIPAへ。</span><span class="en">Title and name at the top. Submit the executed .ipynb to UNIPA.</span></li></ul><p class="slide-lead"><span class="ja">10月28日(水) 23:59まで</span><span class="en">Due October 28 (Wed), 23:59 JST</span></p><p class="slide-note"><span class="ja">テーマは自由。APIキーも、Webアプリも必要ありません。</span><span class="en">Choose your own theme. No API key or web app required.</span></p></section></div></div></main></body></html>

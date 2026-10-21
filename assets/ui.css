@@ -170,7 +170,7 @@ button:disabled { cursor: default; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { transition-duration: 0s !important; animation-duration: 0s !important; } }
 @media print { .week-shortcuts, .lecture-view-nav, .python-topic-select { display: none; } }
 .lecture-inline-deck { display:block; width:100%; height:clamp(440px,48vw,680px); border:0; background:#fff; }
-#week-03 .lecture-slide-card { grid-column:1 / -1; }
+#week-03 .lecture-slide-card,#week-04 .lecture-slide-card { grid-column:1 / -1; }
 .lecture-explore-layout { grid-column:1 / -1; display:grid; grid-template-columns:minmax(0,2.4fr) minmax(220px,1fr); gap:1.5rem; align-items:start; }
 #week-03 .lecture-explore-layout .lecture-slide-card { grid-column:auto; }
 .lecture-section-title { margin:0; padding:1rem 1.25rem; color:var(--blue); font-size:1rem; }

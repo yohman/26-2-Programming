@@ -1,7 +1,7 @@
 /* Local review UI. Student HTML is confined to opaque-origin sandboxed frames. */
 const localAdmin = ['127.0.0.1','localhost','[::1]'].includes(location.hostname);
 const adminRoot = document.getElementById('admin-content');
-let manifest, currentSubmission, selectedMode='saved', selectedTab='results';
+let manifest, currentSubmission, selectedMode='saved', selectedTab='notebook';
 const params=new URLSearchParams(location.search);
 const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const joined=value=>Array.isArray(value)?value.join(''):value||'';
@@ -77,15 +77,32 @@ function renderResults(record) {
   return host;
 }
 function renderNotebook(record) {
-  const host=document.createElement('div');
+  if(!record.notebook)return renderAttachments(record);
+  const host=document.createElement('div');host.className='review-notebook';
   cellsFor(record).forEach(({cell,index,run,outputs})=>{
-    if(cell.cell_type==='markdown') {const section=document.createElement('section');section.className='review-markdown';section.innerHTML=markdownHtml(joined(cell.source));section.querySelectorAll('a').forEach(a=>{if(!['http:','https:'].includes(new URL(a.href,location.href).protocol)){a.removeAttribute('href');}a.target='_blank';a.rel='noopener noreferrer';});host.append(section);return;}
-    const details=document.createElement('details');details.className='review-cell';
-    details.innerHTML='<summary>Cell '+(index+1)+' · Code'+(selectedMode==='replay'?' · '+esc(run?.status||'not executed'):'')+'</summary><pre class="review-code"><code>'+highlightEscapedCode(esc(joined(cell.source)))+'</code></pre>';
-    outputs.forEach(output=>details.append(outputElement(output)));
-    if(selectedMode==='replay'&&run?.message){const note=document.createElement('p');note.className='review-warning';note.textContent=run.message;details.append(note);}
-    host.append(details);
+    if(cell.cell_type==='markdown') {const section=document.createElement('section');section.className='review-markdown';section.innerHTML=markdownHtml(joined(cell.source).replace(/^(\s*)\* /gm,'$1- '));section.querySelectorAll('a').forEach(a=>{if(!['http:','https:'].includes(new URL(a.href,location.href).protocol)){a.removeAttribute('href');}a.target='_blank';a.rel='noopener noreferrer';});host.append(section);return;}
+    const section=document.createElement('section');section.className='notebook-code-cell';
+    const count=selectedMode==='saved'?cell.execution_count:null;
+    section.setAttribute('aria-label','Cell '+(index+1)+' · '+(cell.cell_type==='code'?'Python':'Raw'));
+    section.innerHTML='<div class="notebook-input"><span class="notebook-prompt" title="'+(selectedMode==='saved'?'提出時の実行番号':'ローカル再実行')+'">['+esc(count??' ')+']</span><pre class="review-code"><code>'+notebookCodeHtml(joined(cell.source))+'</code></pre></div>';
+    const outputHost=document.createElement('div');outputHost.className='notebook-cell-outputs';
+    const reconstructed=selectedMode==='saved'&&outputs.some(o=>o.data?.['application/vnd.jupyter.widget-view+json'])?(run?.outputs||[]).filter(o=>o.metadata?.local_widget_preview):[];
+    outputs.filter(o=>!reconstructed.length||(!o.data?.['application/vnd.jupyter.widget-view+json']&&!joined(o.data?.['text/plain']).startsWith('<function '))).forEach(output=>outputHost.append(outputElement(output)));
+    if(reconstructed.length){const note=document.createElement('p');note.className='notebook-replay-note';note.textContent='Widget表示：提出コードからローカルで再現（保存済み出力ではありません）。';outputHost.append(note);reconstructed.forEach(output=>outputHost.append(outputElement(output)));}
+    if(selectedMode==='replay'&&run?.message){const note=document.createElement('p');note.className='review-warning';note.textContent=run.message;outputHost.append(note);}
+    section.append(outputHost);host.append(section);
   });return host;
+}
+function notebookCodeHtml(source) {
+  // Tokenize before escaping so entities and HTML inside Python strings stay intact.
+  const tokens=/(#[^\n]*|(?:[fFrRuUbB]{0,2})(?:"""[\s\S]*?"""|'''[\s\S]*?'''|"(?:\\.|[^"\\\n])*"|'(?:\\.|[^'\\\n])*')|\b(?:def|return|if|elif|else|for|while|in|import|from|as|with|try|except|class|pass|not|and|or|lambda)\b|\b(?:print|input|type|int|float|str|bool|len|range|display)\b|\b(?:True|False|None)\b|\b\d+(?:\.\d+)?\b)/g;
+  let html='',offset=0;
+  for(const match of source.matchAll(tokens)) {
+    const token=match[0];
+    const kind=token.startsWith('#')?'comment':/^[fFrRuUbB]*["']/.test(token)?'string':/^\d/.test(token)?'number':/^(True|False|None)$/.test(token)?'constant':/^(print|input|type|int|float|str|bool|len|range|display)$/.test(token)?'function':'keyword';
+    html+=esc(source.slice(offset,match.index))+'<span class="syntax-'+kind+'">'+esc(token)+'</span>';offset=match.index+token.length;
+  }
+  return html+esc(source.slice(offset));
 }
 function renderAttachments(record) {
   const host=document.createElement('div');host.className='attachment-list';
@@ -101,6 +118,7 @@ function renderSubmission(record) {
   adminRoot.innerHTML='<a href="?week='+record.week+'#submission-'+esc(record.id)+'">← Week '+String(record.week).padStart(2,'0')+' の一覧</a><header class="submission-heading"><p class="student-name">'+esc(record.student_name||('名簿未一致 · '+record.student))+'</p>'+(record.student_reading?'<span class="student-reading">'+esc(record.student_reading)+'</span>':'')+'<p>学籍番号：'+esc(record.student)+'</p><h2>'+esc(record.title)+'</h2><p>'+esc(record.file||'Notebookなし')+'</p></header><div class="submission-actions"><button data-mode="saved" aria-pressed="'+(selectedMode==='saved')+'">提出時の出力</button><button data-mode="replay" aria-pressed="'+(selectedMode==='replay')+'">ローカル再実行</button></div><nav class="review-tabs"><button data-tab="results" aria-pressed="'+(selectedTab==='results')+'">結果</button><button data-tab="notebook" aria-pressed="'+(selectedTab==='notebook')+'">Notebook</button><button data-tab="files" aria-pressed="'+(selectedTab==='files')+'">添付ファイル</button></nav><div id="submission-body"></div>';
   document.getElementById('submission-body').append(selectedTab==='files'?renderAttachments(record):selectedTab==='notebook'?renderNotebook(record):renderResults(record));
   adminRoot.querySelector('.submission-actions').prepend(heartButton(record));
+  adminRoot.querySelector('.review-tabs').prepend(adminRoot.querySelector('[data-tab="notebook"]'));
   adminRoot.querySelectorAll('[data-mode]').forEach(button=>button.onclick=()=>{selectedMode=button.dataset.mode;renderSubmission(record);});
   adminRoot.querySelectorAll('[data-tab]').forEach(button=>button.onclick=()=>{selectedTab=button.dataset.tab;renderSubmission(record);});
 }

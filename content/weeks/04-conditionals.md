@@ -16,12 +16,8 @@ overview: Practice if/else and elif, trace a rock-paper-scissors game, and start
 overview_ja: Notebookでif・else・elifを試す。じゃんけんの仕組みを読み解き、自分のチャットボットをつくり始める。
 ---
 ## In-Class Part 1
-EN: **Comparisons · if / else**
-JP: **比較・if / else**
-
-## In-Class Part 2
-EN: **elif · in · and / or / not**
-JP: **elif・in・and / or / not**
+EN: **Conditions: comparisons · if / elif / else · in · and / or / not**
+JP: **条件分岐：比較・if / elif / else・in・and / or / not**
 
 ## In-Class Part 3
 EN: **Rock-paper-scissors**
@@ -65,6 +61,5 @@ JP: 期待した入力だけでなく、想定外の入力にも返せると、�
 ## Resources
 - [Week 04 Lecture — Conditions, Janken & Chatbots](weeks/week-04/lecture.html) {lecture}
 - [Week 04 In-Class — 条件分岐](weeks/week-04/week-04-in-class-conditionals.ipynb) {part-1}
-- [同じNotebookの続き — 条件の組み合わせ](weeks/week-04/week-04-in-class-conditionals.ipynb) {part-2}
 - [Chatbot starter — チャットボットをつくる（任意）](weeks/week-04/week-04-homework-chatbot.ipynb) {part-3}
 - [任意のスターター / Optional starter — My Chatbot](weeks/week-04/week-04-homework-chatbot.ipynb) {homework}

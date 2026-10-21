@@ -8,6 +8,7 @@
 </head><body class="admin-page">
 <header class="site-header"><a href="../agenda.html?open=03" class="viewer-back">← 授業予定</a><div class="header-tools"><span class="admin-local-label">LOCAL ONLY</span></div></header>
 <main class="wrap admin-main"><div class="admin-heading"><div><p class="eyebrow">PROGRAMMING · ADMIN</p><h1>提出課題</h1></div><button id="refresh" type="button">フォルダを再読み込み</button></div>
-<p class="admin-note">学生の原本は変更しません。保存済みの出力と、ネットワークを無効にして再実行した結果を分けて表示します。</p>
+<p class="admin-note">学生の原本は変更しません。提出時の出力と、隔離環境での再実行を分けて表示します。再実行用のAPIデータは許可済みの公開URLだけを事前取得し、取得日時を記録します。</p>
+<p class="admin-note">追加・更新した提出物は「フォルダを再読み込み」で取り込みます。ファイル名は変更不要。変更のない課題は再実行しません。</p>
 <p id="admin-status" role="status"></p><nav id="admin-weeks" aria-label="Weeks"></nav><div id="admin-content"></div></main>
 </body></html>

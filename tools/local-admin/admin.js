@@ -6,7 +6,7 @@ const params=new URLSearchParams(location.search);
 const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const joined=value=>Array.isArray(value)?value.join(''):value||'';
 const fileURL=path=>'./'+path.split('/').map(encodeURIComponent).join('/');
-const policy="default-src 'none'; script-src 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com https://code.jquery.com https://maxcdn.bootstrapcdn.com; style-src 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com https://maxcdn.bootstrapcdn.com https://fonts.googleapis.com; img-src data: blob: https://tile.openstreetmap.org https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com https://server.arcgisonline.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com; font-src data: https://fonts.gstatic.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; frame-src about: data: blob:; connect-src 'none'; form-action 'none'; base-uri 'none'";
+const policy="default-src 'none'; script-src 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com https://code.jquery.com https://maxcdn.bootstrapcdn.com; style-src 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com https://maxcdn.bootstrapcdn.com https://fonts.googleapis.com; img-src data: blob: https://raw.githubusercontent.com/PokeAPI/sprites/ https://tile.openstreetmap.org https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com https://server.arcgisonline.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com; font-src data: https://fonts.gstatic.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; frame-src about: data: blob:; connect-src 'none'; form-action 'none'; base-uri 'none'";
 function outputElement(output) {
   const wrapper=document.createElement('div');wrapper.className='review-output';
   const data=output.data||{};
@@ -17,6 +17,10 @@ function outputElement(output) {
     if(preview!==original){const note=document.createElement('p');note.className='review-legend';note.textContent='背景のみプレビュー用に置換。原本・コード・地震データは変更していません。 ';const credit=document.createElement('a');credit.href='https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer';credit.target='_blank';credit.rel='noopener';credit.textContent='© Esri World Topo Map · 出典';note.append(credit);wrapper.append(note);}
     const frame=document.createElement('iframe');frame.sandbox='allow-scripts';frame.referrerPolicy='no-referrer';frame.loading='lazy';frame.title='Notebook HTML output';
     frame.srcdoc='<meta http-equiv="Content-Security-Policy" content="'+esc(policy)+'">'+preview;wrapper.append(frame);
+  } else if(data['text/markdown']) {
+    const section=document.createElement('div');section.className='review-markdown';section.innerHTML=markdownHtml(joined(data['text/markdown']));section.querySelectorAll('a').forEach(a=>{if(!['http:','https:'].includes(new URL(a.href,location.href).protocol))a.removeAttribute('href');a.target='_blank';a.rel='noopener';});wrapper.append(section);
+  } else if(data['application/vnd.jupyter.widget-view+json']) {
+    const note=document.createElement('p');note.className='review-warning';note.textContent='この操作にはJupyterのPythonカーネルが必要です。保存済みのHTML・画像・テキスト出力は、ほかのCellで確認できます。';wrapper.append(note);
   } else if(data['image/png']||data['image/jpeg']) {
     const image=document.createElement('img');const type=data['image/png']?'png':'jpeg';image.src='data:image/'+type+';base64,'+joined(data['image/'+type]);image.alt='Notebook output';wrapper.append(image);
   } else {
@@ -36,7 +40,7 @@ function renderResults(record) {
   if(latest){const label=document.createElement('h3');label.textContent='最後のHTML出力 · Cell '+(latest.index+1);host.append(label,outputElement(latest.output));}
   else {const p=document.createElement('p');p.textContent='この表示にはHTML出力がありません。「Notebook」で各Cellを確認できます。';host.append(p);}
   cells.filter(cell=>cell.outputs.some(o=>!o.data?.['text/html'])).forEach(cell=>{
-    const details=document.createElement('details');details.className='review-cell';details.innerHTML='<summary>Cell '+(cell.index+1)+' · 出力</summary>';
+    const details=document.createElement('details');details.className='review-cell';details.open=cell.outputs.some(o=>o.data?.['image/png']||o.data?.['image/jpeg']) || cell.outputs.reduce((n,o)=>n+joined(o.text||o.data?.['text/plain']).length,0)<5000;details.innerHTML='<summary>Cell '+(cell.index+1)+' · 出力</summary>';
     cell.outputs.filter(o=>!o.data?.['text/html']).forEach(output=>details.append(outputElement(output)));host.append(details);
   });
   if(selectedMode==='replay') {
@@ -86,7 +90,16 @@ async function loadAdmin() {
   document.getElementById('admin-weeks').innerHTML=Array.from({length:14},(_,i)=>{const number=i+1,data=manifest.weeks.find(w=>w.week===number);return '<a href="?week='+number+'"'+(number===week?' aria-current="page"':'')+'><strong>'+String(number).padStart(2,'0')+'</strong><small>'+(data?data.students+'人':'未取り込み')+'</small></a>';}).join('');
   document.getElementById('admin-status').textContent='更新：'+new Date(manifest.generated).toLocaleString('ja-JP');
   if(manifest.roster)document.getElementById('admin-status').textContent+=' · 名簿一致 '+manifest.roster.matched+'人 / 未一致 '+manifest.roster.unmatched.length+'人'+(manifest.roster.notes.length?' · '+manifest.roster.notes.join(' / '):'');
-  if(params.get('id')){const id=params.get('id');if(!/^[a-f0-9]{20}$/.test(id))throw new Error('Invalid submission ID');const response=await fetch('_review/'+id+'/submission.json');if(!response.ok)throw new Error('Submission not found');renderSubmission(await response.json());}else renderWeek(week);
+  if(params.get('id')){
+    let id=params.get('id');if(!/^[a-f0-9]{20}$/.test(id))throw new Error('Invalid submission ID');
+    const entries=manifest.weeks.flatMap(w=>w.submissions);
+    if(!entries.some(s=>s.id===id)){
+      const replacement=manifest.weeks.find(w=>w.week===week)?.submissions.find(s=>s.student===currentSubmission?.student && s.file===currentSubmission?.file);
+      if(replacement){id=replacement.id;params.set('id',id);history.replaceState(null,'','?'+params);}
+      else {params.delete('id');history.replaceState(null,'','?'+params);renderWeek(week);return;}
+    }
+    const response=await fetch('_review/'+id+'/submission.json',{cache:'no-store'});if(!response.ok)throw new Error('Submission not found');renderSubmission(await response.json());
+  }else renderWeek(week);
 }
 document.addEventListener('DOMContentLoaded',()=>{
   loadAdmin().catch(error=>document.getElementById('admin-status').textContent=error.message);

@@ -11,6 +11,7 @@ import csv
 import hashlib
 import html
 import io
+import inspect
 import json
 import os
 from pathlib import Path
@@ -24,12 +25,106 @@ import unicodedata
 from datetime import datetime
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import unquote, urlsplit
+from urllib.parse import quote, urlencode
+from urllib.request import Request, urlopen
+from concurrent.futures import ThreadPoolExecutor
 
 ROOT = Path(__file__).resolve().parents[2]
 ADMIN = ROOT / 'admin'
 OUTPUT = ADMIN / '_review'
 UI = Path(__file__).parent
 LOCK = threading.Lock()
+API_CACHE = OUTPUT / 'api-cache'
+PUBLIC_APIS = {
+    'api.open-meteo.com': ('/v1/forecast',),
+    'archive-api.open-meteo.com': ('/v1/archive',),
+    'rss.applemarketingtools.com': ('/api/v2/',),
+    'itunes.apple.com': ('/search',),
+    'jsonplaceholder.typicode.com': ('/posts', '/users', '/todos'),
+    'pokeapi.co': ('/api/v2/pokemon/', '/api/v2/type/', '/api/v2/pokemon-form/'),
+    'ja.wikipedia.org': ('/api/rest_v1/page/summary/',),
+}
+
+
+def public_api(url):
+    if not isinstance(url, str) or len(url) > 3000:
+        return False
+    try:
+        parsed = urlsplit(url)
+        port = parsed.port
+    except ValueError:
+        return False
+    return (parsed.scheme == 'https' and port in {None, 443}
+            and not parsed.username and not parsed.password and not parsed.fragment
+            and any(parsed.path.startswith(prefix) for prefix in PUBLIC_APIS.get(parsed.hostname, ()))
+            and not re.search(r'(?:key|token|secret|password|email)=', parsed.query, re.I))
+
+
+def api_urls(notebook):
+    """Resolve only literal URL construction. Never execute submitted code here."""
+    urls, values = set(), {}
+    def value(node, env):
+        if isinstance(node, ast.Constant): return node.value
+        if isinstance(node, ast.Name): return env[node.id]
+        if isinstance(node, ast.Dict): return {value(k, env): value(v, env) for k, v in zip(node.keys, node.values)}
+        if isinstance(node, (ast.List, ast.Tuple)): return [value(v, env) for v in node.elts]
+        if isinstance(node, ast.BinOp) and isinstance(node.op, ast.Add): return value(node.left, env) + value(node.right, env)
+        if isinstance(node, ast.JoinedStr): return ''.join(str(value(v.value, env)) if isinstance(v, ast.FormattedValue) else v.value for v in node.values)
+        if isinstance(node, ast.Call) and isinstance(node.func, ast.Name):
+            args = [value(v, env) for v in node.args]
+            if node.func.id == 'urlencode': return urlencode(*args)
+            if node.func.id == 'quote': return quote(*args)
+            if node.func.id == 'range' and all(isinstance(v, int) for v in args):
+                result = range(*args)
+                if len(result) <= 500: return list(result)
+        raise ValueError('Not a literal expression')
+    def scan(nodes, env):
+        for node in nodes:
+            if isinstance(node, ast.Assign):
+                try:
+                    resolved = value(node.value, env)
+                    for target in node.targets:
+                        if isinstance(target, ast.Name): env[target.id] = resolved
+                except (ValueError, KeyError, TypeError): pass
+            if isinstance(node, ast.For) and isinstance(node.target, ast.Name):
+                try:
+                    items = value(node.iter, env)
+                    if len(items) <= 500:
+                        for item in items: scan(node.body, dict(env, **{node.target.id: item}))
+                except (ValueError, KeyError, TypeError): pass
+                continue
+            for item in ast.walk(node):
+                candidate = item if isinstance(item, ast.JoinedStr) else item.args[0] if isinstance(item, ast.Call) and item.args and (getattr(item.func, 'id', '') in {'urlopen', 'Request', 'get_json'} or getattr(item.func, 'attr', '') == 'urlopen') else None
+                if candidate is not None:
+                    try:
+                        url = value(candidate, env)
+                        if public_api(url): urls.add(url)
+                    except (ValueError, KeyError, TypeError): pass
+    for cell in notebook.get('cells', []):
+        if cell.get('cell_type') != 'code': continue
+        try: scan(ast.parse('\n'.join(line for line in source(cell).splitlines() if not line.lstrip().startswith(('%', '!')))).body, values)
+        except (SyntaxError, RecursionError): pass
+    return sorted(urls)[:500]
+
+
+def cache_api(url):
+    """Trusted GET fetcher with an explicit host/path allowlist and no redirects."""
+    from urllib.request import build_opener, HTTPRedirectHandler
+    class NoRedirect(HTTPRedirectHandler):
+        def redirect_request(self, *args, **kwargs): return None
+    path = API_CACHE / (hashlib.sha256(url.encode()).hexdigest() + '.json')
+    if path.exists(): return json.loads(path.read_text())
+    if not public_api(url): return None
+    try:
+        request = Request(url, headers={'User-Agent': 'ProgrammingCourseLocalReview/1.0', 'Accept': 'application/json'})
+        with build_opener(NoRedirect).open(request, timeout=12) as response:
+            raw = response.read(4_000_001)
+            if len(raw) > 4_000_000: return None
+            data = json.loads(raw)
+        record = {'url': url, 'fetched_at': datetime.now().astimezone().isoformat(), 'data': data}
+        path.write_text(json.dumps(record, ensure_ascii=False))
+        return record
+    except (OSError, ValueError): return None
 
 
 def source(cell):
@@ -44,10 +139,34 @@ def worker(job):
     payload = json.loads(Path(job).read_text())
     namespace = {'__name__': '__main__'}
     results = []
-    allowed = {'csv', 'folium', 'branca', 'pandas', 'numpy', 'datetime', 'json', 'math', 'pathlib', 'IPython'}
+    allowed = {'csv', 'folium', 'branca', 'pandas', 'numpy', 'datetime', 'json', 'math', 'pathlib', 'IPython', 'urllib', 'matplotlib', 'zoneinfo', 'uuid'}
+    # urllib can only return pre-fetched, allowlisted JSON. The OS sandbox still denies network.
+    import urllib.request
+    def cached_urlopen(request, *args, **kwargs):
+        url = request.full_url if isinstance(request, urllib.request.Request) else str(request)
+        record = payload.get('api_responses', {}).get(url)
+        if record is None:
+            raise OSError('No approved cached response for this URL; network remains disabled.')
+        return io.BytesIO(json.dumps(record['data'], ensure_ascii=False).encode())
+    urllib.request.urlopen = cached_urlopen
     # Capture common display()/IFrame outputs without starting a Jupyter kernel.
     import types
     display_module = types.ModuleType('IPython.display')
+    class LocalHTML:
+        def __init__(self, data='', **kwargs): self.data = data
+        def _repr_html_(self): return str(self.data)
+    class LocalImage:
+        def __init__(self, data=None, url=None, filename=None, **kwargs):
+            self.data, self.url, self.filename = data, url, filename
+        def _repr_html_(self):
+            import base64
+            if self.filename:
+                path = Path(self.filename).resolve()
+                if not path.is_relative_to(Path.cwd()): raise PermissionError('Only local job images are supported.')
+                data = path.read_bytes()
+            elif isinstance(self.data, bytes): data = self.data
+            else: return '<p>Remote image not replayed; see submitted HTML output.</p>'
+            return '<img alt="Notebook image" src="data:image/png;base64,' + base64.b64encode(data).decode() + '">'
     class LocalFrame:
         def __init__(self, src, **kwargs):
             self.src = src
@@ -62,8 +181,21 @@ def worker(job):
                 result['outputs'].append({'output_type': 'display_data', 'data': {'text/html': value._repr_html_()}})
             else:
                 result['outputs'].append({'output_type': 'display_data', 'data': {'text/plain': repr(value)}})
-    display_module.display, display_module.IFrame = display, LocalFrame
+    display_module.display, display_module.IFrame, display_module.HTML = display, LocalFrame, LocalHTML
+    display_module.Image = LocalImage
+    namespace['display'] = display
+    # Jupyter exposes display() globally. Resolve Windows-only absolute paths
+    # solely to an exact-name attachment already copied into this student's job.
+    import builtins
+    def local_open(file, *args, **kwargs):
+        if isinstance(file, str) and re.match(r'^[A-Za-z]:[\\/]', file):
+            candidate = Path.cwd() / re.split(r'[\\/]', file)[-1]
+            if candidate.is_file(): file = candidate
+        return builtins.open(file, *args, **kwargs)
+    namespace['open'] = local_open
     ipython = types.ModuleType('IPython'); ipython.display = display_module
+    ipython.get_ipython = lambda: None
+    ipython.version_info = (8, 0)
     sys.modules['IPython'] = ipython
     sys.modules['IPython.display'] = display_module
     forbidden = {'eval', 'exec', 'compile', 'getattr', 'setattr', 'delattr', 'globals', 'locals', 'vars', 'input', '__import__', 'breakpoint', 'help'}
@@ -80,7 +212,7 @@ def worker(job):
                 code = '\n'.join(line for line in lines if line not in installs)
                 result['message'] = 'Package-install line skipped; preinstalled packages used. Remaining code unchanged.'
                 if not code.strip():
-                    raise PermissionError('Package installation skipped; Folium is already installed.')
+                    raise PermissionError('Package installation skipped; preinstalled review packages used.')
             if any(line.lstrip().startswith(('%', '!')) for line in code.splitlines()):
                 raise PermissionError('Shell / notebook magic skipped.')
             tree = ast.parse(code)
@@ -107,6 +239,13 @@ def worker(job):
                         result['outputs'].append({'output_type': 'display_data', 'data': {'text/html': value._repr_html_()}})
                     else:
                         result['outputs'].append({'output_type': 'execute_result', 'data': {'text/plain': repr(value)[:100000]}})
+                if 'matplotlib.pyplot' in sys.modules:
+                    import base64
+                    plt = sys.modules['matplotlib.pyplot']
+                    for number in plt.get_fignums():
+                        image = io.BytesIO(); plt.figure(number).savefig(image, format='png', bbox_inches='tight', dpi=110)
+                        result['outputs'].append({'output_type': 'display_data', 'data': {'image/png': base64.b64encode(image.getvalue()).decode()}})
+                    plt.close('all')
         except Exception as error:
             result['status'] = 'skipped' if isinstance(error, PermissionError) else 'error'
             result['message'] = type(error).__name__ + ': ' + str(error)
@@ -124,18 +263,23 @@ def sandbox_profile(work):
     return '(version 1)(deny default)(allow process-exec)(allow sysctl-read)(allow mach-lookup)(allow file-read-metadata)(allow file-read* ' + reads + ' (literal "/dev/null") (literal "/dev/urandom"))(allow file-write* (subpath ' + quote(work) + ') (literal "/dev/null"))'
 
 
-def replay(notebook, files, folder, digest):
+def replay(notebook, files, folder, digest, api_responses=None):
     target = OUTPUT / digest
     report = target / 'replay.json'
     if report.exists():
         return json.loads(report.read_text())
     target.mkdir(parents=True, exist_ok=True)
     notices, aliases = [], {}
+    if api_responses:
+        times = sorted(record['fetched_at'] for record in api_responses.values())
+        notices.append('Controlled public API cache: ' + str(len(api_responses)) + ' response(s), fetched ' + times[0] + ' to ' + times[-1] + '. Re-fetched data, not the student’s original response. Network disabled during replay.')
     # UNIPA names include ID + attachment ordinals. Restore aliases only in a job copy.
     for path in files:
         original = re.sub(r'^\d+_\d+_\d+_', '', path.name)
         aliases.setdefault(original, []).append(path)
     code = '\n'.join(source(cell) for cell in notebook['cells'] if cell.get('cell_type') == 'code')
+    if re.search(r'[A-Za-z]:\\\\', code):
+        notices.append('Windows absolute file paths may resolve to an exact-name attachment in this student’s temporary job only. Original paths and files are unchanged.')
     wanted = set(re.findall(r'[\"\x27]([^\"\x27\n]+\.csv)[\"\x27]', code))
     datafiles = [path for path in files if path.suffix.lower() in {'.csv', '.txt'}]
     with tempfile.TemporaryDirectory(prefix='job-', dir=OUTPUT) as temporary:
@@ -152,10 +296,10 @@ def replay(notebook, files, folder, digest):
                 notices.append('Replay CSV alias: ' + datafiles[0].name + ' → ' + destination.name)
             elif not destination.exists():
                 notices.append('Missing / ambiguous CSV: ' + name)
-        (work / 'job.json').write_text(json.dumps({'notebook': notebook}, ensure_ascii=False))
+        (work / 'job.json').write_text(json.dumps({'notebook': notebook, 'api_responses': api_responses or {}}, ensure_ascii=False))
         command = ['/usr/bin/sandbox-exec', '-p', sandbox_profile(work), str(Path(sys.executable).absolute()), '-B', str(Path(__file__).resolve()), '--worker', 'job.json']
         try:
-            process = subprocess.run(command, cwd=work, env={'PATH': '/usr/bin:/bin', 'PYTHONDONTWRITEBYTECODE': '1'}, capture_output=True, text=True, timeout=40)
+            process = subprocess.run(command, cwd=work, env={'PATH': '/usr/bin:/bin', 'PYTHONDONTWRITEBYTECODE': '1', 'MPLBACKEND': 'Agg', 'MPLCONFIGDIR': str(work / 'mpl-cache')}, capture_output=True, text=True, timeout=40)
             if not (work / 'result.json').exists():
                 raise RuntimeError((process.stderr or process.stdout or 'Execution did not complete (exit ' + str(process.returncode) + ')')[-1600:])
             cells = json.loads((work / 'result.json').read_text())
@@ -222,6 +366,8 @@ def read_roster():
 def prepare():
     roster, roster_notes = read_roster()
     OUTPUT.mkdir(parents=True, exist_ok=True)
+    API_CACHE.mkdir(exist_ok=True)
+    worker_version = hashlib.sha256(inspect.getsource(worker).encode()).hexdigest()
     for name in ['index.html', 'admin.js', 'admin.css']:
         shutil.copy2(UI / name, ADMIN / name)
     weeks, total = [], 0
@@ -238,11 +384,22 @@ def prepare():
         for student, files in groups.items():
             notebooks = [file for file in files if file.suffix.lower() == '.ipynb']
             for file in notebooks or [None]:
-                notebook = json.loads(file.read_text(encoding='utf-8-sig')) if file else None
+                invalid = None
+                try:
+                    notebook = json.loads(file.read_text(encoding='utf-8-sig')) if file else None
+                    if notebook is not None and (not isinstance(notebook, dict) or not isinstance(notebook.get('cells'), list)): raise ValueError('Missing notebook cells')
+                except (ValueError, UnicodeError) as error:
+                    notebook = None; invalid = 'Notebook could not be read; upload may still be incomplete: ' + str(error)
+                urls = api_urls(notebook) if notebook else []
+                responses = {}
+                if urls:
+                    with ThreadPoolExecutor(max_workers=4) as pool:
+                        for response in pool.map(cache_api, urls):
+                            if response: responses[response['url']] = response
                 identity = (str(file) if file else str(folder / student))
-                digest = hashlib.sha256(('review-v3:' + identity + ''.join(hashlib.sha256(f.read_bytes()).hexdigest() for f in files)).encode()).hexdigest()[:20]
+                digest = hashlib.sha256(('review-v5:' + worker_version + identity + ''.join(hashlib.sha256(f.read_bytes()).hexdigest() for f in files) + json.dumps(responses, sort_keys=True)).encode()).hexdigest()[:20]
                 destination = OUTPUT / digest; destination.mkdir(exist_ok=True)
-                execution = replay(notebook, files, folder, digest) if notebook else {'cells': [], 'notes': ['No notebook submitted.'], 'generated': []}
+                execution = replay(notebook, files, folder, digest, responses) if notebook else {'cells': [], 'notes': [invalid or 'No notebook submitted.'], 'generated': []}
                 assets = []
                 for attached in files:
                     entry = {'name': attached.name, 'path': str(attached.relative_to(ADMIN)), 'type': attached.suffix[1:].upper(), 'bytes': attached.stat().st_size}

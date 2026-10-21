@@ -814,6 +814,13 @@ function setupPreviewLinks() {
 }
 
 function setupMenu() {
+  document.querySelectorAll('.site-nav').forEach(nav=>{
+    if(!nav.querySelector('a[href="gallery.html"]')){
+      const link=document.createElement('a');link.href='gallery.html';
+      link.innerHTML='<span class="lang-ja jp" lang="ja">みんなの作品</span><span class="lang-en">Student work</span>';
+      nav.append(link);
+    }
+  });
   if (isLocalPreview()) {
     const tools = document.querySelector('.header-tools') || document.querySelector('.site-header');
     if (tools && !tools.querySelector('.local-admin-link')) {

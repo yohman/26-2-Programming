@@ -2,7 +2,8 @@
 """Local-only submission index, isolated notebook replay and loopback review server.
 
 Run using admin/.venv/bin/python tools/local-admin/review.py --serve
-Never modifies student originals. All generated data lives in ignored admin/_review.
+Never modifies student originals. Private replays live in ignored admin/_review;
+explicitly hearted notebook exports are published separately to submissions/gallery.json.
 """
 import argparse
 import ast
@@ -478,6 +479,10 @@ class Handler(SimpleHTTPRequestHandler):
         return self.headers.get('Host') in {'127.0.0.1:8766', 'localhost:8766'}
 
     def do_GET(self):
+        if self.allowed() and self.path == '/__admin/hearts':
+            state = ADMIN / '.gallery-hearts.json'
+            body = json.dumps({'hearts': json.loads(state.read_text()) if state.exists() else None}).encode()
+            self.send_response(200); self.send_header('Content-Type', 'application/json'); self.end_headers(); self.wfile.write(body); return
         path = Path(self.translate_path(self.path)).resolve()
         if not self.allowed() or not path.is_relative_to(ROOT) or any(part in {'.git', '.venv'} for part in path.relative_to(ROOT).parts):
             self.send_error(403); return
@@ -487,6 +492,20 @@ class Handler(SimpleHTTPRequestHandler):
         self.send_error(403, 'Directory listing disabled')
 
     def do_POST(self):
+        if self.path == '/__admin/gallery':
+            if not self.allowed() or self.headers.get('Origin') not in {'http://127.0.0.1:8766', 'http://localhost:8766'} or self.headers.get('X-Admin-Request') != 'gallery':
+                self.send_error(403); return
+            if not LOCK.acquire(blocking=False): self.send_error(409, 'Another update is running'); return
+            try:
+                from gallery_export import publish
+                length = int(self.headers.get('Content-Length', '0'))
+                if not 0 < length < 250000: raise ValueError('Invalid request size')
+                result = publish(json.loads(self.rfile.read(length)))
+                self.send_response(200); self.send_header('Content-Type', 'application/json'); self.end_headers(); self.wfile.write(json.dumps(result).encode())
+            except Exception as error:
+                self.send_error(500, 'Gallery update failed; retry the heart action. ' + type(error).__name__)
+            finally: LOCK.release()
+            return
         if not self.allowed() or self.path != '/__admin/refresh' or self.headers.get('Origin') not in {'http://127.0.0.1:8766', 'http://localhost:8766'} or self.headers.get('X-Admin-Request') != 'refresh':
             self.send_error(403); return
         if not LOCK.acquire(blocking=False):

@@ -9,6 +9,19 @@ const fileURL=path=>'./'+path.split('/').map(encodeURIComponent).join('/');
 const heartsStorageKey='programming-admin-hearts-v1';
 let hearts=new Set();
 try { hearts=new Set(JSON.parse(localStorage.getItem(heartsStorageKey)||'[]')); } catch {}
+let publishing=false;
+async function publishHearts(next) {
+  if(publishing)throw new Error('公開更新中です。少し待ってから操作してください。');
+  publishing=true;
+  const status=document.getElementById('admin-status');
+  status.textContent='公開ギャラリーを更新・送信中…';
+  try {
+    const response=await fetch('/__admin/gallery',{method:'POST',headers:{'Content-Type':'application/json','X-Admin-Request':'gallery'},body:JSON.stringify([...next])});
+    if(!response.ok)throw new Error('公開更新に失敗しました。同じハートをもう一度押して再試行してください。');
+    const result=await response.json();
+    status.textContent='公開ギャラリー：'+result.count+'作品 · 送信済み（GitHub Pages反映まで少し時間がかかります）';
+  } finally {publishing=false;}
+}
 // Generated preview IDs change after a re-import; the original submission identity does not.
 const heartKey=(record,week=record.week)=>JSON.stringify([Number(week),record.student,record.file||'']);
 function heartButton(record,week=record.week,onChange=()=>{}) {
@@ -17,16 +30,17 @@ function heartButton(record,week=record.week,onChange=()=>{}) {
   const update=()=>{
     const selected=hearts.has(heartKey(record,week));
     button.setAttribute('aria-pressed',String(selected));
-    button.setAttribute('aria-label',selected?'ハートを外す':'授業で紹介する候補に追加');
-    button.innerHTML='<span aria-hidden="true">'+(selected?'♥':'♡')+'</span> '+(selected?'紹介候補':'候補にする');
+    button.setAttribute('aria-label',selected?'公開ギャラリーから外す':'公開ギャラリーに追加');
+    button.innerHTML='<span aria-hidden="true">'+(selected?'♥':'♡')+'</span> '+(selected?'公開中':'公開する');
   };
   update();
-  button.onclick=()=>{
+  button.onclick=async()=>{
     const key=heartKey(record,week),next=new Set(hearts);
     next.has(key)?next.delete(key):next.add(key);
-    try { localStorage.setItem(heartsStorageKey,JSON.stringify([...next])); }
-    catch { document.getElementById('admin-status').textContent='保存できませんでした。ブラウザーのローカルストレージを有効にしてください。';return; }
-    hearts=next;update();onChange();
+    button.disabled=true;
+    try { await publishHearts(next);hearts=next;try{localStorage.setItem(heartsStorageKey,JSON.stringify([...next]));}catch{}update();onChange(); }
+    catch(error){document.getElementById('admin-status').textContent=error.message;}
+    finally{button.disabled=false;}
   };
   return button;
 }
@@ -149,7 +163,7 @@ function renderWeek(week) {
   };
   filter.onclick=()=>{heartedOnly=!heartedOnly;redraw();};
   search.oninput=redraw;redraw();
-  const note=document.createElement('p');note.className='review-legend';note.textContent='ハートはこのブラウザーに保存されます（学生には公開されません）。';
+  const note=document.createElement('p');note.className='review-legend';note.textContent='♥ の作品は氏名付きで公開されます。外すと公開ギャラリーから削除されます（GitHub Pages反映には少し時間がかかります）。';
   adminRoot.querySelector('.admin-toolbar').after(note);
 }
 async function loadAdmin() {
@@ -171,6 +185,14 @@ async function loadAdmin() {
   }else renderWeek(week);
 }
 document.addEventListener('DOMContentLoaded',()=>{
-  loadAdmin().catch(error=>document.getElementById('admin-status').textContent=error.message);
+  if(!adminRoot)return;
+  (async()=>{
+    const response=await fetch('/__admin/hearts',{cache:'no-store'});
+    if(!response.ok)throw new Error('Adminサーバーを更新してください。');
+    const state=await response.json();
+    if(state.hearts!==null)hearts=new Set(state.hearts);
+    await loadAdmin();
+    if(state.hearts===null&&hearts.size)await publishHearts(hearts);
+  })().catch(error=>document.getElementById('admin-status').textContent=error.message);
   document.getElementById('refresh').onclick=async event=>{const button=event.currentTarget;button.disabled=true;document.getElementById('admin-status').textContent='新しいファイルを取り込み中…';try{const response=await fetch('/__admin/refresh',{method:'POST',headers:{'X-Admin-Request':'refresh'}});if(!response.ok)throw new Error('ローカルAdminサーバー（8766）で開いてください。');await loadAdmin();}catch(error){document.getElementById('admin-status').textContent=error.message;}finally{button.disabled=false;}};
 });

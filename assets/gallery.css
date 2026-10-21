@@ -1,0 +1,19 @@
+.gallery-main { padding-top:2rem; padding-bottom:5rem; }
+.gallery-main h1 { font-size:clamp(1.8rem,4vw,3rem); margin:.6rem 0; }
+#gallery-heading { margin-bottom:2rem; }
+#gallery-heading p,#gallery-status { color:var(--muted); }
+.gallery-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(min(100%,310px),1fr)); gap:2rem; }
+.gallery-card { display:block; color:var(--ink); text-decoration:none; }
+.gallery-card:hover h2 { color:var(--blue); }
+.gallery-card:focus-visible { outline:2px solid var(--blue); outline-offset:6px; }
+.gallery-thumb { height:210px; overflow:hidden; background:#fff; border:1px solid #e1e5e7; pointer-events:none; }
+.gallery-thumb iframe { width:160%; height:340px; border:0; transform:scale(.625); transform-origin:top left; background:white; }
+.gallery-card h2 { font-size:1.15rem; line-height:1.5; margin:.75rem 0 .35rem; }
+.gallery-card p { font-size:.85rem; margin:.25rem 0; color:var(--muted); }
+.gallery-week { margin:2.5rem 0 1rem; font:600 .9rem var(--mono); color:var(--blue); }
+#gallery-back { display:inline-block; margin-bottom:1.5rem; }
+#gallery-back[hidden] { display:none; }
+.gallery-notebook-title { margin:1.5rem 0; }
+.gallery-notebook-title p { color:var(--muted); }
+.gallery-page .review-notebook { margin-top:2rem; }
+.gallery-page .review-output iframe { max-width:100%; }

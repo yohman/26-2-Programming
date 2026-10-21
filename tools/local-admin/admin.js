@@ -127,12 +127,23 @@ function renderAttachments(record) {
     host.append(details);
   });return host;
 }
+function notebookNavigation(records,id,href) {
+  const index=records.findIndex(record=>record.id===id);
+  const nav=document.createElement('nav');nav.className='notebook-navigation';nav.setAttribute('aria-label','Notebook navigation');
+  const item=(record,label)=>record?'<a href="'+esc(href(record))+'"><span>'+label+'</span><small>'+esc(record.student_name||record.title)+'</small></a>':'<span class="notebook-nav-disabled" aria-disabled="true">'+label+'</span>';
+  nav.innerHTML=item(records[index-1],'← 前へ')+'<span class="notebook-nav-count">'+(index+1)+' / '+records.length+'</span>'+item(records[index+1],'次へ →');
+  return nav;
+}
 function renderSubmission(record) {
   currentSubmission=record;
   adminRoot.innerHTML='<a href="?week='+record.week+'#submission-'+esc(record.id)+'">← Week '+String(record.week).padStart(2,'0')+' の一覧</a><header class="submission-heading"><p class="student-name">'+esc(record.student_name||('名簿未一致 · '+record.student))+'</p>'+(record.student_reading?'<span class="student-reading">'+esc(record.student_reading)+'</span>':'')+'<p>学籍番号：'+esc(record.student)+'</p><h2>'+esc(record.title)+'</h2><p>'+esc(record.file||'Notebookなし')+'</p></header><div class="submission-actions"><button data-mode="saved" aria-pressed="'+(selectedMode==='saved')+'">提出時の出力</button><button data-mode="replay" aria-pressed="'+(selectedMode==='replay')+'">ローカル再実行</button></div><nav class="review-tabs"><button data-tab="results" aria-pressed="'+(selectedTab==='results')+'">結果</button><button data-tab="notebook" aria-pressed="'+(selectedTab==='notebook')+'">Notebook</button><button data-tab="files" aria-pressed="'+(selectedTab==='files')+'">添付ファイル</button></nav><div id="submission-body"></div>';
   document.getElementById('submission-body').append(selectedTab==='files'?renderAttachments(record):selectedTab==='notebook'?renderNotebook(record):renderResults(record));
   adminRoot.querySelector('.submission-actions').prepend(heartButton(record));
   adminRoot.querySelector('.review-tabs').prepend(adminRoot.querySelector('[data-tab="notebook"]'));
+  const entries=manifest.weeks.find(week=>week.week===record.week)?.submissions||[];
+  const navigation=()=>notebookNavigation(entries,record.id,item=>'?week='+record.week+'&id='+item.id);
+  adminRoot.querySelector('.submission-heading').before(navigation());
+  adminRoot.append(navigation());
   adminRoot.querySelectorAll('[data-mode]').forEach(button=>button.onclick=()=>{selectedMode=button.dataset.mode;renderSubmission(record);});
   adminRoot.querySelectorAll('[data-tab]').forEach(button=>button.onclick=()=>{selectedTab=button.dataset.tab;renderSubmission(record);});
 }

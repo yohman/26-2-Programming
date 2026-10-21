@@ -39,7 +39,8 @@ function renderGallery() {
   if(record){
     const heading=document.createElement('header');heading.className='gallery-notebook-title';
     heading.innerHTML='<p class="eyebrow">WEEK '+String(record.week).padStart(2,'0')+'</p><p><span class="lang-ja">'+esc(assignmentTitle(week,'ja'))+'</span><span class="lang-en">'+esc(assignmentTitle(week,'en'))+'</span></p><h1>'+esc(record.title)+'</h1><p>'+esc(record.student_name)+' · '+esc(record.student_reading)+'</p>';
-    galleryHost.append(heading,renderNotebook(record));document.title=record.title+' · Student work';return;
+    const navigation=()=>notebookNavigation(galleryRecords.filter(s=>s.week===week),record.id,item=>'gallery.html?week='+week+'&id='+item.id);
+    galleryHost.append(navigation(),heading,renderNotebook(record),navigation());document.title=record.title+' · Student work';return;
   }
   if(id){history.replaceState(null,'','gallery.html?week='+week);document.getElementById('gallery-status').textContent='この作品は現在公開されていません。';}
   const entries=galleryRecords.filter(s=>s.week===week);

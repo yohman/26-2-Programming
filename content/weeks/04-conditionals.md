@@ -36,9 +36,9 @@ Put **your project title and name in the first Markdown cell**.
 - Make a working conversation with **three or more distinct response paths**, a fallback for unknown input, and a way to end the conversation.
 - Use `if / elif / else`. A rule-based notebook bot is enough. No AI API, website, or extra package is required.
 - The starter uses dictionaries, reply lists, conditions, and `print()`—no custom functions. Give at least three topics your own replies. Animation is an optional, beyond-class challenge, with no starter animation code.
-- Show **three test conversations**, including unexpected input. Write a few sentences about one design choice and one limitation. If AI helped, note what you checked yourself.
+- Briefly describe **the original features you added** and **what you would like to add or improve next**.
 
-Run all cells and save the outputs and your observations. Submit the **`.ipynb` plus required files to UNIPA by October 28 (Wed), 23:59 JST**. The starter is optional. Make the purpose, wording, and responses your own.
+Run all cells and save the conversation outputs and your two short statements. Submit the **`.ipynb` plus required files to UNIPA by October 28 (Wed), 23:59 JST**. The starter is optional. Make the purpose, wording, and responses your own.
 
 JP: **自分らしい、ちゃんと動くチャットボット。**
 
@@ -48,9 +48,9 @@ JP: **自分らしい、ちゃんと動くチャットボット。**
 - **三つ以上の返答パターン**、想定外の入力への返事、会話を終える方法を用意する。
 - `if / elif / else`を使う。Notebookで動くルール型BotでOK。AIのAPI・Webサイト・追加パッケージは不要。
 - スターターは辞書・返事のリスト・条件分岐・`print()`で動きます。関数の定義は不要。三つ以上の話題を自分らしい返事に変えよう。アニメーションは授業の範囲外・任意のChallengeで、実装コードは付けていません。
-- **会話のテストを三つ**残す（想定外の入力を含む）。工夫と、まだできないことを数行書く。AIを使った場合は、自分で何を確認したかも一言。
+- **自分で追加したオリジナルの機能・特徴**と、**これから加えたい機能・改善したいこと**を短く書く。
 
-全Cellを実行し、出力・観察メモを保存。**10月28日(水) 23:59までに、`.ipynb`と必要なファイルをUNIPAへ提出。** スターターは任意。テーマや言葉づかい、返事に自分らしさを出そう。
+全Cellを実行し、会話の出力と上の二つの記述を保存。**10月28日(水) 23:59までに、`.ipynb`と必要なファイルをUNIPAへ提出。** スターターは任意。テーマや言葉づかい、返事に自分らしさを出そう。
 
 ## Aha!
 EN: An if/elif/else chain stops at the first match. A later, more specific rule may never be reached.

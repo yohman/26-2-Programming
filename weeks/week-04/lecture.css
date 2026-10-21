@@ -12,3 +12,9 @@
 .week-four-lecture .lecture-notebook-cell pre { white-space:pre-wrap; overflow-wrap:anywhere; }
 .week-four-lecture .slide button { border-radius:0; }
 .syntax-comment { color:#67747d; }
+.slide--homework .homework-slide-list { margin:.75rem 0; font-size:clamp(1rem,1.7vw,1.4rem); }
+.homework-due { margin:.6rem 0 1.2rem; color:var(--blue); font-weight:700; }
+.homework-tip { padding:1rem 1.4rem; background:#edf3f4; }
+.homework-tip h3 { margin:0 0 .65rem; font:600 1rem var(--mono); color:var(--blue); }
+.week-four-lecture .homework-tip .bus-code { margin:0 0 .65rem; font-size:clamp(.85rem,1.5vw,1.2rem); line-height:1.5; }
+.homework-tip p { margin:0; font-size:clamp(.85rem,1.4vw,1.1rem); line-height:1.6; }

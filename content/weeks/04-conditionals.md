@@ -20,10 +20,6 @@ EN: **Conditions: comparisons · if / elif / else · in · and / or / not**
 JP: **条件分岐：比較・if / elif / else・in・and / or / not**
 
 ## In-Class Part 3
-EN: **Rock-paper-scissors**
-JP: **じゃんけん**
-
-## In-Class Challenge
 EN: **Chatbot**
 JP: **チャットボット**
 

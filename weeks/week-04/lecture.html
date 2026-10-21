@@ -4,7 +4,7 @@
 <title>Week 04 Lecture · Conditions, Janken & Chatbots</title>
 <link rel="icon" type="image/svg+xml" href="../../favicon.svg">
 <link rel="stylesheet" href="../week-02/lecture.css?v=20261021"><link rel="stylesheet" href="../../assets/ui.css?v=20261021">
-<link rel="stylesheet" href="../week-03/lecture.css?v=20261015-audio"><link rel="stylesheet" href="lecture.css?v=20261021">
+<link rel="stylesheet" href="../week-03/lecture.css?v=20261015-audio"><link rel="stylesheet" href="lecture.css?v=20261021-random-tip">
 <script src="lecture.js?v=20261021" defer></script>
 <link rel="stylesheet" href="../../assets/copy-blocks.css?v=20261014"><script src="../../assets/copy-blocks.js?v=20261014-pinned" defer></script>
 </head><body class="lecture-page week-three-lecture week-four-lecture">
@@ -128,4 +128,19 @@ if &quot;つかれた&quot; in message:
 elif &quot;こんにちは&quot; in message:
     print(&quot;こんにちは！&quot;)</code></pre></div><pre class="lecture-cell-output" hidden><code>まずはひと休みしよう。</code></pre><p class="slide-note"><span class="ja">二つの言葉が入っていたら、どちらに先に反応してほしい？</span><span class="en">If both keywords appear, which should your bot respond to first?</span></p></section>
 <section class="slide slide--cells " data-slide hidden><h2><span class="ja">最後の30分：自分のBot</span><span class="en">Final 30 minutes: your bot</span></h2><p class="slide-lead">14:20–14:50</p><ol class="homework-slide-list"><li><span class="ja">誰のために、何をするBotか決める。</span><span class="en">Choose who the bot is for and what it does.</span></li><li><span class="ja">返答を自分の言葉に変え、話題を一つ足す。</span><span class="en">Rewrite replies in your own voice and add a topic.</span></li><li><span class="ja">最後の5分は、隣の人に想定外の言葉を入れてもらう。</span><span class="en">In the last 5 minutes, ask a partner to try unexpected input.</span></li></ol><a class="download-notebook" href="week-04-homework-chatbot.ipynb" download><span class="ja">任意のスターター</span><span class="en">Optional starter</span> ↓</a><p class="slide-note"><span class="ja">スターターのwhileとbreakは会話を続ける準備済みの部分。今日は分岐に集中。</span><span class="en">The starter supplies while and break to repeat the conversation. Focus on the branches today.</span></p></section>
-<section class="slide slide--cells " data-slide hidden><h2><span class="ja">Homework：あなたのチャットボット</span><span class="en">Homework: your chatbot</span></h2><ul class="homework-slide-list"><li><span class="ja">三つ以上の返答パターン＋想定外の入力への返事＋終了方法。</span><span class="en">At least three response paths, a fallback, and a way to exit.</span></li><li><span class="ja">会話のテスト三つと、工夫・限界を短く記録する。</span><span class="en">Save three test conversations and a short note on design and limitations.</span></li><li><span class="ja">一番上にタイトル・氏名。実行済みの.ipynbをUNIPAへ。</span><span class="en">Title and name at the top. Submit the executed .ipynb to UNIPA.</span></li></ul><p class="slide-lead"><span class="ja">10月28日(水) 23:59まで</span><span class="en">Due October 28 (Wed), 23:59 JST</span></p><p class="slide-note"><span class="ja">テーマは自由。APIキーも、Webアプリも必要ありません。</span><span class="en">Choose your own theme. No API key or web app required.</span></p></section></div></div></main></body></html>
+<section class="slide slide--cells slide--homework" data-slide hidden>
+<h2><span class="ja">Homework：あなたのチャットボット</span><span class="en">Homework: your chatbot</span></h2>
+<ul class="homework-slide-list">
+<li><span class="ja">三つの気分の返事と、反応する言葉を自分らしく。</span><span class="en">Give the three moods your own replies and keywords.</span></li>
+<li><span class="ja">追加した機能と、次に改善したいことを短く書く。</span><span class="en">Describe your original features and what you want to improve next.</span></li>
+<li><span class="ja">一番上にタイトル・氏名。実行済みの.ipynbをUNIPAへ。</span><span class="en">Title and name at the top. Submit the executed .ipynb to UNIPA.</span></li>
+</ul>
+<p class="homework-due"><span class="ja">10月28日(水) 23:59まで</span><span class="en">Due October 28 (Wed), 23:59 JST</span></p>
+<aside class="homework-tip">
+<h3>Tip of the day · random</h3>
+<pre class="bus-code"><code>import random
+replies = ["こんにちは！", "やっほー！", "元気？"]
+print(random.choice(replies))</code></pre>
+<p><span class="ja"><code>import random</code>でPython標準の道具を読み込み、<code>random.choice()</code>でリストから一つ選ぶ。インストールは不要。同じ返事が続くこともあります。</span><span class="en"><code>import random</code> loads Python’s built-in tools. <code>random.choice()</code> picks one item from a list. No installation needed; the same reply can repeat.</span></p>
+</aside>
+</section></div></div></main></body></html>

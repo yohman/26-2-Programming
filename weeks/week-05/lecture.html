@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="ja" data-language="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Week 05 lecture: for loops, lists, and making results from data.">
+  <title>Week 05 Lecture · For Loops & Data</title>
+  <link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../week-02/lecture.css?v=20261025-week05">
+  <link rel="stylesheet" href="../../assets/ui.css?v=20261025-week05">
+  <link rel="stylesheet" href="lecture.css?v=20261025">
+  <script src="lecture.js?v=20261025" defer></script>
+  <link rel="stylesheet" href="../../assets/copy-blocks.css?v=20261014">
+  <script src="../../assets/copy-blocks.js?v=20261014-pinned" defer></script>
+</head>
+<body class="lecture-page week-five-lecture">
+  <header class="lecture-header">
+    <a id="lecture-return" class="return-link" href="../../agenda.html?open=05#week-05"><span class="ja">← 授業予定に戻る</span><span class="en">← Back to agenda</span></a>
+    <nav class="lecture-view-nav" aria-label="Week 05 lecture">
+      <a href="#slides" data-lecture-destination="slides"><span class="ja">講義スライド</span><span class="en">Lecture slides</span></a>
+      <a href="#loop-lab" data-lecture-destination="lab"><span class="ja">ループ実験室</span><span class="en">Loop Lab</span></a>
+    </nav>
+    <button id="language-toggle" class="language-toggle" type="button" aria-label="Switch to English">EN</button>
+  </header>
+
+  <main>
+    <div id="slides-view" class="view">
+      <nav class="slide-controls" aria-label="Slide navigation">
+        <div class="slide-nav-group">
+          <button id="previous-slide" type="button">← <span class="ja">前へ</span><span class="en">Previous</span></button>
+          <span id="slide-count" aria-live="polite"></span>
+          <button id="next-slide" type="button"><span class="ja">次へ</span><span class="en">Next</span> →</button>
+        </div>
+        <button id="slide-fullscreen" class="slide-fullscreen" type="button" aria-pressed="false">⛶ <span class="ja">全画面</span><span class="en">Fullscreen</span></button>
+      </nav>
+
+      <div class="slide-stage">
+        <section class="slide loop-hero" data-slide hidden>
+          <p class="slide-kicker">WEEK 05 · REPEAT</p>
+          <h1><span class="ja">一つの命令。<br>たくさんの結果。</span><span class="en">One instruction.<br>Many results.</span></h1>
+          <p class="slide-lead"><span class="ja">リストの値を一つずつ受け取り、同じ手順を繰り返す。今日はその仕組みを、データに使う。</span><span class="en">Take one value at a time from a list and repeat the same process. Today, use that idea with data.</span></p>
+          <div class="loop-hero-stream" aria-hidden="true"><span>🍙</span><span>🍜</span><span>🍛</span><i>for</i><span>✓</span><span>✓</span><span>✓</span></div>
+        </section>
+
+        <section class="slide" data-slide hidden>
+          <p class="slide-kicker">TODAY / 100 MINUTES</p>
+          <h2><span class="ja">今日の流れ</span><span class="en">Today’s flow</span></h2>
+          <ol class="loop-timeline">
+            <li><b>0–20</b><span><strong><span class="ja">リストをループする</span><span class="en">Loop through a list</span></strong><small><span class="ja"><code>for</code>・<code>range()</code>・字下げ</span><span class="en"><code>for</code>, <code>range()</code>, indentation</span></small></span></li>
+            <li><b>20–30</b><span><strong><span class="ja">一周ずつ追跡する</span><span class="en">Trace each turn</span></strong><small><span class="ja">どの値が、いつ変わる？</span><span class="en">Which value changes, and when?</span></small></span></li>
+            <li><b>30–70</b><span><strong><span class="ja">人口データを読む</span><span class="en">Read demographic data</span></strong><small><span class="ja">合計・絞り込み・ラベルづくり</span><span class="en">Totals, filters, and labels</span></small></span></li>
+            <li><b>70–100</b><span><strong><span class="ja">パターンを一つ見つける</span><span class="en">Find one pattern</span></strong><small><span class="ja">表またはグラフで説明する</span><span class="en">Explain it with a table or chart</span></small></span></li>
+          </ol>
+        </section>
+
+        <section class="slide" data-slide hidden>
+          <p class="slide-kicker">LIST / 配列のように順番を持つ値</p>
+          <h2><span class="ja">まず、複数の値を用意する</span><span class="en">First, collect several values</span></h2>
+          <div class="lecture-notebook-cell"><div class="lecture-cell-toolbar"><span>Python</span><button type="button" data-reveal aria-expanded="false">▶ <span class="ja">実行する</span><span class="en">Run</span></button></div><pre><code>snacks = ["おにぎり", "ラーメン", "カレー"]
+print(snacks)
+print(snacks[0])</code></pre></div>
+          <pre class="lecture-cell-output" hidden><code>['おにぎり', 'ラーメン', 'カレー']
+おにぎり</code></pre>
+          <p class="slide-note"><span class="ja">Pythonでは <code>[ ]</code> を使った順番のある集まりを <strong>list</strong> と呼ぶ。配列のように、値を一つずつ取り出せる。</span><span class="en">In Python, an ordered group inside <code>[ ]</code> is a <strong>list</strong>. Like an array, we can take one value at a time.</span></p>
+        </section>
+
+        <section class="slide" data-slide hidden>
+          <p class="slide-kicker">FOR LOOP / 01</p>
+          <h2><code>for</code> <span class="ja">で、一つずつ名前を受け取る</span><span class="en">takes each name, one at a time</span></h2>
+          <div class="lecture-notebook-cell"><div class="lecture-cell-toolbar"><span>Python</span><button type="button" data-reveal aria-expanded="false">▶ <span class="ja">実行する</span><span class="en">Run</span></button></div><pre><code>names = ["Aoi", "Kai", "Mina"]
+
+for name in names:
+    print(f"Welcome, {name}!")</code></pre></div>
+          <pre class="lecture-cell-output" hidden><code>Welcome, Aoi!
+Welcome, Kai!
+Welcome, Mina!</code></pre>
+          <p class="slide-question"><span class="ja"><code>print()</code> は何回実行される？ その理由は？</span><span class="en">How many times does <code>print()</code> run? Why?</span></p>
+        </section>
+
+        <section class="slide" data-slide hidden>
+          <p class="slide-kicker">TRACE / 追跡する</p>
+          <h2><span class="ja">変わるのは <code>name</code>。手順は同じ。</span><span class="en"><code>name</code> changes. The action stays the same.</span></h2>
+          <table class="trace-table"><thead><tr><th><span class="ja">周回</span><span class="en">Turn</span></th><th><code>name</code></th><th><span class="ja">実行する行</span><span class="en">Line that runs</span></th></tr></thead><tbody><tr><td>1</td><td>"Aoi"</td><td><code>print(f"Welcome, {name}!")</code></td></tr><tr><td>2</td><td>"Kai"</td><td><code>print(f"Welcome, {name}!")</code></td></tr><tr><td>3</td><td>"Mina"</td><td><code>print(f"Welcome, {name}!")</code></td></tr></tbody></table>
+          <p class="slide-note"><span class="ja">変数名は好きに決められる。ただし、リストの一件を表す名前にする。<code>for snack in snacks:</code> のように読む。</span><span class="en">You choose the variable name. Make it represent one item from the list: <code>for snack in snacks:</code>.</span></p>
+        </section>
+
+        <section class="slide" data-slide hidden>
+          <p class="slide-kicker">INDENTATION / 字下げ</p>
+          <h2><span class="ja">字下げした行だけが、繰り返される</span><span class="en">Only indented lines repeat</span></h2>
+          <div class="lecture-notebook-cell"><div class="lecture-cell-toolbar"><span>Python</span><button type="button" data-reveal aria-expanded="false">▶ <span class="ja">実行する</span><span class="en">Run</span></button></div><pre><code>colors = ["red", "blue", "green"]
+
+for color in colors:
+    print(color)
+
+print("Finished!")</code></pre></div>
+          <pre class="lecture-cell-output" hidden><code>red
+blue
+green
+Finished!</code></pre>
+          <p class="slide-question"><span class="ja">最後の <code>print("Finished!")</code> は、なぜ一回だけ？</span><span class="en">Why does the final <code>print("Finished!")</code> run only once?</span></p>
+        </section>
+
+        <section class="slide" data-slide hidden>
+          <p class="slide-kicker">RANGE / 数をつくる</p>
+          <h2><code>range(1, 5)</code> <span class="ja">は 1 から 4</span><span class="en">means 1 through 4</span></h2>
+          <div class="lecture-notebook-cell"><div class="lecture-cell-toolbar"><span>Python</span><button type="button" data-reveal aria-expanded="false">▶ <span class="ja">実行する</span><span class="en">Run</span></button></div><pre><code>for number in range(1, 5):
+    print(f"Round {number}")</code></pre></div>
+          <pre class="lecture-cell-output" hidden><code>Round 1
+Round 2
+Round 3
+Round 4</code></pre>
+          <p class="slide-note"><span class="ja"><code>range(start, end)</code> は <strong>endの手前まで</strong>。<code>range(5)</code> なら 0, 1, 2, 3, 4。</span><span class="en"><code>range(start, end)</code> stops <strong>before end</strong>. <code>range(5)</code> gives 0, 1, 2, 3, 4.</span></p>
+        </section>
+
+        <section class="slide" data-slide hidden>
+          <p class="slide-kicker">ACCUMULATOR / 合計を育てる</p>
+          <h2><span class="ja">一周ごとに、合計を更新する</span><span class="en">Update a total on every turn</span></h2>
+          <div class="lecture-notebook-cell"><div class="lecture-cell-toolbar"><span>Python</span><button type="button" data-reveal aria-expanded="false">▶ <span class="ja">実行する</span><span class="en">Run</span></button></div><pre><code>scores = [3, 8, 2, 9]
+total = 0
+
+for score in scores:
+    total += score
+    print(total)
+
+print(f"Final total: {total}")</code></pre></div>
+          <pre class="lecture-cell-output" hidden><code>3
+11
+13
+22
+Final total: 22</code></pre>
+          <p class="slide-question"><span class="ja"><code>total = 0</code> をループの中に入れたら、どうなる？</span><span class="en">What happens if <code>total = 0</code> moves inside the loop?</span></p>
+        </section>
+
+        <section class="slide" data-slide hidden>
+          <p class="slide-kicker">FILTER / 必要な値だけ残す</p>
+          <h2><span class="ja"><code>if</code> と <code>append()</code> を、ループの中に置く</span><span class="en">Put <code>if</code> and <code>append()</code> inside the loop</span></h2>
+          <div class="lecture-notebook-cell"><div class="lecture-cell-toolbar"><span>Python</span><button type="button" data-reveal aria-expanded="false">▶ <span class="ja">実行する</span><span class="en">Run</span></button></div><pre><code>scores = [43, 61, 78, 55, 92]
+passing = []
+
+for score in scores:
+    if score &gt;= 60:
+        passing.append(score)
+
+print(passing)</code></pre></div>
+          <pre class="lecture-cell-output" hidden><code>[61, 78, 92]</code></pre>
+          <p class="slide-note"><span class="ja"><code>if</code> が通った値だけを、新しいリスト <code>passing</code> に追加する。<code>append()</code> の字下げ位置が大切。</span><span class="en">Only values that pass the <code>if</code> go into the new <code>passing</code> list. The indentation of <code>append()</code> matters.</span></p>
+        </section>
+
+        <section class="slide" data-slide hidden>
+          <p class="slide-kicker">MAKE A RESULT / 結果を増やす</p>
+          <h2><span class="ja">一つの名前から、一つのラベルをつくる</span><span class="en">Make one label from each name</span></h2>
+          <div class="lecture-notebook-cell"><div class="lecture-cell-toolbar"><span>Python</span><button type="button" data-reveal aria-expanded="false">▶ <span class="ja">実行する</span><span class="en">Run</span></button></div><pre><code>names = ["Aoi", "Kai", "Mina"]
+badges = []
+
+for name in names:
+    badge = f"★ {name}"
+    badges.append(badge)
+
+print(badges)</code></pre></div>
+          <pre class="lecture-cell-output" hidden><code>['★ Aoi', '★ Kai', '★ Mina']</code></pre>
+          <p class="slide-question"><span class="ja">リストに4人いたら、<code>badges</code> には何個の文字列が入る？</span><span class="en">If the list holds four people, how many strings end up in <code>badges</code>?</span></p>
+        </section>
+
+        <section class="slide" data-slide hidden>
+          <p class="slide-kicker">DATA / 1行が1件の記録</p>
+          <h2><span class="ja">データでも、同じループを使える</span><span class="en">Data uses the same loop</span></h2>
+          <div class="lecture-notebook-cell"><div class="lecture-cell-toolbar"><span>Python</span><button type="button" data-reveal aria-expanded="false">▶ <span class="ja">実行する</span><span class="en">Run</span></button></div><pre><code>prefectures = [
+    {"name": "北海道", "population": 5_140_000},
+    {"name": "東京都", "population": 14_038_000},
+    {"name": "大阪府", "population": 8_782_000},
+]
+
+for prefecture in prefectures:
+    name = prefecture["name"]
+    population = prefecture["population"]
+    print(f"{name}: {population:,} people")</code></pre></div>
+          <pre class="lecture-cell-output" hidden><code>北海道: 5,140,000 people
+東京都: 14,038,000 people
+大阪府: 8,782,000 people</code></pre>
+          <p class="slide-note"><span class="ja">リストの各要素が一都道府県の記録。ループは一件ずつ、同じラベルをつくる。あとで <code>japan.csv</code> の全行に広げる。</span><span class="en">Each list item is one prefecture record. The loop makes the same label for each record. Soon, extend this to every row in <code>japan.csv</code>.</span></p>
+        </section>
+
+        <section class="slide" data-slide hidden>
+          <p class="slide-kicker">QUICK QUIZ / 予想する</p>
+          <h2><span class="ja">どの都道府県名が表示される？</span><span class="en">Which prefecture names appear?</span></h2>
+          <pre class="bus-code"><code>for prefecture in prefectures:
+    if prefecture["population"] &gt;= 6_000_000:
+        print(prefecture["name"])</code></pre>
+          <div class="quiz-choices" role="group" aria-label="Prediction choices">
+            <button type="button" data-quiz-choice="all"><span class="ja">A. 3つとも</span><span class="en">A. All three</span></button>
+            <button type="button" data-quiz-choice="two"><span class="ja">B. 東京都と大阪府</span><span class="en">B. Tokyo and Osaka</span></button>
+            <button type="button" data-quiz-choice="none"><span class="ja">C. 何も表示しない</span><span class="en">C. Nothing</span></button>
+          </div>
+          <p id="quiz-feedback" class="quiz-feedback" role="status"></p>
+        </section>
+
+        <section class="slide" data-slide hidden>
+          <p class="slide-kicker">NOTEBOOK / 30–70 MINUTES</p>
+          <h2><span class="ja">まず自分で書く。次に、別案を比べる。</span><span class="en">Write it yourself first. Then compare an alternative.</span></h2>
+          <ol class="homework-slide-list">
+            <li><span class="ja">偶数と奇数を別リストに入れる。</span><span class="en">Put even and odd numbers into separate lists.</span></li>
+            <li><span class="ja"><code>japan.csv</code> を読み、使う列と予想する結果を決める。</span><span class="en">Read <code>japan.csv</code>; choose a column and predict a result.</span></li>
+            <li><span class="ja">合計・絞り込み・ラベルづくりのどれかを、自分で一つ完成させる。</span><span class="en">Complete one task yourself: a total, a filter, or a set of labels.</span></li>
+            <li><span class="ja">AIの別案は、読みやすさと三つのテスト値で比べる。</span><span class="en">Compare an AI alternative for readability and with three test values.</span></li>
+          </ol>
+          <a class="download-notebook" href="week-05-in-class-for-loops.ipynb" download><span class="ja">授業内Notebookをダウンロード</span><span class="en">Download the in-class notebook</span> ↓</a>
+        </section>
+
+        <section class="slide" data-slide hidden>
+          <p class="slide-kicker">CHALLENGE / LAST 30 MINUTES</p>
+          <h2><span class="ja">人口データから、パターンを一つ見つける</span><span class="en">Find one pattern in the population data</span></h2>
+          <div class="challenge-steps">
+            <div><b>01</b><p><span class="ja">問いを選ぶ</span><span class="en">Choose a question</span></p><small><span class="ja">人口、出生率、面積、人口密度など</span><span class="en">Population, fertility, area, density</span></small></div>
+            <div><b>02</b><p><span class="ja">ループで確かめる</span><span class="en">Check it with a loop</span></p><small><span class="ja">合計・数える・絞り込む・ラベル化</span><span class="en">Total, count, filter, label</span></small></div>
+            <div><b>03</b><p><span class="ja">表かグラフにする</span><span class="en">Make a table or chart</span></p><small><span class="ja">見えたことと、証明できないことを書く</span><span class="en">State what it suggests and what it cannot prove</span></small></div>
+          </div>
+          <p class="slide-question"><span class="ja">例：「総人口200万人以上の都道府県はいくつ？」その答えを、別の値でテストしよう。</span><span class="en">Example: “How many prefectures have at least 2 million people?” Test your answer with another value.</span></p>
+        </section>
+
+        <section class="slide slide--homework" data-slide hidden>
+          <p class="slide-kicker">TAKE-HOME / DUE NOVEMBER 4, 23:59</p>
+          <h2><span class="ja">一枚のグラフ。自分の説明。確認した証拠。</span><span class="en">One chart. Your explanation. Checked evidence.</span></h2>
+          <ul class="homework-slide-list">
+            <li><span class="ja">グラフ一つと、データから読める短いミニレポート。</span><span class="en">One chart and a short micro-report based on the data.</span></li>
+            <li><span class="ja">自分のループにコード注記を付ける。</span><span class="en">Annotate your own loop.</span></li>
+            <li><span class="ja">三つのテスト値と、AIの提案またはデータの仮定について200字。</span><span class="en">Three test values and a 200-character reflection on an AI suggestion or data assumption.</span></li>
+          </ul>
+          <p class="slide-note"><span class="ja">覚える言葉：<strong>変わる値に、一つの手順を適用する。</strong></span><span class="en">Remember: <strong>apply one process to changing values.</strong></span></p>
+        </section>
+      </div>
+    </div>
+
+    <section id="loop-lab-view" class="view loop-lab" hidden>
+      <div class="playground-intro">
+        <div><p class="slide-kicker">LOOP LAB / 準備済みの例</p><h1><span class="ja">値を変える。ループを実行する。</span><span class="en">Change values. Run the loop.</span></h1></div>
+        <p><span class="ja">例を選び、値を変えてから「実行する」。同じルールで結果がどう変わるかを見よう。自由なPythonはNotebookで実行する。</span><span class="en">Choose an example, change values, then run it. Watch how the same rule changes the result. Run your own Python in the notebook.</span></p>
+      </div>
+      <div class="playground-grid">
+        <nav id="loop-topics" class="playground-topics" aria-label="For-loop examples"></nav>
+        <div class="playground-workbench">
+          <label class="python-topic-select"><span><span class="ja">例を選ぶ</span><span class="en">Choose an example</span></span><select id="loop-topic-select"></select></label>
+          <div class="playground-toolbar"><div id="loop-controls" class="playground-controls"></div><button id="loop-run" type="button"><span class="ja">実行する</span><span class="en">Run example</span> ▶</button></div>
+          <div class="playground-panels">
+            <div class="playground-code"><div class="panel-caption">PYTHON</div><pre><code id="loop-code"></code></pre></div>
+            <div class="playground-output"><div class="panel-caption">OUTPUT</div><pre id="loop-output"></pre></div>
+          </div>
+          <div id="loop-visual" class="loop-visual" aria-live="polite"></div>
+          <div class="playground-actions"><p id="loop-explanation" aria-live="polite"></p></div>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

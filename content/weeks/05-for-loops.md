@@ -33,6 +33,6 @@ EN: Repetition must remain inspectable.
 JP: 繰り返しは確認可能でなければならない。
 ## Resources
 - [Week 05 In-Class — For Loops and Demographic Patterns](weeks/week-05/week-05-in-class-for-loops.ipynb) {fundamentals}
-- [Lecture PDF](weeks/week-05/lecture.pdf) {lecture}
+- [Week 05 Lecture — For Loops & Data](weeks/week-05/lecture.html) {lecture}
 - [Japan demographics challenge](weeks/week-05/challenge-japan-demographics.ipynb) {challenge}
 - [Japan data](weeks/week-05/japan.csv) {data}

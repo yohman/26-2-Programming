@@ -60,7 +60,7 @@ function addSyntaxHighlighting() {
   document.querySelectorAll('pre code').forEach(code => {
     if (code.closest('#loop-code, #loop-output, .lecture-cell-output')) return;
     const source = code.textContent;
-    const pattern = /(#[^\n]*)|("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')|\b(for|in|if|else|elif|and|or|not|True|False)\b|\b(print|range|append|len|sum)\b|\b(\d+(?:_\d+)*(?:\.\d+)?)\b/g;
+    const pattern = /(#[^\n]*)|("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')|\b(for|in|if|else|elif|and|or|not|True|False|import|as)\b|\b(print|input|int|range|append|len|sum|sample|read_csv|head|info|describe|iterrows|sort_values|round|to_string|tolist)\b|\b(\d+(?:_\d+)*(?:\.\d+)?)\b/g;
     let position = 0;
     code.replaceChildren();
     for (const match of source.matchAll(pattern)) {
@@ -91,6 +91,38 @@ function result(code, output, ja, en, cards = []) {
   return { code, output, ja, en, cards };
 }
 
+const classStudents = [
+  '拓真', '裕基', '太陽', '恭瑳', '京介', '勇希', '正稀', '流駆', '宙音', '大策',
+  '琉生', '柚希', '達貴', '港人', '慶次', '子竜', '琉太', '直生', '航大', '雄惺',
+  '美晴', '悠樹', '大祐', '龍之輔', '信吾', '健人', '大雅', '凛太郎', '優希', '大樹',
+  '仁', '太知', '勇樹', '祥汰', '匠秋'
+];
+let chosenClassStudents = [];
+
+function chooseClassStudents(count = 5) {
+  const pool = [...classStudents];
+  for (let index = pool.length - 1; index > pool.length - count - 1; index -= 1) {
+    const pick = Math.floor(Math.random() * (index + 1));
+    [pool[index], pool[pick]] = [pool[pick], pool[index]];
+  }
+  return pool.slice(-count);
+}
+
+function pythonList(values, perLine = 5) {
+  const rows = [];
+  for (let start = 0; start < values.length; start += perLine) {
+    rows.push(`    ${values.slice(start, start + perLine).map(quoted).join(', ')}`);
+  }
+  return `[\n${rows.join(',\n')}\n]`;
+}
+
+function showClassOutput(id, value) {
+  const output = document.getElementById(id);
+  output.querySelector('code').textContent = value;
+  output.hidden = false;
+  document.querySelector(`[data-output="${id}"]`)?.setAttribute('aria-expanded', 'true');
+}
+
 const topics = [
   {
     ja: '名前にあいさつ', en: 'Greeting names',
@@ -110,6 +142,7 @@ const topics = [
       const first = Number(start);
       const last = Number(end);
       if (!Number.isInteger(first) || !Number.isInteger(last)) return result('# 整数を入力してください', 'ValueError', '開始と終了の手前には整数を入れてください。', 'Use whole numbers for start and end.');
+      if (last - first > 100) return result('# 100回以内の範囲で試してください', 'Choose at most 100 turns.', 'この実験室では100回以内で試してください。', 'Use at most 100 turns in this lab.');
       const items = [];
       for (let number = first; number < last; number += 1) items.push(number);
       const output = items.length ? items.map(number => `Round ${number}`).join('\n') : '(no output)';
@@ -275,12 +308,48 @@ document.querySelectorAll('[data-reveal]').forEach((button, index) => {
   });
 });
 
+document.querySelector('[data-fish-run]').addEventListener('click', event => {
+  const button = event.currentTarget;
+  const cell = button.closest('.lecture-notebook-cell');
+  const output = cell.nextElementSibling;
+  const first = Number(document.querySelector('[data-fish-start]').value);
+  const last = Number(document.querySelector('[data-fish-end]').value);
+  const lines = [`Start: ${first}`, `Last: ${last}`];
+  if (!Number.isInteger(first) || !Number.isInteger(last) || first < -20 || last > 30 || last - first > 50) {
+    lines.push(language() === 'ja' ? '-20〜30の整数で試してください。' : 'Use integers from -20 to 30.');
+  } else {
+    for (let count = first; count <= last; count++) lines.push(`${count} fish`);
+  }
+  output.querySelector('code').textContent = lines.join('\n');
+  output.hidden = false;
+  output.id = 'fish-output';
+  button.setAttribute('aria-controls', output.id);
+  button.setAttribute('aria-expanded', 'true');
+});
+
+document.querySelectorAll('[data-class-run]').forEach(button => button.addEventListener('click', () => {
+  const output = button.dataset.output;
+  if (button.dataset.classRun === 'roster') {
+    showClassOutput(output, pythonList(classStudents));
+    return;
+  }
+  if (button.dataset.classRun === 'choose') {
+    chosenClassStudents = chooseClassStudents();
+    showClassOutput(output, pythonList(chosenClassStudents));
+    document.getElementById('class-loop-output').hidden = true;
+    document.querySelector('[data-class-run="loop"]').setAttribute('aria-expanded', 'false');
+    return;
+  }
+  if (!chosenClassStudents.length) chosenClassStudents = chooseClassStudents();
+  showClassOutput(output, chosenClassStudents.map(student => `Hello, ${student}!`).join('\n'));
+}));
+
 document.querySelectorAll('[data-quiz-choice]').forEach(button => button.addEventListener('click', () => {
-  const correct = button.dataset.quizChoice === 'two';
+  const correct = button.dataset.quizChoice === 'sixteen';
   const feedback = document.getElementById('quiz-feedback');
   feedback.textContent = language() === 'ja'
-    ? (correct ? '正解。600万人以上なのは東京都と大阪府。北海道は514万人です。' : 'もう一度データを確認しよう。600万人以上かを一件ずつ調べます。')
-    : (correct ? 'Correct. Tokyo and Osaka are at least 6 million. Hokkaido has 5.14 million.' : 'Check the data again. Test one record at a time against 6 million.');
+    ? (correct ? '正解。総人口200万人以上の都道府県は16です。次に、しきい値を600万人に変えたら何県になるか予想しよう。' : 'もう一度データを確認しよう。各行の総人口を200万人と比べ、通った都道府県だけを数えます。')
+    : (correct ? 'Correct. Sixteen prefectures have at least 2 million people. Next, predict what happens when the threshold becomes 6 million.' : 'Check the data again. Compare each row’s population with 2 million, then count only the prefectures that pass.');
 }));
 
 document.querySelectorAll('[data-lecture-destination]').forEach(link => link.addEventListener('click', event => {

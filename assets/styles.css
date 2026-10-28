@@ -300,10 +300,11 @@ html[data-language="ja"] .lang-ja { display: revert; }
 .csv-pager button { padding: .4rem .25rem; border: 0; background: transparent; color: var(--blue); font: inherit; cursor: pointer; }
 .csv-pager button:hover:not(:disabled) { text-decoration: underline; text-underline-offset: 3px; }
 .csv-pager button:disabled { color: #a4aaa8; cursor: default; }
-.csv-table-scroll { max-height: min(70vh, 760px); overflow: auto; background: #fff; }
+.csv-table-scroll { position: relative; z-index: 0; max-height: min(70vh, 760px); overflow: auto; isolation: isolate; contain: paint; background: #fff; }
 .csv-preview table { width: 100%; min-width: max-content; border-collapse: separate; border-spacing: 0; font-size: .76rem; line-height: 1.5; }
 .csv-preview th, .csv-preview td { padding: .5rem .75rem; text-align: left; vertical-align: top; white-space: nowrap; }
-.csv-preview thead th { position: sticky; z-index: 2; top: 0; background: var(--blue); color: #fff; font: 700 .67rem/1.5 var(--mono); }
+.csv-preview thead { position: sticky; z-index: 2; top: 0; }
+.csv-preview thead th { background: var(--blue); color: #fff; font: 700 .67rem/1.5 var(--mono); }
 .csv-preview tbody tr:nth-child(even) { background: #f3f5f4; }
 .csv-preview tbody tr:hover { background: var(--blue-pale); }
 .csv-preview tbody th { color: var(--muted); font: 600 .7rem/1.5 var(--mono); }
@@ -627,6 +628,29 @@ html[data-language="ja"] .lang-ja { display: revert; }
 .course-section--homework > header > span,
 .course-section--homework > header p { color: #8c572e; }
 .homework-deadline { margin: 0 0 1rem; color: #784822; font: 750 .82rem/1.5 var(--sans); }
+#week-05 .course-section--in-class,
+#week-05 .course-section--homework { grid-column: 1 / -1; }
+#week-05 .course-section--lecture .course-section-content { display:block; }
+.week-student-work { grid-column:1 / -1; padding:1.1rem 1.5rem; border-left:3px solid var(--blue); background:#e5ebef; }
+.week-student-work p { margin:0; line-height:1.7; }
+.week-student-work a { color:var(--blue); font-weight:800; text-underline-offset:4px; }
+#week-05 .course-section--lecture .lecture-slide-card { margin-top:1.25rem; }
+#week-05 .course-section--homework { padding:clamp(1.4rem,3vw,2.5rem); }
+#week-05 .course-section--homework > header { margin-bottom:.8rem; }
+.week-five-homework { max-width:70rem; }
+.week-five-homework .homework-intro p { margin:.5rem 0 1.3rem; font-size:1.05rem; line-height:1.65; }
+.week-five-homework .homework-intro strong { display:block; margin-bottom:.4rem; font-size:clamp(1.35rem,2.3vw,1.9rem); letter-spacing:-.035em; }
+.week-five-homework .homework-options ol { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1.5rem; padding:0; margin:0 0 1.7rem; list-style:none; counter-reset:homework-option; }
+.week-five-homework .homework-options li { counter-increment:homework-option; margin:0; padding:.9rem 0 0; border-top:2px solid #9a6438; line-height:1.7; }
+.week-five-homework .homework-options li::before { content:'0' counter(homework-option); display:block; margin-bottom:.5rem; color:#8c572e; font:700 .75rem var(--mono); }
+.week-five-homework .homework-options strong { font-size:1.08rem; }
+.week-five-homework .homework-details { display:grid; grid-template-columns:1.15fr 1fr; gap:2rem; border-top:1px solid #d2baa1; padding-top:1.25rem; }
+.week-five-homework h4 { margin:0 0 .7rem; font-size:1rem; color:#784822; }
+.week-five-homework .homework-details ul { margin:0; padding-left:1.2rem; }
+.week-five-homework .homework-details li { line-height:1.75; }
+.week-five-homework .homework-details li + li { margin-top:.55rem; }
+.week-five-homework .homework-details p { margin:0 0 .85rem; line-height:1.75; }
+@media(max-width:700px) { .week-five-homework .homework-options ol,.week-five-homework .homework-details { grid-template-columns:1fr; gap:1.2rem; } }
 .course-section-content { min-width: 0; }
 .course-section--lecture .course-section-content {
   display: grid;

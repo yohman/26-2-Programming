@@ -11,8 +11,8 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../week-02/lecture.css?v=20261025-week05">
   <link rel="stylesheet" href="../../assets/ui.css?v=20261025-week05">
-  <link rel="stylesheet" href="lecture.css?v=20261025">
-  <script src="lecture.js?v=20261025" defer></script>
+  <link rel="stylesheet" href="lecture.css?v=20261028-week05-final2">
+  <script src="lecture.js?v=20261028-week05-final2" defer></script>
   <link rel="stylesheet" href="../../assets/copy-blocks.css?v=20261014">
   <script src="../../assets/copy-blocks.js?v=20261014-pinned" defer></script>
 </head>
@@ -46,12 +46,48 @@
         </section>
 
         <section class="slide" data-slide hidden>
+          <p class="slide-kicker">CLASS DATA / 今日のリスト</p>
+          <h2><span class="ja">クラスの名前を、Pythonのリストにする</span><span class="en">Put the class names into a Python list</span></h2>
+          <div class="lecture-notebook-cell class-roster-cell"><div class="lecture-cell-toolbar"><span>Python</span><button type="button" data-class-run="roster" data-output="class-roster-output" aria-controls="class-roster-output" aria-expanded="false">▶ <span class="ja">リストを表示</span><span class="en">Show the list</span></button></div><pre><code>students = [
+    "拓真", "裕基", "太陽", "恭瑳", "京介",
+    "勇希", "正稀", "流駆", "宙音", "大策",
+    "琉生", "柚希", "達貴", "港人", "慶次",
+    "子竜", "琉太", "直生", "航大", "雄惺",
+    "美晴", "悠樹", "大祐", "龍之輔", "信吾",
+    "健人", "大雅", "凛太郎", "優希", "大樹",
+    "仁", "太知", "勇樹", "祥汰", "匠秋",
+]</code></pre></div>
+          <pre id="class-roster-output" class="lecture-cell-output class-live-output" hidden><code></code></pre>
+          <p class="slide-note"><span class="ja">名前は文字列のデータ。35個の文字列を、順番のある一つのリストにまとめる。</span><span class="en">A name is data. Today, treat the 35 names as one ordered list.</span></p>
+        </section>
+
+        <section class="slide" data-slide hidden>
+          <p class="slide-kicker">RANDOM SAMPLE / 5人を選ぶ</p>
+          <h2><span class="ja">リストから、重複なしで5人を選ぶ</span><span class="en">Choose five different names from the list</span></h2>
+          <div class="lecture-notebook-cell"><div class="lecture-cell-toolbar"><span>Python</span><button type="button" data-class-run="choose" data-output="class-choice-output" aria-controls="class-choice-output" aria-expanded="false">▶ <span class="ja">5人を選ぶ</span><span class="en">Choose 5</span></button></div><pre><code>import random
+
+chosen = random.sample(students, 5)
+print(chosen)</code></pre></div>
+          <pre id="class-choice-output" class="lecture-cell-output class-live-output" hidden><code></code></pre>
+          <p class="slide-note simulation-note"><span class="ja">コードはPython。ボタンの実行はブラウザ上のJavaScriptによるシミュレーション。押すたびに抽選する。選ばれた5人は、次のスライドでも使う。</span><span class="en">The code is Python. This button simulates it in browser JavaScript. Each click draws a sample. The next slide uses the same five names.</span></p>
+        </section>
+
+        <section class="slide" data-slide hidden>
+          <p class="slide-kicker">FOR LOOP / CLASS EDITION</p>
+          <h2><span class="ja">選ばれた5人に、同じ処理をする</span><span class="en">Run the same action for each chosen name</span></h2>
+          <div class="lecture-notebook-cell"><div class="lecture-cell-toolbar"><span>Python</span><button type="button" data-class-run="loop" data-output="class-loop-output" aria-controls="class-loop-output" aria-expanded="false">▶ <span class="ja">ループを実行</span><span class="en">Run the loop</span></button></div><pre><code>for student in chosen:
+    print(f"Hello, {student}!")</code></pre></div>
+          <pre id="class-loop-output" class="lecture-cell-output class-live-output" hidden><code></code></pre>
+          <p class="slide-question"><span class="ja">リストに5人いるとき、<code>print()</code> は何回実行される？　10人にしたら？</span><span class="en">With five names in the list, how many times does <code>print()</code> run? What if the list has ten?</span></p>
+        </section>
+
+        <section class="slide" data-slide hidden>
           <p class="slide-kicker">TODAY / 100 MINUTES</p>
           <h2><span class="ja">今日の流れ</span><span class="en">Today’s flow</span></h2>
           <ol class="loop-timeline">
-            <li><b>0–20</b><span><strong><span class="ja">リストをループする</span><span class="en">Loop through a list</span></strong><small><span class="ja"><code>for</code>・<code>range()</code>・字下げ</span><span class="en"><code>for</code>, <code>range()</code>, indentation</span></small></span></li>
-            <li><b>20–30</b><span><strong><span class="ja">一周ずつ追跡する</span><span class="en">Trace each turn</span></strong><small><span class="ja">どの値が、いつ変わる？</span><span class="en">Which value changes, and when?</span></small></span></li>
-            <li><b>30–70</b><span><strong><span class="ja">人口データを読む</span><span class="en">Read demographic data</span></strong><small><span class="ja">合計・絞り込み・ラベルづくり</span><span class="en">Totals, filters, and labels</span></small></span></li>
+            <li><b>0–10</b><span><strong><span class="ja">リストをループする</span><span class="en">Loop through a list</span></strong><small><span class="ja"><code>for</code>・<code>range()</code>・字下げ</span><span class="en"><code>for</code>, <code>range()</code>, indentation</span></small></span></li>
+            <li><b>10–45</b><span><strong><span class="ja">Week 5 forループNotebook</span><span class="en">Week 5 for-loop notebook</span></strong><small><span class="ja">繰り返し・合計・<code>append()</code></span><span class="en">Repeated output, totals, and <code>append()</code></span></small></span></li>
+            <li><b>45–70</b><span><strong><span class="ja">人口データを読む</span><span class="en">Read demographic data</span></strong><small><span class="ja"><code>pandas</code>、<code>head()</code>、<code>info()</code>、<code>describe()</code></span><span class="en"><code>pandas</code>, <code>head()</code>, <code>info()</code>, <code>describe()</code></span></small></span></li>
             <li><b>70–100</b><span><strong><span class="ja">パターンを一つ見つける</span><span class="en">Find one pattern</span></strong><small><span class="ja">表またはグラフで説明する</span><span class="en">Explain it with a table or chart</span></small></span></li>
           </ol>
         </section>
@@ -106,13 +142,31 @@ Finished!</code></pre>
         <section class="slide" data-slide hidden>
           <p class="slide-kicker">RANGE / 数をつくる</p>
           <h2><code>range(1, 5)</code> <span class="ja">は 1 から 4</span><span class="en">means 1 through 4</span></h2>
-          <div class="lecture-notebook-cell"><div class="lecture-cell-toolbar"><span>Python</span><button type="button" data-reveal aria-expanded="false">▶ <span class="ja">実行する</span><span class="en">Run</span></button></div><pre><code>for number in range(1, 5):
-    print(f"Round {number}")</code></pre></div>
-          <pre class="lecture-cell-output" hidden><code>Round 1
-Round 2
-Round 3
-Round 4</code></pre>
-          <p class="slide-note"><span class="ja"><code>range(start, end)</code> は <strong>endの手前まで</strong>。<code>range(5)</code> なら 0, 1, 2, 3, 4。</span><span class="en"><code>range(start, end)</code> stops <strong>before end</strong>. <code>range(5)</code> gives 0, 1, 2, 3, 4.</span></p>
+          <div class="lecture-notebook-cell"><div class="lecture-cell-toolbar"><span>Python</span><button type="button" data-reveal aria-expanded="false">▶ <span class="ja">実行する</span><span class="en">Run</span></button></div><pre><code>for count in range(1, 5):
+    print("{} sheep".format(count))
+print("Good night")</code></pre></div>
+          <pre class="lecture-cell-output" hidden><code>1 sheep
+2 sheep
+3 sheep
+4 sheep
+Good night</code></pre>
+          <p class="slide-note"><span class="ja"><code>range(start, end)</code>はendの手前まで。<code>range(5)</code>なら0〜4。<code>.format(count)</code>は<code>{}</code>に値を入れる。<code>f"{count} sheep"</code>とも書ける。</span><span class="en"><code>range(start, end)</code> stops before end. <code>range(5)</code> gives 0–4. <code>.format(count)</code> fills <code>{}</code> with a value. <code>f"{count} sheep"</code> is equivalent.</span></p>
+        </section>
+
+
+        <section class="slide" data-slide hidden>
+          <p class="slide-kicker">INPUT + RANGE / 例2</p>
+          <h2><span class="ja">入力した数から、ループの範囲を決める</span><span class="en">Input sets the loop’s range</span></h2>
+          <div class="fish-inputs"><label>Start: <input data-fish-start type="number" value="2" min="-20" max="30"></label><label>Last: <input data-fish-end type="number" value="4" min="-20" max="30"></label></div><div class="lecture-notebook-cell"><div class="lecture-cell-toolbar"><span>Python</span><button type="button" data-fish-run aria-expanded="false">▶ <span class="ja">実行する</span><span class="en">Run</span></button></div><pre><code>a = int(input("Start: "))
+b = int(input("Last: "))
+for count in range(a, b + 1):
+    print(f"{count} fish")</code></pre></div>
+          <pre class="lecture-cell-output" hidden><code>Start: 2
+Last: 4
+2 fish
+3 fish
+4 fish</code></pre>
+          <p class="slide-note"><span class="ja"><code>input()</code>は文字列。<code>int()</code>で整数に変える。<code>b + 1</code>で最後の数bを含める。a=4、b=2なら？</span><span class="en"><code>input()</code> returns text. <code>int()</code> converts it to an integer. <code>b + 1</code> includes b. What if a=4 and b=2?</span></p>
         </section>
 
         <section class="slide" data-slide hidden>
@@ -132,6 +186,30 @@ print(f"Final total: {total}")</code></pre></div>
 22
 Final total: 22</code></pre>
           <p class="slide-question"><span class="ja"><code>total = 0</code> をループの中に入れたら、どうなる？</span><span class="en">What happens if <code>total = 0</code> moves inside the loop?</span></p>
+        </section>
+
+
+        <section class="slide" data-slide hidden>
+          <p class="slide-kicker">SQUARES + TOTAL / 例5</p>
+          <h2><span class="ja">2乗してから、合計に足す</span><span class="en">Square each value, then add it</span></h2>
+          <div class="lecture-notebook-cell"><div class="lecture-cell-toolbar"><span>Python</span><button type="button" data-reveal aria-expanded="false">▶ <span class="ja">実行する</span><span class="en">Run</span></button></div><pre><code>total = 0
+for num in range(1, 11):
+    total += num ** 2
+print(total)</code></pre></div>
+          <pre class="lecture-cell-output" hidden><code>385</code></pre>
+          <p class="slide-note"><span class="ja"><code>** 2</code>は2乗。<code>+=</code>で今の合計に足す。<code>range(1, 4)</code>なら 1 + 4 + 9 = 14。</span><span class="en"><code>** 2</code> means squared. <code>+=</code> adds to the current total. With <code>range(1, 4)</code>, the result is 1 + 4 + 9 = 14.</span></p>
+        </section>
+
+        <section class="slide" data-slide hidden>
+          <p class="slide-kicker">APPEND / 数から新しいリスト</p>
+          <h2><span class="ja">2乗した値を、一つずつ保存する</span><span class="en">Save the squared values in a new list</span></h2>
+          <div class="lecture-notebook-cell"><div class="lecture-cell-toolbar"><span>Python</span><button type="button" data-reveal aria-expanded="false">▶ <span class="ja">実行する</span><span class="en">Run</span></button></div><pre><code>values = [1, 2, 3, 4, 5]
+squares = []
+for value in values:
+    squares.append(value ** 2)
+print(squares)</code></pre></div>
+          <pre class="lecture-cell-output" hidden><code>[1, 4, 9, 16, 25]</code></pre>
+          <p class="slide-note"><span class="ja"><code>total += ...</code>は合計を一つ作る。<code>append()</code>は結果を一件ずつ残す。<code>squares = []</code>をループの中に入れたら？</span><span class="en"><code>total += ...</code> produces one total. <code>append()</code> keeps each result. What if <code>squares = []</code> moves inside the loop?</span></p>
         </section>
 
         <section class="slide" data-slide hidden>
@@ -164,72 +242,176 @@ print(badges)</code></pre></div>
           <p class="slide-question"><span class="ja">リストに4人いたら、<code>badges</code> には何個の文字列が入る？</span><span class="en">If the list holds four people, how many strings end up in <code>badges</code>?</span></p>
         </section>
 
-        <section class="slide" data-slide hidden>
-          <p class="slide-kicker">DATA / 1行が1件の記録</p>
-          <h2><span class="ja">データでも、同じループを使える</span><span class="en">Data uses the same loop</span></h2>
-          <div class="lecture-notebook-cell"><div class="lecture-cell-toolbar"><span>Python</span><button type="button" data-reveal aria-expanded="false">▶ <span class="ja">実行する</span><span class="en">Run</span></button></div><pre><code>prefectures = [
-    {"name": "北海道", "population": 5_140_000},
-    {"name": "東京都", "population": 14_038_000},
-    {"name": "大阪府", "population": 8_782_000},
-]
 
-for prefecture in prefectures:
-    name = prefecture["name"]
-    population = prefecture["population"]
-    print(f"{name}: {population:,} people")</code></pre></div>
-          <pre class="lecture-cell-output" hidden><code>北海道: 5,140,000 people
-東京都: 14,038,000 people
-大阪府: 8,782,000 people</code></pre>
-          <p class="slide-note"><span class="ja">リストの各要素が一都道府県の記録。ループは一件ずつ、同じラベルをつくる。あとで <code>japan.csv</code> の全行に広げる。</span><span class="en">Each list item is one prefecture record. The loop makes the same label for each record. Soon, extend this to every row in <code>japan.csv</code>.</span></p>
+        <section class="slide" data-slide hidden>
+          <p class="slide-kicker">PRINT / 例6</p>
+          <h2><span class="ja">改行せずに、同じ行に表示する</span><span class="en">Print repeatedly on the same line</span></h2>
+          <div class="lecture-notebook-cell"><div class="lecture-cell-toolbar"><span>Python</span><button type="button" data-reveal aria-expanded="false">▶ <span class="ja">実行する</span><span class="en">Run</span></button></div><pre><code>for i in range(10):
+    print("-", end="")
+print("Done!")</code></pre></div>
+          <pre class="lecture-cell-output" hidden><code>----------Done!</code></pre>
+          <p class="slide-note"><span class="ja"><code>end=""</code>は表示後の改行をなくす。iはここでは使わず、10回繰り返すための変数。<code>end=" "</code>に変えると？</span><span class="en"><code>end=""</code> removes the newline after each print. We do not use i here. It simply counts ten repetitions. What changes with <code>end=" "</code>?</span></p>
+        </section>
+
+        <section class="slide" data-slide hidden>
+          <p class="slide-kicker">NOTEBOOK / 10–45 MINUTES</p>
+          <h2><span class="ja">Week 5 For Loopで、出力を予想してから実行する</span><span class="en">Week 5 For Loop: predict the output, then run it</span></h2>
+          <ol class="homework-slide-list">
+            <li><span class="ja"><code>for i in range(10)</code> とリストのループを実行前に追跡する。</span><span class="en">Trace <code>for i in range(10)</code> and a list loop before running either one.</span></li>
+            <li><span class="ja">例1〜6を予想・実行し、入力値や範囲を一か所変える。</span><span class="en">Predict and run Examples 1–6, then change one input or range.</span></li>
+            <li><span class="ja">各数を2乗して、<code>append()</code> で新しいリストをつくる。</span><span class="en">Square each number and build a new list with <code>append()</code>.</span></li>
+          </ol>
+          <a class="download-notebook" href="week-05-in-class-for-loops.ipynb" download><span class="ja">Week 5 For Loopをダウンロード</span><span class="en">Download Week 5 For Loop</span> ↓</a>
+        </section>
+
+        <section class="slide" data-slide hidden>
+          <p class="slide-kicker">PANDAS / データ分析用の道具</p>
+          <h2><span class="ja"><code>pandas</code> で、表形式のデータを扱う</span><span class="en">Use <code>pandas</code> for table-shaped data</span></h2>
+          <div class="lecture-notebook-cell"><div class="lecture-cell-toolbar"><span>Python</span><button type="button" data-reveal aria-expanded="false">▶ <span class="ja">実行する</span><span class="en">Run</span></button></div><pre><code>import pandas as pd
+print("pandas ready")</code></pre></div>
+          <pre class="lecture-cell-output" hidden><code>pandas ready</code></pre>
+          <p class="slide-note"><span class="ja"><code>pandas</code> は、CSVの表を読み、列を選び、数値を要約するためのPythonライブラリ。<code>pd</code> はよく使う短い名前。<a class="pandas-link" href="https://pandas.pydata.org/docs/" target="_blank" rel="noopener">公式ドキュメント ↗</a></span><span class="en"><code>pandas</code> is a Python library for reading CSV tables, selecting columns, and summarising values. <code>pd</code> is the common short name. <a class="pandas-link" href="https://pandas.pydata.org/docs/" target="_blank" rel="noopener">Official documentation ↗</a></span></p>
+        </section>
+
+        <section class="slide" data-slide hidden>
+          <p class="slide-kicker">LOAD DATA / CSVを読む</p>
+          <h2><span class="ja"><code>japan.csv</code> を <code>df</code> に読み込む</span><span class="en">Load <code>japan.csv</code> into <code>df</code></span></h2>
+          <div class="lecture-notebook-cell"><div class="lecture-cell-toolbar"><span>Python</span><button type="button" data-reveal aria-expanded="false">▶ <span class="ja">実行する</span><span class="en">Run</span></button></div><pre><code>df = pd.read_csv("japan.csv")
+print(df.shape)</code></pre></div>
+          <pre class="lecture-cell-output" hidden><code>(47, 92)</code></pre>
+          <p class="slide-note simulation-note"><span class="ja">出力はこの週の <code>japan.csv</code> から得た実際の結果。47行は都道府県の記録、92列は人口・出生・面積などの変数。</span><span class="en">The result comes from this week’s <code>japan.csv</code>. Its 47 rows are prefecture records and its 92 columns include population, births, area, and more.</span></p>
+        </section>
+
+
+        <section class="slide" data-slide hidden>
+          <p class="slide-kicker">COLUMNS / 列を選ぶ</p>
+          <h2><span class="ja">使う列だけを、小さな表にする</span><span class="en">Select a few columns for a smaller table</span></h2>
+          <div class="lecture-notebook-cell"><div class="lecture-cell-toolbar"><span>Python</span><button type="button" data-reveal aria-expanded="false">▶ <span class="ja">実行する</span><span class="en">Run</span></button></div><pre><code>columns = ["都道府県", "総人口", "65歳以上人口", "合計特殊出生率"]
+data = df[columns]
+print(data.columns.tolist())</code></pre></div>
+          <pre class="lecture-cell-output" hidden><code>['都道府県', '総人口', '65歳以上人口', '合計特殊出生率']</code></pre>
+          <p class="slide-note"><span class="ja"><code>df["総人口"]</code>は一列。<code>df[columns]</code>は列名のリストから表を作る。全列の名前は<code>df.columns</code>で確認する。</span><span class="en"><code>df["総人口"]</code> selects one column. <code>df[columns]</code> selects the listed columns as a table. Use <code>df.columns</code> to see every column name.</span></p>
+        </section>
+
+        <section class="slide" data-slide hidden>
+          <p class="slide-kicker">HEAD / 最初の行を見る</p>
+          <h2><code>head()</code> <span class="ja">で、読み込みをすばやく確認する</span><span class="en">checks the first rows after loading</span></h2>
+          <div class="lecture-notebook-cell"><div class="lecture-cell-toolbar"><span>Python</span><button type="button" data-reveal aria-expanded="false">▶ <span class="ja">実行する</span><span class="en">Run</span></button></div><pre><code>print(data.head().to_string(index=False))</code></pre></div>
+          <pre class="lecture-cell-output dataframe-output" hidden><code>都道府県     総人口  65歳以上人口  合計特殊出生率
+ 北海道 5140000  1686000     1.20
+ 青森県 1204000   419000     1.31
+ 岩手県 1181000   408000     1.30
+ 宮城県 2280000   659000     1.15
+ 秋田県  930000   359000     1.22</code></pre>
+          <p class="slide-question"><span class="ja">この5行だけで、どの列に欠けた値や変な形式がないか、何を確認できる？</span><span class="en">What can these five rows tell you about missing values or unexpected formats?</span></p>
+        </section>
+
+        <section class="slide" data-slide hidden>
+          <p class="slide-kicker">INFO / 表の構造を見る</p>
+          <h2><code>info()</code> <span class="ja">は行数・列数・データ型を示す</span><span class="en">shows rows, columns, and data types</span></h2>
+          <div class="lecture-notebook-cell"><div class="lecture-cell-toolbar"><span>Python</span><button type="button" data-reveal aria-expanded="false">▶ <span class="ja">実行する</span><span class="en">Run</span></button></div><pre><code>data.info(memory_usage=False)</code></pre></div>
+          <pre class="lecture-cell-output dataframe-output" hidden><code>&lt;class 'pandas.core.frame.DataFrame'&gt;
+RangeIndex: 47 entries, 0 to 46
+Data columns (total 4 columns):
+ #   Column   Non-Null Count  Dtype
+---  ------   --------------  -----
+ 0   都道府県     47 non-null     object
+ 1   総人口      47 non-null     int64
+ 2   65歳以上人口  47 non-null     int64
+ 3   合計特殊出生率  47 non-null     float64
+dtypes: float64(1), int64(2), object(1)</code></pre>
+          <p class="slide-note"><span class="ja">選んだ4列の完全な出力。<code>object</code> は名前のような文字、<code>int64</code> は整数、<code>float64</code> は小数。分析前に型と空欄を確かめる。</span><span class="en">This is the full output for our four selected columns. <code>object</code> holds text such as names, <code>int64</code> holds whole numbers, and <code>float64</code> holds decimals. Check types and missing values before analysis.</span></p>
+        </section>
+
+        <section class="slide" data-slide hidden>
+          <p class="slide-kicker">DESCRIBE / 数値を要約する</p>
+          <h2><code>describe()</code> <span class="ja">で、列の分布をつかむ</span><span class="en">summarises the distribution of a numeric column</span></h2>
+          <div class="lecture-notebook-cell"><div class="lecture-cell-toolbar"><span>Python</span><button type="button" data-reveal aria-expanded="false">▶ <span class="ja">実行する</span><span class="en">Run</span></button></div><pre><code>summary = data.describe()
+summary = summary.round(2)
+print(summary.to_string())</code></pre></div>
+          <pre class="lecture-cell-output dataframe-output" hidden><code>               総人口     65歳以上人口  合計特殊出生率
+count        47.00       47.00    47.00
+mean    2658425.53   770957.45     1.40
+std     2793536.00   693147.11     0.15
+min      544000.00   180000.00     1.08
+25%     1046500.00   348000.00     1.31
+50%     1563000.00   523000.00     1.40
+75%     2655000.00   790500.00     1.48
+max    14038000.00  3202000.00     1.80</code></pre>
+          <p class="slide-question"><span class="ja">meanは平均、50%は中央値、min/maxは最小/最大。round(2)は小数2桁に丸める。総人口の平均と中央値は、なぜ大きく違う？</span><span class="en">mean is the average, 50% the median, and min/max the extremes. round(2) rounds to two decimals. Why is mean population larger than the median?</span></p>
+        </section>
+
+        <section class="slide" data-slide hidden>
+          <p class="slide-kicker">FOR LOOP / DATAFRAME</p>
+          <h2><span class="ja">全都道府県の人口を、一行ずつ合計する</span><span class="en">Add every prefecture’s population, one row at a time</span></h2>
+          <div class="lecture-notebook-cell"><div class="lecture-cell-toolbar"><span>Python</span><button type="button" data-reveal aria-expanded="false">▶ <span class="ja">実行する</span><span class="en">Run</span></button></div><pre><code>total_population = 0
+
+for index, row in df.iterrows():
+    total_population += row["総人口"]
+
+print(f"このデータの総人口: {total_population:,} 人")</code></pre></div>
+          <pre class="lecture-cell-output" hidden><code>このデータの総人口: 124,946,000 人</code></pre>
+          <p class="slide-note"><span class="ja"><code>iterrows()</code> は一行ずつの記録を渡す。<code>index</code> はここでは使わない行番号、<code>row</code> は一都道府県のデータ。</span><span class="en"><code>iterrows()</code> gives one record at a time. <code>index</code> is the unused row number here, and <code>row</code> holds one prefecture’s data.</span></p>
+        </section>
+
+
+        <section class="slide" data-slide hidden>
+          <p class="slide-kicker">SORT / 大きい順に並べる</p>
+          <h2><span class="ja">人口トップ5を、一行ずつ紹介する</span><span class="en">Introduce the five most populous prefectures</span></h2>
+          <div class="lecture-notebook-cell"><div class="lecture-cell-toolbar"><span>Python</span><button type="button" data-reveal aria-expanded="false">▶ <span class="ja">実行する</span><span class="en">Run</span></button></div><pre><code>top5 = df.sort_values("総人口", ascending=False).head(5)
+for index, row in top5.iterrows():
+    print(f"{row['都道府県']}: {row['総人口']:,} people")</code></pre></div>
+          <pre class="lecture-cell-output" hidden><code>東京都: 14,038,000 people
+神奈川県: 9,232,000 people
+大阪府: 8,782,000 people
+愛知県: 7,495,000 people
+埼玉県: 7,337,000 people</code></pre>
+          <p class="slide-note"><span class="ja"><code>ascending=False</code>は大きい順。<code>head(5)</code>は先頭5行。<code>tail(5)</code>にすると、人口が少ない5件になる。</span><span class="en"><code>ascending=False</code> means largest first. <code>head(5)</code> takes the first five rows. Using <code>tail(5)</code> here would select the five smallest.</span></p>
         </section>
 
         <section class="slide" data-slide hidden>
           <p class="slide-kicker">QUICK QUIZ / 予想する</p>
-          <h2><span class="ja">どの都道府県名が表示される？</span><span class="en">Which prefecture names appear?</span></h2>
-          <pre class="bus-code"><code>for prefecture in prefectures:
-    if prefecture["population"] &gt;= 6_000_000:
-        print(prefecture["name"])</code></pre>
+          <h2><span class="ja">総人口200万人以上の都道府県はいくつ？</span><span class="en">How many prefectures have at least 2 million people?</span></h2>
+          <pre class="bus-code"><code>large_prefectures = []
+
+for index, row in df.iterrows():
+    if row["総人口"] &gt;= 2_000_000:
+        large_prefectures.append(row["都道府県"])
+
+print(len(large_prefectures))</code></pre>
           <div class="quiz-choices" role="group" aria-label="Prediction choices">
-            <button type="button" data-quiz-choice="all"><span class="ja">A. 3つとも</span><span class="en">A. All three</span></button>
-            <button type="button" data-quiz-choice="two"><span class="ja">B. 東京都と大阪府</span><span class="en">B. Tokyo and Osaka</span></button>
-            <button type="button" data-quiz-choice="none"><span class="ja">C. 何も表示しない</span><span class="en">C. Nothing</span></button>
+            <button type="button" data-quiz-choice="eight"><span class="ja">A. 8</span><span class="en">A. 8</span></button>
+            <button type="button" data-quiz-choice="sixteen"><span class="ja">B. 16</span><span class="en">B. 16</span></button>
+            <button type="button" data-quiz-choice="fortyseven"><span class="ja">C. 47</span><span class="en">C. 47</span></button>
           </div>
           <p id="quiz-feedback" class="quiz-feedback" role="status"></p>
         </section>
 
-        <section class="slide" data-slide hidden>
-          <p class="slide-kicker">NOTEBOOK / 30–70 MINUTES</p>
-          <h2><span class="ja">まず自分で書く。次に、別案を比べる。</span><span class="en">Write it yourself first. Then compare an alternative.</span></h2>
-          <ol class="homework-slide-list">
-            <li><span class="ja">偶数と奇数を別リストに入れる。</span><span class="en">Put even and odd numbers into separate lists.</span></li>
-            <li><span class="ja"><code>japan.csv</code> を読み、使う列と予想する結果を決める。</span><span class="en">Read <code>japan.csv</code>; choose a column and predict a result.</span></li>
-            <li><span class="ja">合計・絞り込み・ラベルづくりのどれかを、自分で一つ完成させる。</span><span class="en">Complete one task yourself: a total, a filter, or a set of labels.</span></li>
-            <li><span class="ja">AIの別案は、読みやすさと三つのテスト値で比べる。</span><span class="en">Compare an AI alternative for readability and with three test values.</span></li>
-          </ol>
-          <a class="download-notebook" href="week-05-in-class-for-loops.ipynb" download><span class="ja">授業内Notebookをダウンロード</span><span class="en">Download the in-class notebook</span> ↓</a>
-        </section>
 
         <section class="slide" data-slide hidden>
-          <p class="slide-kicker">CHALLENGE / LAST 30 MINUTES</p>
-          <h2><span class="ja">人口データから、パターンを一つ見つける</span><span class="en">Find one pattern in the population data</span></h2>
+          <p class="slide-kicker">JAPAN CHALLENGE / 70–100 MINUTES</p>
+          <h2><span class="ja">人口データの30分チャレンジ</span><span class="en">30-minute Japan data challenge</span></h2>
           <div class="challenge-steps">
-            <div><b>01</b><p><span class="ja">問いを選ぶ</span><span class="en">Choose a question</span></p><small><span class="ja">人口、出生率、面積、人口密度など</span><span class="en">Population, fertility, area, density</span></small></div>
-            <div><b>02</b><p><span class="ja">ループで確かめる</span><span class="en">Check it with a loop</span></p><small><span class="ja">合計・数える・絞り込む・ラベル化</span><span class="en">Total, count, filter, label</span></small></div>
-            <div><b>03</b><p><span class="ja">表かグラフにする</span><span class="en">Make a table or chart</span></p><small><span class="ja">見えたことと、証明できないことを書く</span><span class="en">State what it suggests and what it cannot prove</span></small></div>
+            <div><b>01</b><p><span class="ja">問いを選ぶ</span><span class="en">Choose a question</span></p><small><span class="ja">A: 200万人以上、B: トップ10、C: 高齢者の割合</span><span class="en">A: At least 2 million, B: Top ten, C: Share aged 65+</span></small></div>
+            <div><b>02</b><p><span class="ja">データを確かめる</span><span class="en">Check the data</span></p><small><span class="ja"><code>head()</code>、<code>info()</code>、<code>describe()</code> で列を選ぶ</span><span class="en">Use <code>head()</code>, <code>info()</code>, and <code>describe()</code> to choose a column</span></small></div>
+            <div><b>03</b><p><span class="ja">ループで説明する</span><span class="en">Explain it with a loop</span></p><small><span class="ja">数える、絞り込む、合計する、またはラベルをつくる</span><span class="en">Count, filter, total, or make labels</span></small></div>
           </div>
-          <p class="slide-question"><span class="ja">例：「総人口200万人以上の都道府県はいくつ？」その答えを、別の値でテストしよう。</span><span class="en">Example: “How many prefectures have at least 2 million people?” Test your answer with another value.</span></p>
+          <p class="slide-question"><span class="ja">NotebookのA〜Cから一つ選ぶ。結果は表や文字の一覧でOK。元の一行と結果を比べ、わかったことを数文で書こう。</span><span class="en">Choose one of A–C in the notebook. A table or printed list is enough. Check one result against its source row, then explain what you found.</span></p>
+          <a class="download-notebook" href="../../viewer.html?file=weeks%2Fweek-05%2Fchallenge-japan-demographics.ipynb&amp;title=Japan%20demographics%20challenge"><span class="ja">Japan demographics challengeを開く</span><span class="en">Open the Japan demographics challenge</span> ↗</a>
         </section>
 
         <section class="slide slide--homework" data-slide hidden>
-          <p class="slide-kicker">TAKE-HOME / DUE NOVEMBER 4, 23:59</p>
-          <h2><span class="ja">一枚のグラフ。自分の説明。確認した証拠。</span><span class="en">One chart. Your explanation. Checked evidence.</span></h2>
+          <p class="slide-kicker">HOMEWORK / 宿題</p>
+          <h2><span class="ja">データで、短い自分のレポートをつくる</span><span class="en">Make a short report with data</span></h2>
           <ul class="homework-slide-list">
-            <li><span class="ja">グラフ一つと、データから読める短いミニレポート。</span><span class="en">One chart and a short micro-report based on the data.</span></li>
-            <li><span class="ja">自分のループにコード注記を付ける。</span><span class="en">Annotate your own loop.</span></li>
-            <li><span class="ja">三つのテスト値と、AIの提案またはデータの仮定について200字。</span><span class="en">Three test values and a 200-character reflection on an AI suggestion or data assumption.</span></li>
+            <li><strong><span class="ja">選択肢1：Japanデータ</span><span class="en">Option 1: Japan data</span></strong><br><span class="ja"><code>japan.csv</code>を使い、自分の問いに答えるミニレポートを作る。</span><span class="en">Use <code>japan.csv</code> to make a mini-report that answers your own question.</span></li>
+            <li><strong><span class="ja">選択肢2：自分のデータ</span><span class="en">Option 2: Your own data</span></strong><br><span class="ja">小さなCSVデータを読み込み、問いとレポートを自分でつくる。</span><span class="en">Import a small CSV dataset and create your own question and report.</span></li>
+            <li><strong><span class="ja">どちらも必須</span><span class="en">Both options must include</span></strong><br><span class="ja"><code>pandas</code>、CSVの読み込み、<code>head()</code>・<code>info()</code>・<code>describe()</code>のいずれか、問いに役立つ<code>for</code>ループ、表・一覧・グラフのいずれか、短い考察。</span><span class="en"><code>pandas</code>, CSV loading, one of <code>head()</code>, <code>info()</code>, or <code>describe()</code>, a <code>for</code> loop that answers your question, a table, list, or chart, and a brief finding.</span></li>
           </ul>
-          <p class="slide-note"><span class="ja">覚える言葉：<strong>変わる値に、一つの手順を適用する。</strong></span><span class="en">Remember: <strong>apply one process to changing values.</strong></span></p>
+          <p class="slide-note"><span class="ja">11月4日(水) 23:59までに、実行済み.ipynbとCSVをUNIPAへ。出典も添える。自由な実験も歓迎。</span><span class="en">Submit the executed .ipynb and CSV to UNIPA by Nov 4, 23:59 JST. Include the data source. Creative experiments are welcome.</span></p>
         </section>
+
+
       </div>
     </div>
 

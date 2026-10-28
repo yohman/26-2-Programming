@@ -94,7 +94,7 @@ function renderNotebook(record) {
   if(!record.notebook)return renderAttachments(record);
   const host=document.createElement('div');host.className='review-notebook';
   cellsFor(record).forEach(({cell,index,run,outputs})=>{
-    if(cell.cell_type==='markdown') {const section=document.createElement('section');section.className='review-markdown';section.innerHTML=notebookMarkdownHtml(joined(cell.source));section.querySelectorAll('a').forEach(a=>{if(!['http:','https:'].includes(new URL(a.href,location.href).protocol)){a.removeAttribute('href');}a.target='_blank';a.rel='noopener noreferrer';});host.append(section);return;}
+    if(cell.cell_type==='markdown') {const section=document.createElement('section');section.className='review-markdown';section.innerHTML=notebookMarkdownHtml(joined(cell.source));section.querySelectorAll('img[src^="attachment:"]').forEach(image=>{const name=decodeURIComponent(image.getAttribute('src').slice('attachment:'.length));const attachment=cell.attachments?.[name]||{};const entry=Object.entries(attachment).find(([type,value])=>type.startsWith('image/')&&joined(value));if(entry){const [type,value]=entry;image.src='data:'+type+';base64,'+joined(value);}});section.querySelectorAll('a').forEach(a=>{if(!['http:','https:'].includes(new URL(a.href,location.href).protocol)){a.removeAttribute('href');}a.target='_blank';a.rel='noopener noreferrer';});host.append(section);return;}
     const section=document.createElement('section');section.className='notebook-code-cell';
     const count=selectedMode==='saved'?cell.execution_count:null;
     section.setAttribute('aria-label','Cell '+(index+1)+' · '+(cell.cell_type==='code'?'Python':'Raw'));

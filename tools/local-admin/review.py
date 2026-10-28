@@ -422,7 +422,8 @@ def prepare():
         if not folder.is_dir() or not match:
             continue
         week = int(match[1]); groups = {}
-        for file in sorted(folder.iterdir()):
+        # UNIPA exports may be kept inside their timestamped extraction folder.
+        for file in sorted(folder.rglob('*')):
             match = re.match(r'^(\d{8,12})_', file.name)
             if match and file.is_file():
                 groups.setdefault(match[1], []).append(file)

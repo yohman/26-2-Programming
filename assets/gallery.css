@@ -23,5 +23,10 @@
 #gallery-back[hidden] { display:none; }
 .gallery-notebook-title { margin:1.5rem 0; }
 .gallery-notebook-title p { color:var(--muted); }
+.gallery-download-actions { display:flex; justify-content:flex-end; margin:1.25rem 0; }
+.gallery-download { padding:.7rem 1rem; border:1px solid var(--blue); background:var(--blue); color:#fff; font:600 .9rem/1.4 var(--sans); cursor:pointer; }
+.gallery-download:hover { background:var(--ink); }
+.gallery-download:focus-visible { outline:2px solid var(--blue); outline-offset:4px; }
+.gallery-download-actions p { color:var(--muted); font-size:.85rem; }
 .gallery-page .review-notebook { margin-top:2rem; }
 .gallery-page .review-output iframe { max-width:100%; }

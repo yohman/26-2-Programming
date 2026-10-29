@@ -18,6 +18,8 @@ The entire `admin/` folder is ignored by Git: originals, exports, generated page
 
 The **みんなの作品 / Student work** menu opens `gallery.html`. Cards preview the notebook; selecting one opens the full notebook in cell order with inline outputs.
 
+Each project preview offers a `.ipynb` download at the top and bottom. Downloads contain the sanitized public code, saved outputs, and embedded notebook attachments, not private originals, student IDs, local paths, or separate source attachments. Submissions without a notebook have no download. Required external data files are not bundled.
+
 - **All submissions are shown**, with student names and readings, as authorized by Yoh. **♥ means featured**, not public/private: featured works appear first with a highlight. Removing a heart removes the highlight, not the project. Adding or removing a heart exports the feed, commits only `submissions/gallery.json`, and pushes to `origin/main`. A failed publication is reported in Admin; retry the heart action.
 - Featured selections remain in ignored `admin/.gallery-hearts.json`. Student IDs and local user paths are redacted. The roster, admin notes, diagnostics, and source attachments are never exported. Images already embedded in notebook outputs are part of the public preview. Submissions without a readable notebook receive an explicit unavailable-preview card.
 - **フォルダを再読み込み** imports and republishes all submissions, including new ones, while preserving featured selections.

@@ -11,6 +11,38 @@ function weekEntries(week) {
   return galleryRecords.filter(record=>record.week===week).sort((a,b)=>Number(!!b.featured)-Number(!!a.featured));
 }
 const featuredBadge='<span class="gallery-featured-label"><span aria-hidden="true">♥</span> <span class="lang-ja">注目の作品</span><span class="lang-en">Featured</span></span>';
+function downloadableNotebook(record) {
+  return {
+    nbformat:4,nbformat_minor:4,
+    metadata:{kernelspec:{display_name:'Python 3',language:'python',name:'python3'},language_info:{name:'python'}},
+    cells:record.notebook.cells.map(cell=>{
+      const copy={...cell,metadata:{},source:cell.source||''};
+      if(cell.cell_type==='code'){
+        copy.execution_count=cell.execution_count??null;
+        copy.outputs=cell.outputs||[];
+      }
+      return copy;
+    })
+  };
+}
+function notebookDownload(record) {
+  const actions=document.createElement('div');actions.className='gallery-download-actions';
+  if(record.has_notebook===false){
+    actions.innerHTML='<p><span class="lang-ja">Notebookファイルは提出されていません。ダウンロードはありません。</span><span class="lang-en">No notebook file was submitted; no download is available.</span></p>';
+    return actions;
+  }
+  const button=document.createElement('button');button.type='button';button.className='gallery-download';
+  button.innerHTML='<span class="lang-ja">↓ Notebookをダウンロード (.ipynb)</span><span class="lang-en">↓ Download notebook (.ipynb)</span>';
+  button.onclick=()=>{
+    // Download only the already-public, sanitized code and saved outputs.
+    const blob=new Blob([JSON.stringify(downloadableNotebook(record),null,2)],{type:'application/x-ipynb+json'});
+    const url=URL.createObjectURL(blob),link=document.createElement('a');
+    link.href=url;link.download='week-'+String(record.week).padStart(2,'0')+'-'+record.id+'.ipynb';
+    document.body.append(link);link.click();link.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),1000);
+  };
+  actions.append(button);return actions;
+}
 function fillWeekPicker(selected) {
   const weeks=[...new Set([...galleryWeeks.map(w=>w.week),...galleryRecords.map(s=>s.week)])].sort((a,b)=>a-b);
   const language=document.documentElement.dataset.language||'ja';
@@ -45,7 +77,7 @@ function renderGallery() {
     heading.innerHTML='<p class="eyebrow">WEEK '+String(record.week).padStart(2,'0')+'</p><p><span class="lang-ja">'+esc(assignmentTitle(week,'ja'))+'</span><span class="lang-en">'+esc(assignmentTitle(week,'en'))+'</span></p><h1>'+esc(record.title)+'</h1><p>'+esc(record.student_name)+' · '+esc(record.student_reading)+'</p>';
     if(record.featured)heading.insertAdjacentHTML('afterbegin',featuredBadge);
     const navigation=()=>notebookNavigation(weekEntries(week),record.id,item=>'gallery.html?week='+week+'&id='+item.id);
-    galleryHost.append(navigation(),heading,renderNotebook(record),navigation());document.title=record.title+' · Student work';return;
+    galleryHost.append(navigation(),heading,notebookDownload(record),renderNotebook(record),notebookDownload(record),navigation());document.title=record.title+' · Student work';return;
   }
   if(id){history.replaceState(null,'','gallery.html?week='+week);document.getElementById('gallery-status').textContent='この作品は現在公開されていません。';}
   const entries=weekEntries(week);

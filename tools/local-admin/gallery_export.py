@@ -29,10 +29,10 @@ def publish(hearts, push=True):
             key = (week['week'], item['student'], item['file'] or '')
             record = json.loads((ROOT / 'admin/_review' / item['id'] / 'submission.json').read_text())
             notebook = record.get('notebook') or {'cells': [{'cell_type': 'markdown', 'source': 'Notebookのプレビューはありません。 / No notebook preview is available.'}]}
-            cells = [{k: cell[k] for k in ('cell_type', 'source', 'outputs', 'execution_count') if k in cell} for cell in notebook['cells']]
+            cells = [{k: cell[k] for k in ('cell_type', 'source', 'outputs', 'execution_count', 'attachments') if k in cell} for cell in notebook['cells']]
             runs = [{'cell': run['cell'], 'outputs': [o for o in run['outputs'] if o.get('metadata', {}).get('local_widget_preview')]} for run in record['replay']['cells']]
             public_id = hashlib.sha256(json.dumps(key).encode()).hexdigest()[:20]
-            entries.append(clean({'id': public_id, 'week': week['week'], 'featured': key in selected, 'student_name': record['student_name'] or 'Student', 'student_reading': record['student_reading'] or '', 'title': record['title'], 'notebook': {'cells': cells}, 'replay': {'cells': runs}, 'attachments': []}))
+            entries.append(clean({'id': public_id, 'week': week['week'], 'featured': key in selected, 'has_notebook': bool(record.get('notebook')), 'student_name': record['student_name'] or 'Student', 'student_reading': record['student_reading'] or '', 'title': record['title'], 'notebook': {'cells': cells}, 'replay': {'cells': runs}, 'attachments': []}))
             if key in selected:
                 accepted.append(json.dumps(list(key), ensure_ascii=False, separators=(',', ':')))
     entries.sort(key=lambda entry: (entry['week'], not entry['featured']))

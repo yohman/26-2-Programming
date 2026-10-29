@@ -1,4 +1,4 @@
-"""Publish only explicitly hearted notebook previews. Private records never leave admin/."""
+"""Export every submission; hearts mark featured work. Private records stay in admin/."""
 import hashlib
 import json
 from pathlib import Path
@@ -27,14 +27,15 @@ def publish(hearts, push=True):
     for week in index['weeks']:
         for item in week['submissions']:
             key = (week['week'], item['student'], item['file'] or '')
-            if key not in selected: continue
             record = json.loads((ROOT / 'admin/_review' / item['id'] / 'submission.json').read_text())
-            if not record.get('notebook'): continue
-            cells = [{k: cell[k] for k in ('cell_type', 'source', 'outputs', 'execution_count') if k in cell} for cell in record['notebook']['cells']]
+            notebook = record.get('notebook') or {'cells': [{'cell_type': 'markdown', 'source': 'Notebookのプレビューはありません。 / No notebook preview is available.'}]}
+            cells = [{k: cell[k] for k in ('cell_type', 'source', 'outputs', 'execution_count') if k in cell} for cell in notebook['cells']]
             runs = [{'cell': run['cell'], 'outputs': [o for o in run['outputs'] if o.get('metadata', {}).get('local_widget_preview')]} for run in record['replay']['cells']]
             public_id = hashlib.sha256(json.dumps(key).encode()).hexdigest()[:20]
-            entries.append(clean({'id': public_id, 'week': week['week'], 'student_name': record['student_name'] or 'Student', 'student_reading': record['student_reading'] or '', 'title': record['title'], 'notebook': {'cells': cells}, 'replay': {'cells': runs}, 'attachments': []}))
-            accepted.append(json.dumps(list(key), ensure_ascii=False, separators=(',', ':')))
+            entries.append(clean({'id': public_id, 'week': week['week'], 'featured': key in selected, 'student_name': record['student_name'] or 'Student', 'student_reading': record['student_reading'] or '', 'title': record['title'], 'notebook': {'cells': cells}, 'replay': {'cells': runs}, 'attachments': []}))
+            if key in selected:
+                accepted.append(json.dumps(list(key), ensure_ascii=False, separators=(',', ':')))
+    entries.sort(key=lambda entry: (entry['week'], not entry['featured']))
     # Basic credential guard: do not publish a literal bearer token or common API secret.
     body = json.dumps({'updated': datetime.now().astimezone().isoformat(), 'submissions': entries}, ensure_ascii=False)
     if re.search(r'Bearer\s+[A-Za-z0-9_-]{20,}|sk-[A-Za-z0-9_-]{20,}|AIza[A-Za-z0-9_-]{25,}', body):
@@ -48,4 +49,4 @@ def publish(hearts, push=True):
         if subprocess.run(['git', 'diff', '--cached', '--quiet', '--', *paths], cwd=ROOT).returncode:
             subprocess.run(['git', 'commit', '--only', '-m', 'Update hearted student gallery', '--', *paths], cwd=ROOT, check=True, capture_output=True)
         subprocess.run(['git', 'push', 'origin', 'main'], cwd=ROOT, check=True, capture_output=True, timeout=60)
-    return {'count': len(entries), 'hearts': accepted}
+    return {'count': len(entries), 'featured': len(accepted), 'hearts': accepted}

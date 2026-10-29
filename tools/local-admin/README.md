@@ -12,17 +12,17 @@ Put each UNIPA export in `admin/week02`, `admin/week03`, etc. Keep the exported 
 
 Place the student roster in `admin/roster.csv`. The importer finds the student-table header (even below course information), matches 学籍番号 to 学生氏名/氏名, and displays names. UTF-8 and CP932 exports are supported. Missing or conflicting matches remain explicitly marked rather than guessed. The roster stays local and ignored by Git.
 
-The entire `admin/` folder is ignored by Git: originals, exports, generated pages, review JSON, and the Python environment must never be committed or copied to GitHub Pages. Public notebook excerpts are exported separately, only when explicitly hearted (see below).
+The entire `admin/` folder is ignored by Git: originals, exports, generated pages, review JSON, and the Python environment must never be committed or copied to GitHub Pages. Public notebook excerpts are exported separately (see below).
 
 ## Public student work
 
 The **みんなの作品 / Student work** menu opens `gallery.html`. Cards preview the notebook; selecting one opens the full notebook in cell order with inline outputs.
 
-- **♥ means public**, with the student's name and reading. Adding or removing a heart automatically exports the selection, commits only `submissions/gallery.json`, and pushes to `origin/main`. Internet access and working Git credentials are required. A failed publication is reported in Admin; retry the heart action.
-- The selection is stored in ignored `admin/.gallery-hearts.json`. The previous browser-local hearts migrate once. Names and notebook content are published with Yoh's approval; student IDs and local user paths are redacted. The roster, unselected notebooks, admin notes, diagnostics, and source attachments are never exported. Photos already embedded in a selected notebook's rendered HTML are part of that public preview.
-- **フォルダを再読み込み** also republishes updated versions of already-selected notebooks. New submissions are not selected automatically.
+- **All submissions are shown**, with student names and readings, as authorized by Yoh. **♥ means featured**, not public/private: featured works appear first with a highlight. Removing a heart removes the highlight, not the project. Adding or removing a heart exports the feed, commits only `submissions/gallery.json`, and pushes to `origin/main`. A failed publication is reported in Admin; retry the heart action.
+- Featured selections remain in ignored `admin/.gallery-hearts.json`. Student IDs and local user paths are redacted. The roster, admin notes, diagnostics, and source attachments are never exported. Images already embedded in notebook outputs are part of the public preview. Submissions without a readable notebook receive an explicit unavailable-preview card.
+- **フォルダを再読み込み** imports and republishes all submissions, including new ones, while preserving featured selections.
 - Local gallery content changes as soon as the export is written. Public visibility changes after GitHub Pages deploys the push; it cannot be instantaneous on static hosting. An open gallery checks for updates every 10 seconds while visible.
-- Removing a heart removes the work from the current gallery and its feed, not from Git history, prior downloads, or browser caches. Do not use this workflow for confidential submissions or credentials. The exporter blocks common literal API-key formats, but this is not a comprehensive secret scanner.
+- Hearts no longer control visibility. Do not use this workflow for confidential submissions or credentials. The exporter blocks common literal API-key formats, but this is not a comprehensive secret scanner.
 
 ## Preview and execution
 

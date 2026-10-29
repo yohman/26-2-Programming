@@ -4,6 +4,8 @@
 #gallery-heading p,#gallery-status { color:var(--muted); }
 .gallery-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(min(100%,310px),1fr)); gap:2rem; }
 .gallery-card { display:block; color:var(--ink); text-decoration:none; }
+.gallery-card--featured { padding:1rem; background:#faf0f2; border-top:3px solid #a82e49; }
+.gallery-featured-label { display:inline-flex; align-items:center; gap:.35rem; margin-bottom:.75rem; color:#a82e49; font-size:.8rem; font-weight:700; }
 .gallery-card:hover h2 { color:var(--blue); }
 .gallery-card:focus-visible { outline:2px solid var(--blue); outline-offset:6px; }
 .gallery-thumb { height:210px; overflow:hidden; background:#fff; border:1px solid #e1e5e7; pointer-events:none; }

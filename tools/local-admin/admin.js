@@ -19,7 +19,7 @@ async function publishHearts(next) {
     const response=await fetch('/__admin/gallery',{method:'POST',headers:{'Content-Type':'application/json','X-Admin-Request':'gallery'},body:JSON.stringify([...next])});
     if(!response.ok)throw new Error('公開更新に失敗しました。同じハートをもう一度押して再試行してください。');
     const result=await response.json();
-    status.textContent='公開ギャラリー：'+result.count+'作品 · 送信済み（GitHub Pages反映まで少し時間がかかります）';
+    status.textContent='公開ギャラリー：'+result.count+'作品 · 注目の作品 '+result.featured+'件 · 送信済み（GitHub Pages反映まで少し時間がかかります）';
   } finally {publishing=false;}
 }
 // Generated preview IDs change after a re-import; the original submission identity does not.
@@ -34,10 +34,10 @@ function heartButton(record,week=record.week,onChange=()=>{}) {
     const matching=[button,...document.querySelectorAll('.submission-heart')].filter(item=>item.dataset.heartKey===button.dataset.heartKey);
     matching.forEach(item=>{
       item.setAttribute('aria-pressed',String(selected));
-      item.setAttribute('aria-label',selected?'公開ギャラリーから外す':'公開ギャラリーに追加');
+      item.setAttribute('aria-label',selected?'注目の作品から外す':'注目の作品に追加');
       item.setAttribute('aria-busy',String(state==='pending'));
       item.title=error||(state==='pending'?'選択は反映済みです。公開ギャラリーへ送信しています。':'');
-      const label=state==='pending'?'送信中…':state==='error'?'送信失敗・再試行':selected?'公開中':'公開する';
+      const label=state==='pending'?'送信中…':state==='error'?'送信失敗・再試行':selected?'注目の作品':'注目にする';
       item.innerHTML='<span aria-hidden="true">'+(selected?'♥':'♡')+'</span> '+label;
     });
   };
@@ -198,7 +198,7 @@ function renderWeek(week) {
   };
   filter.onclick=()=>{heartedOnly=!heartedOnly;redraw();};
   search.oninput=redraw;redraw();
-  const note=document.createElement('p');note.className='review-legend';note.textContent='♥ の作品は氏名付きで公開されます。外すと公開ギャラリーから削除されます（GitHub Pages反映には少し時間がかかります）。';
+  const note=document.createElement('p');note.className='review-legend';note.textContent='全員の提出作品が氏名付きでギャラリーに表示されます。♥ は「注目の作品」として上部に表示します。外しても作品は非公開になりません。';
   adminRoot.querySelector('.admin-toolbar').after(note);
 }
 async function loadAdmin() {

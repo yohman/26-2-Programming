@@ -20,6 +20,8 @@
 .submission-heart span { font-size:1.3rem; line-height:1; }
 .admin-page .submission-heart[aria-pressed="true"] { background:#fbecef; border-color:transparent; color:#a82e49; }
 .admin-page .submission-heart:hover { background:#fbecef; color:#a82e49; }
+.admin-page .submission-heart:disabled { cursor:wait; }
+.admin-page .submission-heart[aria-busy="true"] { opacity:1; outline:1px solid var(--line); }
 .admin-filters { display:flex; flex-wrap:wrap; align-items:center; gap:.6rem; }
 .admin-filters .heart-filter { white-space:nowrap; }
 .admin-page button:focus-visible { outline:2px solid var(--blue); outline-offset:3px; }
@@ -29,6 +31,7 @@
 .submission-card p { color:var(--muted); font-size:.8rem; margin:.5rem 0 1rem; line-height:1.6; }
 .submission-card .admin-button { border:0; background:var(--blue); color:#fff; }
 .submission-actions { display:flex; flex-wrap:wrap; align-items:center; gap:.7rem; margin:1rem 0 1.5rem; }
+.submission-footer-actions { display:flex; justify-content:flex-end; margin:1.5rem 0 .5rem; }
 .submission-heading h2 { margin:.7rem 0; font-size:1.5rem; }.submission-heading p { color:var(--muted); font-size:.85rem; overflow-wrap:anywhere; }
 .review-tabs { display:flex; gap:.5rem; flex-wrap:wrap; margin:1.5rem 0; }
 .notebook-navigation { display:grid; grid-template-columns:minmax(0,1fr) auto minmax(0,1fr); gap:1rem; align-items:center; margin:1.5rem 0; }

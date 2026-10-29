@@ -27,20 +27,33 @@ const heartKey=(record,week=record.week)=>JSON.stringify([Number(week),record.st
 function heartButton(record,week=record.week,onChange=()=>{}) {
   const button=document.createElement('button');
   button.className='submission-heart';
-  const update=()=>{
+  button.type='button';
+  button.dataset.heartKey=heartKey(record,week);
+  const update=(state='idle',error='')=>{
     const selected=hearts.has(heartKey(record,week));
-    button.setAttribute('aria-pressed',String(selected));
-    button.setAttribute('aria-label',selected?'公開ギャラリーから外す':'公開ギャラリーに追加');
-    button.innerHTML='<span aria-hidden="true">'+(selected?'♥':'♡')+'</span> '+(selected?'公開中':'公開する');
+    const matching=[button,...document.querySelectorAll('.submission-heart')].filter(item=>item.dataset.heartKey===button.dataset.heartKey);
+    matching.forEach(item=>{
+      item.setAttribute('aria-pressed',String(selected));
+      item.setAttribute('aria-label',selected?'公開ギャラリーから外す':'公開ギャラリーに追加');
+      item.setAttribute('aria-busy',String(state==='pending'));
+      item.title=error||(state==='pending'?'選択は反映済みです。公開ギャラリーへ送信しています。':'');
+      const label=state==='pending'?'送信中…':state==='error'?'送信失敗・再試行':selected?'公開中':'公開する';
+      item.innerHTML='<span aria-hidden="true">'+(selected?'♥':'♡')+'</span> '+label;
+    });
   };
   update();
   button.onclick=async()=>{
+    if(publishing)return;
+    const previous=new Set(hearts);
     const key=heartKey(record,week),next=new Set(hearts);
     next.has(key)?next.delete(key):next.add(key);
-    button.disabled=true;
-    try { await publishHearts(next);hearts=next;try{localStorage.setItem(heartsStorageKey,JSON.stringify([...next]));}catch{}update();onChange(); }
-    catch(error){document.getElementById('admin-status').textContent=error.message;}
-    finally{button.disabled=false;}
+    // Show the selection immediately; Git publication can take several seconds.
+    hearts=next;
+    update('pending');
+    document.querySelectorAll('.submission-heart').forEach(item=>{item.disabled=true;});
+    try { await publishHearts(next);try{localStorage.setItem(heartsStorageKey,JSON.stringify([...next]));}catch{}update();onChange(); }
+    catch(error){hearts=previous;update('error',error.message);document.getElementById('admin-status').textContent=error.message;}
+    finally{document.querySelectorAll('.submission-heart').forEach(item=>{item.disabled=false;});}
   };
   return button;
 }
@@ -150,6 +163,10 @@ function renderSubmission(record) {
   const entries=manifest.weeks.find(week=>week.week===record.week)?.submissions||[];
   const navigation=()=>notebookNavigation(entries,record.id,item=>'?week='+record.week+'&id='+item.id);
   adminRoot.querySelector('.submission-heading').before(navigation());
+  const footerActions=document.createElement('div');
+  footerActions.className='submission-footer-actions';
+  footerActions.append(heartButton(record));
+  adminRoot.append(footerActions);
   adminRoot.append(navigation());
   adminRoot.querySelectorAll('[data-mode]').forEach(button=>button.onclick=()=>{selectedMode=button.dataset.mode;renderSubmission(record);});
   adminRoot.querySelectorAll('[data-tab]').forEach(button=>button.onclick=()=>{selectedTab=button.dataset.tab;renderSubmission(record);});

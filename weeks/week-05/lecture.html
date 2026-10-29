@@ -11,8 +11,8 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../week-02/lecture.css?v=20261025-week05">
   <link rel="stylesheet" href="../../assets/ui.css?v=20261025-week05">
-  <link rel="stylesheet" href="lecture.css?v=20261028-week05-final2">
-  <script src="lecture.js?v=20261028-week05-final2" defer></script>
+  <link rel="stylesheet" href="lecture.css?v=20261028-week05-columns">
+  <script src="lecture.js?v=20261028-week05-columns" defer></script>
   <link rel="stylesheet" href="../../assets/copy-blocks.css?v=20261014">
   <script src="../../assets/copy-blocks.js?v=20261014-pinned" defer></script>
 </head>
@@ -48,22 +48,21 @@
         <section class="slide" data-slide hidden>
           <p class="slide-kicker">CLASS DATA / 今日のリスト</p>
           <h2><span class="ja">クラスの名前を、Pythonのリストにする</span><span class="en">Put the class names into a Python list</span></h2>
-          <div class="lecture-notebook-cell class-roster-cell"><div class="lecture-cell-toolbar"><span>Python</span><button type="button" data-class-run="roster" data-output="class-roster-output" aria-controls="class-roster-output" aria-expanded="false">▶ <span class="ja">リストを表示</span><span class="en">Show the list</span></button></div><pre><code>students = [
-    "拓真", "裕基", "太陽", "恭瑳", "京介",
-    "勇希", "正稀", "流駆", "宙音", "大策",
-    "琉生", "柚希", "達貴", "港人", "慶次",
-    "子竜", "琉太", "直生", "航大", "雄惺",
-    "美晴", "悠樹", "大祐", "龍之輔", "信吾",
-    "健人", "大雅", "凛太郎", "優希", "大樹",
-    "仁", "太知", "勇樹", "祥汰", "匠秋",
-]</code></pre></div>
-          <pre id="class-roster-output" class="lecture-cell-output class-live-output" hidden><code></code></pre>
+          <pre class="bus-code class-roster-code"><code>students = [
+    "Takuma", "Yuki", "Hinata", "Tsukasa", "Kyosuke",
+    "Yuki", "Masaki", "Riku", "Hiroto", "Daisaku",
+    "Ryuusei", "Yuzuki", "Tatsuki", "Minato", "Keiji",
+    "Shiryu", "Ryuta", "Naoki", "Kouta", "Yusei",
+    "Miharu", "Haruki", "Daichi", "Ryunosuke", "Shingo",
+    "Kento", "Taiga", "Rintarou", "Yuuki", "Daiki",
+    "Jin", "Taichi", "Yuuki", "Shota", "Naruki",
+]</code></pre>
           <p class="slide-note"><span class="ja">名前は文字列のデータ。35個の文字列を、順番のある一つのリストにまとめる。</span><span class="en">A name is data. Today, treat the 35 names as one ordered list.</span></p>
         </section>
 
         <section class="slide" data-slide hidden>
           <p class="slide-kicker">RANDOM SAMPLE / 5人を選ぶ</p>
-          <h2><span class="ja">リストから、重複なしで5人を選ぶ</span><span class="en">Choose five different names from the list</span></h2>
+          <h2><span class="ja">リストから、重複なしで5人を選ぶ</span><span class="en">Choose five students from the list</span></h2>
           <div class="lecture-notebook-cell"><div class="lecture-cell-toolbar"><span>Python</span><button type="button" data-class-run="choose" data-output="class-choice-output" aria-controls="class-choice-output" aria-expanded="false">▶ <span class="ja">5人を選ぶ</span><span class="en">Choose 5</span></button></div><pre><code>import random
 
 chosen = random.sample(students, 5)
@@ -284,13 +283,127 @@ print(df.shape)</code></pre></div>
 
 
         <section class="slide" data-slide hidden>
-          <p class="slide-kicker">COLUMNS / 列を選ぶ</p>
+          <p class="slide-kicker">COLUMNS / 01 · 列名を確認</p>
+          <h2><span class="ja">まず、どんな列があるかを調べる</span><span class="en">First, discover the available columns</span></h2>
+          <div class="lecture-notebook-cell"><div class="lecture-cell-toolbar"><span>Python</span><button type="button" data-reveal aria-expanded="false">▶ <span class="ja">実行する</span><span class="en">Run</span></button></div><pre><code>for column in df.columns:
+    print(column)</code></pre></div>
+          <pre class="lecture-cell-output dataframe-output column-names-output" hidden><code>Prefecture
+都道府県
+総人口
+日本人人口
+15歳未満人口
+15～64歳人口
+65歳以上人口
+外国人人口
+出生数
+合計特殊出生率
+死亡数
+転入者数（日本人移動者）
+転出者数（日本人移動者）
+一般世帯数
+一般世帯人員数
+単独世帯数
+婚姻件数
+離婚件数
+総面積（北方地域及び竹島を除く）
+可住地面積
+自然公園面積
+県内総生産額（平成27年基準）
+県民所得（平成27年基準）
+1人当たり県民所得（平成27年基準）
+事業所数（民営）
+事業所数（民営）（建設業）
+事業所数（民営）（製造業）
+事業所数（民営）（情報通信業）
+事業所数（民営）（卸売業、小売業）
+事業所数（民営）（宿泊業、飲食サービス業）
+事業所数（民営）（生活関連サービス業、娯楽業）
+事業所数（民営）（医療、福祉）
+従業者数（民営）
+従業者数（民営）（建設業）
+従業者数（民営）（製造業）
+従業者数（民営）（情報通信業）
+従業者数（民営）（卸売業、小売業）
+従業者数（民営）（宿泊業、飲食サービス業）
+従業者数（民営）（生活関連サービス業、娯楽業）
+従業者数（民営）（医療、福祉）
+農家数（販売農家）
+農家数（自給的農家）
+耕地面積
+旅館営業施設数（ホテルを含む）
+旅館営業施設客室数（ホテルを含む）
+幼稚園数
+幼稚園在園者数
+小学校数
+小学校児童数
+中学校数
+中学校生徒数
+高等学校数
+高等学校生徒数
+短期大学数
+大学数
+短期大学学生数
+大学学生数
+公民館数
+図書館数
+博物館数
+劇場、音楽堂等数
+社会体育施設数
+民間体育施設数
+映画館数
+一般旅券発行件数
+延べ宿泊者数
+外国人延べ宿泊者数
+総住宅数
+空き家数
+持ち家数
+一戸建住宅数
+1住宅当たり延べ面積
+総人口（非水洗化人口＋水洗化人口）
+非水洗化人口
+ごみ総排出量（総量）
+1人1日当たりの排出量
+ごみのリサイクル率
+小売店数
+飲食店数
+大型小売店数
+一般病院数
+一般診療所数
+歯科診療所数
+医師数
+歯科医師数
+薬剤師数
+保育所等数
+保育所等在所児数
+消費支出（二人以上の世帯）
+食料費（二人以上の世帯）
+住居費（二人以上の世帯）
+教養娯楽費（二人以上の世帯）</code></pre>
+          <dl class="code-explainer"><div><dt><code>df.columns</code></dt><dd><span class="ja">表の列名を、元の順番で取り出す属性。関数ではないので <code>()</code> は付けない。</span><span class="en">An attribute containing the table’s column names, in order. No <code>()</code>: it is not a method call.</span></dd></div><div><dt><code>for column in …</code></dt><dd><span class="ja">92個の列名を一つずつ受け取り、表示する。分析したい列の名前を探そう。</span><span class="en">Take and print each of the 92 column names. Find a column you want to investigate.</span></dd></div></dl>
+        </section>
+
+        <section class="slide" data-slide hidden>
+          <p class="slide-kicker">COLUMNS / 02 · 一列のデータ</p>
+          <h2><span class="ja">一つの列のデータを取り出す</span><span class="en">Select the data in one column</span></h2>
+          <div class="lecture-notebook-cell"><div class="lecture-cell-toolbar"><span>Python</span><button type="button" data-reveal aria-expanded="false">▶ <span class="ja">実行する</span><span class="en">Run</span></button></div><pre><code>population = df["総人口"]
+print(population.head())</code></pre></div>
+          <pre class="lecture-cell-output dataframe-output" hidden><code>0    5140000
+1    1204000
+2    1181000
+3    2280000
+4     930000
+Name: 総人口, dtype: int64</code></pre>
+          <dl class="code-explainer"><div><dt><code>df["総人口"]</code></dt><dd><span class="ja">列名を文字列で指定する。一列のデータ <strong>Series</strong> が返る。左側の0〜4は行のラベルで、人口の値ではない。</span><span class="en">Use the exact column name as a string. Returns a one-column <strong>Series</strong>. The 0–4 on the left are row labels, not population values.</span></dd></div><div><dt><code>.head()</code></dt><dd><span class="ja">先頭5件だけ表示する。<code>print(population)</code> なら列全体を対象にする（長い出力は省略されることがある）。</span><span class="en">Preview the first five values. <code>print(population)</code> targets the whole column (long displays may be abbreviated).</span></dd></div></dl>
+        </section>
+
+        <section class="slide" data-slide hidden>
+          <p class="slide-kicker">COLUMNS / 03 · 複数の列</p>
           <h2><span class="ja">使う列だけを、小さな表にする</span><span class="en">Select a few columns for a smaller table</span></h2>
           <div class="lecture-notebook-cell"><div class="lecture-cell-toolbar"><span>Python</span><button type="button" data-reveal aria-expanded="false">▶ <span class="ja">実行する</span><span class="en">Run</span></button></div><pre><code>columns = ["都道府県", "総人口", "65歳以上人口", "合計特殊出生率"]
 data = df[columns]
 print(data.columns.tolist())</code></pre></div>
           <pre class="lecture-cell-output" hidden><code>['都道府県', '総人口', '65歳以上人口', '合計特殊出生率']</code></pre>
-          <p class="slide-note"><span class="ja"><code>df["総人口"]</code>は一列。<code>df[columns]</code>は列名のリストから表を作る。全列の名前は<code>df.columns</code>で確認する。</span><span class="en"><code>df["総人口"]</code> selects one column. <code>df[columns]</code> selects the listed columns as a table. Use <code>df.columns</code> to see every column name.</span></p>
+          <dl class="code-explainer"><div><dt><code>columns = […]</code></dt><dd><span class="ja">必要な列名をリストに保存する。列名のつづりはCSVと完全に一致させる。</span><span class="en">Store the desired column names in a list. Spelling must exactly match the CSV.</span></dd></div><div><dt><code>df[columns]</code></dt><dd><span class="ja">列名のリストで選ぶと、複数列の表 <strong>DataFrame</strong> が返る。<code>df[["都道府県", "総人口"]]</code> と直接書くこともできる。</span><span class="en">A list of names selects a multi-column <strong>DataFrame</strong>. You can also write <code>df[["都道府県", "総人口"]]</code> directly.</span></dd></div><div><dt><code>.columns.tolist()</code></dt><dd><span class="ja">選んだ表の列名をPythonのリストとして表示する。次にデータの中身を見よう。</span><span class="en">Convert the selected table’s column names to a Python list. Next, inspect its actual values.</span></dd></div></dl>
         </section>
 
         <section class="slide" data-slide hidden>
@@ -303,6 +416,7 @@ print(data.columns.tolist())</code></pre></div>
  岩手県 1181000   408000     1.30
  宮城県 2280000   659000     1.15
  秋田県  930000   359000     1.22</code></pre>
+<dl class="code-explainer"><div><dt><code>.head() → .to_string(index=False)</code></dt><dd><span class="ja"><code>head()</code> は先頭5行（<code>head(3)</code> なら3行）。<code>to_string()</code> は表示用の文字列に変換し、<code>index=False</code> は行ラベルを隠す。</span><span class="en"><code>head()</code> selects five rows (<code>head(3)</code> selects three). <code>to_string()</code> formats text for printing; <code>index=False</code> hides row labels.</span></dd></div></dl>
           <p class="slide-question"><span class="ja">この5行だけで、どの列に欠けた値や変な形式がないか、何を確認できる？</span><span class="en">What can these five rows tell you about missing values or unexpected formats?</span></p>
         </section>
 
@@ -320,6 +434,7 @@ Data columns (total 4 columns):
  2   65歳以上人口  47 non-null     int64
  3   合計特殊出生率  47 non-null     float64
 dtypes: float64(1), int64(2), object(1)</code></pre>
+<dl class="code-explainer"><div><dt><code>.info(memory_usage=False)</code></dt><dd><span class="ja">表の構造を表示する。<code>Non-Null Count</code> は欠けていない値の数。47行で47なら、その列に欠損はない。<code>memory_usage=False</code> はメモリ使用量だけを非表示にする。</span><span class="en">Print the table’s structure. <code>Non-Null Count</code> counts non-missing values: 47 out of 47 means none are missing. <code>memory_usage=False</code> only hides memory usage.</span></dd></div></dl>
           <p class="slide-note"><span class="ja">選んだ4列の完全な出力。<code>object</code> は名前のような文字、<code>int64</code> は整数、<code>float64</code> は小数。分析前に型と空欄を確かめる。</span><span class="en">This is the full output for our four selected columns. <code>object</code> holds text such as names, <code>int64</code> holds whole numbers, and <code>float64</code> holds decimals. Check types and missing values before analysis.</span></p>
         </section>
 
@@ -338,7 +453,18 @@ min      544000.00   180000.00     1.08
 50%     1563000.00   523000.00     1.40
 75%     2655000.00   790500.00     1.48
 max    14038000.00  3202000.00     1.80</code></pre>
+<dl class="code-explainer"><div><dt><code>.describe() → .round(2)</code></dt><dd><span class="ja">数値列を要約し、その結果を小数2桁に丸める。<code>count</code> は有効な値の数、<code>std</code> はばらつき（標準偏差）、25%・50%・75%は四分位点。</span><span class="en">Summarize numeric columns, then round the summary to two decimals. <code>count</code> counts valid values; <code>std</code> measures spread (standard deviation); 25%, 50%, and 75% are quartiles.</span></dd></div></dl>
           <p class="slide-question"><span class="ja">meanは平均、50%は中央値、min/maxは最小/最大。round(2)は小数2桁に丸める。総人口の平均と中央値は、なぜ大きく違う？</span><span class="en">mean is the average, 50% the median, and min/max the extremes. round(2) rounds to two decimals. Why is mean population larger than the median?</span></p>
+        </section>
+
+        <section class="slide" data-slide hidden>
+          <p class="slide-kicker">ITERROWS / 行を受け取る</p>
+          <h2><span class="ja">一周で、行ラベルと一行のデータを受け取る</span><span class="en">Each turn gives a row label and one row</span></h2>
+          <div class="lecture-notebook-cell"><div class="lecture-cell-toolbar"><span>Python</span><button type="button" data-reveal aria-expanded="false">▶ <span class="ja">実行する</span><span class="en">Run</span></button></div><pre><code>for index, row in df.head(2).iterrows():
+    print(index, row["都道府県"], row["総人口"])</code></pre></div>
+          <pre class="lecture-cell-output" hidden><code>0 北海道 5140000
+1 青森県 1204000</code></pre>
+          <dl class="code-explainer"><div><dt><code>.iterrows()</code></dt><dd><span class="ja">iterate rows（行を繰り返す）。毎回 <code>(行ラベル, 一行のデータ)</code> のペアを渡すので、二つの変数で受け取る。</span><span class="en">“Iterate rows.” Yields a pair <code>(row label, row data)</code> on each turn, unpacked into two variables.</span></dd></div><div><dt><code>index, row</code></dt><dd><span class="ja"><code>index</code> は行ラベル。<code>row</code> はその都道府県の一行（Series）。変数名は自分で決められる。</span><span class="en"><code>index</code> is the row label. <code>row</code> is that prefecture’s record (a Series). These variable names are your choice.</span></dd></div><div><dt><code>row["総人口"]</code></dt><dd><span class="ja">一行の中から人口の値を一つ取り出す。<code>df["総人口"]</code> は列全体との違いに注目。</span><span class="en">Get one population value from the current row. Compare this with <code>df["総人口"]</code>, which selects the entire column.</span></dd></div></dl>
         </section>
 
         <section class="slide" data-slide hidden>
@@ -351,14 +477,15 @@ for index, row in df.iterrows():
 
 print(f"このデータの総人口: {total_population:,} 人")</code></pre></div>
           <pre class="lecture-cell-output" hidden><code>このデータの総人口: 124,946,000 人</code></pre>
-          <p class="slide-note"><span class="ja"><code>iterrows()</code> は一行ずつの記録を渡す。<code>index</code> はここでは使わない行番号、<code>row</code> は一都道府県のデータ。</span><span class="en"><code>iterrows()</code> gives one record at a time. <code>index</code> is the unused row number here, and <code>row</code> holds one prefecture’s data.</span></p>
+          <dl class="code-explainer"><div><dt><code>total_population = 0</code></dt><dd><span class="ja">ループの前で一度だけ初期化する。各周回でゼロに戻さない。</span><span class="en">Initialize once before the loop, not on every turn.</span></dd></div><div><dt><code>+= row["総人口"]</code></dt><dd><span class="ja">今の合計に、その行の人口を加える。<code>total_population = total_population + row["総人口"]</code> の省略形。</span><span class="en">Add this row’s population to the running total. Short for <code>total_population = total_population + row["総人口"]</code>.</span></dd></div><div><dt><code>{total_population:,}</code></dt><dd><span class="ja">f文字列の <code>:,</code> は3桁ごとのカンマ。字下げしていない最後の <code>print()</code> は47周の後に一度だけ実行。</span><span class="en">In an f-string, <code>:,</code> adds thousands separators. The final unindented <code>print()</code> runs once, after all 47 turns.</span></dd></div></dl>
         </section>
 
 
         <section class="slide" data-slide hidden>
           <p class="slide-kicker">SORT / 大きい順に並べる</p>
           <h2><span class="ja">人口トップ5を、一行ずつ紹介する</span><span class="en">Introduce the five most populous prefectures</span></h2>
-          <div class="lecture-notebook-cell"><div class="lecture-cell-toolbar"><span>Python</span><button type="button" data-reveal aria-expanded="false">▶ <span class="ja">実行する</span><span class="en">Run</span></button></div><pre><code>top5 = df.sort_values("総人口", ascending=False).head(5)
+          <div class="lecture-notebook-cell"><div class="lecture-cell-toolbar"><span>Python</span><button type="button" data-reveal aria-expanded="false">▶ <span class="ja">実行する</span><span class="en">Run</span></button></div><pre><code>ranked = df.sort_values("総人口", ascending=False)
+top5 = ranked.head(5)
 for index, row in top5.iterrows():
     print(f"{row['都道府県']}: {row['総人口']:,} people")</code></pre></div>
           <pre class="lecture-cell-output" hidden><code>東京都: 14,038,000 people
@@ -366,7 +493,7 @@ for index, row in top5.iterrows():
 大阪府: 8,782,000 people
 愛知県: 7,495,000 people
 埼玉県: 7,337,000 people</code></pre>
-          <p class="slide-note"><span class="ja"><code>ascending=False</code>は大きい順。<code>head(5)</code>は先頭5行。<code>tail(5)</code>にすると、人口が少ない5件になる。</span><span class="en"><code>ascending=False</code> means largest first. <code>head(5)</code> takes the first five rows. Using <code>tail(5)</code> here would select the five smallest.</span></p>
+          <dl class="code-explainer"><div><dt><code>.sort_values("総人口", ascending=False)</code></dt><dd><span class="ja">総人口を基準に、行全体を大きい順に並べた新しい表を返す。<code>True</code> なら小さい順。元の <code>df</code> は変わらない。</span><span class="en">Return a new table with whole rows ordered by population, largest first. <code>True</code> means smallest first. The original <code>df</code> stays unchanged.</span></dd></div><div><dt><code>ranked.head(5)</code></dt><dd><span class="ja">並べ替えた表の先頭5行を取り出す。並べ替える前の <code>df.head(5)</code> は「人口トップ5」ではない。</span><span class="en">Take the first five rows of the sorted table. <code>df.head(5)</code> before sorting would not mean “the five largest.”</span></dd></div><div><dt><code>top5.iterrows()</code></dt><dd><span class="ja">選んだ5行だけをループする。並べ替え後も元の行ラベルは残るので、<code>index</code> は順位ではない。</span><span class="en">Loop through only those five rows. Sorting preserves the original row labels: <code>index</code> is not a rank.</span></dd></div></dl>
         </section>
 
         <section class="slide" data-slide hidden>

@@ -97,3 +97,17 @@
 @media (max-width:800px) { .quiz-choices,.challenge-steps,.loop-lab .playground-intro,.loop-lab .playground-grid,.loop-lab .playground-toolbar,.loop-lab .playground-panels { grid-template-columns:1fr; }.loop-lab .playground-topics { display:none; }.loop-lab .python-topic-select { display:grid; gap:.3rem; margin-bottom:1rem; color:var(--muted); font-size:.85rem; }.loop-lab .python-topic-select select { min-height:2.7rem; padding:.5rem; border:1px solid var(--line); background:#fff; font:700 .9rem var(--sans); }.loop-lab #loop-run { width:100%; }.challenge-steps { gap:.75rem; }.loop-lab .playground-controls label { width:100%; }.loop-lab .playground-controls input { width:100%; } }
 @media (max-width:560px) { .loop-timeline li { grid-template-columns:1fr; gap:.25rem; }.trace-table { font-size:.75rem; }.trace-table th,.trace-table td { padding:.55rem .35rem; }.week-five-lecture .slide { padding:2rem 1.25rem; } }
 @media print { .week-five-lecture .slide[hidden] { display:block !important; }.week-five-lecture .lecture-cell-output[hidden] { display:block !important; }.loop-lab { display:none !important; } }
+
+/* Definitions stay beside their exact code terms, in either teaching language. */
+.week-five-lecture .column-names-output { max-height:15rem; }
+.week-five-lecture .bus-code.class-roster-code { max-width:1100px; font-size:clamp(.8rem,1.35vw,1.2rem); }
+.code-explainer { display:grid; gap:.65rem; margin:1rem 0 0; max-width:1100px; }
+.code-explainer > div { display:grid; grid-template-columns:minmax(10rem,.8fr) minmax(0,2fr); gap:.75rem; align-items:start; }
+.code-explainer dt { margin:0; }
+.code-explainer dt code { display:inline; padding:.12em .3em; background:#e5eff4; color:#244e6b; font:600 .85em/1.6 var(--mono); overflow-wrap:anywhere; box-decoration-break:clone; -webkit-box-decoration-break:clone; }
+.code-explainer dd { margin:0; color:var(--ink); font-size:clamp(.86rem,1.15vw,1.05rem); line-height:1.55; }
+.code-explainer dd code { color:#6f4582; font-size:.92em; }
+@media(min-width:1000px) {
+ .week-five-lecture .slide:has(.lecture-cell-output:not([hidden])) > .code-explainer { grid-column:1 / -1; margin:0; }
+}
+@media(max-width:650px) { .code-explainer > div { grid-template-columns:1fr; gap:.3rem; } }

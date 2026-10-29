@@ -92,10 +92,41 @@ function result(code, output, ja, en, cards = []) {
 }
 
 const classStudents = [
-  '拓真', '裕基', '太陽', '恭瑳', '京介', '勇希', '正稀', '流駆', '宙音', '大策',
-  '琉生', '柚希', '達貴', '港人', '慶次', '子竜', '琉太', '直生', '航大', '雄惺',
-  '美晴', '悠樹', '大祐', '龍之輔', '信吾', '健人', '大雅', '凛太郎', '優希', '大樹',
-  '仁', '太知', '勇樹', '祥汰', '匠秋'
+  "Takuma",
+  "Yuki",
+  "Hinata",
+  "Tsukasa",
+  "Kyosuke",
+  "Yuki",
+  "Masaki",
+  "Riku",
+  "Hiroto",
+  "Daisaku",
+  "Ryuusei",
+  "Yuzuki",
+  "Tatsuki",
+  "Minato",
+  "Keiji",
+  "Shiryu",
+  "Ryuta",
+  "Naoki",
+  "Kouta",
+  "Yusei",
+  "Miharu",
+  "Haruki",
+  "Daichi",
+  "Ryunosuke",
+  "Shingo",
+  "Kento",
+  "Taiga",
+  "Rintarou",
+  "Yuuki",
+  "Daiki",
+  "Jin",
+  "Taichi",
+  "Yuuki",
+  "Shota",
+  "Naruki"
 ];
 let chosenClassStudents = [];
 
@@ -329,10 +360,6 @@ document.querySelector('[data-fish-run]').addEventListener('click', event => {
 
 document.querySelectorAll('[data-class-run]').forEach(button => button.addEventListener('click', () => {
   const output = button.dataset.output;
-  if (button.dataset.classRun === 'roster') {
-    showClassOutput(output, pythonList(classStudents));
-    return;
-  }
   if (button.dataset.classRun === 'choose') {
     chosenClassStudents = chooseClassStudents();
     showClassOutput(output, pythonList(chosenClassStudents));

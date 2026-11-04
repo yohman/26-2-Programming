@@ -1,11 +1,4 @@
 .lecture-caption { color:var(--muted); font:700 .75rem var(--mono); }
-.language-cover .while-word { font-size:clamp(4rem,12vw,9rem); letter-spacing:-.06em; margin:.25rem 0 1rem; }
-.language-lesson .language-example { max-width:1050px; margin:1.35rem 0 .45rem; font-size:clamp(1.45rem,2.8vw,2.5rem); font-weight:700; line-height:1.45; }
-.language-lesson mark { padding:0 .12em; background:#e4eef3; color:var(--blue); box-decoration-break:clone; -webkit-box-decoration-break:clone; }
-.language-lesson .language-translation { margin:.4rem 0 1.25rem; color:var(--muted); font-size:clamp(.95rem,1.35vw,1.15rem); line-height:1.6; }
-.language-lesson .language-steps { padding-left:1.3rem; font-size:clamp(.95rem,1.4vw,1.2rem); line-height:1.65; }
-.language-lesson .language-steps li { margin:.45rem 0; }
-.language-lesson .language-source { margin-top:1.4rem; font-size:.72rem; color:var(--muted); }
 .week-six-lecture .slide { padding:clamp(1.5rem,2.7vw,2.5rem); }
 .week-six-lecture .slide h2 { font-size:clamp(1.7rem,3.05vw,3rem); }
 .week-six-lecture .slide > :is(.code-explainer,.slide-hint,.simulation,.snapshot-note,.download-notebook) { grid-column:1 / -1; }

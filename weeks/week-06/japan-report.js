@@ -16,4 +16,5 @@
     const url=new URL(link.href,location.href);
     if(url.origin===location.origin&&url.pathname.endsWith('.html')){url.searchParams.set('p','');link.href=url.href;}
   });
+  if(location.hash)document.getElementById(location.hash.slice(1))?.scrollIntoView();
 })();

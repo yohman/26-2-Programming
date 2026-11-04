@@ -41,9 +41,9 @@
     view.dispatchEvent(new CustomEvent('lecture:slidechange',{detail:{index}}));
   }
   function highlight(code){
-    if(code.closest('.lecture-cell-output'))return;
+    if(code.closest('.lecture-cell-output')||code.closest('pre')?.dataset.language==='markdown')return;
     const source=code.textContent;
-    const pattern=/(#[^\n]*)|("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')|\b(for|while|in|if|else|elif|break|True|False|import|as|with)\b|\b(print|range|format|len|append|input|int|randint|sleep|read_csv|head|info|describe|isna|sum|copy|sort_values|contains|iterrows|mean|round|between|to_datetime|tz_convert|dropna|scatter|show|get|raise_for_status|open|write|to_string|save|Map|CircleMarker|add_to)\b|\b(\d+(?:_\d+)*(?:\.\d+)?)\b/g;
+    const pattern=/(#[^\n]*)|("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')|\b(for|while|in|if|else|elif|break|True|False|import|as|with)\b|\b(print|range|format|len|append|input|int|randint|sleep|DictReader|list|float|pop|sample|read_csv|head|info|describe|isna|sum|copy|sort_values|contains|iterrows|mean|round|between|to_datetime|tz_convert|dropna|scatter|show|get|raise_for_status|open|write|to_string|save|Map|CircleMarker|add_to)\b|\b(\d+(?:_\d+)*(?:\.\d+)?)\b/g;
     let position=0;code.replaceChildren();
     for(const match of source.matchAll(pattern)){
       code.append(document.createTextNode(source.slice(position,match.index)));
@@ -63,105 +63,59 @@
     output.id='output-'+i;button.setAttribute('aria-controls',output.id);
     button.onclick=()=>{output.hidden=!output.hidden;button.setAttribute('aria-expanded',String(!output.hidden));};
   });
-  function controls(root,html){
-    root.innerHTML='<div class="simulation-controls">'+html+'</div><p class="state-readout" role="status"></p><pre aria-live="polite"></pre>';
-    return {status:root.querySelector('.state-readout'),output:root.querySelector('pre')};
-  }
-  function numberInput(root,min,max){
-    const field=root.querySelector('input'),value=Number(field.value);
-    if(field.value.trim()===''||!Number.isInteger(value)||value<min||value>max)return null;
-    return value;
-  }
-  document.querySelectorAll('[data-simulation]').forEach(root=>{
-    const kind=root.dataset.simulation;
-    if(kind==='boss'){
-      const {status,output}=controls(root,'<button data-run>▶ HIT</button><button data-reset>↶ RESET</button>');
-      let hp=3,lines=[];
-      function reset(){hp=3;lines=[];status.textContent='HP ● ● ● · 3 > 0 → True';output.textContent='';root.querySelector('[data-run]').disabled=false;}
-      root.querySelector('[data-run]').onclick=()=>{
-        if(hp<=0)return;
-        lines.push('HIT!');hp--;
-        status.textContent='HP '+('● '.repeat(hp))+('○ '.repeat(3-hp))+' · '+hp+' > 0 → '+(hp>0?'True':'False');
-        if(hp===0){lines.push('CLEAR!');root.querySelector('[data-run]').disabled=true;}
-        output.textContent=lines.join('\n');
-      };
-      root.querySelector('[data-reset]').onclick=reset;reset();
-    }
-    if(kind==='beat'){
-      const {status,output}=controls(root,'<label>'+bi('上限','Limit')+' <input aria-label="Beat limit" type="number" min="1" max="10" value="4"></label><button data-reset>'+bi('リセット','Reset')+'</button><button data-step>'+bi('次の一行','Next line')+'</button><button data-run>'+bi('最後まで','Run to end')+'</button>');
-      let count=1,phase='check',limit=4,lines=[],steps=0;
-      function reset(){count=1;phase='check';steps=0;lines=[];limit=numberInput(root,1,10);output.textContent='';if(limit!==null)updateExample(root,/while count <= \d+:/,'while count <= '+limit+':');status.textContent=limit===null?text('1〜10の整数を入力','Enter an integer from 1 to 10'):'count = 1';root.querySelectorAll('[data-step],[data-run]').forEach(b=>{b.disabled=limit===null;});}
-      function step(){
-        if(phase==='done'||limit===null)return;
-        if(phase==='check'){
-          const pass=count<=limit;status.textContent='count='+count+' · '+count+' <= '+limit+' → '+(pass?'True':'False');
-          phase=pass?'print':'finish';
-        }else if(phase==='print'){lines.push(count+' beat');status.textContent='print('+count+')';phase='update';}
-        else if(phase==='update'){count+=1;status.textContent='count += 1 → '+count;phase='check';}
-        else{lines.push('Drop!');status.textContent=text('条件がFalse。本体は実行せず、ループの後へ。','False: skip the body and continue after the loop.');phase='done';root.querySelectorAll('[data-step],[data-run]').forEach(b=>{b.disabled=true;});}
-        output.textContent=lines.join('\n');steps++;
-      }
-      root.querySelector('[data-reset]').onclick=reset;
-      root.querySelector('input').oninput=reset;
-      root.querySelector('input').onchange=reset;
-      root.querySelector('[data-step]').onclick=step;
-      root.querySelector('[data-run]').onclick=()=>{while(phase!=='done'&&steps<40&&limit!==null)step();};
-      reset();
-    }
-    if(kind==='threshold'){
-      const {status,output}=controls(root,'<label>'+bi('しきい値','Threshold')+' <input aria-label="Total threshold" type="number" min="0" max="100" value="10"></label><button data-run>▶ '+bi('実行する','Run')+'</button>');
-      root.querySelector('[data-run]').onclick=()=>{
-        const limit=numberInput(root,0,100);
-        if(limit===null){status.textContent=text('0〜100の整数を入力','Enter an integer from 0 to 100');return;}
-        updateExample(root,/while total <= \d+:/,'while total <= '+limit+':');
-        let total=0,num=1;const lines=[];
-        while(total<=limit&&num<=20){const before=total;total+=num;lines.push(before+' + '+num+' = '+total);num++;}
-        output.textContent=lines.join('\n')+'\nprint(total): '+total;
-        status.textContent='total='+total+' · num='+num+' · '+total+' <= '+limit+' → False';
-      };
-    }
-    if(kind==='timer'){
-      const {status,output}=controls(root,'<label>'+bi('秒数','Seconds')+' <input aria-label="Timer seconds" type="number" min="1" max="10" value="3"></label><button data-run>▶ '+bi('開始','Start')+'</button><button data-stop>'+bi('停止','Stop')+'</button>');
-      root.querySelector('[data-run]').onclick=()=>{
-        stopTimer();const limit=numberInput(root,1,10);
-        if(limit===null){status.textContent=text('1〜10の整数を入力','Enter an integer from 1 to 10');return;}
-        updateExample(root,/totalsecs = \d+/,'totalsecs = '+limit);
-        timerRoot=root;let secs=0;const lines=[];output.textContent='';root.querySelector('[data-run]').disabled=true;
-        function tick(){
-          if(secs>=limit){lines.push('Timer finished!');output.textContent=lines.join('\n');timer=null;status.textContent='secs='+secs+' · False';root.querySelector('[data-run]').disabled=false;return;}
-          secs++;lines.push(String(secs));output.textContent=lines.join('\n');status.textContent='secs='+secs+' · time.sleep(1)';timer=setTimeout(tick,1000);
-        }
-        tick();
-      };
-      root.querySelector('[data-stop]').onclick=stopTimer;
-    }
-    if(kind==='password'){
-      const {status,output}=controls(root,'<label>Code word: <input aria-label="Code word" type="text" autocomplete="off" placeholder="secret"></label><button data-run>'+bi('入力する','Submit')+'</button><button data-reset>'+bi('リセット','Reset')+'</button>');
-      let done=false,lines=[];
-      function reset(){done=false;lines=[];output.textContent='';status.textContent='password != "secret" → True';root.querySelector('[data-run]').disabled=false;root.querySelector('input').value='';}
-      root.querySelector('[data-run]').onclick=()=>{
-        if(done)return;const value=root.querySelector('input').value;
-        done=value==='secret';lines.push('Code word: '+value,done?'Welcome!':'Try again');
-        output.textContent=lines.join('\n');status.textContent='password != "secret" → '+(done?'False':'True');root.querySelector('[data-run]').disabled=done;
-      };
-      root.querySelector('[data-reset]').onclick=reset;reset();
-    }
-    if(kind==='guess'){
-      const {status,output}=controls(root,'<label>Guess: <input aria-label="Guess" type="number" min="1" max="100" value="50"></label><button data-run>'+bi('予想する','Guess')+'</button><button data-reset>'+bi('新しいゲーム','New game')+'</button>');
-      let number,attempts,lines;
-      function reset(){number=Math.floor(Math.random()*100)+1;attempts=0;lines=[];output.textContent='';status.textContent=text('1〜100の秘密の数を一度だけ決めました。','One secret number chosen from 1 to 100.');root.querySelector('[data-run]').disabled=false;}
-      root.querySelector('[data-run]').onclick=()=>{
-        const guess=numberInput(root,1,100);if(guess===null){status.textContent=text('1〜100の整数を入力','Enter an integer from 1 to 100');return;}
-        attempts++;const message=guess<number?'Higher':guess>number?'Lower':'Correct! '+attempts+' guesses';
-        lines.push(guess+': '+message);output.textContent=lines.join('\n');
-        status.textContent='attempts='+attempts+(guess===number?' · break':' · while True');
-        root.querySelector('[data-run]').disabled=guess===number;
-      };
-      root.querySelector('[data-reset]').onclick=reset;reset();
-    }
-    root.querySelectorAll('input').forEach(input=>input.addEventListener('keydown',event=>{
-      if(event.key==='Enter'){event.preventDefault();root.querySelector('[data-run]').click();}
+  const students=JSON.parse(document.getElementById('class-roster').textContent);
+  let picked=students.slice(0,3),waiting=[],queueLines=[];
+  const queue=document.querySelector('[data-review-queue]');
+  function renderQueue(){
+    queue.querySelector('[data-queue-names]').replaceChildren(...waiting.map(name=>{
+      const item=document.createElement('span');item.textContent=name;return item;
     }));
+    queue.querySelector('[data-queue-state]').textContent='len(waiting) = '+waiting.length+' → '+(waiting.length>0?'True':'False');
+    queue.querySelector('[data-queue-output]').textContent=queueLines.join('\n');
+    queue.querySelector('[data-queue-next]').disabled=waiting.length===0;
+  }
+  function resetQueue(){
+    waiting=[...picked];queueLines=[];
+    const code=queue.closest('[data-slide]').querySelector('.lecture-notebook-cell code');
+    code.textContent='waiting = '+JSON.stringify(picked)+'\nwhile len(waiting) > 0:\n    name = waiting.pop(0)\n    print(f"{name}さん、どうぞ！")';
+    highlight(code);renderQueue();
+  }
+  document.querySelector('[data-review-draw]').onclick=()=>{
+    const pool=[...students];picked=[];
+    while(picked.length<3)picked.push(pool.splice(Math.floor(Math.random()*pool.length),1)[0]);
+    document.querySelector('[data-review-picked]').replaceChildren(...picked.map(name=>{
+      const item=document.createElement('span');item.textContent=name;return item;
+    }));
+    resetQueue();
+  };
+  queue.querySelector('[data-queue-next]').onclick=()=>{
+    if(!waiting.length)return;
+    queueLines.push(waiting.shift()+'さん、どうぞ！');renderQueue();
+  };
+  queue.querySelector('[data-queue-reset]').onclick=resetQueue;resetQueue();
+  const welcome=document.querySelector('[data-review-welcome]');
+  welcome.querySelector('[data-welcome-run]').onclick=()=>{
+    const name=welcome.querySelector('input').value;
+    welcome.querySelector('pre').textContent=students.includes(name)?'Welcome back, '+name+'!':name==='Yoh'?'先生、説明は短めに！':'ゲストですね。ようこそ！';
+  };
+  const chat=document.querySelector('[data-review-chat]');
+  let chatDone=false,chatLines=[];
+  function resetChat(){
+    chatDone=false;chatLines=[];chat.querySelector('input').value='Hinata';
+    chat.querySelector('pre').textContent='';chat.querySelector('[data-chat-state]').textContent='name != "q" → True';chat.querySelector('[data-chat-run]').disabled=false;
+  }
+  chat.querySelector('[data-chat-run]').onclick=()=>{
+    if(chatDone)return;
+    const name=chat.querySelector('input').value;
+    chatDone=name==='q';
+    if(!chatDone)chatLines.push('Hello, '+name+'!');
+    chat.querySelector('pre').textContent=chatLines.join('\n');
+    chat.querySelector('[data-chat-state]').textContent='name != "q" → '+(chatDone?'False':'True');
+    chat.querySelector('[data-chat-run]').disabled=chatDone;
+  };
+  chat.querySelector('[data-chat-reset]').onclick=resetChat;resetChat();
+  for(const root of [welcome,chat])root.querySelector('input').addEventListener('keydown',event=>{
+    if(event.key==='Enter'){event.preventDefault();root.querySelector('button').click();}
   });
   try{
     const destination=new URL(query.get('return')||'../../agenda.html?open=06#week-06',location.href);

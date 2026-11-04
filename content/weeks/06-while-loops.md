@@ -14,11 +14,11 @@ overview: Make a process continue until a condition is met, and learn how to dia
 overview_ja: 条件が満たされるまで処理を続け、止まらないプログラムを見つけて直す。
 ---
 ## Lecture Flow
-EN: 0–10: short-video hook, original rhymes, a beat loop, slang, then a boss-fight while loop; 10–25: trace a while loop; 25–45: fundamentals notebook; 45–65: choose your continuation route and start a blank notebook; 65–95: document and improve the report; 95–100: explain the finding and next step.
-JP: 0〜10分：「あと1本だけ」、韻・ビート・スラングから、ボス戦のwhileへ。10〜25分：whileを一周ずつ追う、25〜45分：fundamentals Notebook、45〜65分：進め方を選び空のNotebookを作成、65〜95分：手順を説明しながらレポートを改善、95〜100分：気づきと次の作業を説明。
+EN: 0–15: review Python with the class roster and preview while; 15–30: try two while examples in the fundamentals notebook; 30–45: create a blank notebook, write Markdown, run Python, and load japan.csv; 45–95: develop Report Part 2; 95–100: explain one finding and next step.
+JP: 0〜15分：クラスの名簿でPythonを復習し、whileを短く体験。15〜30分：fundamentals Notebookで2例だけ試す。30〜45分：空のNotebookでMarkdown・Python・japan.csvの読み込み。45〜95分：レポートPart 2。95〜100分：気づきと次の作業を説明。
 ## In-Class Notebook
-EN: **Fundamentals: While Loops.** Predict, run, and change the examples: counters, totals, stopping conditions, lists, a timer, a code-word check, and a guessing game. Learn how to stop a cell before trying the intentional infinite loop.
-JP: **Fundamentals: While Loops。** カウンタ、合計、停止条件、リスト、タイマー、合言葉、数字当てを、予想・実行・変更で確かめる。意図的な無限ループの前にCellの停止方法を確認する。
+EN: **Fundamentals: While Loops.** Predict and run one basic counter and one state-based example, such as the code-word check. Change one value and explain the stopping condition. The remaining examples are optional. Use the cell Stop button if a loop does not finish.
+JP: **Fundamentals: While Loops。** 基本のカウンタを一つ、合言葉など状態で止まる例を一つ、予想して実行する。値を一つ変え、止まる条件を説明する。残りの例題は任意。止まらないときはCellの停止ボタンを使う。
 ## In-Class Challenge
 EN: **Report Part 2: continue last week’s work.** As an intern, prepare a clear notebook report for your organization. [Open the challenge and loading tutorial](weeks/week-06/japan-report.html).
 

@@ -580,7 +580,7 @@ function setupLectureTimelineTabs(root = document) {
 function section(week, key) { return week.sections.find(item => item.title.toLowerCase().startsWith(key.toLowerCase())); }
 function previewAll() { return new URLSearchParams(location.search).has('p'); }
 function isLocalPreview() { return ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname); }
-function isAvailable(week) { return isLocalPreview() || previewAll() || (week.publication_hold !== 'true' && (week.week === 1 || new Date() >= new Date(week.publish_at))); }
+function isAvailable(week) { return previewAll() || (week.publication_hold !== 'true' && new Date() >= new Date(week.publish_at)); }
 function preservePreviewParameter(event) {
   if (!previewAll() || !(event.target instanceof Element)) return;
   const link = event.target.closest('a[href]');
@@ -597,8 +597,8 @@ document.addEventListener('auxclick', preservePreviewParameter, true);
 function releaseDateLabels(value) {
   const date = new Date(value);
   return {
-    en: new Intl.DateTimeFormat('en-US', { month:'short', day:'numeric', timeZone:'Asia/Tokyo' }).format(date),
-    ja: new Intl.DateTimeFormat('ja-JP', { month:'long', day:'numeric', timeZone:'Asia/Tokyo' }).format(date)
+    en: new Intl.DateTimeFormat('en-US', { month:'short', day:'numeric', hour:'numeric', minute:'2-digit', timeZone:'Asia/Tokyo', timeZoneName:'short' }).format(date),
+    ja: new Intl.DateTimeFormat('ja-JP', { month:'long', day:'numeric', hour:'numeric', minute:'2-digit', hour12:false, timeZone:'Asia/Tokyo', timeZoneName:'short' }).format(date)
   };
 }
 

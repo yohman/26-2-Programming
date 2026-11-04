@@ -1,6 +1,6 @@
 ---
 week: 10
-publish_at: 2026-12-01T09:00:00+09:00
+publish_at: 2026-12-03T12:00:00+09:00
 preview: true
 phase: COMPOSE
 practice_mix: Human 50% · AI 50%

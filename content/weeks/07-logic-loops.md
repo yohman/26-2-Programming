@@ -1,6 +1,6 @@
 ---
 week: 7
-publish_at: 2026-11-10T09:00:00+09:00
+publish_at: 2026-11-12T12:00:00+09:00
 preview: true
 phase: REPEAT
 practice_mix: Human 60% · AI 40%

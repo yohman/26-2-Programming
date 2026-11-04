@@ -1,6 +1,6 @@
 ---
 week: 14
-publish_at: 2027-01-12T09:00:00+09:00
+publish_at: 2027-01-14T12:00:00+09:00
 preview: true
 phase: MAKE
 practice_mix: Human 80% · AI 20%

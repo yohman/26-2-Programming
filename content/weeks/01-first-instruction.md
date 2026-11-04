@@ -2,7 +2,7 @@
 week: 1
 gallery_title_ja: 未来からのメッセージ
 gallery_title: Message from the Future
-publish_at: 2026-09-29T09:00:00+09:00
+publish_at: 2026-10-01T12:00:00+09:00
 preview: true
 phase: WRITE
 practice_mix: Human 90% · AI 10%

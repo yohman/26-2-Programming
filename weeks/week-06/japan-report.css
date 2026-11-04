@@ -1,0 +1,26 @@
+
+.japan-report-page { background:#f6f5f0; color:#202a31; }
+.report-nav { max-width:1000px; margin:auto; display:flex; justify-content:space-between; align-items:center; padding:1.2rem 1.5rem; }
+.report-nav a { color:#315876; font-weight:700; text-decoration:none; }
+#report-main { max-width:1000px; padding:1rem 1.5rem 4rem; margin:auto; }
+#report-main[hidden] { display:none; }
+.report-opening { padding:2rem 0 3rem; border-bottom:2px solid #202a31; }
+.report-eyebrow { font:600 .8rem var(--mono); letter-spacing:.1em; color:#50645a; }
+.report-opening h1 { font-size:clamp(2.2rem,4.8vw,4rem); line-height:1.18; letter-spacing:-.035em; margin:1.2rem 0 1.5rem; }
+#report-main p,#report-main li { font-size:1rem; line-height:1.85; }
+#report-main p { margin:1rem 0; }
+#report-main li { margin:.45rem 0; }
+.report-opening blockquote { padding:.5rem 0 .5rem 1.3rem; border-left:3px solid #3f6d57; margin:1.8rem 0; font-size:1.25rem; line-height:1.8; }
+.report-download { display:inline-block; background:#3f6d57; color:white; padding:.8rem 1.2rem; margin-top:.8rem; font-weight:700; text-decoration:none; }
+#report-main > section { padding:2rem 0; border-bottom:1px solid #cbd2ce; scroll-margin-top:1rem; }
+#report-main h2 { font-size:clamp(1.4rem,2.5vw,2rem); margin:0 0 1rem; }
+#report-main pre { padding:1.2rem; background:#fff; border:1px solid #d9e0dc; white-space:pre; overflow:auto; font: .95rem/1.7 var(--mono,monospace); }
+#report-main code { font-family:var(--mono,monospace); }
+#report-main details { margin:1.4rem 0; }
+#report-main summary { font-weight:700; color:#315876; cursor:pointer; line-height:1.7; }
+#report-main .report-small,.report-footer { font-size:.85rem; color:#52636e; }
+.report-result { border-left:3px solid #3f6d57; padding-left:1rem; }
+.report-note { border-left:3px solid #805730; padding:.8rem 1rem; line-height:1.8; background:#eee9df; }
+.report-check { padding:1rem 1.25rem; background:#e8eee9; margin:1.5rem 0; }
+.report-footer { padding-top:2rem; line-height:1.8; }
+@media(max-width:650px) { #report-main,.report-nav { padding-left:1rem; padding-right:1rem; } #report-main pre { font-size:.8rem; } }

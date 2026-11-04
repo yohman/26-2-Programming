@@ -114,3 +114,6 @@
 @media(max-width:650px) {
  .week-six-lecture .slide.simple-earthquakes:has(.lecture-cell-output:not([hidden])) { grid-template-columns:minmax(0,1fr); }
 }
+
+.week-six-lecture .japan-brief-slide > :is(h2,.slide-note,.download-notebook) { grid-column:1 / -1; }
+@media(max-width:650px) { .week-six-lecture .slide.japan-brief-slide:has(.lecture-cell-output:not([hidden])) { grid-template-columns:minmax(0,1fr); } }

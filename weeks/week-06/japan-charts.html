@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Japan chart snippets · Week 06 Programming</title><link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="japan-charts.css"><link rel="stylesheet" href="../../assets/copy-blocks.css">
+<script src="japan-charts.js" defer></script><script src="../../assets/copy-blocks.js" defer></script></head>
+<body><a class="skip" href="#main">本文へ / Skip to examples</a><div id="chart-page" hidden>
+<aside><a class="back" href="japan-report.html">← 課題に戻る / Report Part 2</a>
+<nav aria-label="目次 / Table of contents"><p class="eyebrow">CODE SNIPPETS / 目次</p><a href="#setup"><span>00</span> 準備 / Load the data</a><a href="#bar"><span>01</span> 棒グラフ / Bar chart</a><a href="#barh"><span>02</span> 横棒グラフ / Horizontal bar chart</a><a href="#stacked"><span>03</span> 年齢の積み上げ棒グラフ / Stacked bar</a><a href="#histogram"><span>04</span> ヒストグラム / Histogram</a><a href="#boxplot"><span>05</span> 箱ひげ図 / Box plot</a><a href="#scatter"><span>06</span> 散布図 / Scatter plot</a><a href="#loop"><span>07</span> forで複数のグラフ / One loop, two charts</a></nav>
+<div class="downloads"><a href="../week-05/japan.csv" download>↓ japan.csv</a><a href="japan-chart-examples.ipynb" download>↓ 実行済みNotebook / .ipynb</a><a href="../../agenda.html?open=06#week-06">授業予定 / Agenda ↗</a></div></aside>
+<main id="main"><header><p class="eyebrow">WEEK 06 · JAPAN DATA / CHART REFERENCE</p><h1>問いに合う、<br>グラフを選ぼう。</h1><p class="intro">Choose a chart that answers your question.</p>
+<p>日本の47都道府県のデータで、短いPythonコードと実際の結果を見比べよう。コードをコピーし、自分のNotebookで試してください。全部を使う必要はありません。</p>
+<p class="small">すべて授業の <a href="../week-05/japan.csv" download>japan.csv</a> からPythonで生成した出力です。ライブ統計ではありません。図のラベルは日本語フォントの設定なしで使えるよう英語です。<br>Actual Python outputs from the course CSV. Chart labels use English to avoid font setup.</p></header>
+<section id="setup" class="example"><p class="eyebrow">00 / START HERE</p><h2>準備 / Load the data</h2>
+<p>新しい空のNotebookを作り、<strong>同じフォルダにjapan.csvを置く</strong>。最初にこのCode Cellを実行。その後は好きなグラフのコードを別のCellに貼り付けます。説明・問い・気づきはMarkdown Cellに書こう。</p>
+<p><code>csv</code>はPython標準ライブラリ。<a href="https://matplotlib.org/stable/users/getting_started/">Matplotlib</a>はグラフを描くライブラリ、<code>plt</code>はその呼び名です。<strong>pandasは使いませんが、グラフにはMatplotlibが必要です。</strong></p>
+<details><summary>Matplotlibが見つからないとき / ModuleNotFoundError</summary><p>NotebookのCode Cellで <code>%pip install matplotlib</code> を実行し、必要ならカーネルを再起動して準備Cellを実行し直します。インストールできない場合は、課題ページの文字のランキングや表でレポートを作って構いません。</p></details>
+<p><code>csv.DictReader</code>は1行を辞書として読み込み、<code>list()</code>で47行をリストにします。CSVの値は文字列なので、計算では<code>int()</code>や<code>float()</code>で数値に変えます。</p>
+<pre><code class="language-python">import csv
+import matplotlib.pyplot as plt
+
+# Put japan.csv in the same folder as your notebook.
+with open(&quot;japan.csv&quot;, encoding=&quot;utf-8-sig&quot;, newline=&quot;&quot;) as file:
+    data = list(csv.DictReader(file))
+
+print(len(data), &quot;prefectures&quot;)
+print(data[0][&quot;Prefecture&quot;], data[0][&quot;総人口&quot;])</code></pre><div class="text-output" data-no-copy><p class="eyebrow">OUTPUT</p><pre>47 prefectures
+Hokkaido 5140000
+</pre></div>
+<p class="small">共通：<code>figure()</code>で新しい図、<code>title()</code>でタイトル、<code>xlabel()</code>・<code>ylabel()</code>で軸名と単位、<code>tight_layout()</code>で余白を調整、<code>show()</code>で表示。リスト内包表記 <code>[値 for row in data]</code> は、forで各行から値を集める短い書き方です。</p></section>
+<section id="bar" class="example">
+<p class="eyebrow">01 / PYTHON → OUTPUT</p><h2>棒グラフ / Bar chart</h2>
+<p class="question">人口が多い都道府県は？ / Which prefectures have the largest populations?</p>
+<p class="explanation"><code>sorted(..., key=..., reverse=True)</code>で人口順に並べ、<code>[:5]</code>で上位5件。<code>key=lambda row: ...</code>は各行から並べ替えに使う値を取り出します。<code>int()</code>で文字列を数値にし、100万で割って百万人単位にします。<code>plt.bar(x, height)</code>の第1引数は名前、第2引数は高さ。</p><pre><code class="language-python">top5 = sorted(data, key=lambda row: int(row[&quot;総人口&quot;]), reverse=True)[:5]
+names = [row[&quot;Prefecture&quot;] for row in top5]
+population = [int(row[&quot;総人口&quot;]) / 1_000_000 for row in top5]
+
+plt.figure(figsize=(8, 4))
+plt.bar(names, population, color=&quot;#315876&quot;)
+plt.ylabel(&quot;Population (millions)&quot;)
+plt.title(&quot;Five most populous prefectures&quot;)
+plt.tight_layout()
+plt.show()</code></pre>
+<figure><figcaption>実行結果 / Actual output · japan.csv</figcaption><img src="japan-charts/bar-1.png" width="1200" height="600" loading="lazy" alt="Five most populous prefectures"></figure>
+<p class="reading">棒の高さは人口。東京都が最大です。縦軸は0から始まります。 / Height represents population, in millions.</p></section><section id="barh" class="example">
+<p class="eyebrow">02 / PYTHON → OUTPUT</p><h2>横棒グラフ / Horizontal bar chart</h2>
+<p class="question">高齢者の割合が高いのは？ / Where is the share aged 65+ highest?</p>
+<p class="explanation"><code>65歳以上人口 / 総人口 * 100</code>で割合（%）を計算。人数の多さと割合の高さは違います。<code>plt.barh()</code>は横棒。<code>invert_yaxis()</code>で最大値を上にします。</p><pre><code class="language-python">top5 = sorted(data,
+              key=lambda row: int(row[&quot;65歳以上人口&quot;]) / int(row[&quot;総人口&quot;]),
+              reverse=True)[:5]
+names = [row[&quot;Prefecture&quot;] for row in top5]
+shares = [int(row[&quot;65歳以上人口&quot;]) / int(row[&quot;総人口&quot;]) * 100 for row in top5]
+
+plt.figure(figsize=(8, 4))
+plt.barh(names, shares, color=&quot;#3f6d57&quot;)
+plt.gca().invert_yaxis()
+plt.xlabel(&quot;Population aged 65+ (%)&quot;)
+plt.title(&quot;Five highest shares aged 65+&quot;)
+plt.tight_layout()
+plt.show()</code></pre>
+<figure><figcaption>実行結果 / Actual output · japan.csv</figcaption><img src="japan-charts/barh-1.png" width="1200" height="600" loading="lazy" alt="Five highest shares aged 65+"></figure>
+<p class="reading">人口の大小にかかわらず、高齢者の割合で比べます。 / Compare shares rather than counts.</p></section><section id="stacked" class="example">
+<p class="eyebrow">03 / PYTHON → OUTPUT</p><h2>年齢の積み上げ棒グラフ / Stacked bar</h2>
+<p class="question">人口の年齢構成を比べよう / Compare age composition.</p>
+<p class="explanation"><code>bottom=young</code>で2段目の開始位置を指定。3段目の<code>base</code>は下の2段の合計です。<code>label</code>と<code>legend()</code>で凡例を表示。これは人数の積み上げで、100%積み上げではありません。</p><pre><code class="language-python">chosen = [row for row in data
+          if row[&quot;Prefecture&quot;] in [&quot;Tokyo&quot;, &quot;Chiba&quot;, &quot;Akita&quot;, &quot;Okinawa&quot;]]
+names = [row[&quot;Prefecture&quot;] for row in chosen]
+young = [int(row[&quot;15歳未満人口&quot;]) / 1_000_000 for row in chosen]
+working = [int(row[&quot;15～64歳人口&quot;]) / 1_000_000 for row in chosen]
+older = [int(row[&quot;65歳以上人口&quot;]) / 1_000_000 for row in chosen]
+base = [young[i] + working[i] for i in range(len(chosen))]
+
+plt.figure(figsize=(8, 4))
+plt.bar(names, young, label=&quot;Under 15&quot;, color=&quot;#d9ac60&quot;)
+plt.bar(names, working, bottom=young, label=&quot;15-64&quot;, color=&quot;#315876&quot;)
+plt.bar(names, older, bottom=base, label=&quot;65+&quot;, color=&quot;#3f6d57&quot;)
+plt.ylabel(&quot;Population (millions)&quot;)
+plt.title(&quot;Age composition in four prefectures&quot;)
+plt.legend()
+plt.tight_layout()
+plt.show()</code></pre>
+<figure><figcaption>実行結果 / Actual output · japan.csv</figcaption><img src="japan-charts/stacked-1.png" width="1200" height="600" loading="lazy" alt="Age composition in four prefectures"></figure>
+<p class="reading">棒全体は3年齢区分の合計。構成比を比べたい場合は各区分を合計で割ります。CSVでは総人口と3区分の合計に差がある県もあるので、必ず確認しよう。 / These are counts, not percentages; check age totals against total population.</p></section><section id="histogram" class="example">
+<p class="eyebrow">04 / PYTHON → OUTPUT</p><h2>ヒストグラム / Histogram</h2>
+<p class="question">高齢者の割合は、どの範囲に集中する？ / How are the 47 shares distributed?</p>
+<p class="explanation"><code>plt.hist(values, bins=8)</code>は数値を8区間に分け、各区間に入る都道府県の数を数えます。棒グラフの「都道府県ごと」と異なり、横軸は数値の範囲です。<code>bins</code>を変えると分布の見え方も変わります。</p><pre><code class="language-python">shares = [int(row[&quot;65歳以上人口&quot;]) / int(row[&quot;総人口&quot;]) * 100
+          for row in data]
+
+plt.figure(figsize=(8, 4))
+plt.hist(shares, bins=8, color=&quot;#315876&quot;, edgecolor=&quot;white&quot;)
+plt.xlabel(&quot;Population aged 65+ (%)&quot;)
+plt.ylabel(&quot;Number of prefectures&quot;)
+plt.title(&quot;Distribution across all 47 prefectures&quot;)
+plt.tight_layout()
+plt.show()</code></pre>
+<figure><figcaption>実行結果 / Actual output · japan.csv</figcaption><img src="japan-charts/histogram-1.png" width="1200" height="600" loading="lazy" alt="Distribution across all 47 prefectures"></figure>
+<p class="reading">横軸は65歳以上の割合、縦軸は都道府県数。47件の分布であり、47人の年齢分布ではありません。 / Each observation is a prefecture.</p></section><section id="boxplot" class="example">
+<p class="eyebrow">05 / PYTHON → OUTPUT</p><h2>箱ひげ図 / Box plot</h2>
+<p class="question">中央値とばらつきを一目で見る / Summarize the same 47 shares.</p>
+<p class="explanation"><code>plt.boxplot(shares)</code>で同じ47件を要約。箱は第1〜第3四分位数（中央の約50%）、箱の中の線は中央値。ひげは箱から1.5×四分位範囲以内の最遠点まで伸び、その外は点で表示されます。ひげが必ず最小値・最大値とは限りません。</p><pre><code class="language-python">shares = [int(row[&quot;65歳以上人口&quot;]) / int(row[&quot;総人口&quot;]) * 100
+          for row in data]
+
+plt.figure(figsize=(8, 4))
+plt.boxplot(shares)
+plt.xticks([1], [&quot;47 prefectures&quot;])
+plt.ylabel(&quot;Population aged 65+ (%)&quot;)
+plt.title(&quot;Spread of the share aged 65+&quot;)
+plt.tight_layout()
+plt.show()</code></pre>
+<figure><figcaption>実行結果 / Actual output · japan.csv</figcaption><img src="japan-charts/boxplot-1.png" width="1200" height="600" loading="lazy" alt="Spread of the share aged 65+"></figure>
+<p class="reading">箱ひげ図は個々の県名を示しません。どの県か知りたいときは、横棒グラフや表も使います。 / A dot beyond a whisker is not automatically a data error.</p></section><section id="scatter" class="example">
+<p class="eyebrow">06 / PYTHON → OUTPUT</p><h2>散布図 / Scatter plot</h2>
+<p class="question">2つの数値の関係を探す / Compare two variables.</p>
+<p class="explanation"><code>plt.scatter(x, y)</code>は1県を1点で表します。<code>x</code>と<code>y</code>は同じ順序・同じ件数にします。<code>alpha=0.7</code>は透明度。関係が見えても、それだけで原因とは言えません。</p><pre><code class="language-python">shares = [int(row[&quot;65歳以上人口&quot;]) / int(row[&quot;総人口&quot;]) * 100
+          for row in data]
+fertility = [float(row[&quot;合計特殊出生率&quot;]) for row in data]
+
+plt.figure(figsize=(8, 4))
+plt.scatter(shares, fertility, color=&quot;#3f6d57&quot;, alpha=0.7)
+plt.xlabel(&quot;Population aged 65+ (%)&quot;)
+plt.ylabel(&quot;Total fertility rate&quot;)
+plt.title(&quot;Age structure and fertility: 47 prefectures&quot;)
+plt.tight_layout()
+plt.show()</code></pre>
+<figure><figcaption>実行結果 / Actual output · japan.csv</figcaption><img src="japan-charts/scatter-1.png" width="1200" height="600" loading="lazy" alt="Age structure and fertility: 47 prefectures"></figure>
+<p class="reading">横軸は高齢者の割合、縦軸は合計特殊出生率。合計特殊出生率は出生数でも人口に占める出生割合でもありません。 / Association does not establish causation.</p></section><section id="loop" class="example">
+<p class="eyebrow">07 / PYTHON → OUTPUT</p><h2>forで複数のグラフ / One loop, two charts</h2>
+<p class="question">同じ処理を、違う県に使う / Repeat a chart for each prefecture.</p>
+<p class="explanation"><code>for row in chosen:</code>で1県ずつ処理。<code>plt.figure()</code>をループ内に置き、県ごとに新しい図を作ります。<code>f"...{...}..."</code>でタイトルも変わります。リスト内包表記の角括弧も「各データから値を取り出す」繰り返しです。</p><pre><code class="language-python">chosen = [row for row in data if row[&quot;Prefecture&quot;] in [&quot;Tokyo&quot;, &quot;Chiba&quot;]]
+
+for row in chosen:
+    total = int(row[&quot;総人口&quot;])
+    shares = [int(row[&quot;15歳未満人口&quot;]) / total * 100,
+              int(row[&quot;15～64歳人口&quot;]) / total * 100,
+              int(row[&quot;65歳以上人口&quot;]) / total * 100]
+
+    plt.figure(figsize=(8, 4))
+    plt.bar([&quot;Under 15&quot;, &quot;15-64&quot;, &quot;65+&quot;], shares,
+            color=[&quot;#d9ac60&quot;, &quot;#315876&quot;, &quot;#3f6d57&quot;])
+    plt.ylim(0, 100)
+    plt.ylabel(&quot;Share of population (%)&quot;)
+    plt.title(f&quot;Age composition: {row[&#x27;Prefecture&#x27;]}&quot;)
+    plt.tight_layout()
+    plt.show()</code></pre>
+<figure><figcaption>実行結果 / Actual output · japan.csv</figcaption><img src="japan-charts/loop-1.png" width="1200" height="600" loading="lazy" alt="Age composition: Chiba"><img src="japan-charts/loop-2.png" width="1200" height="600" loading="lazy" alt="Age composition: Tokyo"></figure>
+<p class="reading">県名を追加すれば、その県のグラフも作られます。比べやすくするため、縦軸を両方とも0〜100に固定しています。 / Add a prefecture name to make another chart.</p></section>
+<footer><h2>グラフの下に、一文を。 / Explain what you found.</h2><p>「何を比較したか → 何がわかったか → この組織にとって何を意味するか」。結果を見て、自分の言葉で説明しよう。</p><a href="japan-report.html">課題・提出方法に戻る / Back to the assignment →</a>
+<p class="small">公式リファレンス / Matplotlib: <a href="https://matplotlib.org/stable/plot_types/basic/bar.html">bar</a> · <a href="https://matplotlib.org/stable/plot_types/stats/hist_plot.html">hist</a> · <a href="https://matplotlib.org/stable/plot_types/stats/boxplot_plot.html">boxplot</a></p></footer></main></div></body></html>

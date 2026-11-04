@@ -62,4 +62,5 @@ JP: 伝わるレポートは、問い・根拠・結論がつながっている�
 - [Week 06 Lecture: While Loops and a Japan Report](weeks/week-06/lecture.html) {lecture}
 - [レポートPart 2：課題・チュートリアル / Report Part 2: Challenge and Tutorial](weeks/week-06/japan-report.html) {challenge}
 - [同じ課題を宿題として完成させる / Finish the Same Challenge for Homework](weeks/week-06/japan-report.html) {homework}
+- [グラフのコード例・実行結果 / Japan Chart Code & Outputs](weeks/week-06/japan-charts.html) {support}
 - [Japan data — japan.csv](weeks/week-05/japan.csv) {data}

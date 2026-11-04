@@ -14,8 +14,8 @@ overview: Make a process continue until a condition is met, and learn how to dia
 overview_ja: 条件が満たされるまで処理を続け、止まらないプログラムを見つけて直す。
 ---
 ## Lecture Flow
-EN: 0–10: English/Japanese phrases with Python examples: print, variables, for, then while; 10–25: trace a while loop; 25–45: fundamentals notebook; 45–65: earthquake data walkthrough; 65–95: choose one challenge; 95–100: check results and stopping conditions.
-JP: 0〜10分：英語と日本語の表現をPythonで。print・変数・forからwhileへ。10〜25分：whileを一周ずつ追う、25〜45分：fundamentals Notebook、45〜65分：地震データの準備、65〜95分：問いを一つ選んで挑戦、95〜100分：結果と停止条件を確認。
+EN: 0–10: short-video hook, original rhymes, a beat loop, slang, then a boss-fight while loop; 10–25: trace a while loop; 25–45: fundamentals notebook; 45–65: earthquake data walkthrough; 65–95: choose one challenge; 95–100: check results and stopping conditions.
+JP: 0〜10分：「あと1本だけ」、韻・ビート・スラングから、ボス戦のwhileへ。10〜25分：whileを一周ずつ追う、25〜45分：fundamentals Notebook、45〜65分：地震データの準備、65〜95分：問いを一つ選んで挑戦、95〜100分：結果と停止条件を確認。
 ## In-Class Notebook
 EN: **Fundamentals: While Loops.** Predict, run, and change the examples: counters, totals, stopping conditions, lists, a timer, a code-word check, and a guessing game. Learn how to stop a cell before trying the intentional infinite loop.
 JP: **Fundamentals: While Loops。** カウンタ、合計、停止条件、リスト、タイマー、合言葉、数字当てを、予想・実行・変更で確かめる。意図的な無限ループの前にCellの停止方法を確認する。

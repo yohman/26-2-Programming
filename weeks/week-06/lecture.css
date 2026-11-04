@@ -37,22 +37,69 @@
 @media(max-width:650px) { .lecture-caption { display:none; } .simulation { padding:.8rem; } .week-six-lecture .dataframe-output { max-height:14rem; } }
 @media print { .simulation-controls { display:none; } }
 
-/* English phrases stay visible alongside their Japanese meanings. */
-.week-six-lecture .phrase-intro { background:#faf9f5; align-content:start; }
-.week-six-lecture .phrase-intro > :is(h1,h2,.phrase-ja,.phrase-prompt,.phrase-note,.slide-hint) { grid-column:1 / -1; }
-.week-six-lecture .phrase-intro :is(h1,h2) { margin:0 0 .5rem; font-size:clamp(2rem,4.7vw,4.4rem); line-height:1.14; letter-spacing:-.045em; font-weight:600; }
-.week-six-lecture .phrase-intro em { color:#426b66; font-style:normal; }
-.week-six-lecture .phrase-intro .phrase-ja { margin:.2rem 0 1.4rem; font-size:clamp(1.1rem,1.8vw,1.5rem); color:#426b66; }
-.week-six-lecture .phrase-intro .phrase-prompt { margin:.5rem 0 .8rem; font-size:clamp(.95rem,1.5vw,1.2rem); }
-.week-six-lecture .phrase-intro .phrase-note { margin:1rem 0 0; font-size:clamp(.9rem,1.35vw,1.1rem); line-height:1.65; }
-.week-six-lecture .phrase-intro .lecture-notebook-cell { margin:0; }
-.week-six-lecture .phrase-intro .lecture-cell-output { margin:0; }
-.week-six-lecture .phrase-greeting { padding-top:clamp(2rem,6vw,5rem); }
-.week-six-lecture .phrase-greeting h1 { font-size:clamp(2.5rem,6.5vw,6rem); }
-.week-six-lecture .phrase-contrast h2 { max-width:20ch; }
-.week-six-lecture .phrase-occasionally h2 { font-size:clamp(2rem,4vw,3.7rem); }
-.week-six-lecture .phrase-while { border-top:4px solid #426b66; }
-@media(max-width:650px) {
- .week-six-lecture .phrase-intro:has(.lecture-cell-output:not([hidden])) { grid-template-columns:minmax(0,1fr); }
- .week-six-lecture .phrase-intro:has(.lecture-cell-output:not([hidden])) .lecture-notebook-cell pre { font-size:.85rem; }
+/* Each opening has its own composition; no automatic slide advance. */
+.week-six-lecture .pop-opening { display:block; background:#faf9f5; }
+.week-six-lecture .pop-opening[hidden] { display:none !important; }
+.week-six-lecture .pop-opening :is(h1,h2,p) { margin:0; }
+.week-six-lecture .pop-opening em { font-style:normal; }
+.pop-opening details summary { cursor:pointer; list-style:none; font-weight:700; }
+.pop-opening details summary::-webkit-details-marker { display:none; }
+.pop-opening details p { margin-top:.8rem !important; line-height:1.6; }
+.pop-opening .pop-code { margin-top:1.2rem; }
+.pop-opening .pop-code .lecture-notebook-cell { margin-top:.8rem; }
+.week-six-lecture .pop-jolt { background:#161616; color:#fff9ef; padding:clamp(1.5rem,4vw,4rem); }
+.pop-jolt .pop-whisper { color:#c1bdb5; font:500 .85rem var(--mono); letter-spacing:.16em; }
+.week-six-lecture .pop-jolt h1 { font-size:clamp(4.3rem,11vw,10rem); line-height:1.02; letter-spacing:-.065em; margin:.7rem 0 1.5rem; }
+.pop-jolt h1 em { color:#ff6c54; }
+.pop-jolt summary { color:#ffb6a9; font-size:1.1rem; }
+.pop-jolt .pop-later { font-size:clamp(2rem,4vw,3.5rem); }
+.pop-jolt .pop-after strong { display:block; margin-top:1rem; font-size:1.5rem; color:#ffb6a9; }
+.week-six-lecture .pop-rhyme { display:grid; grid-template-columns:1fr 1fr; gap:2rem; background:#e6ff5a; color:#151515; align-content:center; }
+.rhyme-stack { font-size:clamp(3rem,7.8vw,7.2rem); font-weight:800; line-height:1.03; letter-spacing:-.055em; }
+.rhyme-stack span { display:block; }
+.rhyme-stack span:nth-child(2) { opacity:.65; }.rhyme-stack span:nth-child(3) { opacity:.35; }
+.rhyme-side { align-self:center; min-width:0; }
+.rhyme-side .pop-pronunciation { font:1rem var(--mono); margin-bottom:1.5rem; }
+.rhyme-side .pop-verse { font-size:clamp(1.35rem,2.4vw,2rem); line-height:1.5; font-weight:700; }
+.rhyme-side > p:not(:first-child) { margin-top:1rem; }
+.rhyme-side small { display:block; margin-top:1rem; font-size:.75rem; }
+.week-six-lecture .pop-beat { background:#f8f5ef; }
+.beat-strip { display:grid; grid-template-columns:repeat(4,1fr); margin:1.5rem 0 2rem; gap:.5rem; }
+.beat-strip span { font-size:clamp(2rem,5.5vw,5rem); font-weight:800; padding:.4rem 0; border-bottom:5px solid #202a31; text-align:center; }
+.week-six-lecture .pop-beat .beat-invite { font-size:1.15rem; margin-bottom:1.5rem; }
+.pop-beat:has([data-reveal][aria-expanded="true"]) .beat-strip span { animation:beat-hit .35s both; }
+.pop-beat .beat-strip span:nth-child(2) { animation-delay:.35s; }.pop-beat .beat-strip span:nth-child(3) { animation-delay:.7s; }.pop-beat .beat-strip span:nth-child(4) { animation-delay:1.05s; }
+.week-six-lecture .pop-beat:has(.lecture-cell-output:not([hidden])) { display:grid; grid-template-columns:1.2fr 1fr; gap:1rem; }
+.pop-beat > :is(.beat-strip,.beat-invite,details) { grid-column:1 / -1; }
+.week-six-lecture .pop-fire { background:#f4f0e8; }
+.fire-meme { display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:2rem; min-height:22rem; }
+.fire-meme > div { padding:2rem 0; }.fire-meme > div:last-child { color:#ac3429; }
+.fire-meme p { font:500 .9rem var(--mono); }
+.week-six-lecture .fire-meme h2 { font-size:clamp(2.6rem,6vw,5rem); line-height:1.05; margin:1rem 0; }
+.fire-meme span { font-size:1.3rem; }.meme-while { font-size:clamp(1.5rem,3vw,2.5rem); font-style:italic; }
+.pop-answer { margin-top:1rem; }.pop-answer small { display:block; margin-top:1rem; line-height:1.6; }
+.week-six-lecture .pop-boss { background:#171c25; color:#f4f3e7; }
+.week-six-lecture .slide.pop-boss:has(.simulation) { display:block; }
+.boss-heading > p:first-child { font:500 .8rem var(--mono); color:#a9f58b; letter-spacing:.15em; }
+.week-six-lecture .boss-heading h2 { font-size:clamp(2.2rem,4.3vw,4rem); margin:.7rem 0; color:inherit; }
+.boss-heading em { color:#a9f58b; }.boss-heading p { line-height:1.6; }
+.boss-program { display:grid; grid-template-columns:1.2fr 1fr; gap:1.2rem; margin-top:1.5rem; }
+.boss-program .lecture-notebook-cell { margin:0; color:#202a31; }
+.boss-program .simulation { margin:0; background:#242d3a; color:#f4f3e7; }
+.boss-program .state-readout { color:#a9f58b; font-size:1.5rem; }
+.boss-program .simulation pre { color:inherit; background:none; }
+.boss-program button { background:#a9f58b; color:#171c25; }
+.pop-boss summary { color:#a9f58b; }
+@keyframes beat-hit { 0% { background:#ff785c; transform:translateY(-6px); } 100% { background:transparent; transform:none; } }
+@media(max-width:700px) {
+ .week-six-lecture .pop-rhyme { grid-template-columns:1fr; gap:1.3rem; }
+ .rhyme-stack { display:flex; flex-wrap:wrap; gap:.3em; font-size:2.7rem; }
+ .rhyme-side .pop-pronunciation { margin-bottom:.5rem; }
+ .fire-meme { grid-template-columns:1fr auto 1fr; gap:1rem; min-height:16rem; }
+ .fire-meme > div { padding:1rem 0; }.fire-meme span { font-size:1rem; }
+ .week-six-lecture .fire-meme h2 { font-size:2.4rem; }
+ .boss-program { grid-template-columns:1fr; }
+ .week-six-lecture .pop-beat:has(.lecture-cell-output:not([hidden])) { grid-template-columns:1fr; }
 }
+@media(prefers-reduced-motion:reduce) { .pop-opening * { animation:none !important; } }
+@media print { .week-six-lecture .pop-opening[hidden] { display:block !important; } }

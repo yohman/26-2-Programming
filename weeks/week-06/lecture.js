@@ -74,8 +74,21 @@
   }
   document.querySelectorAll('[data-simulation]').forEach(root=>{
     const kind=root.dataset.simulation;
-    if(kind==='sheep'){
-      const {status,output}=controls(root,'<label>'+bi('上限','Limit')+' <input aria-label="Sheep limit" type="number" min="1" max="10" value="4"></label><button data-reset>'+bi('リセット','Reset')+'</button><button data-step>'+bi('次の一行','Next line')+'</button><button data-run>'+bi('最後まで','Run to end')+'</button>');
+    if(kind==='boss'){
+      const {status,output}=controls(root,'<button data-run>▶ HIT</button><button data-reset>↶ RESET</button>');
+      let hp=3,lines=[];
+      function reset(){hp=3;lines=[];status.textContent='HP ● ● ● · 3 > 0 → True';output.textContent='';root.querySelector('[data-run]').disabled=false;}
+      root.querySelector('[data-run]').onclick=()=>{
+        if(hp<=0)return;
+        lines.push('HIT!');hp--;
+        status.textContent='HP '+('● '.repeat(hp))+('○ '.repeat(3-hp))+' · '+hp+' > 0 → '+(hp>0?'True':'False');
+        if(hp===0){lines.push('CLEAR!');root.querySelector('[data-run]').disabled=true;}
+        output.textContent=lines.join('\n');
+      };
+      root.querySelector('[data-reset]').onclick=reset;reset();
+    }
+    if(kind==='beat'){
+      const {status,output}=controls(root,'<label>'+bi('上限','Limit')+' <input aria-label="Beat limit" type="number" min="1" max="10" value="4"></label><button data-reset>'+bi('リセット','Reset')+'</button><button data-step>'+bi('次の一行','Next line')+'</button><button data-run>'+bi('最後まで','Run to end')+'</button>');
       let count=1,phase='check',limit=4,lines=[],steps=0;
       function reset(){count=1;phase='check';steps=0;lines=[];limit=numberInput(root,1,10);output.textContent='';if(limit!==null)updateExample(root,/while count <= \d+:/,'while count <= '+limit+':');status.textContent=limit===null?text('1〜10の整数を入力','Enter an integer from 1 to 10'):'count = 1';root.querySelectorAll('[data-step],[data-run]').forEach(b=>{b.disabled=limit===null;});}
       function step(){
@@ -83,9 +96,9 @@
         if(phase==='check'){
           const pass=count<=limit;status.textContent='count='+count+' · '+count+' <= '+limit+' → '+(pass?'True':'False');
           phase=pass?'print':'finish';
-        }else if(phase==='print'){lines.push(count+' sheep');status.textContent='print('+count+')';phase='update';}
+        }else if(phase==='print'){lines.push(count+' beat');status.textContent='print('+count+')';phase='update';}
         else if(phase==='update'){count+=1;status.textContent='count += 1 → '+count;phase='check';}
-        else{lines.push('Good night');status.textContent=text('条件がFalse。本体は実行せず、ループの後へ。','False: skip the body and continue after the loop.');phase='done';root.querySelectorAll('[data-step],[data-run]').forEach(b=>{b.disabled=true;});}
+        else{lines.push('Drop!');status.textContent=text('条件がFalse。本体は実行せず、ループの後へ。','False: skip the body and continue after the loop.');phase='done';root.querySelectorAll('[data-step],[data-run]').forEach(b=>{b.disabled=true;});}
         output.textContent=lines.join('\n');steps++;
       }
       root.querySelector('[data-reset]').onclick=reset;

@@ -43,4 +43,25 @@ vm.runInContext(source.match(/^  const slideKey=.*$/m)[0],context);
 assert.equal(vm.runInContext('slideKey(slides[0])',context),'english-duration');
 assert.equal(vm.runInContext('slideKey(slides[1])',context),'6');
 assert.equal(vm.runInContext('slideKey(slides[2])',context),'3');
-console.log('PASS: ink validation, pen/highlighter/eraser, undoable clear, and stable slide identities.');
+const attributes={},classes={};
+context.mode=false;
+context.tools={hidden:true};
+context.toggle={setAttribute(name,value){attributes[name]=value;}};
+context.view={classList:{toggle(name,value){classes[name]=value;}}};
+context.finish=()=>{};context.refreshControls=()=>{};context.render=()=>{};
+for(const name of ['setPalette','setMode']){
+  vm.runInContext(source.match(new RegExp('  function '+name+'\\([^]*?\\n  \\}'))[0],context);
+}
+vm.runInContext(source.match(/^  toggle.onclick=.*$/m)[0],context);
+context.toggle.onclick();
+assert.equal(context.mode,true);assert.equal(context.tools.hidden,false);
+context.toggle.onclick();
+assert.equal(context.tools.hidden,true);
+assert.equal(context.mode,true);assert.equal(classes['is-annotating'],true);
+assert.equal(attributes['aria-pressed'],'true');assert.equal(attributes['aria-expanded'],'false');
+context.toggle.onclick();
+assert.equal(context.tools.hidden,false);assert.equal(context.mode,true);
+context.setMode(false);
+assert.equal(context.mode,false);assert.equal(context.tools.hidden,true);
+assert.equal(classes['is-annotating'],false);assert.equal(attributes['aria-pressed'],'false');
+console.log('PASS: ink tools, stable identities, minimized drawing, reopen, and explicit finish.');

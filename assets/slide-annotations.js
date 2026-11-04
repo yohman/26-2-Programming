@@ -48,6 +48,7 @@
       ['Thin stroke','Medium stroke','Thick stroke'][i],['Thin / 細','Medium / 中','Thick / 太'][i])).join('')+'</div>'+
     icon('data-ink-undo','↶','Undo drawing','Undo / 元に戻す')+
     icon('data-ink-clear','⌧','Clear slide drawing','Clear this slide / このスライドを消去')+
+    icon('data-ink-finish','↖','Finish drawing','Finish drawing / 描画を終了 (Esc)')+
     '<span class="annotation-status" role="status"></span>';
   const undo=tools.querySelector('[data-ink-undo]'),clear=tools.querySelector('[data-ink-clear]');
   const status=tools.querySelector('.annotation-status');
@@ -142,15 +143,21 @@
     },{passive:false}));
     new ResizeObserver(()=>render(slide)).observe(slide);
   });
+  function setPalette(open){
+    tools.hidden=!open;
+    toggle.setAttribute('aria-expanded',String(open));
+    toggle.textContent=open?'−':'✎';
+    toggle.setAttribute('aria-label',open?'Minimize drawing tools':mode?'Show drawing tools':'Draw on slides');
+    toggle.title=open?'Minimize tools / ツールを最小化':mode?'Show tools · drawing active / 描画中 · ツールを表示 (Escで終了)':'Draw / 描く (D)';
+  }
   function setMode(value){
-    finish();mode=value;tools.hidden=!mode;view.classList.toggle('is-annotating',mode);
+    finish();mode=value;view.classList.toggle('is-annotating',mode);
     toggle.setAttribute('aria-pressed',String(mode));
-    toggle.textContent=mode?'×':'✎';
-    toggle.setAttribute('aria-label',mode?'Finish drawing':'Draw on slides');
-    toggle.title=mode?'Finish drawing / 描画を終了 (Esc)':'Draw / 描く (D)';
+    setPalette(mode);
     refreshControls();render();
   }
-  toggle.onclick=()=>setMode(!mode);
+  toggle.onclick=()=>{if(!mode)setMode(true);else setPalette(tools.hidden);};
+  tools.querySelector('[data-ink-finish]').onclick=()=>setMode(false);
   tools.querySelectorAll('[data-ink-tool]').forEach(button=>button.onclick=()=>{
     finish();tool=button.dataset.inkTool;
     tools.querySelectorAll('[data-ink-tool]').forEach(item=>item.setAttribute('aria-pressed',String(item===button)));
@@ -178,5 +185,5 @@
   },true);
   window.addEventListener('blur',finish);
   window.addEventListener('pagehide',finish);
-  refreshControls();render();
+  setPalette(false);refreshControls();render();
 })();

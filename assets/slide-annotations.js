@@ -29,7 +29,7 @@
   }catch{saveFailed=true;}
   const toggle=document.createElement('button');
   toggle.type='button';toggle.className='annotation-toggle';toggle.setAttribute('aria-pressed','false');
-  toggle.textContent='✎';toggle.title='Draw / 描く (D)';
+  toggle.textContent='✎';toggle.title='Draw / 描く (P)';
   toggle.setAttribute('aria-label','Draw on slides');
   const tools=document.createElement('div');
   tools.className='annotation-tools';tools.id='annotation-tools';tools.hidden=true;
@@ -148,7 +148,7 @@
     toggle.setAttribute('aria-expanded',String(open));
     toggle.textContent=open?'−':'✎';
     toggle.setAttribute('aria-label',open?'Minimize drawing tools':mode?'Show drawing tools':'Draw on slides');
-    toggle.title=open?'Minimize tools / ツールを最小化':mode?'Show tools · drawing active / 描画中 · ツールを表示 (Escで終了)':'Draw / 描く (D)';
+    toggle.title=open?'Minimize tools / ツールを最小化 (Pで描画切替)':mode?'Show tools · drawing active / 描画中 · ツールを表示 (Pで描画切替)':'Draw / 描く (P)';
   }
   function setMode(value){
     finish();mode=value;view.classList.toggle('is-annotating',mode);
@@ -179,7 +179,7 @@
   new MutationObserver(refreshControls).observe(document.documentElement,{attributes:true,attributeFilter:['data-language']});
   document.addEventListener('keydown',event=>{
     if(event.target.closest('input,textarea,select,[contenteditable="true"]')||event.ctrlKey||event.metaKey||event.altKey)return;
-    if(event.key.toLowerCase()==='d'){event.preventDefault();event.stopImmediatePropagation();setMode(!mode);}
+    if(event.key.toLowerCase()==='p'&&!event.repeat&&!event.isComposing){event.preventDefault();event.stopImmediatePropagation();setMode(!mode);}
     if(event.key==='Escape'&&mode){event.preventDefault();event.stopImmediatePropagation();setMode(false);toggle.focus();}
     if(event.key==='z'&&mode&&!undo.disabled){event.preventDefault();undo.click();}
   },true);

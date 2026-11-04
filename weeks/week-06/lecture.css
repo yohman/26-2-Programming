@@ -1,0 +1,38 @@
+.lecture-caption { color:var(--muted); font:700 .75rem var(--mono); }
+.week-six-lecture .slide { padding:clamp(1.5rem,2.7vw,2.5rem); }
+.week-six-lecture .slide h2 { font-size:clamp(1.7rem,3.05vw,3rem); }
+.week-six-lecture .slide > :is(.code-explainer,.slide-hint,.simulation,.snapshot-note,.download-notebook) { grid-column:1 / -1; }
+.week-six-lecture .lecture-notebook-cell pre { white-space:pre; overflow:auto; overflow-wrap:normal; font-size:clamp(.85rem,1.55vw,1.3rem); }
+.week-six-lecture .slide:has(.lecture-notebook-cell):not(:has([data-reveal],.simulation)) .lecture-notebook-cell pre { font-size:clamp(.82rem,1.25vw,1.08rem); }
+.week-six-lecture .slide:has(.lecture-cell-output:not([hidden])) { grid-template-columns:minmax(0,1.1fr) minmax(0,1fr); }
+.week-six-lecture .slide:has(.lecture-cell-output:not([hidden])) .lecture-notebook-cell pre { font-size:clamp(.78rem,1.16vw,1.05rem); }
+.week-six-lecture .slide-note { font-size:clamp(.9rem,1.3vw,1.1rem); line-height:1.6; }
+.week-six-lecture .snapshot-note { color:var(--muted); font-size:.76rem; border-left:3px solid #91a8b7; padding-left:.65rem; }
+.week-six-lecture .slide-hint { margin-top:.8rem; font-size:1rem; line-height:1.6; }
+.slide-hint summary { color:var(--blue); cursor:pointer; font-weight:700; }
+.slide-hint p { margin:.5rem 0; }
+.simulation { margin:1rem 0; padding:1rem 1.2rem; background:#edf2f3; }
+.simulation-controls { display:flex; flex-wrap:wrap; align-items:center; gap:.65rem; }
+.simulation-controls label { font-size:.9rem; color:var(--blue); }
+.simulation input { max-width:12rem; min-height:2.4rem; padding:.3rem .5rem; border:1px solid var(--line); font:inherit; }
+.simulation button { min-height:2.4rem; padding:.5rem .8rem; border:0; background:var(--blue); color:white; font:700 .85rem var(--sans); cursor:pointer; }
+.simulation button:disabled { opacity:.5; cursor:default; }
+.simulation pre { min-height:3rem; max-height:13rem; overflow:auto; white-space:pre-wrap; margin:.8rem 0 0; font:clamp(.9rem,1.3vw,1.1rem)/1.55 var(--mono); }
+.simulation .state-readout { margin:.75rem 0 0; color:var(--blue); font-weight:700; }
+.chart-output { padding:.5rem !important; background:white !important; }
+.chart-output img { display:block; max-width:100%; max-height:260px; object-fit:contain; }
+.week-six-lecture .slide:has(.chart-output:not([hidden])) .code-explainer { margin-top:.3rem; }
+.week-six-lecture button:focus-visible,.week-six-lecture summary:focus-visible { outline:2px solid var(--blue); outline-offset:3px; }
+@media(min-width:1000px) {
+ .week-six-lecture .slide:has(.lecture-cell-output:not([hidden])) { gap:.8rem 1.25rem; }
+ .week-six-lecture .slide:has(.lecture-notebook-cell):not(:has([data-reveal],.simulation)) { display:grid; grid-template-columns:minmax(0,1.4fr) minmax(0,1fr); gap:.8rem 1.25rem; align-content:start; }
+ .week-six-lecture .slide:has(.lecture-notebook-cell):not(:has([data-reveal],.simulation)) > :is(.slide-kicker,h2,.slide-note,.download-notebook) { grid-column:1 / -1; margin:0; }
+ .week-six-lecture .slide:has(.lecture-notebook-cell):not(:has([data-reveal],.simulation)) > :is(.lecture-notebook-cell,.code-explainer) { grid-column:auto; margin:0; min-width:0; align-self:start; }
+ .week-six-lecture .slide:has(.lecture-notebook-cell):not(:has([data-reveal],.simulation)) .code-explainer > div { grid-template-columns:1fr; gap:.35rem; }
+ .week-six-lecture .slide:has(.simulation) { display:grid; grid-template-columns:minmax(0,1.1fr) minmax(0,1fr); gap:1rem 1.5rem; align-content:start; }
+ .week-six-lecture .slide:has(.simulation) > :is(.slide-kicker,h2,.slide-note,.slide-question,.code-explainer,.slide-hint) { grid-column:1 / -1; margin:0; }
+ .week-six-lecture .slide:has(.simulation) > :is(.lecture-notebook-cell,.simulation) { grid-column:auto; margin:0; min-width:0; align-self:start; }
+ .week-six-lecture .slide:has(.simulation) .lecture-notebook-cell pre { font-size:clamp(.78rem,1.16vw,1.05rem); }
+}
+@media(max-width:650px) { .lecture-caption { display:none; } .simulation { padding:.8rem; } .week-six-lecture .dataframe-output { max-height:14rem; } }
+@media print { .simulation-controls { display:none; } }

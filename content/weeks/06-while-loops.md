@@ -14,25 +14,25 @@ overview: Make a process continue until a condition is met, and learn how to dia
 overview_ja: 条件が満たされるまで処理を続け、止まらないプログラムを見つけて直す。
 ---
 ## Lecture Flow
-EN: 0–20: state and stopping; 20–30: diagnose an infinite loop; 30–70: USGS notebook; 70–100: impact visualization.
-JP: 0〜20分：状態と停止、20〜30分：無限ループの診断、30〜70分：USGSノートブック、70〜100分：Impact可視化。
+EN: 0–15: trace a while loop; 15–40: fundamentals notebook; 40–65: earthquake data walkthrough; 65–95: choose one challenge; 95–100: check results and stopping conditions.
+JP: 0〜15分：whileを一周ずつ追う、15〜40分：fundamentals Notebook、40〜65分：地震データの準備、65〜95分：問いを一つ選んで挑戦、95〜100分：結果と停止条件を確認。
 ## In-Class Notebook
-EN: **Week 06 In-Class — While Loops and Live Earthquakes.** Build a bounded loop, debug one with AI, then fetch/filter USGS data yourself with a fallback and checks.
-JP: **Week 06 In-Class — While Loops and Live Earthquakes。** 回数制限のあるループを作り、AIで一つをデバッグし、代替データとチェックを用意し、USGSデータの取得／絞り込みに取り組む。
+EN: **Fundamentals: While Loops.** Predict, run, and change the examples: counters, totals, stopping conditions, lists, a timer, a code-word check, and a guessing game. Learn how to stop a cell before trying the intentional infinite loop.
+JP: **Fundamentals: While Loops。** カウンタ、合計、停止条件、リスト、タイマー、合言葉、数字当てを、予想・実行・変更で確かめる。意図的な無限ループの前にCellの停止方法を確認する。
 ## In-Class Challenge
-EN: Final 30 minutes: create one earthquake chart or map with source date, filter, and a manual spot-check.
-JP: 最後の30分：取得日、絞り込み、手動スポットチェックを含む地震グラフまたは地図を一つ作る。
+EN: Use **challenge-earthquakes.ipynb**. Choose one question about counts, magnitude, depth, or time. Start with a checked table or printed list. A scatter plot or map is an extension. Record the source, retrieval time, data period, and filters. The included 2025 snapshot is a fallback, not live data.
+JP: **challenge-earthquakes.ipynb**を使う。件数・マグニチュード・深さ・時刻から問いを一つ選び、確認できる表や一覧から始める。散布図・地図は発展。出典・取得日時・期間・絞り込みを記載。同梱の2025年snapshotは代替用で、ライブデータではない。
 ## Take-Home Assignment
-EN: Submit the notebook, visual, 200–400字 Japanese summary, and prompt/test log showing one AI suggestion you checked or a bug you fixed.
-JP: ノートブック、可視化、200〜400字の日本語要約、確認したAIの提案または修正したバグを示すプロンプト／テストログを提出。
+EN: **Impact Visualization Challenge.** In your GitHub me repository, create **Week6/earthquake.ipynb** with a question, analysis, chart or map, and a 200–400 character Japanese summary. Save executed outputs, record the data source and period, and submit the notebook’s **direct GitHub link to UNIPA** by November 11, 23:59 JST. Submit a link, not a file upload. You may continue your in-class work.
+JP: **Impact Visualization Challenge。** GitHubのmeリポジトリに**Week6/earthquake.ipynb**を作り、問い・分析・図または地図・日本語200〜400字の要約を書く。実行済み出力と出典・期間を保存し、11月11日23:59までに**NotebookへのGitHub direct linkをUNIPAへ提出**。ファイルアップロードではなくリンク提出。授業内の続きでもよい。
 ## Aha!
-EN: A loop stops only when its state can change.
-JP: 状態が変化できるときだけ、ループは止まる。
+EN: Explain the exit: the condition becomes False, or break leaves the loop.
+JP: 停止の理由を説明する。条件がFalseになるか、breakでループを抜ける。
 ## Takeaway
 EN: Live data demands visible verification.
 JP: ライブデータには見える検証が必要である。
 ## Resources
-- [Week 06 In-Class — While Loops and Live Earthquakes](weeks/week-06/week-06-in-class-while-loops.ipynb) {fundamentals}
-- [Lecture PDF](weeks/week-06/lecture.pdf) {lecture}
+- [Fundamentals: While Loops](weeks/week-06/fundamentals-while-loops.ipynb) {fundamentals}
+- [Week 06 Lecture: While Loops and Earthquakes](weeks/week-06/lecture.html) {lecture}
 - [Live earthquakes challenge](weeks/week-06/challenge-earthquakes.ipynb) {challenge}
 - [Earthquake snapshot](weeks/week-06/earthquakes-snapshot.csv) {data}

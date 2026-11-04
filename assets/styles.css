@@ -630,7 +630,8 @@ html[data-language="ja"] .lang-ja { display: revert; }
 .homework-deadline { margin: 0 0 1rem; color: #784822; font: 750 .82rem/1.5 var(--sans); }
 #week-05 .course-section--in-class,
 #week-05 .course-section--homework { grid-column: 1 / -1; }
-#week-05 .course-section--lecture .course-section-content { display:block; }
+#week-05 .course-section--lecture .course-section-content,
+#week-06 .course-section--lecture .course-section-content { display:block; }
 .week-student-work { grid-column:1 / -1; padding:1.1rem 1.5rem; border-left:3px solid var(--blue); background:#e5ebef; }
 .week-student-work p { margin:0; line-height:1.7; }
 .week-student-work a { color:var(--blue); font-weight:800; text-underline-offset:4px; }

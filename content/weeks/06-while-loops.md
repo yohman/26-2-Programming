@@ -35,4 +35,4 @@ JP: ライブデータには見える検証が必要である。
 - [Fundamentals: While Loops](weeks/week-06/fundamentals-while-loops.ipynb) {fundamentals}
 - [Week 06 Lecture: While Loops and Earthquakes](weeks/week-06/lecture.html) {lecture}
 - [Live earthquakes challenge](weeks/week-06/challenge-earthquakes.ipynb) {challenge}
-- [Earthquake snapshot](weeks/week-06/earthquakes-snapshot.csv) {data}
+- [Offline fallback: 2025 earthquake snapshot](weeks/week-06/earthquakes-snapshot.csv) {data}

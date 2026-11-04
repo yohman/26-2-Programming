@@ -43,7 +43,7 @@
   function highlight(code){
     if(code.closest('.lecture-cell-output'))return;
     const source=code.textContent;
-    const pattern=/(#[^\n]*)|("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')|\b(for|while|in|if|else|elif|break|True|False|import|as|with)\b|\b(print|range|format|len|append|input|int|randint|sleep|read_csv|head|isna|sum|copy|sort_values|contains|iterrows|mean|round|between|to_datetime|tz_convert|dropna|scatter|show|get|raise_for_status|open|write|to_string|save|Map|CircleMarker|add_to)\b|\b(\d+(?:_\d+)*(?:\.\d+)?)\b/g;
+    const pattern=/(#[^\n]*)|("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')|\b(for|while|in|if|else|elif|break|True|False|import|as|with)\b|\b(print|range|format|len|append|input|int|randint|sleep|read_csv|head|info|describe|isna|sum|copy|sort_values|contains|iterrows|mean|round|between|to_datetime|tz_convert|dropna|scatter|show|get|raise_for_status|open|write|to_string|save|Map|CircleMarker|add_to)\b|\b(\d+(?:_\d+)*(?:\.\d+)?)\b/g;
     let position=0;code.replaceChildren();
     for(const match of source.matchAll(pattern)){
       code.append(document.createTextNode(source.slice(position,match.index)));

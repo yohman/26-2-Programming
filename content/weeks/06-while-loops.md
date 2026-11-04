@@ -14,14 +14,14 @@ overview: Make a process continue until a condition is met, and learn how to dia
 overview_ja: 条件が満たされるまで処理を続け、止まらないプログラムを見つけて直す。
 ---
 ## Lecture Flow
-EN: 0–10: short-video hook, original rhymes, a beat loop, slang, then a boss-fight while loop; 10–25: trace a while loop; 25–45: fundamentals notebook; 45–65: earthquake data walkthrough; 65–95: choose one challenge; 95–100: check results and stopping conditions.
-JP: 0〜10分：「あと1本だけ」、韻・ビート・スラングから、ボス戦のwhileへ。10〜25分：whileを一周ずつ追う、25〜45分：fundamentals Notebook、45〜65分：地震データの準備、65〜95分：問いを一つ選んで挑戦、95〜100分：結果と停止条件を確認。
+EN: 0–10: short-video hook, original rhymes, a beat loop, slang, then a boss-fight while loop; 10–25: trace a while loop; 25–45: fundamentals notebook; 45–65: load USGS data, explore with head/info/describe, and apply simple filters; 65–95: choose one challenge; 95–100: check results and stopping conditions.
+JP: 0〜10分：「あと1本だけ」、韻・ビート・スラングから、ボス戦のwhileへ。10〜25分：whileを一周ずつ追う、25〜45分：fundamentals Notebook、45〜65分：USGSから読み込み、head・info・describeと簡単な絞り込み、65〜95分：問いを一つ選んで挑戦、95〜100分：結果と停止条件を確認。
 ## In-Class Notebook
 EN: **Fundamentals: While Loops.** Predict, run, and change the examples: counters, totals, stopping conditions, lists, a timer, a code-word check, and a guessing game. Learn how to stop a cell before trying the intentional infinite loop.
 JP: **Fundamentals: While Loops。** カウンタ、合計、停止条件、リスト、タイマー、合言葉、数字当てを、予想・実行・変更で確かめる。意図的な無限ループの前にCellの停止方法を確認する。
 ## In-Class Challenge
-EN: Use **challenge-earthquakes.ipynb**. Choose one question about counts, magnitude, depth, or time. Start with a checked table or printed list. A scatter plot or map is an extension. Record the source, retrieval time, data period, and filters. The included 2025 snapshot is a fallback, not live data.
-JP: **challenge-earthquakes.ipynb**を使う。件数・マグニチュード・深さ・時刻から問いを一つ選び、確認できる表や一覧から始める。散布図・地図は発展。出典・取得日時・期間・絞り込みを記載。同梱の2025年snapshotは代替用で、ライブデータではない。
+EN: Use **challenge-earthquakes.ipynb**. Choose one question about counts, magnitude, depth, or time. Load directly with pandas; use head(), info(), describe(), and a one-condition filter. Start with a checked table. A scatter plot or map is an extension. Record the source, retrieval time, data period, and filters. The included 2025 snapshot is a fallback, not live data.
+JP: **challenge-earthquakes.ipynb**を使う。件数・マグニチュード・深さ・時刻から問いを一つ選び、pandasで直接読み込み、head・info・describeと一つの条件で絞り込む。確認できる表から始める。散布図・地図は発展。出典・取得日時・期間・絞り込みを記載。同梱の2025年snapshotは代替用で、ライブデータではない。
 ## Take-Home Assignment
 EN: **Impact Visualization Challenge.** In your GitHub me repository, create **Week6/earthquake.ipynb** with a question, analysis, chart or map, and a 200–400 character Japanese summary. Save executed outputs, record the data source and period, and submit the notebook’s **direct GitHub link to UNIPA** by November 11, 23:59 JST. Submit a link, not a file upload. You may continue your in-class work.
 JP: **Impact Visualization Challenge。** GitHubのmeリポジトリに**Week6/earthquake.ipynb**を作り、問い・分析・図または地図・日本語200〜400字の要約を書く。実行済み出力と出典・期間を保存し、11月11日23:59までに**NotebookへのGitHub direct linkをUNIPAへ提出**。ファイルアップロードではなくリンク提出。授業内の続きでもよい。

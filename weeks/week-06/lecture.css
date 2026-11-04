@@ -103,3 +103,14 @@
 }
 @media(prefers-reduced-motion:reduce) { .pop-opening * { animation:none !important; } }
 @media print { .week-six-lecture .pop-opening[hidden] { display:block !important; } }
+
+.week-six-lecture .simple-earthquakes > h2 { grid-column:1 / -1; }
+.week-six-lecture .simple-earthquakes .slide-note { grid-column:1 / -1; }
+.week-six-lecture .simple-earthquakes .simple-data-table { white-space:normal; padding:.6rem; }
+.simple-data-table table { border-collapse:collapse; width:max-content; font:inherit; }
+.simple-data-table th,.simple-data-table td { padding:.4rem .65rem; border-bottom:1px solid #dce2e5; text-align:right; white-space:nowrap; }
+.simple-data-table thead th { color:var(--blue); }
+.week-six-lecture .direct-import .lecture-notebook-cell pre { white-space:pre-wrap; overflow-wrap:anywhere; }
+@media(max-width:650px) {
+ .week-six-lecture .slide.simple-earthquakes:has(.lecture-cell-output:not([hidden])) { grid-template-columns:minmax(0,1fr); }
+}

@@ -10,7 +10,7 @@
   stage.style.touchAction='pan-y pinch-zoom';
   stage.addEventListener('touchstart',event=>{
     start=null;
-    if(event.touches.length!==1||blocked()||event.target.closest('a,button,input,textarea,select,summary,pre,code,canvas,[contenteditable="true"]'))return;
+    if(event.touches.length!==1||blocked()||event.target.closest('a,button,input,textarea,select,summary,pre,code,canvas,.dataframe-output,[contenteditable="true"]'))return;
     const finger=event.touches[0];
     start={id:finger.identifier,x:finger.clientX,y:finger.clientY,time:event.timeStamp};
   },{passive:true});

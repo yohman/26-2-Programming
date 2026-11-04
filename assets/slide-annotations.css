@@ -1,0 +1,26 @@
+.has-slide-ink { position:relative; isolation:isolate; }
+.slide-ink { position:absolute; inset:0; width:100%; height:100%; z-index:20; pointer-events:none; }
+.is-annotating .slide-ink { pointer-events:auto; touch-action:none; cursor:crosshair; }
+.is-annotating[data-ink-tool="erase"] .slide-ink { cursor:cell; }
+.slide-controls button.annotation-toggle { min-width:2.5rem; min-height:2.5rem; padding:.35rem; margin-left:auto; font-size:1.35rem; line-height:1; }
+.slide-controls button.annotation-toggle[aria-pressed="true"] { background:var(--blue); color:#fff; }
+.annotation-tools { display:flex; flex:none; flex-wrap:wrap; align-items:center; align-self:flex-end; gap:.2rem; width:fit-content; max-width:100%; box-sizing:border-box; padding:.25rem; margin:0 0 .6rem auto; background:#fff; border:1px solid var(--line); font:500 .8rem/1.4 var(--sans); }
+.annotation-tools[hidden] { display:none !important; }
+.annotation-tool-group,.annotation-colours,.annotation-widths { display:flex; gap:.15rem; padding-right:.3rem; border-right:1px solid var(--line); }
+.annotation-tools button { display:grid; place-items:center; width:2.15rem; height:2.15rem; padding:0; border:1px solid transparent; background:#fff; color:var(--blue); font:500 1.35rem/1 var(--sans); cursor:pointer; }
+.annotation-tools button[aria-pressed="true"] { background:var(--blue); color:#fff; }
+.annotation-tools button:disabled { opacity:.4; cursor:default; }
+.annotation-tools .ink-swatch { color:var(--ink-colour); font-size:1.6rem; }
+.annotation-tools .ink-swatch[aria-pressed="true"] { color:var(--ink-colour); background:transparent; border-color:currentColor; }
+.annotation-tools [data-ink-width] { font-size:var(--ink-dot); }
+.annotation-status { display:grid; place-items:center; min-width:1.3rem; color:var(--muted); font-size:.8rem; cursor:help; }
+.annotation-tools button:focus-visible { outline:2px solid var(--blue); outline-offset:2px; }
+#slides-view:is(:fullscreen,.is-fullscreen-fallback) .annotation-tools { margin:0; }
+@media(max-width:650px) {
+ .slide-controls { flex-wrap:wrap; gap:.3rem; }
+ .slide-nav-group { gap:.3rem; }
+ .slide-controls .slide-nav-group button { min-width:0; padding:.5rem; }
+ .slide-controls :is(.annotation-toggle,.slide-fullscreen) { padding:.5rem; font-size:.75rem; }
+ .annotation-tools { gap:.4rem; padding:.5rem; }
+}
+@media print { .annotation-tools,.annotation-toggle { display:none !important; } }

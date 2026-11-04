@@ -38,6 +38,7 @@
     const url=new URL(location.href);url.searchParams.set('slide',index+1);
     history.replaceState(null,'',url);
     stage.scrollTop=0;window.scrollTo(0,0);
+    view.dispatchEvent(new CustomEvent('lecture:slidechange',{detail:{index}}));
   }
   function highlight(code){
     if(code.closest('.lecture-cell-output'))return;

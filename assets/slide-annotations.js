@@ -10,7 +10,7 @@
   const canvases=new Map();
   const ja=()=>document.documentElement.dataset.language!=='en';
   const currentSlide=()=>slides.find(slide=>!slide.hidden);
-  const slideKey=slide=>String(slides.indexOf(slide)+1);
+  const slideKey=slide=>slide.dataset.inkId||String(slides.indexOf(slide)+1);
   const strokes=slide=>ink[slideKey(slide)]||[];
   function validStroke(stroke){
     if(!stroke||typeof stroke!=='object')return false;
@@ -22,9 +22,9 @@
   }
   try{
     const saved=JSON.parse(localStorage.getItem(key)||'{}');
-    for(let n=1;n<=slides.length;n++){
-      const list=saved[n];
-      if(Array.isArray(list)&&list.every(validStroke))ink[n]=list;
+    for(const slide of slides){
+      const id=slideKey(slide),list=saved[id];
+      if(Array.isArray(list)&&list.every(validStroke))ink[id]=list;
     }
   }catch{saveFailed=true;}
   const toggle=document.createElement('button');

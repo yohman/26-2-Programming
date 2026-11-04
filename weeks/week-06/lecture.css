@@ -36,3 +36,23 @@
 }
 @media(max-width:650px) { .lecture-caption { display:none; } .simulation { padding:.8rem; } .week-six-lecture .dataframe-output { max-height:14rem; } }
 @media print { .simulation-controls { display:none; } }
+
+/* English phrases stay visible alongside their Japanese meanings. */
+.week-six-lecture .phrase-intro { background:#faf9f5; align-content:start; }
+.week-six-lecture .phrase-intro > :is(h1,h2,.phrase-ja,.phrase-prompt,.phrase-note,.slide-hint) { grid-column:1 / -1; }
+.week-six-lecture .phrase-intro :is(h1,h2) { margin:0 0 .5rem; font-size:clamp(2rem,4.7vw,4.4rem); line-height:1.14; letter-spacing:-.045em; font-weight:600; }
+.week-six-lecture .phrase-intro em { color:#426b66; font-style:normal; }
+.week-six-lecture .phrase-intro .phrase-ja { margin:.2rem 0 1.4rem; font-size:clamp(1.1rem,1.8vw,1.5rem); color:#426b66; }
+.week-six-lecture .phrase-intro .phrase-prompt { margin:.5rem 0 .8rem; font-size:clamp(.95rem,1.5vw,1.2rem); }
+.week-six-lecture .phrase-intro .phrase-note { margin:1rem 0 0; font-size:clamp(.9rem,1.35vw,1.1rem); line-height:1.65; }
+.week-six-lecture .phrase-intro .lecture-notebook-cell { margin:0; }
+.week-six-lecture .phrase-intro .lecture-cell-output { margin:0; }
+.week-six-lecture .phrase-greeting { padding-top:clamp(2rem,6vw,5rem); }
+.week-six-lecture .phrase-greeting h1 { font-size:clamp(2.5rem,6.5vw,6rem); }
+.week-six-lecture .phrase-contrast h2 { max-width:20ch; }
+.week-six-lecture .phrase-occasionally h2 { font-size:clamp(2rem,4vw,3.7rem); }
+.week-six-lecture .phrase-while { border-top:4px solid #426b66; }
+@media(max-width:650px) {
+ .week-six-lecture .phrase-intro:has(.lecture-cell-output:not([hidden])) { grid-template-columns:minmax(0,1fr); }
+ .week-six-lecture .phrase-intro:has(.lecture-cell-output:not([hidden])) .lecture-notebook-cell pre { font-size:.85rem; }
+}

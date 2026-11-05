@@ -134,6 +134,30 @@ plt.ylabel("Population aged 65+ (%)")
 plt.title("Spread of the share aged 65+")
 plt.tight_layout()
 plt.show()'''),
+    dict(id='boxplot-prefectures', title='県ごとに並べる箱ひげ図 / Side-by-side prefectures', question='同じ支出項目を、4県で比べよう / Compare the same spending categories across four prefectures.',
+         note='1県につき1つの数値だけでは、その県の分布を比較できません。この例は各県の<strong>食料費・住居費・教養娯楽費の3項目</strong>を使います。<code>values</code>は「県ごとのリストを並べたリスト」。<code>plt.boxplot(values)</code>は内側のリストごとに箱を作ります。<code>plt.xticks()</code>で県名を付け、色付きの点で各項目の実際の値も示します。<code>enumerate()</code>は0・1・2の番号と項目名を取り出し、同じ項目の値を各県から集めます。',
+         read='各箱の観測値は3つの支出項目です。住民や世帯の個票データではないため、「この県の世帯の支出のばらつき」とは言えません。3項目だけの箱は要約が粗いので、点や表も確認しよう。住民の年齢などを県別の箱で比べるには、各県に複数の観測値がある別のデータが必要です。 / Each box summarizes three category values, not the distribution of individual households.',
+         code='''chosen = [row for row in data
+          if row["Prefecture"] in ["Tokyo", "Chiba", "Akita", "Okinawa"]]
+names = [row["Prefecture"] for row in chosen]
+columns = ["食料費（二人以上の世帯）", "住居費（二人以上の世帯）",
+           "教養娯楽費（二人以上の世帯）"]
+values = [[int(row[column]) for column in columns] for row in chosen]
+
+plt.figure(figsize=(8, 4))
+plt.boxplot(values)
+plt.xticks(range(1, len(names) + 1), names)
+
+# Show the three actual values inside each prefecture's summary.
+for category, label in enumerate(["Food", "Housing", "Recreation"]):
+    amounts = [row[category] for row in values]
+    plt.scatter(range(1, len(names) + 1), amounts, label=label, zorder=3)
+
+plt.ylabel("Reported spending (CSV values)")
+plt.title("Three spending categories per prefecture")
+plt.legend(loc="upper left", bbox_to_anchor=(1, 1))
+plt.tight_layout()
+plt.show()'''),
     dict(id='scatter', title='散布図 / Scatter plot', question='2つの数値の関係を探す / Compare two variables.',
          note='<code>plt.scatter(x, y)</code>は1県を1点で表します。<code>x</code>と<code>y</code>は同じ順序・同じ件数にします。<code>alpha=0.7</code>は透明度。関係が見えても、それだけで原因とは言えません。',
          read='横軸は高齢者の割合、縦軸は合計特殊出生率。合計特殊出生率は出生数でも人口に占める出生割合でもありません。 / Association does not establish causation.',

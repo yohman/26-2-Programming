@@ -5,7 +5,7 @@
 <script src="japan-charts.js" defer></script><script src="../../assets/copy-blocks.js" defer></script></head>
 <body><a class="skip" href="#main">本文へ / Skip to examples</a><div id="chart-page" hidden>
 <aside><a class="back" href="japan-report.html">← 課題に戻る / Report Part 2</a>
-<nav aria-label="目次 / Table of contents"><p class="eyebrow">CODE SNIPPETS / 目次</p><a href="#setup"><span>00</span> 準備 / Load the data</a><a href="#bar"><span>01</span> 棒グラフ / Bar chart</a><a href="#barh"><span>02</span> 横棒グラフ / Horizontal bar chart</a><a href="#stacked"><span>03</span> 年齢の積み上げ棒グラフ / Stacked bar</a><a href="#stacked-100"><span>04</span> 100%積み上げ棒グラフ / 100% stacked bar</a><a href="#histogram"><span>05</span> ヒストグラム / Histogram</a><a href="#boxplot"><span>06</span> 箱ひげ図 / Box plot</a><a href="#scatter"><span>07</span> 散布図 / Scatter plot</a><a href="#loop"><span>08</span> forで複数のグラフ / One loop, two charts</a></nav>
+<nav aria-label="目次 / Table of contents"><p class="eyebrow">CODE SNIPPETS / 目次</p><a href="#setup"><span>00</span> 準備 / Load the data</a><a href="#bar"><span>01</span> 棒グラフ / Bar chart</a><a href="#barh"><span>02</span> 横棒グラフ / Horizontal bar chart</a><a href="#stacked"><span>03</span> 年齢の積み上げ棒グラフ / Stacked bar</a><a href="#stacked-100"><span>04</span> 100%積み上げ棒グラフ / 100% stacked bar</a><a href="#histogram"><span>05</span> ヒストグラム / Histogram</a><a href="#boxplot"><span>06</span> 箱ひげ図 / Box plot</a><a href="#boxplot-prefectures"><span>07</span> 県ごとに並べる箱ひげ図 / Side-by-side prefectures</a><a href="#scatter"><span>08</span> 散布図 / Scatter plot</a><a href="#loop"><span>09</span> forで複数のグラフ / One loop, two charts</a></nav>
 <div class="downloads"><a href="../week-05/japan.csv" download>↓ japan.csv</a><a href="japan-chart-examples.ipynb" download>↓ 実行済みNotebook / .ipynb</a><a href="../../agenda.html?open=06#week-06">授業予定 / Agenda ↗</a></div></aside>
 <main id="main"><header><p class="eyebrow">WEEK 06 · JAPAN DATA / CHART REFERENCE</p><h1>問いに合う、<br>グラフを選ぼう。</h1><p class="intro">Choose a chart that answers your question.</p>
 <p>日本の47都道府県のデータで、短いPythonコードと実際の結果を見比べよう。コードをコピーし、自分のNotebookで試してください。全部を使う必要はありません。</p>
@@ -135,8 +135,33 @@ plt.title(&quot;Spread of the share aged 65+&quot;)
 plt.tight_layout()
 plt.show()</code></pre>
 <figure><figcaption>実行結果 / Actual output · japan.csv</figcaption><img src="japan-charts/boxplot-1.png" width="1200" height="600" loading="lazy" alt="Spread of the share aged 65+"></figure>
-<p class="reading">箱ひげ図は個々の県名を示しません。どの県か知りたいときは、横棒グラフや表も使います。 / A dot beyond a whisker is not automatically a data error.</p></section><section id="scatter" class="example">
-<p class="eyebrow">07 / PYTHON → OUTPUT</p><h2>散布図 / Scatter plot</h2>
+<p class="reading">箱ひげ図は個々の県名を示しません。どの県か知りたいときは、横棒グラフや表も使います。 / A dot beyond a whisker is not automatically a data error.</p></section><section id="boxplot-prefectures" class="example">
+<p class="eyebrow">07 / PYTHON → OUTPUT</p><h2>県ごとに並べる箱ひげ図 / Side-by-side prefectures</h2>
+<p class="question">同じ支出項目を、4県で比べよう / Compare the same spending categories across four prefectures.</p>
+<p class="explanation">1県につき1つの数値だけでは、その県の分布を比較できません。この例は各県の<strong>食料費・住居費・教養娯楽費の3項目</strong>を使います。<code>values</code>は「県ごとのリストを並べたリスト」。<code>plt.boxplot(values)</code>は内側のリストごとに箱を作ります。<code>plt.xticks()</code>で県名を付け、色付きの点で各項目の実際の値も示します。<code>enumerate()</code>は0・1・2の番号と項目名を取り出し、同じ項目の値を各県から集めます。</p><pre><code class="language-python">chosen = [row for row in data
+          if row[&quot;Prefecture&quot;] in [&quot;Tokyo&quot;, &quot;Chiba&quot;, &quot;Akita&quot;, &quot;Okinawa&quot;]]
+names = [row[&quot;Prefecture&quot;] for row in chosen]
+columns = [&quot;食料費（二人以上の世帯）&quot;, &quot;住居費（二人以上の世帯）&quot;,
+           &quot;教養娯楽費（二人以上の世帯）&quot;]
+values = [[int(row[column]) for column in columns] for row in chosen]
+
+plt.figure(figsize=(8, 4))
+plt.boxplot(values)
+plt.xticks(range(1, len(names) + 1), names)
+
+# Show the three actual values inside each prefecture&#x27;s summary.
+for category, label in enumerate([&quot;Food&quot;, &quot;Housing&quot;, &quot;Recreation&quot;]):
+    amounts = [row[category] for row in values]
+    plt.scatter(range(1, len(names) + 1), amounts, label=label, zorder=3)
+
+plt.ylabel(&quot;Reported spending (CSV values)&quot;)
+plt.title(&quot;Three spending categories per prefecture&quot;)
+plt.legend(loc=&quot;upper left&quot;, bbox_to_anchor=(1, 1))
+plt.tight_layout()
+plt.show()</code></pre>
+<figure><figcaption>実行結果 / Actual output · japan.csv</figcaption><img src="japan-charts/boxplot-prefectures-1.png" width="1200" height="600" loading="lazy" alt="Three spending categories per prefecture"></figure>
+<p class="reading">各箱の観測値は3つの支出項目です。住民や世帯の個票データではないため、「この県の世帯の支出のばらつき」とは言えません。3項目だけの箱は要約が粗いので、点や表も確認しよう。住民の年齢などを県別の箱で比べるには、各県に複数の観測値がある別のデータが必要です。 / Each box summarizes three category values, not the distribution of individual households.</p></section><section id="scatter" class="example">
+<p class="eyebrow">08 / PYTHON → OUTPUT</p><h2>散布図 / Scatter plot</h2>
 <p class="question">2つの数値の関係を探す / Compare two variables.</p>
 <p class="explanation"><code>plt.scatter(x, y)</code>は1県を1点で表します。<code>x</code>と<code>y</code>は同じ順序・同じ件数にします。<code>alpha=0.7</code>は透明度。関係が見えても、それだけで原因とは言えません。</p><pre><code class="language-python">shares = [int(row[&quot;65歳以上人口&quot;]) / int(row[&quot;総人口&quot;]) * 100
           for row in data]
@@ -151,7 +176,7 @@ plt.tight_layout()
 plt.show()</code></pre>
 <figure><figcaption>実行結果 / Actual output · japan.csv</figcaption><img src="japan-charts/scatter-1.png" width="1200" height="600" loading="lazy" alt="Age structure and fertility: 47 prefectures"></figure>
 <p class="reading">横軸は高齢者の割合、縦軸は合計特殊出生率。合計特殊出生率は出生数でも人口に占める出生割合でもありません。 / Association does not establish causation.</p></section><section id="loop" class="example">
-<p class="eyebrow">08 / PYTHON → OUTPUT</p><h2>forで複数のグラフ / One loop, two charts</h2>
+<p class="eyebrow">09 / PYTHON → OUTPUT</p><h2>forで複数のグラフ / One loop, two charts</h2>
 <p class="question">同じ処理を、違う県に使う / Repeat a chart for each prefecture.</p>
 <p class="explanation"><code>for row in chosen:</code>で1県ずつ処理。<code>plt.figure()</code>をループ内に置き、県ごとに新しい図を作ります。<code>f"...{...}..."</code>でタイトルも変わります。リスト内包表記の角括弧も「各データから値を取り出す」繰り返しです。</p><pre><code class="language-python">chosen = [row for row in data if row[&quot;Prefecture&quot;] in [&quot;Tokyo&quot;, &quot;Chiba&quot;]]
 

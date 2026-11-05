@@ -81,6 +81,33 @@ plt.title("Age composition in four prefectures")
 plt.legend()
 plt.tight_layout()
 plt.show()'''),
+    dict(id='stacked-100', title='100%積み上げ棒グラフ / 100% stacked bar', question='人口の規模をそろえ、年齢構成の割合を比べよう / Compare age shares on the same scale.',
+         note='各年齢区分を<code>3区分の合計</code>で割り、100を掛けます。これで、どの県も棒全体が100%になります。<code>plt.ylim(0, 100)</code>だけでは割合に変換されません。CSVでは総人口と年齢区分の合計に小さな差がある県もあるため、この図は「3年齢区分に占める割合」です。',
+         read='人数の積み上げと同じ4県・同じ色です。人口の多さは見えなくなり、構成比を比較しやすくなります。秋田県と沖縄県の65歳以上の割合はどう違う？ / Equal heights show composition, not population size.',
+         code='''chosen = [row for row in data
+          if row["Prefecture"] in ["Tokyo", "Chiba", "Akita", "Okinawa"]]
+names = [row["Prefecture"] for row in chosen]
+young = [int(row["15歳未満人口"]) for row in chosen]
+working = [int(row["15～64歳人口"]) for row in chosen]
+older = [int(row["65歳以上人口"]) for row in chosen]
+
+# Divide each age group by the sum of all three age groups.
+totals = [young[i] + working[i] + older[i] for i in range(len(chosen))]
+young = [young[i] / totals[i] * 100 for i in range(len(chosen))]
+working = [working[i] / totals[i] * 100 for i in range(len(chosen))]
+older = [older[i] / totals[i] * 100 for i in range(len(chosen))]
+base = [young[i] + working[i] for i in range(len(chosen))]
+
+plt.figure(figsize=(8, 4))
+plt.bar(names, young, label="Under 15", color="#d9ac60")
+plt.bar(names, working, bottom=young, label="15-64", color="#315876")
+plt.bar(names, older, bottom=base, label="65+", color="#3f6d57")
+plt.ylim(0, 100)
+plt.ylabel("Share of the three age groups (%)")
+plt.title("Age composition: every bar totals 100%")
+plt.legend(loc="upper left", bbox_to_anchor=(1, 1))
+plt.tight_layout()
+plt.show()'''),
     dict(id='histogram', title='ヒストグラム / Histogram', question='高齢者の割合は、どの範囲に集中する？ / How are the 47 shares distributed?',
          note='<code>plt.hist(values, bins=8)</code>は数値を8区間に分け、各区間に入る都道府県の数を数えます。棒グラフの「都道府県ごと」と異なり、横軸は数値の範囲です。<code>bins</code>を変えると分布の見え方も変わります。',
          read='横軸は65歳以上の割合、縦軸は都道府県数。47件の分布であり、47人の年齢分布ではありません。 / Each observation is a prefecture.',
@@ -215,4 +242,4 @@ page=f'''<!doctype html>
 <footer><h2>グラフの下に、一文を。 / Explain what you found.</h2><p>「何を比較したか → 何がわかったか → この組織にとって何を意味するか」。結果を見て、自分の言葉で説明しよう。</p><a href="japan-report.html">課題・提出方法に戻る / Back to the assignment →</a>
 <p class="small">公式リファレンス / Matplotlib: <a href="https://matplotlib.org/stable/plot_types/basic/bar.html">bar</a> · <a href="https://matplotlib.org/stable/plot_types/stats/hist_plot.html">hist</a> · <a href="https://matplotlib.org/stable/plot_types/stats/boxplot_plot.html">boxplot</a></p></footer></main></div></body></html>'''
 (DEST / 'japan-charts.html').write_text(page)
-print(f'Built {len(EXAMPLES)} examples, 8 chart PNGs, and an executed notebook from 47 CSV rows.')
+print(f'Built {len(EXAMPLES)} examples, {sum(len(c.get("outputs", [])) for c in cells[2:])} chart PNGs, and an executed notebook from 47 CSV rows.')

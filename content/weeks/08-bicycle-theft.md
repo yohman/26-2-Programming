@@ -5,33 +5,40 @@ preview: true
 phase: REPEAT
 practice_mix: Human 60% · AI 40%
 practice_mix_ja: 人 60% · AI 40%
-title: Data investigation and recommendations.
-title_ja: データ調査と提案。
+title: Make it work for a friend
+title_ja: 友だちの条件でも使える？
 course_date: 2026-11-19
 homework_due: 2026-11-25T23:59:00+09:00
 course_time: 13:10–14:50
-overview: Turn a real question into evidence: inspect data, find a pattern, and support a recommendation.
-overview_ja: 本物の問いを証拠へ変える。データを調べ、パターンを見つけ、提案を支える。
+overview: Make last week’s program work for different settings.
+overview_ja: 先週のプログラムを、違う条件でも使えるように直す。
+
+homework_title: A tool a friend can use
+homework_title_ja: 友だちが使える道具
 ---
 ## Lecture Flow
-EN: 0–20: question → evidence → recommendation; 20–30: inspect a table; 30–70: investigation notebook; 70–100: evidence sprint.
-JP: 0〜20分：問い→証拠→提案、20〜30分：表を調べる、30〜70分：調査ノートブック、70〜100分：証拠スプリント。
+EN: 0–10 run check; 10–22 one small function; 22–60 improve; 60–78 peer test; 78–93 share; 93–100 save.
+JP: 0–10：動作チェック、10–22：同じ処理を関数に、22–60：改善、60–78：ペアテスト、78–93：見せ合う、93–100：保存。
 ## In-Class Notebook
-EN: **Week 08 In-Class — Bicycle-Theft Data Investigation.** Inspect columns and create a chart yourself, use AI for alternative interpretations, then document the columns and choices behind the chart.
-JP: **Week 08 In-Class — Bicycle-Theft Data Investigation。** 列を調べ自分でグラフを作り、AIで別解釈を検討し、使った列とグラフの選択理由を記録する。
+EN: Predict, run and modify short slide examples using the worked-example notebook.
+JP: スライドの短いコードを予想→実行→一つ修正。説明と結果が入った実行例Notebookを使う。
 ## In-Class Challenge
-EN: Final 30 minutes: make one evidence-backed prevention recommendation and audit one claim against raw rows.
-JP: 最後の30分：根拠のある防犯提案を一つ作り、主張一つを元データの行で監査する。
+EN: Make a budget tool a friend can use with different settings. Start with today’s notebook even without last week’s work. Bicycle-theft counting is an alternative challenge. [Open instructions and files](weeks/week-08/challenge.html).
+JP: 予算ツールを、友だちが条件を変えて使えるようにする。先週の提出がなくても、今日のスターターから始められる。自転車盗データの集計は選択課題。 [手順とファイルを開く](weeks/week-08/challenge.html)。
 ## Take-Home Assignment
-EN: Submit the report notebook, recommendation/evidence pair, verification table, and 250字 workflow reflection.
-JP: レポートノートブック、提案と根拠の組、検証表、250字のワークフロー振り返りを提出。
+EN: Improve the same work and record before/after, normal/no-match checks and a partner’s feedback. Submit the executed notebook and needed data to UNIPA.
+JP: 授業の同じ作品を改善し、変更前後・通常と候補0件の確認・相手の反応を短く記録。実行済みNotebookと必要なデータをUNIPAへ。
 ## Aha!
-EN: A correct chart can still answer the wrong question.
-JP: 正しいグラフでも、間違った問いに答えていることがある。
+EN: Make last week’s program work for different settings.
+JP: 先週のプログラムを、違う条件でも使えるように直す。
 ## Takeaway
-EN: Choose what counts as evidence before you automate.
-JP: 自動化する前に、何を証拠とするかを選ぶ。
+EN: Change it yourself, check the result and explain why.
+JP: 自分で変え、結果を確かめ、理由を説明する。
 ## Resources
-- [Week 08 In-Class — Bicycle-Theft Data Investigation](weeks/week-08/week-08-in-class-bicycle-theft.ipynb) {fundamentals}
-- [Lecture PDF](weeks/week-08/lecture.pdf) {lecture}
-- [Bicycle theft data](weeks/week-08/bicycle-theft.csv) {data}
+- [Week 08 Lecture — Make it work for a friend](weeks/week-08/lecture.html) {lecture}
+- [ミニ講義の実行例 / Worked Examples](weeks/week-08/practice.ipynb) {fundamentals}
+- [チャレンジ・スターター / Challenge Starter](weeks/week-08/challenge-starter.ipynb) {notebook}
+- [チャレンジの手順 / Challenge Instructions](weeks/week-08/challenge.html) {challenge}
+- [宿題・提出方法 / Homework and Submission](weeks/week-08/challenge.html) {homework}
+- [架空メニュー / Fictional Practice Menu](weeks/week-08/student-menu.csv) {data}
+- [選択：千葉の自転車盗 / Optional Bicycle-Theft Investigation](weeks/week-08/bicycle-theft-guide.ipynb) {support}

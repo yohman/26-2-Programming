@@ -5,34 +5,39 @@ preview: true
 phase: COMPOSE
 practice_mix: Human 55% · AI 45%
 practice_mix_ja: 人 55% · AI 45%
-title: Functions and disaster stories.
-title_ja: 関数と災害データストーリー。
+title: One function, many calls
+title_ja: 関数を一つ、何度でも
 course_date: 2026-11-26
 homework_due: 2026-12-02T23:59:00+09:00
 course_time: 13:10–14:50
-overview: Package a repeatable idea as a function, then use it to tell a clearer story with disaster data.
-overview_ja: 繰り返す考えを関数にまとめ、災害データをより明確に語るために使う。
+overview: Trace arguments and returns; distinguish a loop calling a function from a loop inside a function.
+overview_ja: 引数と戻り値を追い、ループ内から関数を呼び、関数の中のループも説明する。
+
+homework_title: Repeat with a function and loop
+homework_title_ja: 関数とループで繰り返す
 ---
 ## Lecture Flow
-EN: 0–20: parameters, return, scope; 20–30: function contract; 30–70: disaster notebook; 70–100: story challenge.
-JP: 0〜20分：引数・return・スコープ、20〜30分：関数の契約、30〜70分：災害ノートブック、70〜100分：ストーリーチャレンジ。
+EN: 0–8 predict; 8–23 definition/call/return; 23–40 trace functions and loops; 40–55 notebook changes; 55–85 challenge; 85–100 verify and explain.
+JP: 0–8：予想、8–23：定義・呼び出し・return、23–40：関数とループの追跡、40–55：Notebookで修正、55–85：チャレンジ、85–100：確認・説明。
 ## In-Class Notebook
-EN: **Week 09 In-Class — Functions and Disaster Stories.** Write/test a two-input function, have AI suggest tests/docstring, then write a chart helper with a sample call and test it.
-JP: **Week 09 In-Class — Functions and Disaster Stories。** 二入力関数を書いてテストし、AIにテスト／docstringを提案させ、呼び出し例付きのグラフ補助関数を書き、テストする。
+EN: Predict, run and modify short slide examples using the worked-example notebook.
+JP: スライドの短いコードを予想→実行→一つ修正。説明と結果が入った実行例Notebookを使う。
 ## In-Class Challenge
-EN: Final 30 minutes: make one disaster chart driven by your function and state the insight it supports.
-JP: 最後の30分：自分の関数で動く災害グラフを一つ作り、それが支える洞察を述べる。
+EN: Use the familiar menu to write a function receiving a budget and returning a list. Call it for ¥500, ¥700 and ¥1,000 in an outer for loop. [Open instructions and files](weeks/week-09/challenge.html).
+JP: 先週のメニューを使い、予算を受け取って候補のリストを返す関数を作る。500円、700円、1,000円を外側のforで順に渡す。 [手順とファイルを開く](weeks/week-09/challenge.html)。
 ## Take-Home Assignment
-EN: Submit a focused disaster story with two charts, three insights, function tests, and a rejected AI suggestion.
-JP: 二つのグラフ、三つの洞察、関数テスト、却下したAI提案を含む焦点のある災害ストーリーを提出。
+EN: Add a time condition or adapt the function to your own topic. Save three calls, three checks and an explanation of input → process → return; submit to UNIPA.
+JP: 同じ関数に時間の条件を追加するか、自分のテーマの関数へ変える。3回の呼び出し、3件の確認、引数→処理→戻り値の説明を保存してUNIPAへ。
 ## Aha!
-EN: A function stores a process; calling it produces behavior.
-JP: 関数は手順を保存し、呼び出しが動作を生む。
+EN: Trace arguments and returns; distinguish a loop calling a function from a loop inside a function.
+JP: 引数と戻り値を追い、ループ内から関数を呼び、関数の中のループも説明する。
 ## Takeaway
-EN: A clear function contract makes work reusable and reviewable.
-JP: 明確な関数の契約は、作業を再利用可能かつレビュー可能にする。
+EN: Change it yourself, check the result and explain why.
+JP: 自分で変え、結果を確かめ、理由を説明する。
 ## Resources
-- [Week 09 In-Class — Functions and Disaster Stories](weeks/week-09/week-09-in-class-functions.ipynb) {fundamentals}
-- [Lecture PDF](weeks/week-09/lecture.pdf) {lecture}
-- [Disaster story challenge](weeks/week-09/challenge-disaster-story.ipynb) {challenge}
-- [EM-DAT data](weeks/week-09/emdat.csv) {data}
+- [Week 09 Lecture — One function, many calls](weeks/week-09/lecture.html) {lecture}
+- [ミニ講義の実行例 / Worked Examples](weeks/week-09/practice.ipynb) {fundamentals}
+- [チャレンジ・スターター / Challenge Starter](weeks/week-09/challenge-starter.ipynb) {notebook}
+- [チャレンジの手順 / Challenge Instructions](weeks/week-09/challenge.html) {challenge}
+- [宿題・提出方法 / Homework and Submission](weeks/week-09/challenge.html) {homework}
+- [架空メニュー / Fictional Practice Menu](weeks/week-09/student-menu.csv) {data}

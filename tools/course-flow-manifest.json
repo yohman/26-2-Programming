@@ -1,0 +1,50 @@
+[
+  {
+    "week": 7,
+    "title": "¥1,000 after class",
+    "slides": 14,
+    "date": "2026-11-12"
+  },
+  {
+    "week": 8,
+    "title": "Make it work for a friend",
+    "slides": 12,
+    "date": "2026-11-19"
+  },
+  {
+    "week": 9,
+    "title": "One function, many calls",
+    "slides": 18,
+    "date": "2026-11-26"
+  },
+  {
+    "week": 10,
+    "title": "Python outside the notebook",
+    "slides": 12,
+    "date": "2026-12-03"
+  },
+  {
+    "week": 11,
+    "title": "What did the detector miss?",
+    "slides": 12,
+    "date": "2026-12-10"
+  },
+  {
+    "week": 12,
+    "title": "One click, one function",
+    "slides": 12,
+    "date": "2026-12-17"
+  },
+  {
+    "week": 13,
+    "title": "Let someone else run it",
+    "slides": 12,
+    "date": "2027-01-07"
+  },
+  {
+    "week": 14,
+    "title": "Read, change, check, explain",
+    "slides": 10,
+    "date": "2027-01-14"
+  }
+]

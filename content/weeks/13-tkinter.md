@@ -5,33 +5,39 @@ preview: true
 phase: MAKE
 practice_mix: Human 60% · AI 40%
 practice_mix_ja: 人 60% · AI 40%
-title: Test, finish, and submit your project.
-title_ja: プロジェクトを試し、仕上げ、提出する。
+title: Let someone else run it
+title_ja: 自分が操作しなくても、動く？
 course_date: 2027-01-07
 homework_due: 2027-01-13T23:59:00+09:00
 course_time: 13:10–14:50
-overview: Let another person use your work, improve one problem they find, and submit the finished project. An interface is optional.
-overview_ja: 他の人に作品を使ってもらい、見つかった問題を一つ改善して完成版を提出する。画面のインターフェースは任意。
+overview: Have a peer run the final project and repair gaps in running, explanation and verification.
+overview_ja: 最終作品を他の人に試してもらい、実行・説明・確認の穴を一つずつ直す。
+
+homework_title: Final project submission
+homework_title_ja: 最終プロジェクト提出
 ---
 ## Lecture Flow
-EN: 0–15: optional interface idea; 15–30: project readiness and acceptance checks; 30–70: build and peer testing; 70–100: revise from feedback.
-JP: 0〜15分：任意のインターフェース案、15〜30分：完成条件と確認方法、30〜70分：制作とピアテスト、70〜100分：フィードバックから修正。
+EN: 0–10 fresh run; 10–25 submission check; 25–40 optional game/UI mini-lecture; 40–70 peer test/repair; 70–90 finish; 90–100 package check.
+JP: 0–10：再起動して実行、10–25：最終作品の提出確認、25–40：ゲーム／UIの任意ミニ講義、40–70：ペアテスト・修正、70–90：仕上げ、90–100：提出物を確認。
 ## In-Class Notebook
-EN: **Week 13 In-Class — Project Testing and Revision.** Explain one passage you wrote, review one bounded change, including any AI suggestion, run three checks, and record a peer's experience. The Tkinter example is optional.
-JP: **Week 13 In-Class — Project Testing and Revision。** 自分のコード一か所を説明し、AIの提案を含む小さな変更を確認し、三つのテストと仲間の使用結果を記録する。Tkinterの例は任意。
+EN: Predict, run and modify short slide examples using the worked-example notebook.
+JP: スライドの短いコードを予想→実行→一つ修正。説明と結果が入った実行例Notebookを使う。
 ## In-Class Challenge
-EN: Final 30 minutes: let a peer try the project without coaching; fix one issue or document why it remains.
-JP: 最後の30分：説明しすぎず仲間に作品を試してもらい、問題を一つ直すか、残る理由を記録する。
+EN: Finish the project. Give a peer only the run instructions, record whether it runs and makes sense, and improve one issue. [Open instructions and files](weeks/week-13/challenge.html).
+JP: 最終作品を完成させる。相手に実行方法だけを渡し、動かせたか・結果を理解できたかを記録して一か所改善する。 [手順とファイルを開く](weeks/week-13/challenge.html)。
 ## Take-Home Assignment
-EN: **Final project due through UNIPA by Wed, Jan 13, 2027 at 11:59 PM JST.** Submit runnable files and required data, README, three checks, a brief decision and verification log, peer-test note, and reflection. This is the separate **20% project**, not a 3-point weekly assignment.
-JP: **最終プロジェクトは2027年1月13日（水）23:59 JSTまでにUNIPAで提出。** 動くファイルと必要なデータ、README、三つの確認、判断と確認の短い記録、ピアテストメモ、振り返りを添える。独立した**20%のプロジェクト**で、3点の週課題ではありません。
+EN: Submit the separate 20% final project as files to UNIPA by January 13, 23:59 JST: executed .ipynb or runnable .py, needed data, README, three checks, revision/peer-test record and reflection. A GitHub link alone is insufficient.
+JP: 最終プロジェクト（独立した20%）を1月13日23:59 JSTまでにUNIPAへファイル提出。実行済み.ipynbまたは動く.py、必要データ、README、三つの確認、修正・ピアテスト記録、振り返り。GitHubリンクだけで代用しない。
 ## Aha!
-EN: A project becomes usable when someone else can run it without you at the keyboard.
-JP: 自分が操作しなくても他の人が動かせて、初めて使える作品になる。
+EN: Have a peer run the final project and repair gaps in running, explanation and verification.
+JP: 最終作品を他の人に試してもらい、実行・説明・確認の穴を一つずつ直す。
 ## Takeaway
-EN: A working feature still needs a human user test.
-JP: 動く機能でも、人に使ってもらうと新しい問題が見つかる。
+EN: Change it yourself, check the result and explain why.
+JP: 自分で変え、結果を確かめ、理由を説明する。
 ## Resources
-- [Week 13 In-Class — Project Testing and Revision](weeks/week-13/week-13-in-class-project-testing.ipynb) {fundamentals}
-- [Optional Tkinter workshop](weeks/week-13/workshop-tkinter.ipynb) {support}
-- [Final project brief](content/final-project.md) {homework}
+- [Week 13 Lecture — Let someone else run it](weeks/week-13/lecture.html) {lecture}
+- [ミニ講義の実行例 / Worked Examples](weeks/week-13/practice.ipynb) {fundamentals}
+- [チャレンジ・スターター / Challenge Starter](weeks/week-13/challenge-starter.ipynb) {notebook}
+- [チャレンジの手順 / Challenge Instructions](weeks/week-13/challenge.html) {challenge}
+- [宿題・提出方法 / Homework and Submission](weeks/week-13/challenge.html) {homework}
+- [Final Project Requirements](content/final-project.md) {support}

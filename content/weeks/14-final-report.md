@@ -3,32 +3,39 @@ week: 14
 publish_at: 2027-01-14T12:00:00+09:00
 preview: true
 phase: MAKE
-practice_mix: Human 80% · AI 20%
-practice_mix_ja: 人 80% · AI 20%
-title: Individual Python challenge.
-title_ja: 個人で取り組むPythonチャレンジ。
+practice_mix: Human 100% · AI 0%
+practice_mix_ja: 人 100% · AI 0%
+title: Read, change, check, explain
+title_ja: 読んで、変えて、確かめて、説明する
 course_date: 2027-01-14
 course_time: 13:10–14:50
-overview: Read, repair, extend, and test code in class. The project was submitted in Week 13; this is your individual final challenge.
-overview_ja: 授業内でコードを読み、直し、広げ、確かめる。プロジェクトはWeek 13に提出済み。今回は個人の最終チャレンジ。
+overview: Demonstrate individual Python understanding in a familiar format.
+overview_ja: 練習した形式で、Pythonの理解を個人で示す。
+
+homework_title: Submit during class
+homework_title_ja: 授業内に提出
 ---
 ## Lecture Flow
-EN: 0–10: instructions; 10–25: predict and explain code; 25–75: repair and extend a supplied notebook; 75–95: test and explain decisions; 95–100: submit.
-JP: 0〜10分：説明、10〜25分：コードの予想と説明、25〜75分：配布Notebookの修正・拡張、75〜95分：テストと判断の説明、95〜100分：提出。
+EN: 0–10 instructions/run check; 10–25 predict/read; 25–70 repair/modify; 70–90 verify/explain; 90–100 save and submit to UNIPA.
+JP: 0–10：説明と動作確認、10–25：予想・読解、25–70：修正と変更、70–90：確認と説明、90–100：保存してUNIPAへ。
 ## In-Class Notebook
-EN: **Week 14 In-Class — Challenge Format Guide.** The linked notebook is a practice example, not the exam. The actual challenge notebook and any AI-use rules will be distributed in class through UNIPA.
-JP: **Week 14 In-Class — Challenge Format Guide。** リンク先は形式を知る練習用で、本番の問題ではありません。本番のNotebookとAI利用のルールは授業内にUNIPAで配布します。
+EN: Predict, run and modify short slide examples using the worked-example notebook.
+JP: スライドの短いコードを予想→実行→一つ修正。説明と結果が入った実行例Notebookを使う。
 ## In-Class Challenge
-EN: Your individual result is assessed for code reading and prediction (5), repair or extension (5), verification (5), and explanation (5). Normal editor completion need not be disabled.
-JP: 個人の成果を、読解と予想（5点）、修正・拡張（5点）、検証（5点）、説明（5点）で評価します。通常のエディタ補完を止める必要はありません。
+EN: This page and notebook are format practice, not the actual exam. The exam comes through UNIPA, using a new small dataset and familiar reading, repair and checking tasks. [Open instructions and files](weeks/week-14/challenge.html).
+JP: このページとNotebookは形式練習用で、本番問題ではありません。本番はUNIPAで配布。新しい小さなデータを使い、既習のコードを読む・直す・確認する。 [手順とファイルを開く](weeks/week-14/challenge.html)。
 ## Take-Home Assignment
-EN: **No take-home assignment.** Submit the completed final-challenge notebook through UNIPA during class. It is worth **20%**; the Week 13 project is not submitted again.
-JP: **持ち帰り課題はありません。** 完成した最終チャレンジのNotebookを授業中にUNIPAで提出します。成績の**20%**です。Week 13のプロジェクトを再提出する必要はありません。
+EN: No homework. Submit the completed actual challenge notebook to UNIPA during class. Worth a separate 20%; do not resubmit the project due January 13.
+JP: 持ち帰り課題なし。本番の完成Notebookを授業中にUNIPAへ提出。独立した20%。1月13日提出の最終作品を再提出する必要はない。
 ## Aha!
-EN: A correct output matters more when you can predict and explain why it appeared.
-JP: 正しい出力は、出る理由を予想して説明できてこそ意味がある。
+EN: Demonstrate individual Python understanding in a familiar format.
+JP: 練習した形式で、Pythonの理解を個人で示す。
 ## Takeaway
-EN: Read, change, test, and explain the code you submit.
-JP: 提出するコードを読み、変え、確かめ、説明する。
+EN: Change it yourself, check the result and explain why.
+JP: 自分で変え、結果を確かめ、理由を説明する。
 ## Resources
-- [Week 14 In-Class — Challenge Format Guide](weeks/week-14/week-14-in-class-final.ipynb) {fundamentals}
+- [Week 14 Lecture — Read, change, check, explain](weeks/week-14/lecture.html) {lecture}
+- [ミニ講義の実行例 / Worked Examples](weeks/week-14/practice.ipynb) {fundamentals}
+- [チャレンジ・スターター / Challenge Starter](weeks/week-14/challenge-starter.ipynb) {notebook}
+- [チャレンジの手順 / Challenge Instructions](weeks/week-14/challenge.html) {challenge}
+- [宿題・提出方法 / Homework and Submission](weeks/week-14/challenge.html) {homework}

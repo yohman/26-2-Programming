@@ -8,6 +8,11 @@ due_at: 2027-01-13T23:59:00+09:00
 EN: Build one small, meaningful Python work that another person can run and inspect: a useful tool, data investigation, visualisation, or other focused idea. A clear question or user matters more than extra features. A GUI is optional.
 
 JP: 他の人が実行して確かめられる、小さくても意味のあるPython作品を一つつくります。便利な道具、データ調査、可視化などが対象です。機能の数より、明確な問いや使う人が大切です。GUIは必須ではありません。
+## 共通の完成条件 / A reachable common target
+EN: Choose a **data investigation** or a **small tool/game** for one clear audience. Reusing and substantially improving your own weekly work is encouraged. Show two different inputs or settings, one meaningful loop and condition, and at least one small function with a parameter and return value. Charts, GUIs, live APIs, classes and machine learning are optional. A clear printed result can meet the task. Explain the change you made yourself.
+
+JP: 読み手を一つ決め、**データ調査**か**小さな道具・ゲーム**を選びます。自分の週課題を再利用・改善して構いません。異なる二つの入力や設定で使い、意味のあるループと条件分岐、引数と戻り値を持つ小さな関数を一つ以上示します。グラフ・GUI・ライブAPI・クラス・機械学習は任意。わかりやすい文字の結果でも課題を満たせます。自分で行った変更を説明してください。
+
 ## 進め方 / Milestones
 EN:
 
@@ -57,7 +62,7 @@ EN:
 
 | Criterion | Points | Evidence |
 | --- | ---: | --- |
-| Creativity, uniqueness, and design | 6 | An original idea or approach, a clear purpose, and thoughtful use or presentation. A GUI is not required. |
+| Creativity, uniqueness, and design | 6 | A clear purpose, a reasoned adaptation for its audience, and a thoughtful change. A GUI, advanced library or entirely new topic is not required. |
 | Working Python and human understanding | 7 | Another person can run it; you can explain and change two code passages. |
 | Testing, documentation, and judgment | 7 | Three checks, README, sources, limits, reflection, and a reasoned revision (including review of AI help, if used). |
 
@@ -65,7 +70,7 @@ JP:
 
 | 項目 | 点 | 見るところ |
 | --- | ---: | --- |
-| 創造性・独自性・デザイン | 6 | 独自のアイデアや工夫、明確な目的、使いやすさや見せ方。GUIは必須ではない。 |
+| 創造性・独自性・デザイン | 6 | 明確な目的、読み手に合わせた工夫、理由のある変更。GUI・高度なライブラリ・まったく新しいテーマは必須ではない。 |
 | 動くPythonと人の理解 | 7 | 他の人が実行でき、コード二か所を自分で説明・修正できる。 |
 | テスト・記録・判断 | 7 | 三つのテスト、README、出典、限界、振り返り、修正の理由（AIを使った場合は提案の確認も）。 |
 ## 提出方法 / Submission

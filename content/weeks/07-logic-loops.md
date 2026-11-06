@@ -5,33 +5,42 @@ preview: true
 phase: REPEAT
 practice_mix: Human 60% · AI 40%
 practice_mix_ja: 人 60% · AI 40%
-title: Logic, loops, and code review.
-title_ja: 論理・ループ・コードレビュー。
+title: ¥1,000 after class
+title_ja: 放課後、1,000円で何する？
 course_date: 2026-11-12
 homework_due: 2026-11-18T23:59:00+09:00
 course_time: 13:10–14:50
-overview: Read another person’s algorithm, explain its logic, and make a small revision you can justify.
-overview_ja: 他の人のアルゴリズムを読み、論理を説明し、理由を言える小さな修正を行う。
+overview: Turn your choices into conditions and loops.
+overview_ja: 条件とループで、自分の選び方をプログラムにする。
+
+homework_title: Your after-class plan
+homework_title_ja: 自分の放課後プラン
 ---
+## Student Work
+EN: Three short Week 6 Report Part 2 demonstrations. [Week 6 gallery after import](gallery.html?week=6); [Week 5 reference gallery](gallery.html?week=5). Everyone can start today from the supplied menu.
+JP: Week 6のレポートPart 2を3人が短く発表。[Week 6の作品（取込後）](gallery.html?week=6)・[参考：Week 5の作品](gallery.html?week=5)。今日のメニューから全員スタートできる。
 ## Lecture Flow
-EN: 0–20: sequence/selection/repetition; 20–30: reading algorithms; 30–70: review notebook; 70–100: revision sprint.
-JP: 0〜20分：順次／分岐／反復、20〜30分：アルゴリズムを読む、30〜70分：レビューノートブック、70〜100分：修正スプリント。
+EN: 0–5 run check; 5–17 Japan report presentations; 17–27 vending machine; 27–42 predict and modify; 42–72 budget challenge; 72–90 pair testing; 90–100 save and submit.
+JP: 0–5：動作チェック、5–17：Japanレポート発表、17–27：自販機、27–42：予想・修正、42–72：予算チャレンジ、72–90：ペアテスト、90–100：保存・提出。
 ## In-Class Notebook
-EN: **Week 07 In-Class — Logic, Loops, and Code Review.** Trace a search, use AI for a bug hypothesis, then fix a small issue and check it against acceptance criteria.
-JP: **Week 07 In-Class — Logic, Loops, and Code Review。** 検索を追跡し、AIでバグ仮説を作り、小さな問題を修正し、受け入れ基準で確認する。
+EN: Predict, run and modify short slide examples using the worked-example notebook.
+JP: スライドの短いコードを予想→実行→一つ修正。説明と結果が入った実行例Notebookを使う。
 ## In-Class Challenge
-EN: Final 30 minutes: pair-review the Week 06 artifact, fix one documented issue, and rerun its test.
-JP: 最後の30分：Week 06の成果物をペアレビューし、記録したissueを一つ修正してテストを再実行する。
+EN: Choose an after-class plan within ¥1,000 and 45 minutes using the fictional menu. First filter by one condition, then add the time limit. [Open instructions and files](weeks/week-07/challenge.html).
+JP: 予算1,000円・45分以内の放課後プランを、架空のメニューから選ぼう。まず一つの条件で候補を表示し、次に時間の条件を加える。 [手順とファイルを開く](weeks/week-07/challenge.html)。
 ## Take-Home Assignment
-EN: Submit an individual change log: issue, evidence, patch, test, and one explanation of why the test proves the fix.
-JP: issue、証拠、パッチ、テスト、テストが修正を確かめる理由一つを含む個人の変更ログを提出。
+EN: Improve the plan, run a different budget, and record the changed condition, normal/boundary checks and finding. Submit the executed .ipynb and needed CSV to UNIPA.
+JP: 授業のプランを改善。別の予算でも実行し、変更した条件・通常／境界の確認結果・気づきをNotebookに残す。実行済み.ipynbと必要なCSVをUNIPAへ。
 ## Aha!
-EN: An AI answer is a hypothesis until a test supports it.
-JP: AIの答えはテストが支持するまで仮説である。
+EN: Turn your choices into conditions and loops.
+JP: 条件とループで、自分の選び方をプログラムにする。
 ## Takeaway
-EN: Review is core programming work.
-JP: レビューはプログラミングの中心的な仕事である。
+EN: Change it yourself, check the result and explain why.
+JP: 自分で変え、結果を確かめ、理由を説明する。
 ## Resources
-- [Week 07 In-Class — Logic, Loops, and Code Review](weeks/week-07/week-07-in-class-logic-review.ipynb) {fundamentals}
-- [Lecture PDF](weeks/week-07/lecture.pdf) {lecture}
-- [Earthquake challenge](weeks/week-06/challenge-earthquakes.ipynb) {challenge}
+- [Week 07 Lecture — ¥1,000 after class](weeks/week-07/lecture.html) {lecture}
+- [ミニ講義の実行例 / Worked Examples](weeks/week-07/practice.ipynb) {fundamentals}
+- [チャレンジ・スターター / Challenge Starter](weeks/week-07/challenge-starter.ipynb) {notebook}
+- [チャレンジの手順 / Challenge Instructions](weeks/week-07/challenge.html) {challenge}
+- [宿題・提出方法 / Homework and Submission](weeks/week-07/challenge.html) {homework}
+- [架空メニュー / Fictional Practice Menu](weeks/week-07/student-menu.csv) {data}

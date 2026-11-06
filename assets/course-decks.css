@@ -1,0 +1,33 @@
+/* The established course palette and controls; composition follows each lesson. */
+.course-deck .lesson-slide{background:#fff;position:relative;min-height:74vh;padding:clamp(1.5rem,4.5vw,4.6rem);overflow:hidden}
+.course-deck .lesson-slide h1{max-width:1100px;font-size:clamp(3rem,7.4vw,7rem);line-height:1.12}
+.course-deck .lesson-slide h2{font-size:clamp(1.8rem,3.2vw,3.3rem);letter-spacing:-.035em;margin-bottom:1.3rem;max-width:1050px}
+.lesson-lead{max-width:1050px;font-size:clamp(1rem,1.6vw,1.4rem);line-height:1.8;margin:0 0 1.5rem}
+.course-deck .layout-hero{background:#edf2ee;display:flex;flex-direction:column;justify-content:center;min-height:76vh}
+.course-deck .layout-hero .lesson-lead{font-size:clamp(1.3rem,2.4vw,2.4rem)}
+.large-stamp{font:500 clamp(1.5rem,4vw,4rem)/1.2 var(--mono);color:#3f6d57;margin:.4rem 0 1.5rem}
+.course-deck .layout-question{background:#f2ede3}.course-deck .layout-question h2{font-size:clamp(2rem,4.8vw,5rem)}
+.answer{border-top:1px solid #c4b799;margin:2rem 0 0;padding:1rem 0;max-width:1000px}.answer summary{cursor:pointer;font-weight:700;color:#6f512b}.answer p{font-size:1.2rem;line-height:1.8}
+.course-deck .layout-statement{background:#202a31;color:#f6f5f0;display:flex;flex-direction:column;justify-content:center}.layout-statement .slide-kicker{color:#b3c8c0}.layout-statement .lesson-lead{font-size:clamp(1.3rem,2.6vw,2.5rem)}
+.course-deck .layout-challenge{border-left:10px solid #3f6d57;background:#edf2ee}.layout-challenge .lesson-lead{font-size:clamp(1.2rem,2.2vw,2rem)}
+.course-deck .layout-pair{background:#f5f2ea}.course-deck .layout-exit{background:#e9eff2}.course-deck .layout-deadline{background:#e5ede7}
+.lesson-code{max-width:1150px}.code-toolbar{display:flex;justify-content:space-between;gap:1rem;align-items:center;background:#e5ebef;padding:.45rem .8rem;color:#315876;font:600 .75rem var(--mono)}
+.code-toolbar button{padding:.35rem .7rem;border:1px solid #c4d1d8;background:white;color:#315876;font-size:.85rem}
+.lesson-slide pre{margin:.6rem 0 1rem;padding:1.15rem;background:#162b3c;color:#edf4f7;overflow:auto;white-space:pre;font:clamp(.85rem,1.3vw,1.25rem)/1.65 var(--mono);max-width:100%}
+.lesson-slide pre[data-language="shell"]{background:#202a31}.lesson-slide .lesson-output,[data-demo-output],[data-trace-output]{background:#e7eee9!important;color:#203b2d!important;min-height:3rem}
+.syntax-string{color:#c4dcaa}.syntax-keyword{color:#f3be89}.syntax-function{color:#9bd4e8}.syntax-number{color:#e8c591}.syntax-comment{color:#a8b6be}
+.lesson-links{display:flex;gap:1rem;flex-wrap:wrap;margin:2rem 0 0}.lesson-links a{display:inline-block;border-bottom:2px solid #315876;text-decoration:none;padding:.5rem 0;font-size:1rem;font-weight:700}
+.process-line{display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;font-size:clamp(1.1rem,2vw,2rem);margin:2rem 0}.process-line span{border-bottom:3px solid #3f6d57;padding:.6rem 0;max-width:100%;overflow-wrap:anywhere}.process-line b{color:#7b8c83}
+.lesson-image{display:block;max-width:100%;max-height:57vh;object-fit:contain;margin:1.5rem 0}
+[data-demo] label{display:inline-flex;gap:.6rem;align-items:center;margin:0 1.4rem .8rem 0;font:600 .85rem var(--mono)}[data-demo] input[type="number"]{width:7rem;padding:.35rem;border:1px solid #b9c9c1;background:white}[data-demo] button,[data-trace] button{border:1px solid #bacbc2;background:#eef3ef;color:#203b2d;padding:.45rem .9rem;margin:.3rem .5rem .5rem 0;font-weight:650}
+[data-demo] button:disabled,[data-trace] button:disabled{opacity:.4;cursor:default}.coin-slot{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap}.coin-slot output{font:500 2rem var(--mono);margin-right:1rem}.coin-slot button[data-coin]{border-radius:50%;width:4rem;height:4rem;background:#fff;padding:0}
+.call-path{display:flex;gap:.7rem;align-items:center;flex-wrap:wrap;margin:1rem 0}.call-path span{border-bottom:3px solid transparent;padding:.5rem}.call-path .active{background:#d7e9dc;border-color:#3f6d57}
+[data-demo="call"]{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:.6rem 1.2rem;align-items:start}[data-demo="call"] .argument-inputs{grid-column:1/-1;grid-row:1}[data-demo="call"] .call-path{grid-column:1/-1;grid-row:2;margin:.25rem 0}[data-demo="call"] [data-demo-code]{grid-column:1;grid-row:3;margin:0}[data-demo="call"] [data-demo-output]{grid-column:2;grid-row:3;margin:0}[data-demo="call"] [data-step]{grid-column:1;grid-row:4;justify-self:start}[data-demo="call"] [data-reset]{grid-column:2;grid-row:4;justify-self:start}
+.trace-line{display:inline}.trace-line.active{background:#405d65;color:#fff;box-shadow:-10px 0 #d9ac60}.trace-frame{border-left:3px solid #3f6d57;padding-left:1rem}.trace-frame p{font-weight:700}.trace-frame pre{background:transparent;color:#202a31;padding:.3rem 0}
+.layout-trace [data-trace]{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:1rem;align-items:start}.layout-trace [data-trace-code]{grid-column:1;grid-row:1/4;margin:0}.layout-trace [data-trace-next]{grid-column:2;grid-row:1;justify-self:start;margin:0}.layout-trace [data-trace-reset]{grid-column:2;grid-row:1;justify-self:end;margin:0}.layout-trace .trace-frame{grid-column:2;grid-row:2}.layout-trace [data-trace-output]{grid-column:2;grid-row:3;margin:0;font-size:.85rem}
+[data-demo="boxes"] svg{display:block;width:100%;max-width:850px;height:auto}.simulation-note{font-size:.78rem;color:#657079;margin:.8rem 0 0}
+.game-field{position:relative;height:260px;background:#e9eeea;max-width:850px;border-bottom:1px solid #c4d0c8}.game-field button{position:absolute;width:64px;height:64px;font-size:2rem;border:0;border-radius:50%;color:white;background:#315876}.game-readout{display:flex;justify-content:space-between;align-items:center;gap:1rem;max-width:850px;font:500 1.3rem var(--mono)}
+.course-deck .lecture-embedded .lesson-slide{padding:1.5rem}.lecture-embedded .lesson-lead{font-size:1rem}.lecture-embedded .lesson-slide pre{font-size:.9rem}.lecture-embedded .lesson-slide h2{font-size:2rem}.lecture-embedded .lesson-slide h1{font-size:3.2rem}
+@media(max-width:650px){.lesson-slide .slide-kicker{font-size:.65rem}.lesson-slide pre{font-size:.8rem}.game-readout{font-size:1rem}.call-path{font-size:.85rem}.coin-slot button[data-coin]{width:3rem;height:3rem}.course-deck .lesson-slide h2{font-size:1.8rem}.process-line{gap:.7rem}}
+@media(max-width:900px){.layout-trace [data-trace],[data-demo="call"]{display:block}.layout-trace [data-trace-next],.layout-trace [data-trace-reset]{margin:.8rem .5rem .8rem 0}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}

@@ -22,11 +22,11 @@ JP:
 - **AIを判断して使う。** AI補完に一部の変更を手伝わせ、提案を読み、テストしてから採用する。
 - **作品をつくり、説明する。** 役立つものや面白いものをつくり、動く証拠と限界を示す。
 ## 毎週の進め方 / Each week
-EN: A short lecture → an in-class notebook → a challenge in the last 30 minutes. Weeks 01–12 also have a take-home task: use that week's ideas to make something different from the class exercise.
+EN: A short lecture → an in-class notebook → a challenge in the last 30 minutes. Weeks 01–12 also have a take-home task: use that week’s ideas to make or meaningfully improve a small work. Continuing your previous work is welcome.
 
 Submit the **executed `.ipynb` notebook** and any files it needs through **UNIPA**. **Put your assignment title and name in the first Markdown cell at the very top.** Leave outputs and your observations in the notebook. Homework is due at **11:59 PM JST on the Wednesday before the next class**; each week's exact date is shown in the agenda.
 
-JP: 短い講義 → 授業内Notebook → 最後の30分のチャレンジ。Week 01〜12には持ち帰り課題もあります。その週に学んだことを使い、授業内とは別のものをつくります。
+JP: 短い講義 → 授業内Notebook → 最後の30分のチャレンジ。Week 01〜12には持ち帰り課題もあります。その週に学んだことを使い、小さな作品をつくるか意味のある改善をします。前の週の作品を育てても構いません。
 
 **実行済みの`.ipynb` Notebook**と必要なファイルを**UNIPA**へ提出してください。**一番上のMarkdown Cellに、作品タイトルと氏名を必ず記入してください。** 出力と自分の観察をNotebookに残します。締切は**次の授業の前日（水曜日）23:59 JST**。各週の正確な日付は授業予定に表示します。
 ## 最終プロジェクトとチャレンジ / Project and final challenge

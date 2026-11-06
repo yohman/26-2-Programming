@@ -27,7 +27,7 @@ def main():
     image, faces = detect(source)
     cv2.imwrite("vision-input.jpg", image)
     with open("detected-boxes.csv", "w", encoding="utf-8", newline="") as file:
-        writer = csv.writer(file)
+        writer = csv.writer(file, lineterminator=chr(10))
         writer.writerow(["x", "y", "w", "h"])
         for x, y, w, h in faces:
             writer.writerow([int(x), int(y), int(w), int(h)])

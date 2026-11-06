@@ -364,7 +364,7 @@ def main():
     image, faces = detect(source)
     cv2.imwrite("vision-input.jpg", image)
     with open("detected-boxes.csv", "w", encoding="utf-8", newline="") as file:
-        writer = csv.writer(file)
+        writer = csv.writer(file, lineterminator=chr(10))
         writer.writerow(["x", "y", "w", "h"])
         for x, y, w, h in faces:
             writer.writerow([int(x), int(y), int(w), int(h)])
@@ -417,7 +417,7 @@ def build_week(week,spec):
     date=spec['date']; release=date+'T12:00:00+09:00'
     if week in [7,8,9,10]:
         with (dest/'student-menu.csv').open('w',encoding='utf-8',newline='') as file:
-            writer=csv.DictWriter(file,fieldnames=['name','price','minutes','category']);writer.writeheader();writer.writerows(MENU_DICTS)
+            writer=csv.DictWriter(file,lineterminator=chr(10),fieldnames=['name','price','minutes','category']);writer.writeheader();writer.writerows(MENU_DICTS)
     ns={'menu':[dict(x) for x in SMALL]}; exec(REMAIN+'\n'+AFFORD,ns)
     # Each deck starts from the same explicitly supplied four-item menu.
     cells=[mdcell(f'# Week {week:02} · {spec["title_ja"]}\n\n作品タイトル：\n氏名：\n\nThese worked examples accompany lecture.html. Run top to bottom. The four-item menu uses fictional practice values; the separate challenge CSV has 24 items. Tests depend on which data you use.\nコード例は4品、別のチャレンジCSVは24件。価格・時間は架空の練習用です。確認の期待値は使うデータに合わせます。各コードの前に予想し、実行後に自分の変更と気づきをMarkdownで書こう。'),codecell(SMALL_CODE)]

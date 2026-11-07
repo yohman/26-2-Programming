@@ -11,7 +11,8 @@ test('budget, coin and game boundaries are explicit',()=>{
  assert.deepEqual(models.affordable(menu,150),['Onigiri']);
  assert.deepEqual(models.affordable(menu,500,5),['Onigiri','Sandwich']);
  assert.deepEqual(models.affordable([],1000),[]);
- assert.deepEqual(models.vending([100,30,50,100]),{paid:150,lines:['Paid: 100','Ignored: 30','Paid: 150','Change: 0']});
+ assert.deepEqual(models.vending([100,50,100]),{paid:150,lines:['Paid: 100','Paid: 150','Change: 0']});
+ assert.deepEqual(models.vending([100]),{paid:100,lines:['Paid: 100','Due: 50']});
  assert.equal(models.vending([100,100]).lines.at(-1),'Change: 50');
  assert.equal(models.hit(5,0),5);assert.equal(models.hit(5,1),6);assert.equal(models.tick(0),0);
  assert.equal(models.inside(10,10,10,10,30,30),true);assert.equal(models.inside(9,10,10,10,30,30),false);

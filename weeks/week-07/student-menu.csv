@@ -1,25 +1,22 @@
-name,price,minutes,category
-Onigiri,150,3,food
-Sandwich,320,5,food
-Curry,550,12,food
-Udon,450,10,food
-Bento,650,8,food
-Salad,280,4,food
-Water,100,2,drink
-Tea,130,2,drink
-Coffee,180,5,drink
-Juice,160,2,drink
-Soup,220,4,food
-Bread,190,3,food
-Pasta,700,15,food
-Ramen,800,18,food
-Fruit,250,3,food
-Yogurt,170,2,food
-Rice bowl,600,10,food
-Toast,300,7,food
-Cookie,120,2,snack
-Ice cream,230,3,snack
-Chocolate,140,2,snack
-Bookshop browse,0,20,activity
-Park walk,0,30,activity
-Arcade round,200,10,activity
+name,price
+Onigiri,150
+Sandwich,320
+Curry,550
+Udon,450
+Bento,650
+Salad,280
+Water,100
+Tea,130
+Coffee,180
+Juice,160
+Soup,220
+Bread,190
+Pasta,700
+Ramen,800
+Fruit,250
+Yogurt,170
+Rice bowl,600
+Toast,300
+Cookie,120
+Ice cream,230
+Chocolate,140

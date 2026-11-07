@@ -40,5 +40,5 @@ JP: 自分で変え、結果を確かめ、理由を説明する。
 - [チャレンジ・スターター / Challenge Starter](weeks/week-10/challenge-starter.ipynb) {notebook}
 - [チャレンジの手順 / Challenge Instructions](weeks/week-10/challenge.html) {challenge}
 - [宿題・提出方法 / Homework and Submission](weeks/week-10/challenge.html) {homework}
-- [架空メニュー / Fictional Practice Menu](weeks/week-10/student-menu.csv) {data}
+- [メニュー / Menu](weeks/week-10/student-menu.csv) {data}
 - [Final Project Requirements](content/final-project.md) {support}

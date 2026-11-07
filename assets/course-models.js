@@ -1,7 +1,7 @@
 /* Small, deterministic rules shared by browser demonstrations and verification. */
 (function(root){
   const models={
-    affordable(items,budget,minutes=Infinity){return items.filter(item=>item.price<=budget&&item.minutes<=minutes).map(item=>item.name);},
+    affordable(items,budget,minutes=Infinity){return items.filter(item=>item.price<=budget&&(minutes===Infinity||item.minutes<=minutes)).map(item=>item.name);},
     remaining(budget,price){return budget-price;},
     vending(coins,price=150){let paid=0,lines=[];for(const coin of coins){if(paid>=price)break;paid+=coin;lines.push('Paid: '+paid);}lines.push(paid>=price?'Change: '+(paid-price):'Due: '+(price-paid));return {paid,lines};},
     largeBoxes(boxes,minimum){return boxes.filter(b=>b.w*b.h>=minimum);},

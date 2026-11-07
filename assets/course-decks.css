@@ -31,3 +31,5 @@
 @media(max-width:650px){.lesson-slide .slide-kicker{font-size:.65rem}.lesson-slide pre{font-size:.8rem}.game-readout{font-size:1rem}.call-path{font-size:.85rem}.coin-slot button[data-coin]{width:3rem;height:3rem}.course-deck .lesson-slide h2{font-size:1.8rem}.process-line{gap:.7rem}}
 @media(max-width:900px){.layout-trace [data-trace],[data-demo="call"]{display:block}.layout-trace [data-trace-next],.layout-trace [data-trace-reset]{margin:.8rem .5rem .8rem 0}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+.lesson-links .lesson-file{display:flex;align-items:baseline;flex-wrap:wrap;gap:.5rem 1.2rem;width:100%;padding:.6rem 0;border-bottom:1px solid #dce2de}.lesson-file>span{flex:1 1 15rem}.lesson-links .lesson-file a{font-size:.9rem;border-bottom:1px solid #315876;white-space:nowrap;margin:0}

@@ -7,6 +7,7 @@ const models=require('../../assets/course-models.js');
 const root=path.resolve(__dirname,'../..');
 const menu=[{name:'Onigiri',price:150,minutes:3},{name:'Sandwich',price:320,minutes:5},{name:'Curry',price:550,minutes:12},{name:'Udon',price:450,minutes:10}];
 test('budget, coin and game boundaries are explicit',()=>{
+ assert.deepEqual(models.affordable([{name:'Onigiri',price:150}],150),['Onigiri']);
  assert.deepEqual(models.affordable(menu,149),[]);
  assert.deepEqual(models.affordable(menu,150),['Onigiri']);
  assert.deepEqual(models.affordable(menu,500,5),['Onigiri','Sandwich']);

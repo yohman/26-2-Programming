@@ -11,7 +11,7 @@ for week in range(7,15):
     for cell in nb['cells']:
         if cell['cell_type']!='code':continue
         source=''.join(cell['source']);stream=io.StringIO()
-        with contextlib.redirect_stdout(stream):exec(source,scope)
+        with contextlib.redirect_stdout(stream),contextlib.chdir(folder):exec(source,scope)
         saved=''.join(''.join(o.get('text','')) for o in cell['outputs'])
         if saved:assert stream.getvalue()==saved,(week,source)
         cells_run+=1
@@ -20,7 +20,7 @@ for week in range(7,15):
         assert all(name.startswith(f'week-{week:02}/') and '..' not in name for name in pack.namelist())
         if week==12:assert f'week-{week:02}/click_model.py' in pack.namelist()
     if week in [7,8,9,10]:
-        with (folder/'student-menu.csv').open() as file:assert len(list(csv.DictReader(file)))==24
+        with (folder/'student-menu.csv').open() as file:assert len(list(csv.DictReader(file)))==(21 if week==7 else 24)
 
 # The visible trace must match the actual Python call-loop output.
 lecture=(ROOT/'weeks/week-09/lecture.html').read_text()

@@ -23,8 +23,8 @@ JP: 13:10 説明10分 → 13:20 準備5分 → 13:25 自力10分・チーム制�
 EN: Unzip the pack and run the first two code cells. The saved JSON lets everyone start if the API is unavailable.
 JP: ZIPを解凍し、最初の2つのコードセルで予報を準備。APIが使えなくても保存JSONで全員スタートできる。
 ## In-Class Challenge
-EN: Build a notebook that helps someone decide when or what to do using a weather forecast. Work in teams of 2–3; every team gives a short demo at the end. [Instructions and files](weeks/week-07/challenge.html).
-JP: 天気予報を使って、誰かの「いつ・どうする？」を助けるNotebookを作ろう。2〜3人で作り、最後に全チームが実演する。 [手順と教材](weeks/week-07/challenge.html)。
+EN: Build a working weather-assistant notebook with a visual answer to a user’s question. Work in teams of 2–3; every team gives a short demo at the end. [Instructions and files](weeks/week-07/challenge.html).
+JP: 天気予報を使って、誰かの「いつ・どうする？」に視覚的に答えるNotebookを作ろう。2〜3人で作り、最後に全チームが実演する。 [手順と教材](weeks/week-07/challenge.html)。
 ## Student Work
 EN: Every team demos at the end; every member explains a line they wrote.
 JP: 最後の20分で全チームが実演し、全員が自分で書いた行を説明する。

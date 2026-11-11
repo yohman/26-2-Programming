@@ -33,3 +33,5 @@
 .solo-reveal{border:0;border-bottom:1px solid #315876;padding:.35rem 0;background:transparent;color:#315876;font:600 .9rem inherit;cursor:pointer}
 [data-solo-prompt]{font-size:1rem;line-height:1.7;border-left:3px solid #3f6d57;padding-left:1rem;max-width:1050px}
 @media(max-width:650px){.clock-controls{gap:.7rem}.weather-hackathon .lesson-slide ul{font-size:1rem}.weather-hackathon .layout-setup .lesson-lead{font-size:1rem}.weather-hackathon .layout-setup pre{font-size:.8rem}}
+
+.weather-board{font:14px/1.4 var(--sans,system-ui);margin-top:.8rem;color:#203b2d}.weather-board>strong{font-size:1.1rem}.weather-board p{font-size:.8rem;margin:.3rem 0 .5rem}.weather-board-scroll{max-height:170px;overflow:auto}.weather-board table{width:100%;border-collapse:collapse;text-align:left}.weather-board td,.weather-board th{padding:5px 8px;border-bottom:1px solid white}.weather-board th{background:#315876;color:white;position:sticky;top:0}.weather-board tr{color:#203b2d}

@@ -14,7 +14,15 @@ for week in range(7,15):
         if 'interactive' in cell.get('metadata',{}).get('tags',[]):
             answers=iter(['show','warmer','quit'])
             scope['input']=lambda prompt:next(answers)
+        rich=[]
+        if 'notebook-display' in cell.get('metadata',{}).get('tags',[]):
+            scope['HTML']=lambda value:value
+            scope['display']=rich.append
+        source=source.replace('from IPython.display import HTML, display\n','')
         with contextlib.redirect_stdout(stream),contextlib.chdir(folder):exec(source,scope)
+        expected_html=[o['data']['text/html'] for o in cell.get('outputs',[]) if o.get('data',{}).get('text/html')]
+        if expected_html:assert rich[-1]==expected_html[-1]
+
         saved=''.join(''.join(o.get('text','')) for o in cell['outputs'])
         if saved:assert stream.getvalue()==saved,(week,source)
         cells_run+=1

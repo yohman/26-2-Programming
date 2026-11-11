@@ -29,12 +29,16 @@ with tempfile.TemporaryDirectory() as directory,contextlib.chdir(directory):
     assert saved['hourly']['temperature_2m'][0]==27.5
     assert saved['_source']['url'].startswith('https://api.open-meteo.com/v1/forecast?')
     assert scope['forecast'][0]['temp']==27.5
-    scope.update(max_rain=30,min_temp=10)
+    exec(lesson.VISUAL_SETUP,scope)
+    boards=[]
+    scope.update(max_rain=30,min_temp=10,HTML=lambda value:value,display=boards.append)
     answers=iter(['?', 'show','warmer','quit'])
     scope['input']=lambda prompt:next(answers)
     with contextlib.redirect_stdout(io.StringIO()):exec(lesson.WHILE_CODE,scope)
     assert scope['min_temp']==11 and scope['command']=='quit'
+    assert '<table' in boards[-1] and 'hours match' in boards[-1]
     scope['min_temp']=50;answers=iter(['show','quit']);output=io.StringIO()
     with contextlib.redirect_stdout(output):exec(lesson.WHILE_CODE,scope)
     assert 'No matching hours' in output.getvalue()
+    assert '0 / 24 hours match' in boards[-1] and 'No hours match' in boards[-1]
 print('PASS: real starter cells handle offline/live data, preserve the used JSON, repeat input and terminate on quit.')

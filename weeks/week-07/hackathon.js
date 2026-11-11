@@ -8,7 +8,12 @@
   const format=milliseconds=>{const seconds=Math.ceil(Math.max(0,milliseconds)/1000);return String(Math.floor(seconds/60)).padStart(2,'0')+':'+String(seconds%60).padStart(2,'0');};
   const selectHours=(forecast,maxRain,minTemp)=>forecast.filter(hour=>hour.rain!==null&&hour.temp!==null&&hour.rain<=maxRain&&hour.temp>=minTemp);
   const phaseFor=(state,now)=>{const left=remaining(state,now),elapsed=state.durationMs-left;return left===0?'complete':elapsed<state.durationMs/6?'solo-a':elapsed<state.durationMs*.75?'team':'solo-b';};
-  const api={remaining,reset,start,pause,format,selectHours,phaseFor};
+  function weatherBoard(forecast,chosen,minTemp,maxRain){
+    const escape=value=>String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    const rows=[...chosen,...forecast.filter(hour=>!chosen.includes(hour))].map(hour=>{const match=chosen.includes(hour);return '<tr style="background:'+(match?'#dceee2':'#f1f3f2')+'"><td>'+escape(hour.time.replace('T',' '))+'</td><td>'+Number(hour.temp).toFixed(1)+'</td><td>'+hour.rain+'%</td><td>'+(match?'✓ Match / 合う':'— / 合わない')+'</td></tr>';}).join('');
+    return '<div class="weather-board"><strong>'+chosen.length+' / '+forecast.length+' hours match · 条件に合う時間</strong><p>Temperature ≥ '+escape(minTemp)+'°C · Precipitation ≤ '+escape(maxRain)+'% · Japan time · Matches first / 合う時間を先に表示</p><div class="weather-board-scroll"><table><thead><tr><th>Time / 時刻</th><th>°C</th><th>Rain %</th><th>Your rule / 条件</th></tr></thead><tbody>'+rows+'</tbody></table></div>'+(chosen.length?'':'<p>No hours match. Try another setting. / 条件を変えて試そう。</p>')+'</div>';
+  }
+  const api={remaining,reset,start,pause,format,selectHours,phaseFor,weatherBoard};
   if(typeof module!=='undefined'&&module.exports){module.exports=api;return;}
   root.WeatherHackathon=api;
   if(typeof document==='undefined')return;
@@ -85,9 +90,10 @@
     function run(){
       if(!rain.reportValidity()||!temp.reportValidity())return;
       const maxRain=Number(rain.value),minTemp=Number(temp.value);
-      const source='max_rain = '+maxRain+'\nmin_temp = '+minTemp+'\nfor hour in forecast:\n    if hour["rain"] <= max_rain and hour["temp"] >= min_temp:\n        print(hour["time"], hour["temp"], "°C", hour["rain"], "%")';
+      const source='max_rain = '+maxRain+'\nmin_temp = '+minTemp+'\nchosen = []\nfor hour in forecast:\n    if hour["rain"] <= max_rain and hour["temp"] >= min_temp:\n        chosen.append(hour)\n# Display the hours selected by your code';
       highlight(code,source);
       const hours=selectHours(data.weather,maxRain,minTemp);
+      demo.querySelector('[data-weather-board]').innerHTML=weatherBoard(data.weather,hours,minTemp,maxRain);
       output.textContent=hours.map(hour=>hour.time+' '+Number(hour.temp).toFixed(1)+' °C '+hour.rain+' %').join('\n')||'(no printed output / 条件に合う時間はありません)';
     }
     demo.querySelector('[data-weather-run]').addEventListener('click',run);run();

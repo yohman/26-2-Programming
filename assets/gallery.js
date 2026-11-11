@@ -1,6 +1,18 @@
 /* Every exported submission is visible; hearted projects are featured first. */
 let galleryVersion='',galleryRecords=[],galleryTag='';
 let galleryWeeks=[];
+let featuredIDs=null,featuredVersion='';
+function applyFeatured(){if(featuredIDs!==null)galleryRecords.forEach(record=>{record.featured=featuredIDs.has(record.id);});}
+async function updateFeatured(){
+  try{
+    const response=await fetch('submissions/featured.json?t='+Date.now(),{cache:'no-store'});
+    if(!response.ok)return;
+    const data=await response.json();
+    if(!Array.isArray(data.ids)||data.ids.some(id=>typeof id!=='string'||! /^[a-f0-9]{20}$/.test(id)))return;
+    const version=JSON.stringify([...data.ids].sort());
+    if(featuredVersion!==version){featuredVersion=version;featuredIDs=new Set(data.ids);applyFeatured();if(galleryVersion)renderGallery();}
+  }catch{}
+}
 const galleryHost=document.getElementById('gallery-content');
 const weekPicker=document.getElementById('gallery-week-select');
 function assignmentTitle(week,language) {
@@ -96,6 +108,7 @@ function renderGallery() {
   }
 }
 async function updateGallery() {
+  updateFeatured();
   try {
     const url='submissions/gallery.json?t='+Date.now();
     // Recheck small headers, not multi-megabyte notebook images, every ten seconds.
@@ -104,7 +117,7 @@ async function updateGallery() {
     if(!response.ok)throw new Error('Gallery unavailable');
     const data=await response.json();
     galleryTag=response.headers.get('etag')||response.headers.get('last-modified')||'';
-    if(data.updated!==galleryVersion){galleryVersion=data.updated;galleryRecords=data.submissions;renderGallery();}
+    if(data.updated!==galleryVersion){galleryVersion=data.updated;galleryRecords=data.submissions;applyFeatured();renderGallery();}
   } catch(error){if(!galleryVersion)document.getElementById('gallery-status').textContent='作品を読み込めませんでした。しばらくしてから再度お試しください。';}
 }
 updateGallery();

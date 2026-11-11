@@ -35,6 +35,18 @@ ADMIN = ROOT / 'admin'
 OUTPUT = ADMIN / '_review'
 UI = Path(__file__).parent
 LOCK = threading.Lock()
+HEART_PUBLISHER = None
+HEART_INIT_LOCK = threading.Lock()
+
+def heart_publisher():
+    global HEART_PUBLISHER
+    with HEART_INIT_LOCK:
+        if HEART_PUBLISHER is None:
+            from gallery_export import save_hearts, publish_featured, write_json_atomic
+            from heart_publication import HeartPublisher
+            HEART_PUBLISHER = HeartPublisher(save_hearts, publish_featured, ADMIN / '.heart-publication.json', write_json_atomic)
+        return HEART_PUBLISHER
+
 API_CACHE = OUTPUT / 'api-cache'
 PUBLIC_APIS = {
     'api.open-meteo.com': ('/v1/forecast',),
@@ -453,7 +465,7 @@ def prepare():
     OUTPUT.mkdir(parents=True, exist_ok=True)
     API_CACHE.mkdir(exist_ok=True)
     worker_version = hashlib.sha256(inspect.getsource(worker).encode()).hexdigest()
-    for name in ['index.html', 'admin.js', 'admin.css']:
+    for name in ['index.html', 'admin.js', 'admin.css', 'heart-sync.js']:
         shutil.copy2(UI / name, ADMIN / name)
     weeks, total = [], 0
     for folder in sorted(ADMIN.iterdir()):
@@ -521,7 +533,7 @@ class Handler(SimpleHTTPRequestHandler):
     def do_GET(self):
         if self.allowed() and self.path == '/__admin/hearts':
             state = ADMIN / '.gallery-hearts.json'
-            body = json.dumps({'hearts': json.loads(state.read_text()) if state.exists() else None}).encode()
+            body = json.dumps({'hearts': json.loads(state.read_text()) if state.exists() else None, 'sync': heart_publisher().status()}).encode()
             self.send_response(200); self.send_header('Content-Type', 'application/json'); self.end_headers(); self.wfile.write(body); return
         path = Path(self.translate_path(self.path)).resolve()
         if not self.allowed() or not path.is_relative_to(ROOT) or any(part in {'.git', '.venv'} for part in path.relative_to(ROOT).parts):
@@ -532,18 +544,17 @@ class Handler(SimpleHTTPRequestHandler):
         self.send_error(403, 'Directory listing disabled')
 
     def do_POST(self):
-        if self.path == '/__admin/gallery':
-            if not self.allowed() or self.headers.get('Origin') not in {'http://127.0.0.1:8766', 'http://localhost:8766'} or self.headers.get('X-Admin-Request') != 'gallery':
+        if self.path in {'/__admin/gallery', '/__admin/hearts'}:
+            if not self.allowed() or self.headers.get('Origin') not in {'http://127.0.0.1:8766', 'http://localhost:8766'} or self.headers.get('X-Admin-Request') != self.path.rsplit('/', 1)[-1]:
                 self.send_error(403); return
             if not LOCK.acquire(blocking=False): self.send_error(409, 'Another update is running'); return
             try:
-                from gallery_export import publish
                 length = int(self.headers.get('Content-Length', '0'))
                 if not 0 < length < 250000: raise ValueError('Invalid request size')
-                result = publish(json.loads(self.rfile.read(length)))
+                result = heart_publisher().save(json.loads(self.rfile.read(length)))
                 self.send_response(200); self.send_header('Content-Type', 'application/json'); self.end_headers(); self.wfile.write(json.dumps(result).encode())
             except Exception as error:
-                self.send_error(500, 'Gallery update failed; retry the heart action. ' + type(error).__name__)
+                self.send_error(500, 'Heart save failed; retry. ' + type(error).__name__)
             finally: LOCK.release()
             return
         if not self.allowed() or self.path != '/__admin/refresh' or self.headers.get('Origin') not in {'http://127.0.0.1:8766', 'http://localhost:8766'} or self.headers.get('X-Admin-Request') != 'refresh':

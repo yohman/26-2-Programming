@@ -9,52 +9,33 @@ const fileURL=path=>'./'+path.split('/').map(encodeURIComponent).join('/');
 const heartsStorageKey='programming-admin-hearts-v1';
 let hearts=new Set();
 try { hearts=new Set(JSON.parse(localStorage.getItem(heartsStorageKey)||'[]')); } catch {}
-let publishing=false;
-async function publishHearts(next) {
-  if(publishing)throw new Error('公開更新中です。少し待ってから操作してください。');
-  publishing=true;
-  const status=document.getElementById('admin-status');
-  status.textContent='公開ギャラリーを更新・送信中…';
-  try {
-    const response=await fetch('/__admin/gallery',{method:'POST',headers:{'Content-Type':'application/json','X-Admin-Request':'gallery'},body:JSON.stringify([...next])});
-    if(!response.ok)throw new Error('公開更新に失敗しました。同じハートをもう一度押して再試行してください。');
-    const result=await response.json();
-    status.textContent='公開ギャラリー：'+result.count+'作品 · 注目の作品 '+result.featured+'件 · 送信済み（GitHub Pages反映まで少し時間がかかります）';
-  } finally {publishing=false;}
+const heartPendingKey='programming-admin-hearts-pending-v1';
+let heartSync=null,onHeartChange=()=>{},heartPublication={state:'idle'};
+function heartStatus({saving=false,error=null,sync=heartPublication}={}){
+  updateHeartButtons();
+  heartPublication=sync||heartPublication;
+  const status=document.getElementById('admin-status');if(!status)return;
+  status.textContent=error?'選択を保存できませんでした。自動で再試行します。':saving?'選択を保存中…':heartPublication.state==='error'?'選択は保存済みです。公開更新を再試行しています。':['pending','publishing'].includes(heartPublication.state)?'選択は保存済みです。公開ギャラリーへ送信中…':'選択は保存済みです。公開サイトへの反映には少し時間がかかります。';
 }
-// Generated preview IDs change after a re-import; the original submission identity does not.
+function updateHeartButtons(){
+  document.querySelectorAll('.submission-heart').forEach(button=>{
+    const selected=hearts.has(button.dataset.heartKey);
+    button.setAttribute('aria-pressed',String(selected));
+    button.setAttribute('aria-label',selected?'注目の作品から外す':'注目の作品に追加');
+    button.setAttribute('aria-busy',String(!!heartSync?.busy));
+    button.innerHTML='<span aria-hidden="true">'+(selected?'♥':'♡')+'</span> '+(selected?'注目の作品':'注目にする');
+  });
+}
+// Generated preview IDs change after a re-import; original submission identities do not.
 const heartKey=(record,week=record.week)=>JSON.stringify([Number(week),record.student,record.file||'']);
-function heartButton(record,week=record.week,onChange=()=>{}) {
-  const button=document.createElement('button');
-  button.className='submission-heart';
-  button.type='button';
+function heartButton(record,week=record.week){
+  const button=document.createElement('button');button.className='submission-heart';button.type='button';
   button.dataset.heartKey=heartKey(record,week);
-  const update=(state='idle',error='')=>{
-    const selected=hearts.has(heartKey(record,week));
-    const matching=[button,...document.querySelectorAll('.submission-heart')].filter(item=>item.dataset.heartKey===button.dataset.heartKey);
-    matching.forEach(item=>{
-      item.setAttribute('aria-pressed',String(selected));
-      item.setAttribute('aria-label',selected?'注目の作品から外す':'注目の作品に追加');
-      item.setAttribute('aria-busy',String(state==='pending'));
-      item.title=error||(state==='pending'?'選択は反映済みです。公開ギャラリーへ送信しています。':'');
-      const label=state==='pending'?'送信中…':state==='error'?'送信失敗・再試行':selected?'注目の作品':'注目にする';
-      item.innerHTML='<span aria-hidden="true">'+(selected?'♥':'♡')+'</span> '+label;
-    });
-  };
-  update();
-  button.onclick=async()=>{
-    if(publishing)return;
-    const previous=new Set(hearts);
-    const key=heartKey(record,week),next=new Set(hearts);
-    next.has(key)?next.delete(key):next.add(key);
-    // Show the selection immediately; Git publication can take several seconds.
-    hearts=next;
-    update('pending');
-    document.querySelectorAll('.submission-heart').forEach(item=>{item.disabled=true;});
-    try { await publishHearts(next);try{localStorage.setItem(heartsStorageKey,JSON.stringify([...next]));}catch{}update();onChange(); }
-    catch(error){hearts=previous;update('error',error.message);document.getElementById('admin-status').textContent=error.message;}
-    finally{document.querySelectorAll('.submission-heart').forEach(item=>{item.disabled=false;});}
-  };
+  const selected=hearts.has(button.dataset.heartKey);
+  button.setAttribute('aria-pressed',String(selected));
+  button.setAttribute('aria-label',selected?'注目の作品から外す':'注目の作品に追加');
+  button.innerHTML='<span aria-hidden="true">'+(selected?'♥':'♡')+'</span> '+(selected?'注目の作品':'注目にする');
+  button.onclick=()=>heartSync.toggle(button.dataset.heartKey);
   return button;
 }
 const policy="default-src 'none'; script-src 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com https://code.jquery.com https://maxcdn.bootstrapcdn.com; style-src 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com https://maxcdn.bootstrapcdn.com https://fonts.googleapis.com; img-src data: blob: https://raw.githubusercontent.com/PokeAPI/sprites/ https://tile.openstreetmap.org https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com https://server.arcgisonline.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com; font-src data: https://fonts.gstatic.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; frame-src about: data: blob:; connect-src 'none'; form-action 'none'; base-uri 'none'";
@@ -155,7 +136,7 @@ function notebookNavigation(records,id,href) {
   return nav;
 }
 function renderSubmission(record) {
-  currentSubmission=record;
+  currentSubmission=record;onHeartChange=()=>{};
   adminRoot.innerHTML='<a href="?week='+record.week+'#submission-'+esc(record.id)+'">← Week '+String(record.week).padStart(2,'0')+' の一覧</a><header class="submission-heading"><p class="student-name">'+esc(record.student_name||('名簿未一致 · '+record.student))+'</p>'+(record.student_reading?'<span class="student-reading">'+esc(record.student_reading)+'</span>':'')+'<p>学籍番号：'+esc(record.student)+'</p><h2>'+esc(record.title)+'</h2><p>'+esc(record.file||'Notebookなし')+'</p></header><div class="submission-actions"><button data-mode="saved" aria-pressed="'+(selectedMode==='saved')+'">提出時の出力</button><button data-mode="replay" aria-pressed="'+(selectedMode==='replay')+'">ローカル再実行</button></div><nav class="review-tabs"><button data-tab="results" aria-pressed="'+(selectedTab==='results')+'">結果</button><button data-tab="notebook" aria-pressed="'+(selectedTab==='notebook')+'">Notebook</button><button data-tab="files" aria-pressed="'+(selectedTab==='files')+'">添付ファイル</button></nav><div id="submission-body"></div>';
   document.getElementById('submission-body').append(selectedTab==='files'?renderAttachments(record):selectedTab==='notebook'?renderNotebook(record):renderResults(record));
   adminRoot.querySelector('.submission-actions').prepend(heartButton(record));
@@ -181,14 +162,15 @@ function renderWeek(week) {
   const controls=document.createElement('div');controls.className='admin-filters';
   search.replaceWith(controls);controls.append(search,filter);
   let heartedOnly=false;
+  const updateCount=()=>filter.textContent='♥ のみ ('+(data?.submissions||[]).filter(s=>hearts.has(heartKey(s,week))).length+')';
   const redraw=()=>{
     cards(search.value);
-    filter.textContent='♥ のみ ('+(data?.submissions||[]).filter(s=>hearts.has(heartKey(s,week))).length+')';
+    updateCount();
     filter.setAttribute('aria-pressed',String(heartedOnly));
     adminRoot.querySelectorAll('.submission-card').forEach(card=>{
       const record=data.submissions.find(s=>'submission-'+s.id===card.id);
       if(heartedOnly&&!hearts.has(heartKey(record,week))){card.remove();return;}
-      card.prepend(heartButton(record,week,redraw));
+      card.prepend(heartButton(record,week));
     });
     if(!adminRoot.querySelector('.submission-card')){
       const empty=document.createElement('p');empty.className='review-legend';
@@ -196,6 +178,7 @@ function renderWeek(week) {
       adminRoot.querySelector('.submission-grid').append(empty);
     }
   };
+  onHeartChange=()=>{if(heartedOnly)redraw();else updateCount();};
   filter.onclick=()=>{heartedOnly=!heartedOnly;redraw();};
   search.oninput=redraw;redraw();
   const note=document.createElement('p');note.className='review-legend';note.textContent='全員の提出作品が氏名付きでギャラリーに表示されます。♥ は「注目の作品」として上部に表示します。外しても作品は非公開になりません。';
@@ -225,9 +208,27 @@ document.addEventListener('DOMContentLoaded',()=>{
     const response=await fetch('/__admin/hearts',{cache:'no-store'});
     if(!response.ok)throw new Error('Adminサーバーを更新してください。');
     const state=await response.json();
-    if(state.hearts!==null)hearts=new Set(state.hearts);
+    let pending={};try{pending=JSON.parse(localStorage.getItem(heartPendingKey)||'{}');}catch{}
+    heartSync=HeartSync.create({initial:state.hearts??[...hearts],pending,
+      send:async changes=>{
+        const response=await fetch('/__admin/hearts',{method:'POST',keepalive:true,headers:{'Content-Type':'application/json','X-Admin-Request':'hearts'},body:JSON.stringify({changes})});
+        if(!response.ok)throw new Error('Heart save failed');
+        return response.json();
+      },
+      persist:(values,changes)=>{try{localStorage.setItem(heartsStorageKey,JSON.stringify(values));localStorage.setItem(heartPendingKey,JSON.stringify(changes));}catch{}},
+      onChange:values=>{hearts=values;updateHeartButtons();onHeartChange();},onStatus:heartStatus
+    });
+    heartPublication=state.sync||{state:'idle'};
     await loadAdmin();
-    if(state.hearts===null&&hearts.size)await publishHearts(hearts);
+    async function pollHearts(){
+      try{
+        const response=await fetch('/__admin/hearts',{cache:'no-store'});
+        if(response.ok){const state=await response.json();heartSync.accept(state.hearts||[]);heartPublication=state.sync;if(!heartSync.busy)heartStatus({sync:state.sync});}
+      }catch{}finally{setTimeout(pollHearts,heartPublication?.state==='idle'?5000:1000);}
+    }
+    if(heartPublication.state!=='idle')heartStatus({sync:heartPublication});
+    setTimeout(pollHearts,1000);
+    window.addEventListener('pagehide',()=>heartSync.flush());
   })().catch(error=>document.getElementById('admin-status').textContent=error.message);
   document.getElementById('refresh').onclick=async event=>{const button=event.currentTarget;button.disabled=true;document.getElementById('admin-status').textContent='新しいファイルを取り込み中…';try{const response=await fetch('/__admin/refresh',{method:'POST',headers:{'X-Admin-Request':'refresh'}});if(!response.ok)throw new Error('ローカルAdminサーバー（8766）で開いてください。');await loadAdmin();}catch(error){document.getElementById('admin-status').textContent=error.message;}finally{button.disabled=false;}};
 });

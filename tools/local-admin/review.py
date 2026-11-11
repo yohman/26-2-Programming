@@ -133,6 +133,45 @@ def source(cell):
     return ''.join(value) if isinstance(value, list) else value
 
 
+def read_notebook(path):
+    """Read an original notebook, including JSON embedded in a saved GitHub page.
+
+    Only the notebook's raw JSON is recovered. The surrounding HTML, account
+    information and scripts never become part of the submission preview.
+    """
+    text = path.read_text(encoding='utf-8-sig')
+    note = None
+    try:
+        notebook = json.loads(text)
+    except json.JSONDecodeError as original_error:
+        from html.parser import HTMLParser
+        class EmbeddedJSON(HTMLParser):
+            def __init__(self):
+                super().__init__(); self.scripts = []; self.capture = False
+            def handle_starttag(self, tag, attrs):
+                if tag == 'script' and dict(attrs).get('type') == 'application/json':
+                    self.capture = True; self.scripts.append('')
+            def handle_endtag(self, tag):
+                if tag == 'script': self.capture = False
+            def handle_data(self, value):
+                if self.capture: self.scripts[-1] += value
+        parser = EmbeddedJSON(); parser.feed(text)
+        notebook = None
+        for script in parser.scripts:
+            try:
+                embedded = json.loads(script)
+                lines = embedded['payload']['codeViewBlobLayoutRoute.StyledBlob']['rawLines']
+                if isinstance(lines, list) and all(isinstance(line, str) for line in lines):
+                    notebook = json.loads('\n'.join(lines)); break
+            except (ValueError, KeyError, TypeError):
+                continue
+        if notebook is None: raise original_error
+        note = 'Notebook recovered from raw JSON embedded in a saved GitHub page. Original file unchanged.'
+    if not isinstance(notebook, dict) or not isinstance(notebook.get('cells'), list):
+        raise ValueError('Missing notebook cells')
+    return notebook, note
+
+
 def worker(job):
     """Runs only inside the OS sandbox, with per-cell guards and time limits."""
     import resource
@@ -431,10 +470,9 @@ def prepare():
         for student, files in groups.items():
             notebooks = [file for file in files if file.suffix.lower() == '.ipynb']
             for file in notebooks or [None]:
-                invalid = None
+                invalid = recovered = None
                 try:
-                    notebook = json.loads(file.read_text(encoding='utf-8-sig')) if file else None
-                    if notebook is not None and (not isinstance(notebook, dict) or not isinstance(notebook.get('cells'), list)): raise ValueError('Missing notebook cells')
+                    notebook, recovered = read_notebook(file) if file else (None, None)
                 except (ValueError, UnicodeError) as error:
                     notebook = None; invalid = 'Notebook could not be read; upload may still be incomplete: ' + str(error)
                 urls = api_urls(notebook) if notebook else []
@@ -447,6 +485,7 @@ def prepare():
                 digest = hashlib.sha256(('review-v5:' + worker_version + identity + ''.join(hashlib.sha256(f.read_bytes()).hexdigest() for f in files) + json.dumps(responses, sort_keys=True)).encode()).hexdigest()[:20]
                 destination = OUTPUT / digest; destination.mkdir(exist_ok=True)
                 execution = replay(notebook, files, folder, digest, responses) if notebook else {'cells': [], 'notes': [invalid or 'No notebook submitted.'], 'generated': []}
+                if recovered and recovered not in execution['notes']: execution['notes'].append(recovered)
                 assets = []
                 for attached in files:
                     entry = {'name': attached.name, 'path': str(attached.relative_to(ADMIN)), 'type': attached.suffix[1:].upper(), 'bytes': attached.stat().st_size}
@@ -458,7 +497,7 @@ def prepare():
                         except (UnicodeError, csv.Error):
                             entry['table_error'] = 'Could not decode as UTF-8 CSV.'
                     assets.append(entry)
-                title = next((re.sub(r'^#+\s*', '', source(c).splitlines()[0]).strip() for c in (notebook or {}).get('cells', []) if c.get('cell_type') == 'markdown' and source(c).strip()), file.name if file else 'Images / attachments only')
+                title = next((re.sub(r'^#+\s*', '', next(line for line in source(c).splitlines() if line.strip())).strip() for c in (notebook or {}).get('cells', []) if c.get('cell_type') == 'markdown' and source(c).strip()), file.name if file else 'Word形式のレポート / Word report' if any(p.suffix.lower() == '.docx' for p in files) else 'Images / attachments only')
                 record = {'id': digest, 'week': week, 'student': student, 'student_name': roster.get(student, {}).get('name'), 'student_reading': roster.get(student, {}).get('reading'), 'title': title, 'file': file.name if file else None, 'notebook': notebook, 'attachments': assets, 'replay': execution}
                 (destination / 'submission.json').write_text(json.dumps(record, ensure_ascii=False))
                 counts = {key: sum(c['status'] == key for c in execution['cells']) for key in ['ok', 'error', 'skipped']}

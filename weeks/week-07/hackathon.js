@@ -57,7 +57,7 @@
     setInterval(render,250);render();
   });
   function highlight(code,source){
-    const pattern=/("[^"]*")|\b(for|in|if|and)\b|\b(print)\b|\b(-?\d+(?:\.\d+)?)\b/g;
+    const pattern=/("[^"]*")|\b(for|in|if|and|from|import)\b|\b(print|len|display|HTML|weather_board)\b|\b(-?\d+(?:\.\d+)?)\b/g;
     code.replaceChildren();let pos=0;
     for(const match of source.matchAll(pattern)){
       code.append(document.createTextNode(source.slice(pos,match.index)));
@@ -71,7 +71,7 @@
     function run(){
       if(!rain.reportValidity()||!temp.reportValidity())return;
       const maxRain=Number(rain.value),minTemp=Number(temp.value);
-      const source='max_rain = '+maxRain+'\nmin_temp = '+minTemp+'\nchosen = []\nfor hour in forecast:\n    if hour["rain"] <= max_rain and hour["temp"] >= min_temp:\n        chosen.append(hour)\n# Display the hours selected by your code';
+      const source=data.weatherDemo.replace(/^max_rain = .*$/m,'max_rain = '+maxRain).replace(/^min_temp = .*$/m,'min_temp = '+minTemp);
       highlight(code,source);
       const hours=selectHours(data.weather,maxRain,minTemp);
       demo.querySelector('[data-weather-board]').innerHTML=weatherBoard(data.weather,hours,minTemp,maxRain);

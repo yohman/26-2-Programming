@@ -2,7 +2,7 @@
 from pathlib import Path
 from unittest.mock import patch
 from urllib.error import URLError
-import contextlib, hashlib, io, json, sys, tempfile
+import contextlib, hashlib, io, json, subprocess, sys, tempfile
 
 ROOT=Path(__file__).resolve().parents[2]
 sys.path.insert(0,str(ROOT/'tools'))
@@ -16,9 +16,9 @@ assert not any('solo-check' in c.get('metadata',{}).get('tags',[]) for c in star
 
 source=json.loads((ROOT/'weeks/week-07/weather-source.json').read_text())
 assert source['example_sha256']==hashlib.sha256(lesson.API_EXAMPLE.encode()).hexdigest()
-with patch('urllib.request.urlopen',return_value=io.BytesIO(json.dumps(fixture).encode())),contextlib.redirect_stdout(io.StringIO()) as api_output:
-    exec(lesson.API_EXAMPLE,{})
-assert api_output.getvalue()==source['example_output']
+with patch('urllib.request.urlopen',return_value=io.BytesIO(json.dumps(fixture).encode())):
+    printed,result=lesson.execute_cell(lesson.API_EXAMPLE,{})
+assert printed=='' and repr(result)==source['example_output']
 
 with tempfile.TemporaryDirectory() as directory,contextlib.chdir(directory):
     Path('weather-response.json').write_text(json.dumps(fixture))
@@ -45,6 +45,20 @@ with tempfile.TemporaryDirectory() as directory,contextlib.chdir(directory):
     assert '<table' in boards[-1] and 'hours match' in boards[-1]
     scope['min_temp']=50;answers=iter(['show','quit']);output=io.StringIO()
     with contextlib.redirect_stdout(output):exec(lesson.WHILE_CODE,scope)
-    assert 'No matching hours' in output.getvalue()
+    assert output.getvalue()==''  # the visual already explains the empty result
     assert '0 / 24 hours match' in boards[-1] and 'No hours match' in boards[-1]
-print('PASS: real starter cells handle offline/live data, preserve the used JSON, repeat input and terminate on quit.')
+print('PASS: starter cells handle offline/live data, notebook expression results, visual output, repeated input and quit.')
+
+# Compare the browser simulation with the actual Python filter and selected rows.
+scope={'data': fixture}
+lesson.execute_cell(lesson.NORMALIZE,scope)
+cases=[]
+for max_rain,min_temp in [(30,10),(30,15),(100,50),(0,fixture['hourly']['temperature_2m'][0])]:
+    code=lesson.FILTER_CODE.replace('max_rain = 30',f'max_rain = {max_rain}').replace('min_temp = 10',f'min_temp = {min_temp}')
+    printed,result=lesson.execute_cell(code,scope)
+    assert printed=='' and result==len(scope['chosen'])
+    cases.append(dict(maxRain=max_rain,minTemp=min_temp,expected=scope['chosen']))
+script="const fs=require('node:fs');const model=require('./weeks/week-07/hackathon.js');const data=JSON.parse(fs.readFileSync(0,'utf8'));process.stdout.write(JSON.stringify(data.cases.map(c=>model.selectHours(data.forecast,c.maxRain,c.minTemp))));"
+actual=json.loads(subprocess.check_output(['node','-e',script],input=json.dumps(dict(forecast=scope['forecast'],cases=cases)),text=True,cwd=ROOT))
+assert actual==[case['expected'] for case in cases]
+print('PASS: browser simulation matches actual Python rows for normal, warmer, empty and boundary settings.')

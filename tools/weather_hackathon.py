@@ -1,6 +1,7 @@
 """Week 7 weather hackathon, using the established course presentation shell."""
 from pathlib import Path
 from urllib.parse import urlencode
+import ast
 import contextlib
 import html
 import io
@@ -8,7 +9,7 @@ import json
 import re
 from datetime import datetime, timedelta, timezone
 
-VERSION = '20261112-briefing'
+VERSION = '20261112-notebook-results'
 API_URL = 'https://api.open-meteo.com/v1/forecast?' + urlencode({
     'latitude': 35.86, 'longitude': 139.97,
     'hourly': 'temperature_2m,precipitation_probability',
@@ -28,8 +29,7 @@ url = "https://api.open-meteo.com/v1/forecast?" + urlencode({
 API_EXAMPLE = API_REQUEST + '''
 with urlopen(url, timeout=10) as response:
     data = json.load(response)
-print(data["timezone"])
-print(len(data["hourly"]["time"]), "hours")'''
+len(data["hourly"]["time"])'''
 
 LIVE_LOAD = API_REQUEST + '''
 from datetime import datetime, timezone
@@ -47,12 +47,12 @@ except (OSError, ValueError):
         data = json.load(file)
     print("Saved JSON / 保存した予報を使用")
 
-print("Retrieved:", data.get("_source", {}).get("retrieved_at", "see forecast dates"))'''
+len(data["hourly"]["time"])'''
 
 CACHE_LOAD = '''import json
 with open("weather-response.json", encoding="utf-8") as file:
     data = json.load(file)
-print("Saved forecast / 保存した予報")'''
+len(data["hourly"]["time"])'''
 
 NORMALIZE = '''forecast = []
 hourly = data["hourly"]
@@ -62,8 +62,7 @@ for i in range(len(hourly["time"])):
     if temp is not None and rain is not None:
         forecast.append({"time": hourly["time"][i],
                          "temp": temp, "rain": rain})
-print(len(forecast), "hours / 時間分")
-print("Forecast:", forecast[0]["time"], "to", forecast[-1]["time"])'''
+forecast[0]'''
 
 FILTER_CODE = '''max_rain = 30
 min_temp = 10
@@ -71,10 +70,10 @@ chosen = []
 for hour in forecast:
     if hour["rain"] <= max_rain and hour["temp"] >= min_temp:
         chosen.append(hour)
-print(len(chosen), "hours match")'''
+len(chosen)'''
 
 VISUAL_SETUP = 'from html import escape\n\ndef weather_board(forecast, chosen, min_temp, max_rain):\n    board = f\'<div style="font:15px/1.5 system-ui;color:#203b2d"><h3 style="margin:0">{len(chosen)} / {len(forecast)} hours match · 条件に合う時間</h3>\'\n    board += f\'<p style="margin:4px 0 12px">Temperature ≥ {min_temp}°C · Precipitation ≤ {max_rain}% · Japan time · Matches first / 合う時間を先に表示</p>\'\n    board += \'<div style="max-height:340px;overflow:auto"><table style="border-collapse:collapse;width:100%;text-align:left"><thead><tr style="background:#315876;color:white"><th style="padding:8px">Time / 時刻</th><th>°C</th><th>Rain %</th><th>Your rule / 条件</th></tr></thead><tbody>\'\n    for hour in chosen + [item for item in forecast if item not in chosen]:\n        matches = hour in chosen\n        color = \'#dceee2\' if matches else \'#f1f3f2\'\n        label = \'✓ Match / 合う\' if matches else \'— / 合わない\'\n        time = escape(hour["time"].replace("T", " "))\n        board += f\'<tr style="background:{color};border-bottom:1px solid white"><td style="padding:7px 8px">{time}</td><td>{hour["temp"]}</td><td>{hour["rain"]}%</td><td>{label}</td></tr>\'\n    board += \'</tbody></table></div>\'\n    if not chosen:\n        board += \'<p>No hours match. Try another setting. / 条件を変えて試そう。</p>\'\n    return board + \'</div>\'\n'
-VISUAL_CALL = 'from IPython.display import HTML, display\ndisplay(HTML(weather_board(forecast, chosen, min_temp, max_rain)))'
+VISUAL_CALL = 'from IPython.display import HTML, display\ndisplay(HTML(weather_board(forecast, chosen,\n                           min_temp, max_rain)))'
 
 WHILE_CODE = '''command = ""
 while command != "quit":
@@ -82,24 +81,11 @@ while command != "quit":
     if command == "warmer":
         min_temp += 1
     if command in ["show", "warmer"]:
-        print("Minimum temperature:", min_temp, "°C")
-        matches = 0
         chosen = []
         for hour in forecast:
             if hour["rain"] <= max_rain and hour["temp"] >= min_temp:
-                print(hour["time"], hour["temp"], "°C", hour["rain"], "%")
-                matches += 1
                 chosen.append(hour)
-        display(HTML(weather_board(forecast, chosen, min_temp, max_rain)))
-        if matches == 0:
-            print("No matching hours / 条件に合う時間はありません")'''
-
-WHILE_BRIEF = '''command = ""
-while command != "quit":
-    command = input("show / quit: ")
-    if command == "show":
-        # Put your for + if here
-        print("Searching the forecast...")'''
+        display(HTML(weather_board(forecast, chosen, min_temp, max_rain)))'''
 
 SPEC = dict(
     title='Weather Hackathon', title_ja='天気ハッカソン',
@@ -154,20 +140,33 @@ DEMO_GUIDE = [
 ]
 
 
+def execute_cell(source, scope):
+    """Execute trusted course code and its final expression, as a notebook does.
+
+    Returning the last expression keeps notebook outputs distinct from stdout.
+    Full Jupyter execution is checked by weather-notebook.test.py.
+    """
+    tree = ast.parse(source, filename='<lesson cell>')
+    expression = tree.body.pop() if tree.body and isinstance(tree.body[-1], ast.Expr) else None
+    output = io.StringIO()
+    with contextlib.redirect_stdout(output):
+        exec(compile(tree, '<lesson cell>', 'exec'), scope)
+        value = eval(compile(ast.Expression(expression.value), '<lesson cell>', 'eval'), scope) if expression else None
+    return output.getvalue(), value
+
+
 def build(root, c):
     folder = root / 'weeks/week-07'
     data = json.loads((folder/'weather-response.json').read_text())
     source = json.loads((folder/'weather-source.json').read_text())
     scope = {'data': data}
-    normalized = io.StringIO()
-    with contextlib.redirect_stdout(normalized):
-        exec(NORMALIZE, scope)
+    _, first_hour = execute_cell(NORMALIZE, scope)
     forecast = scope['forecast']
     retrieved = datetime.fromisoformat(source['retrieved_at']).astimezone(timezone(timedelta(hours=9))).strftime('%Y-%m-%d %H:%M JST')
     snapshot_note = f'Kashiwa · {retrieved} · Asia/Tokyo · Open-Meteo'
     # The shown API cell was executed live when this snapshot was captured.
     api_output = source['example_output']
-    expected = f'{data["timezone"]}\n{len(data["hourly"]["time"])} hours\n'
+    expected = repr(len(data['hourly']['time']))
     assert api_output == expected, 'Refresh weather-source.json and weather-response.json together.'
     rows = [('starter-files.zip', '教材をまとめてダウンロード', 'Download the starter pack'),
             ('challenge-starter.ipynb', '制作を始めるNotebook', 'Start-building notebook'),
@@ -191,8 +190,8 @@ def build(root, c):
         ('自分たちで、別の使い方を考えてもよい。', 'Your team can choose another use for the forecast.'),
     ])
     demo = '''<div data-weather-demo><div class="weather-inputs"><label>max_rain (%) <input data-rain type="number" min="0" max="100" value="30" required></label><label>min_temp (°C) <input data-temp type="number" min="-40" max="50" step="0.5" value="10" required></label><button data-weather-run type="button">▶ '''+c.bi('実行','Run')+'''</button></div><pre data-language="python"><code data-weather-code></code></pre><div data-weather-board aria-live="polite"></div></div>'''
-    list_code = NORMALIZE + '\nprint(forecast[0])'
-    list_output = normalized.getvalue() + repr(forecast[0]) + '\n'
+    list_code = NORMALIZE
+    list_output = repr(first_hour)
     bodies = [
         c.p('予報を、使える道具に。', 'Turn a forecast into something useful.', 'lesson-lead')
         + '<p class="large-stamp">60 MIN / 2–3 PEOPLE</p>'
@@ -208,8 +207,8 @@ def build(root, c):
         c.p('1チーム60〜90秒。完成したNotebookをそのまま見せる。発表用スライドは不要。',
             '60–90 seconds per team. Present from the notebook. No separate slide deck needed.', 'lesson-lead')
         +steps(DEMO_GUIDE),
-        c.p('urlopenでデータを受け取り、json.loadでPythonの辞書にする。柏の気温と降水確率を、24時間分。',
-            'urlopen gets the response. json.load reads it into a Python dictionary. Request 24 hours of temperature and rain probability for Kashiwa.')
+        c.p('urlopenで受け取り、json.loadで辞書にする。最後のlen(...)は取得した時間数。Notebookではセルの最後の値が、そのまま表示される。',
+            'urlopen gets the response; json.load reads it into a dictionary. The final len(...) counts forecast hours. A notebook displays the last value automatically.')
         +'<div class="api-example">'+shown_code(API_EXAMPLE,api_output)+'</div>'
         +source_line,
         c.p('同じ番号iで、時刻・気温・降水確率を組にする。forecastは辞書のリスト。',
@@ -219,8 +218,8 @@ def build(root, c):
              'time = Japan time; temp = °C; rain = probability %. Skip hours with missing values (None).'),
         c.p('min_tempを変えると、どの時間が選ばれる？これを自分たちの目的に合わせよう。',
             'Which hours will match if min_temp changes? Adapt this rule for your own user.')+demo
-        +c.p('保存した実際の予報でPythonの処理をJavaScriptで再現。Notebookにはwhileの入力例もあります。',
-             'JavaScript simulates the Python using the saved API response. The notebook also includes a while input example.', 'simulation-note'),
+        +c.p('表示コードはNotebookに配布。ここでは保存した実際の予報でPythonの処理をJavaScriptで再現。',
+             'The display helper is supplied in the notebook. JavaScript simulates the Python using the saved API response.', 'simulation-note'),
         c.list_html(GROUP_GUIDE)+c.p(*AI_GUIDE,'weather-ai-note'),
         c.p('2〜3人で集まろう。ZIPを解凍し、challenge-starter.ipynbの最初の2つのコードセルを実行。全員が予報を読めたら制作へ。',
             'Form groups of 2–3. Unzip the pack and run the first two code cells in challenge-starter.ipynb. Once everyone can load the forecast, start building.', 'lesson-lead')
@@ -243,12 +242,12 @@ def build(root, c):
     release = SPEC['date']+'T12:00:00+09:00'
     head = c.page_head('Week 07 · Weather Hackathon','course-decks.css','course-decks.js',VERSION)
     head += f'<link rel="stylesheet" href="hackathon.css?v={VERSION}"><script src="hackathon.js?v={VERSION}" defer></script><link rel="stylesheet" href="../../assets/slide-annotations.css"><script src="../../assets/slide-annotations.js" defer></script><script src="../../assets/slide-swipe.js" defer></script></head>'
-    payload = json.dumps(dict(weather=forecast,weatherSource=source),ensure_ascii=False).replace('</','<\\/')
+    payload = json.dumps(dict(weather=forecast,weatherSource=source,weatherDemo=FILTER_CODE.rsplit('\n',1)[0]+'\n'+VISUAL_CALL),ensure_ascii=False).replace('</','<\\/')
     shell = f'<body class="lecture-page course-deck weather-hackathon" data-week="7" data-release="{release}"><header class="lecture-header"><a id="lecture-return" href="../../agenda.html?open=07#week-07">← '+c.bi('授業予定','Agenda')+'</a><span class="lecture-mark">PRG / 26–2</span><button id="language-toggle" class="language-toggle" type="button">EN</button></header><main><div id="slides-view" class="view"><nav class="slide-controls" aria-label="Slide navigation"><div class="slide-nav-group"><button id="previous-slide" type="button">← '+c.bi('前へ','Previous')+'</button><span id="slide-count" aria-live="polite"></span><button id="next-slide" type="button">'+c.bi('次へ','Next')+' →</button></div><button id="slide-fullscreen" type="button" class="slide-fullscreen" aria-pressed="false">⛶</button></nav><div class="slide-stage">'+''.join(sections)+'</div></div></main><script type="application/json" id="lesson-data">'+payload+'</script></body></html>'
     c.write(folder/'lecture.html',head+shell)
 
     intro = '# Week 07 · 天気ハッカソン / Weather Hackathon\n\nチーム全員の氏名 / Team members：\n自分の担当 / My contribution：\n\n'+SPEC['brief'][0]+'\n\n'+SPEC['brief'][1]
-    setup = '## 1. 予報を読み込む / Load the forecast\n\n最初の2つのコードセルは準備用。そのまま実行。追加インストール・APIキーは不要。接続できなければ、同じフォルダのweather-response.jsonを使用。取得成功時はこのファイルを更新します。\n\nRun the first two code cells as provided. No extra packages or API key. Keep weather-response.json beside this notebook as a fallback. A successful request updates that file.\n\nSource: https://open-meteo.com/en/docs\nTime: Asia/Tokyo; temp: °C; rain: precipitation probability (%).'
+    setup = '## 1. 予報を読み込む / Load the forecast\n\n最初の2つのコードセルは準備用。そのまま実行。追加インストール・APIキーは不要。接続できなければ、同じフォルダのweather-response.jsonを使用。取得成功時はこのファイルを更新します。\n\nRun the first two code cells as provided. No extra packages or API key. Keep weather-response.json beside this notebook as a fallback. A successful request updates that file.\n\nSource: https://open-meteo.com/en/docs\nTime: Asia/Tokyo; temp: °C; rain: precipitation probability (%).\n\nNotebookではセルの最後の値がprintなしで表示されます。最初のセルの24は時間数。予報の取得日時はdata["_source"]に保存されています。\nA notebook displays the final expression automatically. The first cell’s 24 counts forecast hours. The retrieval time is stored in data["_source"].'
     provided = c.codecell(VISUAL_SETUP)
     provided['metadata'] = {'tags':['provided-display'],'jupyter':{'source_hidden':True}}
     visual = c.codecell(VISUAL_CALL)
@@ -266,7 +265,7 @@ def build(root, c):
         c.mdcell(group_md),
         c.mdcell('## 発表 / Demo\n\n60〜90秒。使う人と目的、視覚表示、条件を変えた結果を見せ、for・if・whileの一行を説明。全員が一言話す。別の発表スライドは不要。\n\nShow the visual, change a setting and explain a line of code. Everyone speaks briefly. Present from the notebook.\n\n## AIを使った場合 / If you used AI\n何を相談し、どの結果を自分で確かめた？使わなかった場合は「使っていない」。\nBriefly note the help you used and what you checked yourself.\n\n## 宿題 / Homework\n'+SPEC['homework'][0]+'\n\n'+SPEC['homework'][1]+'\n\n締切 / Due：2026-11-18 23:59 JST\n\n途中でも、自分で書いたコードと試した変更を残して提出する。\nIf unfinished, submit the code you wrote and explain what you tried.')]
     c.notebook(folder/'challenge-starter.ipynb',starter)
-    worked = [c.mdcell('# 実行例 / Worked examples\n\n'+snapshot_note+'\n\n保存した実際の予報でコードを確認します。APIから取得するにはchallenge-starter.ipynbへ。\nUses the saved API response. Open challenge-starter.ipynb to fetch a fresh forecast.'),c.codecell(CACHE_LOAD),c.codecell(NORMALIZE),c.codecell('print(forecast[0])'),c.codecell(VISUAL_SETUP),c.codecell(FILTER_CODE),c.codecell(VISUAL_CALL),c.mdcell('## whileで試す / Interactive example\nshow / warmer / quit。終わるにはquit。'),c.codecell(WHILE_CODE)]
+    worked = [c.mdcell('# 実行例 / Worked examples\n\n'+snapshot_note+'\n\n保存した実際の予報でコードを確認します。APIから取得するにはchallenge-starter.ipynbへ。\nUses the saved API response. Open challenge-starter.ipynb to fetch a fresh forecast.'),c.codecell(CACHE_LOAD),c.codecell(NORMALIZE),c.codecell('len(forecast)'),c.codecell(VISUAL_SETUP),c.codecell(FILTER_CODE),c.codecell(VISUAL_CALL),c.mdcell('## whileで試す / Interactive example\nshow / warmer / quit。終わるにはquit。'),c.codecell(WHILE_CODE)]
     worked[4]['metadata'] = provided['metadata']
     worked[6]['metadata'] = visual['metadata']
     worked[-1]['metadata'] = interaction['metadata']
@@ -274,16 +273,19 @@ def build(root, c):
     for cell in worked:
         if cell['cell_type'] != 'code' or 'interactive' in cell['metadata'].get('tags',[]):
             continue
-        output = io.StringIO(); count += 1; rendered = []
+        count += 1; rendered = []
         if 'notebook-display' in cell['metadata'].get('tags',[]):
             run_scope.update(HTML=lambda value:value,display=rendered.append)
         source_code = cell['source'].replace('from IPython.display import HTML, display\n','')
-        with contextlib.chdir(folder),contextlib.redirect_stdout(output):
-            exec(source_code,run_scope)
+        with contextlib.chdir(folder):
+            output, value = execute_cell(source_code,run_scope)
+        cell['outputs'] = []
+        if output:
+            cell['outputs'].append(dict(output_type='stream',name='stdout',text=output))
+        if value is not None:
+            cell['outputs'].append(dict(output_type='execute_result',execution_count=count,data={'text/plain':repr(value)},metadata={}))
         if rendered:
-            cell['outputs'] = [dict(output_type='display_data',data={'text/html':rendered[-1],'text/plain':'Weather forecast board'},metadata={})]
-        if output.getvalue():
-            cell['outputs'] = [dict(output_type='stream',name='stdout',text=output.getvalue())]
+            cell['outputs'].append(dict(output_type='display_data',data={'text/html':rendered[-1],'text/plain':'<IPython.core.display.HTML object>'},metadata={}))
         cell['execution_count'] = count
     c.notebook(folder/'practice.ipynb',worked)
 

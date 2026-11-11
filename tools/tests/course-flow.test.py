@@ -3,6 +3,8 @@ from pathlib import Path
 import contextlib, csv, io, json, re, subprocess, sys, tempfile, types, zipfile
 
 ROOT=Path(__file__).resolve().parents[2]
+sys.path.insert(0,str(ROOT/'tools'))
+from weather_hackathon import execute_cell
 cells_run=0
 for week in range(7,15):
     folder=ROOT/f'weeks/week-{week:02}'
@@ -19,7 +21,14 @@ for week in range(7,15):
             scope['HTML']=lambda value:value
             scope['display']=rich.append
         source=source.replace('from IPython.display import HTML, display\n','')
-        with contextlib.redirect_stdout(stream),contextlib.chdir(folder):exec(source,scope)
+        value=None
+        with contextlib.redirect_stdout(stream),contextlib.chdir(folder):
+            if week==7:
+                printed,value=execute_cell(source,scope)
+                stream.write(printed)
+            else:exec(source,scope)
+        saved_values=[o['data']['text/plain'] for o in cell['outputs'] if o['output_type']=='execute_result']
+        if week==7:assert saved_values==([] if value is None else [repr(value)]),(source,saved_values,value)
         expected_html=[o['data']['text/html'] for o in cell.get('outputs',[]) if o.get('data',{}).get('text/html')]
         if expected_html:assert rich[-1]==expected_html[-1]
 

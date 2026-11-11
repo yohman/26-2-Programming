@@ -1,7 +1,7 @@
 {
   "latitude": 35.85,
   "longitude": 140.0,
-  "generationtime_ms": 0.048160552978515625,
+  "generationtime_ms": 0.07152557373046875,
   "utc_offset_seconds": 32400,
   "timezone": "Asia/Tokyo",
   "timezone_abbreviation": "GMT+9",
@@ -93,6 +93,6 @@
   },
   "_source": {
     "url": "https://api.open-meteo.com/v1/forecast?latitude=35.86&longitude=139.97&hourly=temperature_2m%2Cprecipitation_probability&forecast_hours=24&timezone=Asia%2FTokyo",
-    "retrieved_at": "2026-11-11T15:02:53.137692+00:00"
+    "retrieved_at": "2026-11-11T15:23:55.327927+00:00"
   }
 }

@@ -1,0 +1,35 @@
+.weather-hackathon .hackathon-plan{font:500 clamp(.85rem,1.3vw,1.2rem)/1.8 var(--mono);margin:1.5rem 0 0;color:#3f6d57}
+.weather-hackathon .lesson-slide ul{font-size:clamp(1.1rem,1.75vw,1.55rem);line-height:1.8;padding-left:1.4rem;max-width:1050px}
+.weather-hackathon .lesson-slide li{margin:.8rem 0}
+.weather-hackathon .layout-setup .lesson-lead{margin-bottom:1rem;font-size:1.15rem}
+.weather-hackathon .layout-setup .lesson-links{margin:1rem 0}
+.weather-hackathon .layout-setup pre{font-size:1rem;margin:.5rem 0}
+.weather-source{font-size:.78rem!important;line-height:1.6!important;color:#657079;margin:.8rem 0}
+.weather-hackathon .layout-timer{background:#edf2ee}
+.hackathon-clock{margin:1.5rem 0 1.8rem}
+.hackathon-clock output{display:block;font:500 clamp(5rem,11vw,9rem)/1 var(--mono);letter-spacing:-.07em;color:#254c3a;font-variant-numeric:tabular-nums}
+.clock-controls{display:flex;gap:1rem;align-items:center;flex-wrap:wrap;margin-top:1.4rem}
+.clock-controls button{width:3.2rem;height:3rem;border:1px solid #b3c6ba;background:transparent;color:#254c3a;font-size:1.5rem;cursor:pointer}
+.clock-controls button:disabled{opacity:.35;cursor:default}
+.clock-controls label{font:500 .85rem var(--mono);color:#42564b}
+.clock-controls input{width:4.8rem;padding:.45rem;border:1px solid #b3c6ba;background:#fff;font:inherit;margin:0 .25rem}
+.clock-controls [role=status]{font-size:.8rem;color:#52655a}
+.time-up output,.time-up [role=status]{color:#9a3b28}
+.weather-hackathon .layout-presentation{background:#f2ede3}
+.layout-presentation .hackathon-clock{margin:.6rem 0}
+.layout-presentation .hackathon-clock output{font-size:clamp(4.5rem,10vw,8rem)}
+.layout-presentation .lesson-lead{font-size:1.1rem;margin-bottom:.5rem}
+.layout-presentation ul{margin-top:1.3rem;font-size:1.1rem!important;line-height:1.5!important}
+.layout-presentation li{margin:.35rem 0!important}
+.weather-inputs{display:flex;gap:1rem;flex-wrap:wrap;align-items:center}
+.weather-inputs label{font:500 .9rem var(--mono)}
+.weather-inputs input{width:5rem;padding:.4rem;border:1px solid #bacbc2;font:inherit;margin-left:.25rem}
+.weather-inputs button{padding:.5rem 1rem;background:#edf2ee;color:#254c3a;border:1px solid #bacbc2;font-weight:650;cursor:pointer}
+[data-weather-demo] pre{font-size:clamp(.8rem,1.1vw,1.1rem)}
+[data-weather-output]{max-height:9.5rem;overflow:auto}
+.weather-hints{margin:2rem 0;border-block:1px solid #cbd2ce;padding:1rem 0}
+.weather-hints summary{cursor:pointer;font-weight:700;color:#315876}
+.build-phase{font-weight:750;color:#254c3a;font-size:clamp(.9rem,1.3vw,1.2rem);line-height:1.5}
+.solo-reveal{border:0;border-bottom:1px solid #315876;padding:.35rem 0;background:transparent;color:#315876;font:600 .9rem inherit;cursor:pointer}
+[data-solo-prompt]{font-size:1rem;line-height:1.7;border-left:3px solid #3f6d57;padding-left:1rem;max-width:1050px}
+@media(max-width:650px){.clock-controls{gap:.7rem}.weather-hackathon .lesson-slide ul{font-size:1rem}.weather-hackathon .layout-setup .lesson-lead{font-size:1rem}.weather-hackathon .layout-setup pre{font-size:.8rem}}

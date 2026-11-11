@@ -4,7 +4,8 @@ Only trusted course examples are executed. Original archive notebooks/PDFs are k
 Rebuild: admin/.venv/bin/python tools/build-course-flow.py
 """
 from pathlib import Path
-import contextlib, csv, html, io, json, re, shutil, zipfile
+import contextlib, csv, html, io, json, re, shutil, zipfile, sys
+import weather_hackathon
 from urllib.parse import urljoin, urlencode
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -52,7 +53,7 @@ def list_html(items): return '<ul>'+''.join('<li>'+bi(*i)+'</li>' for i in items
 def links(items,week=None,return_page='challenge.html'):
     rendered=[]
     for u,j,e in items:
-        if week is not None and re.search(r'\.(ipynb|csv)$',u):
+        if week is not None and re.search(r'\.(ipynb|csv|json)$',u):
             file=urljoin(f'weeks/week-{week:02}/',u)
             preview='../../viewer.html?'+urlencode(dict(file=file,title=j+' / '+e,**{'return':f'weeks/week-{week:02}/'+return_page}))
             rendered.append('<div class="lesson-file"><span>'+bi(j,e)+'</span><a href="'+html.escape(preview,quote=True)+'">'+bi('プレビュー','Preview')+'</a><a href="'+html.escape(u,quote=True)+'" download>'+bi('ダウンロード','Download')+'</a></div>')
@@ -68,39 +69,7 @@ def H(title,ja,en,**kw):return slide(title,ja,en,'hero',**kw)
 def CH(ja,en):return slide('30 MIN / CHALLENGE',ja,en,'challenge')
 W={}
 
-MENU_ONLY=[dict(name=item['name'],price=item['price']) for item in MENU_DICTS if item['category']!='activity']
-SMALL_MENU=MENU_ONLY[:4]
-SIMPLE_MENU_CODE='menu = [\n'+',\n'.join('    '+json.dumps(item,ensure_ascii=False) for item in SMALL_MENU)+'\n]'
-LOAD_MENU='''import csv
-
-with open("student-menu.csv") as file:
-    menu = list(csv.DictReader(file))
-for item in menu:
-    item["price"] = int(item["price"])
-print(len(menu), "items")'''
-
-W[7]=dict(title='Menu and budget',title_ja='メニューと予算',version=VERSION,date='2026-11-12',due='2026-11-18',
- aim=('メニューをforで読み、ifで予算と比べる。選んだ2品の合計と残金を計算する。','Read a menu with for, compare prices with if, and calculate the total and money left for two items.'),
- flow=('Japanレポートを見せ合う → メニュー・for・ifの復習 → 合計の計算 → チャレンジ → ペアで確認・提出。','Share Japan reports → review menus, for and if → calculate a total → challenge → partner check and submission.'),
- brief=('メニューから、予算1,000円で買えるものを表示しよう。次に2品選び、合計金額と残金を表示する。','Show which menu items you can buy with ¥1,000. Then choose two items and display the total and money left.'),
- requirements=[('配布したstudent-menu.csvを読み込む。','Read the supplied student-menu.csv.'),('forとifで、予算以下の商品を表示する。','Use for and if to display items priced at or below your budget.'),('2品を自分で選び、forで合計金額と残金を計算する。','Choose two items yourself; use for to calculate the total and money left.'),('予算を変えて、買える場合・ちょうど足りる場合・足りない場合を確認する。','Change the budget and check enough money, exact payment and not enough money.')],
- homework=('授業のNotebookで選ぶ2品か予算を変える。結果と、変更したコードの説明を短く書く。実行済み.ipynbとstudent-menu.csvをUNIPAへ提出。','Change the two items or the budget in your notebook. Briefly explain your code change and the result. Submit the executed .ipynb and student-menu.csv to UNIPA.'),
- small_code=SIMPLE_MENU_CODE,small_menu=SMALL_MENU,
- slides=[
- H('メニューと予算','予算は1,000円。買えるものを表示し、2品選んで合計と残金を計算しよう。','Your budget is ¥1,000. Show what you can afford, choose two items, and calculate the total and money left.'),
- slide('前の作品を見てみよう','Week 6のJapanレポートを3人が短く発表。結果を作ったコードを一つ見つけよう。','Three short Week 6 Japan report presentations. Find one line of code that produced a result.','gallery',extra=links([('../../gallery.html?week=6','Week 6の作品','Week 6 gallery'),('../../gallery.html?week=5','Week 5の作品','Week 5 gallery')])),
- slide('今日のゴール','おにぎり150円＋サンドイッチ320円。合計470円、残金530円。この計算をPythonで作る。','Onigiri ¥150 + sandwich ¥320. Total ¥470; money left ¥530. Make Python calculate this.','plain',extra=links([('practice.ipynb','授業のNotebook','Lesson notebook'),('student-menu.csv','メニュー','Menu')],7,'lecture.html')),
- C('メニューは、辞書のリスト','nameは商品名、priceは値段（円）。まず4品から。','name is the item name; price is the cost in yen. Start with four items.',SIMPLE_MENU_CODE),
- C('forで、1品ずつ表示','itemには、メニューの商品が一つずつ入る。','item receives one menu entry at a time.','for item in menu:\n    print(item["name"], item["price"])'),
- C('ifで、予算と比べる','priceがbudget以下なら表示する。500円で買えるのはどれ？','Print an item if its price is at or below budget. Which items can you buy with ¥500?','budget = 500\nfor item in menu:\n    if item["price"] <= budget:\n        print(item["name"], item["price"])'),
- slide('予算を変えてみよう','150円、500円、1,000円。表示される商品を予想してから実行。','Try ¥150, ¥500 and ¥1,000. Predict which items will appear, then run.','interactive',demo='menu-budget'),
- Q('150円の商品を、150円で買う','<=を&lt;に変えると、おにぎりは表示される？','If you change <= to &lt;, will onigiri still appear with a ¥150 budget?',('表示されない。<=は同じ値も含み、&lt;は含まない。','No. <= includes equal prices; &lt; does not.')),
- C('2品を選ぶ','menu[0]は最初、menu[1]は2番目。orderに、選んだ商品を入れる。','menu[0] is the first item; menu[1] is the second. Put your selected items in order.','order = [menu[0], menu[1]]\nfor item in order:\n    print(item["name"], item["price"])'),
- C('合計と残金を計算','totalは0から始め、選んだ商品の値段を足す。残金は予算−合計。','Start total at zero and add each selected price. Money left is budget minus total.','budget = 1000\ntotal = 0\nfor item in order:\n    total += item["price"]\nprint("Total:", total, "yen")\nprint("Money left:", budget - total, "yen")'),
- C('メニューをCSVから読む','csv.DictReaderは各行を辞書として読む。priceは文字列なのでintで数値にする。CSVとNotebookは同じフォルダへ。','csv.DictReader reads each row as a dictionary. Convert price from text to a number with int. Keep the CSV beside your notebook.',LOAD_MENU),
- CH('メニューを読み込む → 予算内の商品を表示 → 2品選ぶ → 合計と残金を表示。','Read the menu → show affordable items → choose two → display total and money left.'),
- C('予算が足りなかったら？','選んだ2品は470円。budgetを1,000、470、400に変えて、ペアで結果を確かめよう。','Your two items cost ¥470. With a partner, try budgets of 1,000, 470 and 400 and check each result.','budget = 400\nif total <= budget:\n    print("Money left:", budget - total, "yen")\nelse:\n    print("Over budget:", total - budget, "yen")'),
- slide('保存して提出','コード、実行結果、短い説明をNotebookに残す。実行済み.ipynbとstudent-menu.csvを提出。','Save your code, outputs and a short explanation. Submit the executed .ipynb and student-menu.csv.','exit')])
+W[7]=weather_hackathon.SPEC
 
 W[8]=dict(title='Make it work for a friend',title_ja='友だちの条件でも使える？',date='2026-11-19',due='2026-11-25',
  aim=('先週のプログラムを、違う条件でも使えるように直す。','Make last week’s program work for different settings.'),
@@ -401,7 +370,7 @@ if __name__ == "__main__":
 '''
 
 EN_TITLES={
-7:['Menu and budget','Look at a classmate’s work','Today’s goal','A menu is a list of dictionaries','Show each item with for','Compare prices with if','Change the budget','Can ¥150 buy a ¥150 item?','Choose two items','Calculate the total and money left','Read the menu from CSV','30 MIN / CHALLENGE','What if you do not have enough?','Save and submit'],
+
 8:['“Can I use this?”','Whose budget?','Give the subtraction a name','Values in, result out','Explain an empty result','Two useful checks','Check it by hand','Alternative: bicycle theft','Counting uses the same for','30 MIN / CHALLENGE','Watch the tester','Show one repair'],
 9:['Three people, three budgets','The process you already know','def does not call the function','Pass the arguments','Slow down one call','print and return','What is stored in result?','A for inside a function','Count the work in one call','A for that calls a function','Trace the loop and function','How many comparisons?','Returning too early','An empty input still returns','A new local list each call','30 MIN / CHALLENGE','Explain three lines','Next: outside the cell'],
 10:['Run without a cell button','.ipynb and .py','Create hello.py','Run it in a terminal','Why is nothing printed?','Call your function','input returns text','Import your own function','The __main__ guard','Where is the data file?','30 MIN / CHALLENGE','A small final-project idea'],
@@ -437,17 +406,19 @@ def demo_html(kind):
     return ''
 
 def build_week(week,spec):
+    if week==7:
+        return weather_hackathon.build(ROOT,sys.modules[__name__])
     dest=ROOT/f'weeks/week-{week:02}'
     date=spec['date']; release=date+'T12:00:00+09:00'
-    if week in [7,8,9,10]:
+    if week in [8,9,10]:
         with (dest/'student-menu.csv').open('w',encoding='utf-8',newline='') as file:
-            writer=csv.DictWriter(file,lineterminator=chr(10),fieldnames=['name','price'] if week==7 else ['name','price','minutes','category']);writer.writeheader();writer.writerows(MENU_ONLY if week==7 else MENU_DICTS)
+            writer=csv.DictWriter(file,lineterminator=chr(10),fieldnames=['name','price','minutes','category']);writer.writeheader();writer.writerows(MENU_DICTS)
     small_menu=spec.get('small_menu',SMALL)
     small_code=spec.get('small_code',SMALL_CODE)
     ns={'menu':[dict(x) for x in small_menu]}; exec(REMAIN+'\n'+AFFORD,ns)
     # Each deck starts from the same explicitly supplied four-item menu.
     cells=[mdcell(f'# Week {week:02} · {spec["title_ja"]}\n\n氏名：\n\nコードを上から順に実行する。予想・変更したコード・結果をMarkdownで短く説明しよう。\nRun from top to bottom. Use Markdown to explain your prediction, code change and result.')]
-    if week!=7:cells.append(codecell(small_code))
+    cells.append(codecell(small_code))
     if week==13:cells.append(codecell(REMAIN))
     content=[]
     for i,s in enumerate(spec['slides'],1):
@@ -489,21 +460,19 @@ def build_week(week,spec):
     cells += [mdcell('## Your challenge / 自分で試す\n'+spec['brief'][0]+'\n\n'+'\n'.join('- '+r[0] for r in spec['requirements'])+'\n\nUse a Markdown cell to document your prediction, change, result and checks.'),codecell('# Write your own change here. / 自分の変更を書こう。\n'),mdcell('## Check / 確認\n通常：\n境界・失敗：\n手計算・元データとの照合：\n\n## Reflection / 気づき\n自分で説明できるコード：\n改善したこと：\n残る限界：')]
     notebook(dest/'practice.ipynb',cells)
     challenge=[mdcell(f'# Week {week:02} challenge · {spec["title_ja"]}\n\n作品タイトル：\n氏名：\n\n'+spec['brief'][0]+'\n\n'+'\n'.join('- '+r[0] for r in spec['requirements']))]
-    if week in [7,8,9,10]:challenge += [mdcell('## Load / 読み込み\n同じフォルダへstudent-menu.csvを保存。追加パッケージ不要。'),codecell(LOAD_MENU if week==7 else LOAD)]
+    if week in [8,9,10]:challenge += [mdcell('## Load / 読み込み\n同じフォルダへstudent-menu.csvを保存。追加パッケージ不要。'),codecell(LOAD)]
     if week==11:challenge += [mdcell('## OpenCVなしの入口 / Cached detections\n同じフォルダにdetected-boxes.csvを置く。これは配布画像に対する実際の検出結果。検出自体は再実行していません。'),codecell('import csv\nwith open("detected-boxes.csv", encoding="utf-8", newline="") as file:\n    boxes = list(csv.DictReader(file))\nfor box in boxes:\n    for key in ["x", "y", "w", "h"]:\n        box[key] = int(box[key])\nprint(len(boxes), "cached boxes")')]
     if week==12:challenge += [mdcell('## 画面なしのモデル / Headless model\nclick_model.pyを同じフォルダへ。GUIがなくても実際のPythonで確認できます。'),codecell('from click_model import hit, tick_state\nprint(hit(0, 3))\nprint(hit(1, 0))\nprint(tick_state(1))')]
     challenge += [mdcell('## Predict / 予想\n変更前に何が起きると思う？'),codecell('# Your program / 自分のプログラム\n'),mdcell('## Checks / 確認\n入力 → 期待値 → 実際の結果\n\n通常：\n境界・失敗：\n手計算・元データとの照合：\n\n## Explain / 説明\n何を変えた？ なぜ？ 何がまだできない？')]
     notebook(dest/'challenge-starter.ipynb',challenge)
     extras=[('starter-files.zip','必要ファイルをまとめてダウンロード','Download the starter pack'),('practice.ipynb','ミニ講義の実行例Notebook','Worked-example notebook'),('challenge-starter.ipynb','空欄つきチャレンジNotebook','Challenge notebook')]
-    if week in [7,8,9,10]:extras.append(('student-menu.csv','メニュー CSV','Menu CSV'))
+    if week in [8,9,10]:extras.append(('student-menu.csv','メニュー CSV','Menu CSV'))
     if week==8:extras.append(('bicycle-theft-guide.ipynb','選択：実際の事件CSVを集計','Alternative: actual incident CSV'))
     if week==10:extras += [('budget_tool.py','予算ツール.py','Budget tool script')]
     if week==11:extras += [('detect_faces.py','OpenCV検出.py','OpenCV detection script'),('reitaku.jpg','入力画像','Input image'),('detected-boxes.csv','検出済み座標CSV','Cached detection CSV'),('vision-input.jpg','座標に対応する縮小入力画像','Resized input matching cached coordinates'),('detected-faces.jpg','実際の出力画像','Actual output image')]
     if week==12:extras += [('click_game.py','クリックゲーム.py','Click game script'),('click_model.py','画面なしのルール.py','Headless game rules')]
     if week==13:extras += [('stretch-shooter.py','任意：発展シューティング','Optional shooter'),('workshop-tkinter.ipynb','任意：ボタンから関数を呼ぶ','Optional function behind a button')]
     body=p(*spec['brief'])+'<h2>'+bi('まず、ここから','Start here')+'</h2>'+p('新しい空のNotebookを作り、タイトル・氏名・問いをMarkdownで書く。必要なデータを同じフォルダへ保存。コードを実行し、結果と自分の説明を交互に置く。前の週の提出がなくてもスターターから始められる。','Create a blank notebook; write title, name and question in Markdown. Save needed data beside it. Alternate code/results with your explanation. The starter works without a previous submission.')+'<h2>'+bi('30分のチャレンジ','30-minute challenge')+'</h2>'+list_html(spec['requirements'])+links(extras,week)+'<h2>'+bi('保存するもの','Save your evidence')+'</h2>'+p('予想→変更→結果→確認。各セルの役割をMarkdownで説明し、全セルを実行して出力を保存する。派手さより、自分で説明できる変更を大切に。','Prediction → change → result → check. Explain steps in Markdown, run all cells and save outputs. Choose a change you can explain.')+'<h2>'+bi('宿題・提出','Homework / submission')+'</h2>'+p(*spec['homework'])+(p(f'締切：{spec["due"]} 23:59 JST',f'Due: {spec["due"]}, 23:59 JST') if spec['due'] else '')+p('提出作品はクラスギャラリーへ。AIを使った場合は、一つの提案と、それを確かめて採用・修正・却下した理由を記す。','Submitted projects go to the class gallery. If using AI, record one suggestion and why you accepted, changed or rejected it after checking.')
-    if week==7:
-        body=p(*spec['brief'])+'<h2>'+bi('教材','Files')+'</h2>'+links(extras,week)+'<h2>'+bi('進め方','Steps')+'</h2>'+p('新しいNotebookを作り、氏名をMarkdownで書く。student-menu.csvを同じフォルダへ保存する。','Create a new notebook and write your name in Markdown. Save student-menu.csv in the same folder.')+list_html(spec['requirements'])+p('コードの下に、結果と分かったことをMarkdownで短く書こう。','Below your code, briefly explain the result in Markdown.')+'<h2>'+bi('宿題・提出','Homework / submission')+'</h2>'+p(*spec['homework'])+p(f'締切：{spec["due"]} 23:59 JST',f'Due: {spec["due"]}, 23:59 JST')+p('提出作品はクラスギャラリーへ。AIを使ったら、使った箇所と確認した結果を書く。','Submissions go to the class gallery. If you use AI, identify where and explain how you checked the result.')
     if week==14:body=p(*spec['brief'])+'<h2>'+bi('形式練習','Format practice')+'</h2>'+list_html(spec['requirements'])+links(extras,week)+p(*spec['homework'])+p('本番：授業ノート・教材・Python公式文書・通常の構文補完は可。生成AI・他者との相談は不可。予想を実行前に書き、読解・変更・検証・説明を各5点で評価。','Actual challenge: notes/materials, official Python docs and ordinary completion allowed; no generative AI or collaboration. Predict before running. Reading, change, verification and explanation are five points each.')
     refs={10:('https://docs.python.org/3/tutorial/modules.html','Python公式：スクリプトとモジュール','Python documentation: scripts and modules'),11:('https://docs.opencv.org/4.x/db/d28/tutorial_cascade_classifier.html','OpenCV公式：Cascade Classifier','OpenCV documentation: Cascade Classifier'),12:('https://docs.python.org/3/library/tkinter.html','Python公式：Tkinterとイベントループ','Python documentation: Tkinter and its event loop')}
     if week in refs:
@@ -518,18 +487,17 @@ def build_week(week,spec):
         front=re.sub(r'^practice_mix_ja:.*$','practice_mix_ja: 人 100% · AI 0%',front,flags=re.M)
     for key,value in [('title',spec['title']),('title_ja',spec['title_ja']),('overview',spec['aim'][1]),('overview_ja',spec['aim'][0])]:
         front=re.sub(r'^'+key+r':.*$',key+': '+value,front,flags=re.M)
-    homework_titles={7:('メニューと予算','Menu and budget'),8:('友だちが使える道具','A tool a friend can use'),9:('関数とループで繰り返す','Repeat with a function and loop'),10:('.pyで動く予算ツール','A runnable budget script'),11:('画像の確認と作品計画','Image checks and a project plan'),12:('動く試作品','A working prototype'),13:('最終プロジェクト提出','Final project submission'),14:('授業内に提出','Submit during class')}
+    homework_titles={7:('天気の道具を改善する','Improve your weather tool'),8:('友だちが使える道具','A tool a friend can use'),9:('関数とループで繰り返す','Repeat with a function and loop'),10:('.pyで動く予算ツール','A runnable budget script'),11:('画像の確認と作品計画','Image checks and a project plan'),12:('動く試作品','A working prototype'),13:('最終プロジェクト提出','Final project submission'),14:('授業内に提出','Submit during class')}
     for key,value in [('homework_title',homework_titles[week][1]),('homework_title_ja',homework_titles[week][0])]:
         if re.search(r'^'+key+':',front,re.M):front=re.sub(r'^'+key+':.*$',key+': '+value,front,flags=re.M)
         else:front+='\n'+key+': '+value
     front=front.rstrip()+'\n'
     resources=[f'- [Week {week:02} Lecture — {spec["title"]}](weeks/week-{week:02}/lecture.html) {{lecture}}',f'- [ミニ講義の実行例 / Worked Examples](weeks/week-{week:02}/practice.ipynb) {{fundamentals}}',f'- [チャレンジ・スターター / Challenge Starter](weeks/week-{week:02}/challenge-starter.ipynb) {{notebook}}',f'- [チャレンジの手順 / Challenge Instructions](weeks/week-{week:02}/challenge.html) {{challenge}}',f'- [宿題・提出方法 / Homework and Submission](weeks/week-{week:02}/challenge.html) {{homework}}']
-    if week in [7,8,9,10]:resources.append(f'- [メニュー / Menu](weeks/week-{week:02}/student-menu.csv) {{data}}')
+    if week in [8,9,10]:resources.append(f'- [メニュー / Menu](weeks/week-{week:02}/student-menu.csv) {{data}}')
     if week==8:resources.append('- [選択：千葉の自転車盗 / Optional Bicycle-Theft Investigation](weeks/week-08/bicycle-theft-guide.ipynb) {support}')
     if week in [10,11,12,13]:resources.append('- [Final Project Requirements](content/final-project.md) {support}')
     sections=[('Lecture Flow',spec['flow']),('In-Class Notebook',('スライドの短いコードを予想→実行→一つ修正。説明と結果が入った実行例Notebookを使う。','Predict, run and modify short slide examples using the worked-example notebook.')),('In-Class Challenge',(spec['brief'][0]+f' [手順とファイルを開く](weeks/week-{week:02}/challenge.html)。',spec['brief'][1]+f' [Open instructions and files](weeks/week-{week:02}/challenge.html).')),('Take-Home Assignment',spec['homework']),('Aha!',spec['aim']),('Takeaway',('自分で変え、結果を確かめ、理由を説明する。','Change it yourself, check the result and explain why.'))]
     text='---'+front+'---\n'
-    if week==7:text+='## Student Work\nEN: Three short Week 6 Report Part 2 demonstrations. [Week 6 gallery after import](gallery.html?week=6); [Week 5 reference gallery](gallery.html?week=5). Everyone can start today from the supplied menu.\nJP: Week 6のレポートPart 2を3人が短く発表。[Week 6の作品（取込後）](gallery.html?week=6)・[参考：Week 5の作品](gallery.html?week=5)。今日のメニューから全員スタートできる。\n'
     for name,(ja,en) in sections:text+=f'## {name}\nEN: {en}\nJP: {ja}\n'
     text+='## Resources\n'+'\n'.join(resources)+'\n'
     write(source,text)
@@ -575,7 +543,8 @@ root.mainloop()'''
     for week in W:
         folder=ROOT/f'weeks/week-{week:02}'
         files=['practice.ipynb','challenge-starter.ipynb']
-        if week in [7,8,9,10]:files+=['student-menu.csv']
+        if week==7:files+=['weather-response.json','README.txt']
+        if week in [8,9,10]:files+=['student-menu.csv']
         if week==8:files+=['bicycle-theft-guide.ipynb','bicycle-theft.csv']
         if week==10:files+=['budget_tool.py']
         if week==11:files+=['detect_faces.py','reitaku.jpg','vision-input.jpg','detected-faces.jpg','detected-boxes.csv','challenge-face-detection.ipynb']
@@ -585,7 +554,7 @@ root.mainloop()'''
             for name in files:
                 file=folder/name
                 if not file.exists():raise FileNotFoundError(file)
-                item=zipfile.ZipInfo(f'week-{week:02}/'+name,date_time=(2026,11,6,0,0,0));item.compress_type=zipfile.ZIP_DEFLATED
+                item=zipfile.ZipInfo(f'week-{week:02}/'+name,date_time=(2026,11,11,0,0,0) if week==7 else (2026,11,6,0,0,0));item.compress_type=zipfile.ZIP_DEFLATED
                 archive.writestr(item,file.read_bytes())
     report=[dict(week=w,title=s['title'],slides=len(s['slides']),date=s['date']) for w,s in W.items()]
     write(ROOT/'tools/course-flow-manifest.json',json.dumps(report,ensure_ascii=False,indent=2)+'\n')

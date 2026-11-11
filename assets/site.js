@@ -336,7 +336,7 @@ async function setupFinalProjectPage() {
 function fileType(href, external) {
   if (external) return 'LINK';
   const extension = href.split('?')[0].split('.').pop().toLowerCase();
-  return ({ pdf:'PDF', ipynb:'IPYNB', csv:'CSV', md:'MD', py:'PY', html:'HTML', png:'PNG', jpg:'JPG', jpeg:'JPG', gif:'GIF', zip:'ZIP' })[extension] || 'FILE';
+  return ({ pdf:'PDF', ipynb:'IPYNB', csv:'CSV', json:'JSON', md:'MD', py:'PY', html:'HTML', png:'PNG', jpg:'JPG', jpeg:'JPG', gif:'GIF', zip:'ZIP' })[extension] || 'FILE';
 }
 
 function resourcesHtml(body, onlyKinds = []) {
@@ -690,7 +690,7 @@ function agendaWeek(w, defaultOpen = false) {
   if (setupCheck) classTabs.push({ key:'setup', en:'Setup check', ja:'環境チェック', content:`<div class="class-task">${bilingualHtml(setupCheck.body)}</div>` });
   if (tutorials) classTabs.push({ key:'tutorials', en:'Tutorials', ja:'チュートリアル', content:tutorialsHtml(tutorials.body) });
   if (notebook) classTabs.push({ key:'notebook', en:'In-class activity', ja:'授業内アクティビティ', content:`<div class="class-task">${bilingualHtml(notebook.body)}${resourceBlock(notebookFiles, false)}</div>` });
-  if (challenge) classTabs.push({ key:'challenge', en:'30-min challenge', ja:'30分チャレンジ', content:`<div class="class-task">${bilingualHtml(challenge.body)}${resourceBlock(challengeFiles + (w.week === 2 ? sharedFiles : ''), false)}</div>` });
+  if (challenge) classTabs.push({ key:'challenge', en:escapeHtml(w.challenge_title || '30-min challenge'), ja:escapeHtml(w.challenge_title_ja || '30分チャレンジ'), content:`<div class="class-task">${bilingualHtml(challenge.body)}${resourceBlock(challengeFiles + (w.week === 2 ? sharedFiles : ''), false)}</div>` });
   const tabId = `class-${String(w.week).padStart(2,'0')}`;
   const inClassCopy = practiceParts.length ? `<div class="practice-rounds">${practiceParts.map(part => `<section class="practice-round">${bilingualHtml(part.content.body)}${part.number === 3 && challenge ? bilingualHtml(challenge.body) : ''}${resourceBlock(resourcesHtml(resources.body, [`part-${part.number}`]), false)}</section>`).join('')}</div>` : classTabs.length ? `<div class="class-tabs"><div class="class-tab-list ui-tabs" role="tablist" aria-label="In-class activities" style="--class-tab-count:${classTabs.length}">${classTabs.map((tab, index) => `<button type="button" class="class-tab ui-tab" role="tab" id="${tabId}-${tab.key}-tab" aria-controls="${tabId}-${tab.key}-panel" aria-selected="${index === 0}" tabindex="${index === 0 ? '0' : '-1'}"><span class="lang-en">${tab.en}</span><span class="lang-ja jp" lang="ja">${tab.ja}</span></button>`).join('')}</div>${classTabs.map((tab, index) => `<div class="class-tab-panel" role="tabpanel" id="${tabId}-${tab.key}-panel" aria-labelledby="${tabId}-${tab.key}-tab"${index === 0 ? '' : ' hidden'}>${tab.content}</div>`).join('')}</div>${w.week === 1 || w.week === 2 ? '' : resourceBlock(sharedFiles)}` : '';
   const lectureResource = resources?.body.split('\n').map(line => line.trim()).find(line => /\{lecture\}$/.test(line));
@@ -698,7 +698,7 @@ function agendaWeek(w, defaultOpen = false) {
   const lecturePath = lectureMatch?.[2] || '';
   const lectureViewer = lecturePath ? `viewer.html?file=${encodeURIComponent(lecturePath)}&title=${encodeURIComponent(lectureMatch[1])}` : '';
   const lectureThumb = lecturePath && fileType(lecturePath, false) === 'PDF' ? pdfPageImage(lecturePath, w.week === 1 ? 5 : 1) : '';
-const lectureDeck = lectureFiles ? w.week >= 3 && lecturePath.endsWith('.html') ? `<section class="lecture-slide-card"><h4 class="lecture-section-title"><span class="lang-ja jp">講義スライド</span><span class="lang-en">Lecture slides</span></h4><iframe class="lecture-inline-deck" src="${escapeHtml(lecturePath)}?embed=1&amp;v=${w.week === 7 ? '20261107-menu' : w.week >= 8 ? '20261106-flow' : w.week === 6 ? '20261105-class-review' : w.week === 5 ? '20261028-week05-final' : '20261021-week04'}${new URLSearchParams(location.search).has('p') ? '&amp;p' : ''}" title="Week ${String(w.week).padStart(2,'0')} — 講義スライド / Lecture slides" loading="lazy" allow="fullscreen"></iframe><div class="lecture-card-action"><a class="file-preview" data-lecture-page href="${escapeHtml(lecturePath)}"><span class="lang-ja jp" lang="ja">スライドをプレビュー</span><span class="lang-en">Preview slides</span> ↗</a></div></section>` : `<aside class="lecture-deck-panel"><p class="lecture-deck-label"><span class="lang-en">LECTURE SLIDES</span><span class="lang-ja jp" lang="ja">講義スライド</span></p>${lectureThumb ? `<a class="lecture-deck-thumbnail" data-file-preview href="${lectureViewer}" aria-label="${escapeHtml(lectureMatch[1])}"><img src="${escapeHtml(lectureThumb)}" alt="${escapeHtml(lectureMatch[1])} slide preview" loading="lazy"></a>` : ''}<p class="lecture-deck-title">${escapeHtml(lectureMatch?.[1] || '')}</p></aside>` : '';
+const lectureDeck = lectureFiles ? w.week >= 3 && lecturePath.endsWith('.html') ? `<section class="lecture-slide-card"><h4 class="lecture-section-title"><span class="lang-ja jp">講義スライド</span><span class="lang-en">Lecture slides</span></h4><iframe class="lecture-inline-deck" src="${escapeHtml(lecturePath)}?embed=1&amp;v=${w.week === 7 ? '20261111-weather' : w.week >= 8 ? '20261106-flow' : w.week === 6 ? '20261105-class-review' : w.week === 5 ? '20261028-week05-final' : '20261021-week04'}${new URLSearchParams(location.search).has('p') ? '&amp;p' : ''}" title="Week ${String(w.week).padStart(2,'0')} — 講義スライド / Lecture slides" loading="lazy" allow="fullscreen"></iframe><div class="lecture-card-action"><a class="file-preview" data-lecture-page href="${escapeHtml(lecturePath)}"><span class="lang-ja jp" lang="ja">スライドをプレビュー</span><span class="lang-en">Preview slides</span> ↗</a></div></section>` : `<aside class="lecture-deck-panel"><p class="lecture-deck-label"><span class="lang-en">LECTURE SLIDES</span><span class="lang-ja jp" lang="ja">講義スライド</span></p>${lectureThumb ? `<a class="lecture-deck-thumbnail" data-file-preview href="${lectureViewer}" aria-label="${escapeHtml(lectureMatch[1])}"><img src="${escapeHtml(lectureThumb)}" alt="${escapeHtml(lectureMatch[1])} slide preview" loading="lazy"></a>` : ''}<p class="lecture-deck-title">${escapeHtml(lectureMatch?.[1] || '')}</p></aside>` : '';
   const weekTwoLecture = `<div class="lecture-offerings">
     <section class="lecture-slide-card" aria-label="Lecture slides">
       <div class="lecture-thumbnail"><small>WEEK 02 · LECTURE</small><h4><span class="lang-ja jp" lang="ja">Pythonを動かす。<br>世界を地図にする。</span><span class="lang-en">Make Python work.<br>Map what is happening.</span></h4><p>Part 1 · Markdown & Python<br>Part 2 · Earthquake Map</p></div>
@@ -1031,6 +1031,18 @@ async function setupFileViewer() {
     const response = await fetch(file, { cache:'no-cache' });
     if (!response.ok) throw new Error('File not found');
     const source = await response.text();
+    if (extension === 'json') {
+      const data = JSON.parse(source);
+      if (Array.isArray(data.hourly?.time) && Array.isArray(data.hourly?.temperature_2m) && Array.isArray(data.hourly?.precipitation_probability)) {
+        const quoted = value => '"' + String(value ?? '').replace(/"/g, '""') + '"';
+        const rows = data.hourly.time.map((time, index) => [time, data.hourly.temperature_2m[index], data.hourly.precipitation_probability[index]].map(quoted).join(','));
+        renderCsvPreview(root, 'time (JST),temp (°C),rain (%)\n' + rows.join('\n'), title, actions, download);
+        root.querySelector('.eyebrow').textContent = 'FORECAST JSON · TABLE PREVIEW';
+      } else {
+        root.innerHTML = `<div class="viewer-title"><p class="eyebrow">JSON PREVIEW</p><h1>${escapeHtml(title)}</h1>${actions(download)}</div><article class="markdown-preview"><pre><code>${escapeHtml(JSON.stringify(data, null, 2))}</code></pre></article>`;
+      }
+      return;
+    }
     if (extension === 'csv') {
       renderCsvPreview(root, source, title, actions, download);
       return;

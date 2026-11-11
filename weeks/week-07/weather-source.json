@@ -1,0 +1,7 @@
+{
+  "provider": "Open-Meteo",
+  "place": "Kashiwa",
+  "url": "https://api.open-meteo.com/v1/forecast?latitude=35.86&longitude=139.97&hourly=temperature_2m,precipitation_probability&forecast_hours=24&timezone=Asia%2FTokyo",
+  "retrieved_at": "2026-11-11T12:26:37.768657+00:00",
+  "timezone": "Asia/Tokyo"
+}

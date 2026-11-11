@@ -3,44 +3,44 @@ week: 7
 publish_at: 2026-11-12T12:00:00+09:00
 preview: true
 phase: REPEAT
-practice_mix: Human 60% · AI 40%
-practice_mix_ja: 人 60% · AI 40%
-title: Menu and budget
-title_ja: メニューと予算
+title: Weather Hackathon
+title_ja: 天気ハッカソン
 course_date: 2026-11-12
 homework_due: 2026-11-18T23:59:00+09:00
 course_time: 13:10–14:50
-overview: Read a menu with for, compare prices with if, and calculate the total and money left for two items.
-overview_ja: メニューをforで読み、ifで予算と比べる。選んだ2品の合計と残金を計算する。
+overview: Combine API data, dictionaries, if, for and while to build a small weather tool.
+overview_ja: API・辞書のリスト・if・for・whileを組み合わせ、天気を使う小さな道具を作る。
 
-homework_title: Menu and budget
-homework_title_ja: メニューと予算
+homework_title: Improve your weather tool
+homework_title_ja: 天気の道具を改善する
+challenge_title: 60-min hackathon
+challenge_title_ja: 60分ハッカソン
 ---
-## Student Work
-EN: Three short Week 6 Report Part 2 demonstrations. [Week 6 gallery after import](gallery.html?week=6); [Week 5 reference gallery](gallery.html?week=5). Everyone can start today from the supplied menu.
-JP: Week 6のレポートPart 2を3人が短く発表。[Week 6の作品（取込後）](gallery.html?week=6)・[参考：Week 5の作品](gallery.html?week=5)。今日のメニューから全員スタートできる。
 ## Lecture Flow
-EN: Share Japan reports → review menus, for and if → calculate a total → challenge → partner check and submission.
-JP: Japanレポートを見せ合う → メニュー・for・ifの復習 → 合計の計算 → チャレンジ → ペアで確認・提出。
+EN: 13:10 briefing 10 min → 13:20 setup 5 min → 13:25 solo 10 / team build 35 / solo 15 min → 14:25 demos 20 min → 14:45 save and wrap up 5 min.
+JP: 13:10 説明10分 → 13:20 準備5分 → 13:25 自力10分・チーム制作35分・自力15分 → 14:25 発表20分 → 14:45 保存・まとめ5分。
 ## In-Class Notebook
-EN: Predict, run and modify short slide examples using the worked-example notebook.
-JP: スライドの短いコードを予想→実行→一つ修正。説明と結果が入った実行例Notebookを使う。
+EN: Unzip the pack and run the first two code cells. The saved JSON lets everyone start if the API is unavailable.
+JP: ZIPを解凍し、最初の2つのコードセルで予報を準備。APIが使えなくても保存JSONで全員スタートできる。
 ## In-Class Challenge
-EN: Show which menu items you can buy with ¥1,000. Then choose two items and display the total and money left. [Open instructions and files](weeks/week-07/challenge.html).
-JP: メニューから、予算1,000円で買えるものを表示しよう。次に2品選び、合計金額と残金を表示する。 [手順とファイルを開く](weeks/week-07/challenge.html)。
+EN: Build a notebook that helps someone decide when or what to do using a weather forecast. Work in teams of 2–3; every team gives a short demo at the end. [Instructions and files](weeks/week-07/challenge.html).
+JP: 天気予報を使って、誰かの「いつ・どうする？」を助けるNotebookを作ろう。2〜3人で作り、最後に全チームが実演する。 [手順と教材](weeks/week-07/challenge.html)。
+## Student Work
+EN: Every team demos at the end; every member explains a line they wrote.
+JP: 最後の20分で全チームが実演し、全員が自分で書いた行を説明する。
 ## Take-Home Assignment
-EN: Change the two items or the budget in your notebook. Briefly explain your code change and the result. Submit the executed .ipynb and student-menu.csv to UNIPA.
-JP: 授業のNotebookで選ぶ2品か予算を変える。結果と、変更したコードの説明を短く書く。実行済み.ipynbとstudent-menu.csvをUNIPAへ提出。
+EN: Improve the same tool using demo feedback. Each student submits a notebook naming the team, their contribution, one improvement and two checks. Keep the original solo-check code and add revisions below it. Submit the executed .ipynb and weather-response.json to UNIPA.
+JP: 発表でもらった意見を使い、同じ道具を一つ改善する。各自のNotebookにチーム全員の氏名、自分の担当、改善点と確認2件を書く。自力チェックA・Bの元のコードを残し、改善を追記する。実行済み.ipynbとweather-response.jsonをUNIPAへ提出。
 ## Aha!
-EN: Read a menu with for, compare prices with if, and calculate the total and money left for two items.
-JP: メニューをforで読み、ifで予算と比べる。選んだ2品の合計と残金を計算する。
+EN: Combine API data, dictionaries, if, for and while to build a small weather tool.
+JP: API・辞書のリスト・if・for・whileを組み合わせ、天気を使う小さな道具を作る。
 ## Takeaway
-EN: Change it yourself, check the result and explain why.
-JP: 自分で変え、結果を確かめ、理由を説明する。
+EN: Turn API data into a tool using your own rules and a repeating interaction.
+JP: APIのデータを、自分の条件と繰り返しで使える道具にする。
 ## Resources
-- [Week 07 Lecture — Menu and budget](weeks/week-07/lecture.html) {lecture}
-- [ミニ講義の実行例 / Worked Examples](weeks/week-07/practice.ipynb) {fundamentals}
-- [チャレンジ・スターター / Challenge Starter](weeks/week-07/challenge-starter.ipynb) {notebook}
-- [チャレンジの手順 / Challenge Instructions](weeks/week-07/challenge.html) {challenge}
-- [宿題・提出方法 / Homework and Submission](weeks/week-07/challenge.html) {homework}
-- [メニュー / Menu](weeks/week-07/student-menu.csv) {data}
+- [Weather Hackathon — Briefing & Timers](weeks/week-07/lecture.html) {lecture}
+- [制作を始めるNotebook / Start-building notebook](weeks/week-07/challenge-starter.ipynb) {notebook}
+- [コードの実行例 / Worked examples](weeks/week-07/practice.ipynb) {fundamentals}
+- [ハッカソンの手順 / Hackathon instructions](weeks/week-07/challenge.html) {challenge}
+- [宿題・提出方法 / Homework and submission](weeks/week-07/challenge.html) {homework}
+- [天気予報JSON / Forecast JSON](weeks/week-07/weather-response.json) {data}

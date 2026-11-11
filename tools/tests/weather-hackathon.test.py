@@ -2,7 +2,7 @@
 from pathlib import Path
 from unittest.mock import patch
 from urllib.error import URLError
-import contextlib, io, json, sys, tempfile
+import contextlib, hashlib, io, json, sys, tempfile
 
 ROOT=Path(__file__).resolve().parents[2]
 sys.path.insert(0,str(ROOT/'tools'))
@@ -12,7 +12,13 @@ fixture=json.loads((ROOT/'weeks/week-07/weather-response.json').read_text())
 starter=json.loads((ROOT/'weeks/week-07/challenge-starter.ipynb').read_text())
 code=[''.join(c['source']) for c in starter['cells'] if c['cell_type']=='code']
 assert code[0]==lesson.LIVE_LOAD and code[1]==lesson.NORMALIZE
-assert {c.get('metadata',{}).get('checkpoint') for c in starter['cells'] if 'solo-check' in c.get('metadata',{}).get('tags',[])}=={'A','B'}
+assert not any('solo-check' in c.get('metadata',{}).get('tags',[]) for c in starter['cells'])
+
+source=json.loads((ROOT/'weeks/week-07/weather-source.json').read_text())
+assert source['example_sha256']==hashlib.sha256(lesson.API_EXAMPLE.encode()).hexdigest()
+with patch('urllib.request.urlopen',return_value=io.BytesIO(json.dumps(fixture).encode())),contextlib.redirect_stdout(io.StringIO()) as api_output:
+    exec(lesson.API_EXAMPLE,{})
+assert api_output.getvalue()==source['example_output']
 
 with tempfile.TemporaryDirectory() as directory,contextlib.chdir(directory):
     Path('weather-response.json').write_text(json.dumps(fixture))

@@ -9,7 +9,7 @@ import json
 import re
 from datetime import datetime, timedelta, timezone
 
-VERSION = '20261112-weather-guide'
+VERSION = '20261112-web-tutorial'
 LOCATION_CODE = '''import json
 from urllib.request import urlopen
 from urllib.parse import urlencode
@@ -33,6 +33,26 @@ with urlopen(url, timeout=10) as response:
     weather = json.load(response)
 weather["daily"]'''
 
+METEO_CODE = '''import json
+from urllib.request import urlopen
+from urllib.parse import urlencode
+
+# Kashiwa, Japan
+url = "https://api.open-meteo.com/v1/forecast?" + urlencode({
+    "latitude": 35.86224, "longitude": 139.97733,
+    "daily": ("temperature_2m_max,temperature_2m_min,"
+              "precipitation_probability_max,rain_sum,showers_sum"),
+    "past_days": 1, "forecast_days": 3, "timezone": "auto"
+})
+with urlopen(url, timeout=10) as response:
+    weather = json.load(response)
+weather["daily"]'''
+
+READ_CODE = '''daily = weather["daily"]
+i = 1  # Today
+(daily["time"][i], daily["temperature_2m_max"][i],
+ daily["precipitation_probability_max"][i])'''
+
 FOR_CODE = '''daily = weather["daily"]
 for i in range(1, len(daily["time"])):
     print(daily["time"][i],
@@ -55,8 +75,8 @@ GROUP_GUIDE = [
 AI_GUIDE = ('AIはエラーの説明や小さなヒントに使ってよい。作品全体を任せず、使うコードを読み、自分たちで結果を確かめる。',
             'AI can explain an error or give a small hint. Build the app yourselves, read the code you use and check its results.')
 BUILD_STEPS = [
-    ('スターターの2つのコードセルを順番に実行し、都市と天気を確認する。', 'Run the starter’s two code cells in order; check the city and weather.'),
-    ('使う人と問いを決め、下に自分たちのCode CellとMarkdown Cellを追加する。', 'Choose a user and question, then add your own Code and Markdown cells below.'),
+    ('新しい空のNotebookを作り、weather-app.ipynbとして保存。Markdownでタイトル・氏名・問いを書く。', 'Create a new blank notebook, save it as weather-app.ipynb, and add a Markdown title, names and question.'),
+    ('Webチュートリアルの「データ取得」をCode Cellで実行し、結果を確認する。', 'Run the web tutorial’s “Get the data” example in a Code cell and inspect the result.'),
     ('forで複数の日・街・項目を扱い、役立つ結果と視覚表示を作る。', 'Use for across days, cities or weather items; create a useful answer and visual.'),
     ('条件や場所を2通り試し、コードと結果を説明できるようにする。', 'Test two locations or settings and be ready to explain the code and results.'),
 ]
@@ -75,7 +95,7 @@ SPEC = dict(
     flow=('13:10 説明10分 / 13:20 準備5分 / 13:25 チーム制作60分 / 14:25 発表20分 / 14:45 保存・まとめ5分。',
           '13:10 briefing 10 min / 13:20 setup 5 min / 13:25 build 60 min / 14:25 demos 20 min / 14:45 save and wrap up 5 min.'),
     requirements=[
-        ('使う人と、答えたい問いをMarkdownで書く。', 'Explain the user and the question in Markdown.'),
+        ('自分たちで空のNotebookを作成し、使う人と問いをMarkdownで書く。', 'Create your own notebook from scratch; explain the user and question in Markdown.'),
         ('APIの天気データを使い、自分たちのforループを入れる。whileは任意。関数の定義は不要。', 'Use API weather data and add your own for loop. while is optional; no function definitions required.'),
         ('結果が見て分かる表示を一つ。表・文字の棒・絵文字・グラフなど。Notebookの中でよい。', 'Include a readable visual: a table, text bars, emoji or a chart. It can stay inside the notebook.'),
         ('場所や条件を2通り試し、結果・単位・日付・出典を確認する。', 'Test two locations or settings; check the results, units, dates and source.'),
@@ -88,8 +108,8 @@ SPEC = dict(
             ('どう作る？','How will you build it?'),
             ('必要なもの','What is required?'),
             ('最後は、動くところを見せる','How will you present it?'),
-            ('① 都市名 → 場所','① City name → location'),
-            ('② 場所 → 天気データ','② Location → weather data'),
+            ('Open-Meteoからデータ取得','Get data from Open-Meteo'),
+            ('返ってきたデータを読む','Read the returned data'),
             ('forで、日ごとに取り出す','Use for to read each day'),
             ('グループで、うまく進める','Working well together'),
             ('グループで制作開始','Groups: build time'),
@@ -115,10 +135,9 @@ def build(root, c):
     source = json.loads((folder/'weather-source.json').read_text())
     assert source['hashes'] == [hashlib.sha256(code.encode()).hexdigest() for code in [LOCATION_CODE, WEATHER_CODE]]
     retrieved = datetime.fromisoformat(source['retrieved_at']).astimezone(timezone(timedelta(hours=9))).strftime('%Y-%m-%d %H:%M JST')
-    outputs = [entry[0]['data']['text/plain'] for entry in source['outputs']]
+    assert source['meteo_sha256'] == hashlib.sha256(METEO_CODE.encode()).hexdigest()
     loop_output, _ = execute_cell(FOR_CODE, {'weather':data})
-    rows = [('challenge-starter.ipynb','スターターNotebook（コード2セル）','Starter notebook (2 code cells)')]
-    guide_link = ('weather-code.html','天気コード集・実行結果','Weather code guide / outputs')
+    guide_link = ('weather-code.html','Webチュートリアル・実行結果','Web tutorial / outputs')
     source_line = c.p('実際のPython実行結果：柏、'+retrieved+'取得。今実行すると値が変わります。<a href="https://open-meteo.com/en/docs">Open-Meteo</a>。',
                       'Actual Python output: Kashiwa, retrieved '+retrieved+'. Fresh requests return updated values. <a href="https://open-meteo.com/en/docs">Open-Meteo</a>.','weather-source')
     def steps(items): return '<ol class="weather-steps">'+''.join('<li>'+c.bi(*item)+'</li>' for item in items)+'</ol>'
@@ -131,14 +150,14 @@ def build(root, c):
     bodies = [
         c.p('天気データを、役立つアプリに。','Turn weather data into a useful app.','lesson-lead')+'<p class="large-stamp">60 MIN / 2–3 PEOPLE</p>'+c.p('最後は全チームが、動く作品を見せます。','Every team finishes with a working demo.')+c.p(*SPEC['flow'],'hackathon-plan'),
         c.p('完成品は、問いに答えるNotebook。結果を見て分かること。','Your app is a notebook that answers a question, with a result people can see.','lesson-lead')+c.list_html([IDEAS[0],IDEAS[1],IDEAS[3]]),
-        steps(BUILD_STEPS)+c.p('必要な例だけ、別ページのコード集から選べます。追加インストールは不要。','Use the separate code guide when needed. No extra packages to install.')+c.links([guide_link]),
+        steps(BUILD_STEPS)+c.p('必要な例だけ、別ページのコード集から選べます。追加インストールは不要。','Use the web tutorial as a reference for your own notebook. No extra packages to install.')+c.links([guide_link]),
         c.list_html(SPEC['requirements']),
         c.p('1チーム60〜90秒。Notebookをそのまま見せる。別の発表スライドは不要。','60–90 seconds per team. Present from the notebook; no separate slide deck.','lesson-lead')+steps(DEMO_GUIDE),
-        c.p('都市名を緯度・経度に変えるAPI。results[0]は最初の候補。街・地域・国が合っているか確認しよう。','This API turns a city name into coordinates. results[0] is the first match: check the city, region and country.')+'<div class="api-example">'+shown(LOCATION_CODE,outputs[0])+'</div>'+source_line,
-        c.p('その場所の天気をjson.loadで辞書に。最後のweather["daily"]はprintなしで表示できる。','json.load reads weather into a dictionary. The final weather["daily"] displays automatically, without print().')+'<div class="api-example">'+shown(WEATHER_CODE,outputs[1])+'</div>'+c.p('この設定では0＝昨日、1＝今日、2＝明日、3＝明後日。日付は選んだ場所の現地時間。昨日はモデル推定値。','With these settings: 0 = yesterday, 1 = today, 2 = tomorrow, 3 = the next day. Dates use the location’s local time. Yesterday is a model estimate.'),
+        c.p('自分で作ったNotebookのCode Cellへ。urlopenでAPIに接続し、json.loadで辞書に読む。最後の値はprintなしで表示できる。','Run this in a Code cell in your own notebook. urlopen connects to the API; json.load reads a dictionary. The final value displays without print().')+'<div class="api-example">'+shown(METEO_CODE,source['meteo_output'])+'</div>'+source_line,
+        c.p('weather["daily"]は辞書。その中のリストから、同じ番号iの日付・最高気温・降水確率を取り出す。','weather["daily"] is a dictionary. Use the same index i to read a date, high temperature and precipitation probability from its lists.')+'<div class="api-example">'+shown(READ_CODE,source['read_output'])+'</div>'+c.p('この設定では0＝昨日、1＝今日、2＝明日、3＝明後日。表示の順番は日付・°C・%。昨日はモデル推定値。','With these settings: 0 = yesterday, 1 = today, 2 = tomorrow, 3 = the next day. Output order: date, °C, %. Yesterday is a model estimate.'),
         c.p('1から始め、昨日を飛ばす。同じ番号iで日付・最高気温・降水確率を取り出す。','Start at 1 to skip yesterday. Use the same index i for the date, high temperature and rain probability.')+'<div class="api-example">'+shown(FOR_CODE,loop_output)+'</div>'+c.p('このforを自分たちで書き、目的に合わせて変えよう。printはループ内の各行を表示するために使う。','Write and adapt a for loop for your own app. Here print is needed to show each row inside the loop.')+c.links([guide_link]),
         c.list_html(GROUP_GUIDE)+c.p(*AI_GUIDE,'weather-ai-note'),
-        c.p('2〜3人で集まろう。スターターの2つのコードセルを実行できたら、その下から制作開始。','Form groups of 2–3. Run the starter’s two code cells, then add your app below.','lesson-lead')+timer('build',3600,'minutes')+c.links(rows,7,'lecture.html?slide=10')+c.links([('challenge.html','課題の手順','Challenge instructions'),guide_link]),
+        c.p('2〜3人で集まろう。空のNotebookを自分たちで作り、保存。Markdownのタイトルと問いを書き、Webチュートリアルを参考に制作開始。','Form groups of 2–3. Create and save your own blank notebook. Add a Markdown title and question, then use the web tutorial to begin.','lesson-lead')+timer('build',3600,'minutes')+c.links([('challenge.html','課題の手順','Challenge instructions'),guide_link]),
         c.p('14:25–14:45。全チームが実演。20分をチーム数で割り、1組60〜90秒を目安に調整。','14:25–14:45. Every team demos. Divide 20 minutes among teams, aiming for 60–90 seconds each.','lesson-lead')+timer('presentation',90,'seconds')+c.p('目的を一文。表示を見せる。条件を変える。forを一行説明。全員が一言。','State the purpose. Show the visual. Change a setting. Explain one for-loop line. Everyone speaks.'),
         c.p(*SPEC['homework'],'lesson-lead')+c.p('締切：2026年11月18日（水）23:59 JST。作品はクラスギャラリーへ。','Due: Wednesday, November 18, 2026, 23:59 JST. Projects go to the class gallery.')+c.links([('challenge.html','課題・提出方法','Assignment / submission')]),
     ]
@@ -153,45 +172,22 @@ def build(root, c):
     head += f'<link rel="stylesheet" href="hackathon.css?v={VERSION}"><script src="hackathon.js?v={VERSION}" defer></script><link rel="stylesheet" href="../../assets/slide-annotations.css"><script src="../../assets/slide-annotations.js" defer></script><script src="../../assets/slide-swipe.js" defer></script></head>'
     c.write(folder/'lecture.html',head+f'<body class="lecture-page course-deck weather-hackathon" data-week="7" data-release="{release}"><header class="lecture-header"><a id="lecture-return" href="../../agenda.html?open=07#week-07">← '+c.bi('授業予定','Agenda')+'</a><span class="lecture-mark">PRG / 26–2</span><button id="language-toggle" class="language-toggle" type="button">EN</button></header><main><div id="slides-view" class="view"><nav class="slide-controls" aria-label="Slide navigation"><div class="slide-nav-group"><button id="previous-slide" type="button">← '+c.bi('前へ','Previous')+'</button><span id="slide-count" aria-live="polite"></span><button id="next-slide" type="button">'+c.bi('次へ','Next')+' →</button></div><button id="slide-fullscreen" type="button" class="slide-fullscreen" aria-pressed="false">⛶</button></nav><div class="slide-stage">'+''.join(sections)+'</div></div></main><script type="application/json" id="lesson-data">{}</script></body></html>')
 
-    starter = [c.mdcell('''# Week 07 · 天気ハッカソン / Weather Hackathon
-
-チーム全員の氏名 / Team members：
-
-自分の担当 / My contribution：
-
-人に役立つ天気アプリを、このNotebookで作ろう。最初は下の**コード2セルだけ**を順に実行。追加インストール・pandas・APIキーは不要。
-Build a useful weather app here. Run the **two code cells** below in order; no extra packages or API key.
-
-## 1. 都市名から場所を探す / Find a city
-`city` を変えて実行。表示された街・地域・国を確認。見つからなければ英字で別の都市名を試そう。
-Change `city`, run the cell and check the returned city, region and country. Try another spelling if no match is found.'''),c.codecell(LOCATION_CODE),
-        c.mdcell('''## 2. その場所の天気を取得 / Get its weather
-
-1つ目のセルの `place`（緯度・経度）を使います。`urlopen` でAPIにつなぎ、`json.load` で辞書に読み込みます。最後の値は `print()` なしで表示できます。
-Uses coordinates from `place`. `urlopen` connects to the API; `json.load` reads a dictionary. The last expression displays automatically.
-
-`past_days=1`、`forecast_days=3` なので、**0＝昨日、1＝今日、2＝明日、3＝明後日**。`timezone="auto"` はその場所の現地時間。
-With these settings: **0 = yesterday, 1 = today, 2 = tomorrow, 3 = the next day**, in the selected location’s local time.
-
-- `temperature_2m_max` / `temperature_2m_min`：最高・最低気温 / high and low (°C)
-- `precipitation_probability_max`：1日の最大降水確率 / daily maximum precipitation probability (%)
-- `rain_sum` + `showers_sum`：雨量の合計 / total liquid rain (mm)
-
-昨日の値はモデル推定で、観測の証明ではありません。降水確率は「必ず降る」という意味ではありません。
-Yesterday’s values are model estimates, not confirmed observations. A probability does not guarantee rain.'''),c.codecell(WEATHER_CODE),
-        c.mdcell('## ここから、自分たちのアプリへ / Your app starts here\n\n'+SPEC['brief'][0]+'\n\n'+SPEC['brief'][1]+'\n\n**必須：APIデータ・自分たちのfor・見やすい結果。whileは任意。関数の定義は不要。**\n**Required: API data, your own for loop, and a clear visual result. while is optional; no function definitions needed.**\n\n### 例えば / Ideas\n'+ '\n'.join('- '+ja+'  \n  '+en for ja,en in IDEAS)+'\n\n下にCode CellとMarkdown Cellを追加。使う人・問い・コード・結果・説明を残そう。場所や条件を2通り確認し、全員が自分の変更を説明できるように。AIを使った場合は用途と自分で確認したことを一言。\nAdd your own Code and Markdown cells: user, question, code, results and explanation. Check two locations or settings. Each person explains their change; briefly note any AI help and what you checked.\n\n[課題・提出方法 / Challenge](https://yohman.github.io/26-2-Programming/weeks/week-07/challenge.html?p=) · [コード集 / Code guide](https://yohman.github.io/26-2-Programming/weeks/week-07/weather-code.html?p=) · [Data: Open-Meteo](https://open-meteo.com/en/docs)\n\nプレビューの保存出力：'+retrieved+'、柏。自分で実行すると更新されます。\nSaved preview output: Kashiwa, '+retrieved+'. Running the cells fetches fresh values.')]
-    for i,cell in enumerate([starter[1],starter[3]]):
-        cell['execution_count']=i+1
-        cell['outputs']=source['outputs'][i]
-    c.notebook(folder/'challenge-starter.ipynb',starter)
-    for obsolete in ['practice.ipynb','week-07-in-class-logic-review.ipynb','starter-files.zip']:
+    # Students author their own notebook; do not regenerate distributed starters.
+    for obsolete in ['challenge-starter.ipynb','practice.ipynb','week-07-in-class-logic-review.ipynb','starter-files.zip']:
         (folder/obsolete).unlink(missing_ok=True)
 
     body = c.p(*SPEC['brief'],'lesson-lead')+heading('完成品・必要なもの','Final deliverable and requirements')+c.list_html(SPEC['requirements'])
-    body += heading('始め方','Get started')+c.p('スターターの2つのコードセルを順番に実行。都市名を変えて場所を確認し、その場所の天気データを読む。下に自分たちのセルを追加する。', 'Run the starter’s two code cells in order. Change the city, confirm its location and fetch the weather. Add your own cells below.')+c.links(rows,7)+c.links([guide_link])
+    body += heading('空のNotebookから始める','Create your own notebook from scratch')
+    body += c.p('この課題では、配布ファイルを使わず、新しい空の.ipynbを自分たちで作成してください。','For this challenge, you must create your own new, blank .ipynb file.')
+    body += steps([
+        ('VS Codeのコマンドパレットで「Create: New Jupyter Notebook」を実行し、右上でPythonカーネルを選ぶ。', 'In VS Code’s Command Palette, run Create: New Jupyter Notebook, then select your Python kernel at the top right.'),
+        ('weather-app.ipynbなど、作品に合う名前で保存する。', 'Save the file with a name such as weather-app.ipynb.'),
+        ('最初のセルをMarkdownにし、作品名・チームの氏名・使う人・問いを書く。', 'Make the first cell Markdown: add your app title, team names, user and question.'),
+        ('Code Cellを追加し、Webチュートリアルの「データ取得」を実行。結果と自分の説明を交互に置く。', 'Add a Code cell and run “Get the data” from the web tutorial. Alternate code/results with your own Markdown explanation.'),
+    ])+c.links([guide_link])+c.p('<a href="https://code.visualstudio.com/docs/datascience/jupyter-notebooks">Notebookの作成・操作（VS Code公式）</a>', '<a href="https://code.visualstudio.com/docs/datascience/jupyter-notebooks">Create and edit notebooks (VS Code guide)</a>','weather-source')
     body += c.p('コード集は必要なテーマだけ使う参考ページ。すべて作る必要はありません。追加インストール・pandas・APIキーは不要。', 'Choose only the examples you need from the code guide; you do not need to build them all. No extra packages, pandas or API key.')
     body += heading('アイデアを選ぶ','Choose a question')+c.list_html(IDEAS)+c.p('予報は確率。昨日の雨量はモデル推定。日付は選んだ場所の現地時間で確認しよう。','Forecasts describe probabilities. Yesterday’s rainfall is a model estimate. Check dates in the selected location’s local time.')
-    body += heading('作り方','Build it')+steps(BUILD_STEPS)+heading('今日の流れ','Today’s plan')+c.p(*SPEC['flow'])
+    body += heading('今日の流れ','Today’s plan')+c.p(*SPEC['flow'])
     body += heading('グループの進め方','Good group work')+c.list_html(GROUP_GUIDE)+c.p(*AI_GUIDE)
     body += '<details class="weather-hints"><summary>'+c.bi('困ったとき','If you get stuck')+'</summary>'+c.list_html([
         ('resultsが見つからない：都市名を英字で入力し直す。別の街が出たら国・地域を確認する。', 'No results? Try another spelling. A city name can match another place: check the country and region.'),
@@ -209,10 +205,10 @@ Yesterday’s values are model estimates, not confirmed observations. A probabil
         if re.search(r'^'+key+':',front,re.M): front=re.sub(r'^'+key+r':.*$',key+': '+value,front,flags=re.M)
         else: front=front.rstrip()+'\n'+key+': '+value+'\n'
     text='---'+front+'---\n'
-    panels=[('Lecture Flow',SPEC['flow']),('In-Class Notebook',('スターターは一つ、コードは2セル。都市名から場所を探し、APIで天気を取得。下に自分たちのセルを追加する。','One starter, two code cells: find a city, then get its weather. Add your own app below.')),('In-Class Challenge',(SPEC['brief'][0]+' [手順と教材](weeks/week-07/challenge.html)。',SPEC['brief'][1]+' [Instructions](weeks/week-07/challenge.html).')),('Student Work',('最後に全チームが実演。全員が一言話し、forと結果を説明する。','Every team demos. Everyone speaks briefly and explains their for loop and results.')),('Take-Home Assignment',SPEC['homework']),('Aha!',SPEC['aim']),('Takeaway',('APIのデータを、使う人に役立つ答えに変える。','Turn API data into an answer someone can use.'))]
+    panels=[('Lecture Flow',SPEC['flow']),('In-Class Notebook',('新しい空のNotebookを自分で作り、保存する。Markdownで作品名・氏名・問いを書き、Webチュートリアルのデータ取得から始めよう。','Create and save your own blank notebook. Add a Markdown title, names and question, then begin with “Get the data” in the web tutorial.')),('In-Class Challenge',(SPEC['brief'][0]+' [手順と教材](weeks/week-07/challenge.html)。',SPEC['brief'][1]+' [Instructions](weeks/week-07/challenge.html).')),('Student Work',('最後に全チームが実演。全員が一言話し、forと結果を説明する。','Every team demos. Everyone speaks briefly and explains their for loop and results.')),('Take-Home Assignment',SPEC['homework']),('Aha!',SPEC['aim']),('Takeaway',('APIのデータを、使う人に役立つ答えに変える。','Turn API data into an answer someone can use.'))]
     for name,(ja,en) in panels: text+=f'## {name}\nEN: {en}\nJP: {ja}\n'
-    text+='## Resources\n- [Weather Hackathon — Briefing & Timers](weeks/week-07/lecture.html) {lecture}\n- [スターターNotebook（コード2セル） / Starter notebook (2 code cells)](weeks/week-07/challenge-starter.ipynb) {notebook}\n- [天気コード集・実行結果 / Weather code guide / outputs](weeks/week-07/weather-code.html) {experiment}\n- [ハッカソンの手順 / Hackathon instructions](weeks/week-07/challenge.html) {challenge}\n- [宿題・提出方法 / Homework and submission](weeks/week-07/challenge.html) {homework}\n'
+    text+='## Resources\n- [Weather Hackathon — Briefing & Timers](weeks/week-07/lecture.html) {lecture}\n- [Webチュートリアル・実行結果 / Web tutorial / outputs](weeks/week-07/weather-code.html) {experiment}\n- [ハッカソンの手順 / Hackathon instructions](weeks/week-07/challenge.html) {challenge}\n- [宿題・提出方法 / Homework and submission](weeks/week-07/challenge.html) {homework}\n'
     c.write(root/'content/weeks/07-logic-loops.md',text)
-    c.write(folder/'README.txt','Week 07 · Weather Hackathon\n\nOne starter: challenge-starter.ipynb. Run its two code cells in order, check the city, then add your own app below. No custom functions, extra packages or API key required.\n\nRequired: API data, your own for loop and a clear visual answer. while is optional. Reference examples: weather-code.html. Instructions: challenge.html.\n\nData: Open-Meteo https://open-meteo.com/en/docs\nYesterday is model-estimated rainfall, not a confirmed observation. Forecast probability is not certainty. Dates use the chosen location’s time zone.\n\nBuild for 60 minutes in teams of 2–3. Every member contributes and explains a change. Demo in 60–90 seconds. Submit an executed .ipynb and any extra files actually used by 2026-11-18 23:59 JST.\n')
+    c.write(folder/'README.txt','Week 07 · Weather Hackathon\n\nCreate your own blank notebook and save it as weather-app.ipynb. Start with a Markdown title, team names, user and question. Open weather-code.html and run the first API example in a Code cell. Alternate code/results with your own explanation. No custom functions, extra packages or API key required.\n\nRequired: API data, your own for loop and a clear visual answer. while is optional. Reference examples: weather-code.html. Instructions: challenge.html.\n\nData: Open-Meteo https://open-meteo.com/en/docs\nYesterday is model-estimated rainfall, not a confirmed observation. Forecast probability is not certainty. Dates use the chosen location’s time zone.\n\nBuild for 60 minutes in teams of 2–3. Every member contributes and explains a change. Demo in 60–90 seconds. Submit an executed .ipynb and any extra files actually used by 2026-11-18 23:59 JST.\n')
     import weather_examples
-    weather_examples.build(root,c,LOCATION_CODE,WEATHER_CODE,VERSION,release)
+    weather_examples.build(root,c,METEO_CODE,LOCATION_CODE,WEATHER_CODE,VERSION,release)

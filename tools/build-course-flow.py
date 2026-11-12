@@ -541,7 +541,7 @@ result.pack(pady=10)
 root.mainloop()'''
     notebook(ROOT/'weeks/week-13/workshop-tkinter.ipynb',[mdcell('# 任意：関数をボタンから呼ぶ\n\nTkinterの画面が使える環境向けの発展。新しい完成条件ではありません。下のコードをbudget_window.pyへ保存してTerminalで実行できます。Notebookで動かした場合は、画面を閉じるまでCellは実行中です。\n\ncommand=show_balance は関数を渡します。show_balance()と書くと今呼んでしまいます。中心のremaining関数はNotebookやTerminalと同じです。'),codecell(tk_code),mdcell('## 自分で試す\n470円、1,000円、文字列で確認。結果の単位、エラーの案内、関数へ渡る値を説明しよう。')])
     for week in W:
-        if week==7:continue  # Week 7 has a single starter notebook, no duplicate pack.
+        if week==7:continue  # Week 7 uses the web tutorial; students create a blank notebook.
         folder=ROOT/f'weeks/week-{week:02}'
         files=['practice.ipynb','challenge-starter.ipynb']
         if week in [8,9,10]:files+=['student-menu.csv']

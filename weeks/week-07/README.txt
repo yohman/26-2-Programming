@@ -1,6 +1,6 @@
 Week 07 · Weather Hackathon
 
-One starter: challenge-starter.ipynb. Run its two code cells in order, check the city, then add your own app below. No custom functions, extra packages or API key required.
+Create your own blank notebook and save it as weather-app.ipynb. Start with a Markdown title, team names, user and question. Open weather-code.html and run the first API example in a Code cell. Alternate code/results with your own explanation. No custom functions, extra packages or API key required.
 
 Required: API data, your own for loop and a clear visual answer. while is optional. Reference examples: weather-code.html. Instructions: challenge.html.
 

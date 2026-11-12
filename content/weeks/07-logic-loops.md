@@ -20,8 +20,8 @@ challenge_title_ja: 60分ハッカソン
 EN: 13:10 briefing 10 min / 13:20 setup 5 min / 13:25 build 60 min / 14:25 demos 20 min / 14:45 save and wrap up 5 min.
 JP: 13:10 説明10分 / 13:20 準備5分 / 13:25 チーム制作60分 / 14:25 発表20分 / 14:45 保存・まとめ5分。
 ## In-Class Notebook
-EN: One starter, two code cells: find a city, then get its weather. Add your own app below.
-JP: スターターは一つ、コードは2セル。都市名から場所を探し、APIで天気を取得。下に自分たちのセルを追加する。
+EN: Create and save your own blank notebook. Add a Markdown title, names and question, then begin with “Get the data” in the web tutorial.
+JP: 新しい空のNotebookを自分で作り、保存する。Markdownで作品名・氏名・問いを書き、Webチュートリアルのデータ取得から始めよう。
 ## In-Class Challenge
 EN: In teams of 2–3, build a useful weather app in a notebook. Choose a question, use API data and a for loop, and present a clear visual answer. Every team demos. [Instructions](weeks/week-07/challenge.html).
 JP: 2〜3人で、人に役立つ天気アプリをNotebookで作ろう。問いを一つ選び、APIのデータをforで扱い、結果を見やすく伝える。最後は全チームが実演。 [手順と教材](weeks/week-07/challenge.html)。
@@ -39,7 +39,6 @@ EN: Turn API data into an answer someone can use.
 JP: APIのデータを、使う人に役立つ答えに変える。
 ## Resources
 - [Weather Hackathon — Briefing & Timers](weeks/week-07/lecture.html) {lecture}
-- [スターターNotebook（コード2セル） / Starter notebook (2 code cells)](weeks/week-07/challenge-starter.ipynb) {notebook}
-- [天気コード集・実行結果 / Weather code guide / outputs](weeks/week-07/weather-code.html) {experiment}
+- [Webチュートリアル・実行結果 / Web tutorial / outputs](weeks/week-07/weather-code.html) {experiment}
 - [ハッカソンの手順 / Hackathon instructions](weeks/week-07/challenge.html) {challenge}
 - [宿題・提出方法 / Homework and submission](weeks/week-07/challenge.html) {homework}

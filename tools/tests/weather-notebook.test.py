@@ -1,6 +1,9 @@
-"""Verify the single starter in real Jupyter, with recorded and live responses."""
+"""Verify web tutorial code as students enter it into a new blank Jupyter notebook.
+
+This creates only temporary QA notebooks; no starter notebook is distributed.
+"""
 from pathlib import Path
-import ast,copy,json,sys,tempfile
+import json,sys,tempfile
 import nbformat
 from nbclient import NotebookClient
 
@@ -10,28 +13,19 @@ import weather_hackathon as lesson
 folder=ROOT/'weeks/week-07'
 weather=json.loads((folder/'weather-response.json').read_text())
 source=json.loads((folder/'weather-source.json').read_text())
-original=nbformat.read(folder/'challenge-starter.ipynb',as_version=4)
-nbformat.validate(original)
-assert sum(cell.cell_type=='code' for cell in original.cells)==2
+codes=[lesson.METEO_CODE,lesson.READ_CODE,lesson.LOCATION_CODE,lesson.WEATHER_CODE,lesson.FOR_CODE]
+expected=[source['meteo_output'],source['read_output'],source['outputs'][0][0]['data']['text/plain'],source['outputs'][1][0]['data']['text/plain']]
 with tempfile.TemporaryDirectory() as directory:
     setup=nbformat.v4.new_code_cell('''import io,json
 from unittest.mock import patch
-qa_responses=iter('''+repr([source['location_response'],weather])+''')
+qa_responses=iter('''+repr([weather,source['location_response'],source['location_weather']])+''')
 qa_network=patch("urllib.request.urlopen", side_effect=lambda *a, **k: io.BytesIO(json.dumps(next(qa_responses)).encode()))
 qa_network.start()''')
-    notebook=copy.deepcopy(original)
-    notebook.cells.insert(0,setup)
+    notebook=nbformat.v4.new_notebook(cells=[setup]+[nbformat.v4.new_code_cell(code) for code in codes])
     NotebookClient(notebook,timeout=30,kernel_name='python3',resources={'metadata':{'path':directory}}).execute()
-    for saved,actual in zip(original.cells,notebook.cells[1:]):
-        if saved.cell_type=='code':
-            assert [o.get('data') for o in actual.outputs]==[o.get('data') for o in saved.outputs]
-            assert not any(o.output_type=='error' for o in actual.outputs)
-    print('PASS: real Jupyter reproduces both saved expression outputs exactly.')
-    live=copy.deepcopy(original)
-    NotebookClient(live,timeout=45,kernel_name='python3',resources={'metadata':{'path':directory}}).execute()
-    codes=[cell for cell in live.cells if cell.cell_type=='code']
-    assert "Kashiwa" in codes[0].outputs[0]['data']['text/plain']
-    daily=ast.literal_eval(codes[1].outputs[0]['data']['text/plain'])
-    assert len(daily['time'])==4 and len(daily['temperature_2m_max'])==4
-    assert all(not any(o.output_type=='error' for o in cell.outputs) for cell in codes)
-    print('PASS: unchanged student notebook fetches a city and four daily weather rows from the live API.')
+    for cell,value in zip(notebook.cells[1:5],expected):
+        assert cell.outputs[0]['data']['text/plain']==value
+    assert all(not any(o.output_type=='error' for o in cell.outputs) for cell in notebook.cells)
+    assert notebook.cells[-1].outputs[0]['text']==lesson.execute_cell(lesson.FOR_CODE,{'weather':source['location_weather']})[0]
+    print('PASS: a new blank Jupyter notebook reproduces all displayed API, indexing, city and loop outputs.')
+assert not (folder/'challenge-starter.ipynb').exists()

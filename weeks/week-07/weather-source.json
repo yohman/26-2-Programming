@@ -1,6 +1,6 @@
 {
   "provider": "Open-Meteo",
-  "retrieved_at": "2026-11-12T01:29:19.727365+00:00",
+  "retrieved_at": "2026-11-12T02:48:15.003443+00:00",
   "location": {
     "id": 1859924,
     "name": "Kashiwa",
@@ -38,66 +38,63 @@
         "admin2": "Kashiwa Shi"
       }
     ],
-    "generationtime_ms": 0.19156933
+    "generationtime_ms": 0.19872189
   },
-  "checks": [
-    {
-      "city": "Kashiwa",
-      "matched": "Kashiwa",
-      "timezone": "Asia/Tokyo",
-      "dates": [
-        "2026-11-11",
-        "2026-11-12",
-        "2026-11-13",
-        "2026-11-14"
-      ],
-      "yesterday_rain_mm": 0.0,
-      "today_probability": 0,
-      "tomorrow_probability": 0
+  "location_weather": {
+    "latitude": 35.85,
+    "longitude": 140.0,
+    "generationtime_ms": 0.09655952453613281,
+    "utc_offset_seconds": 32400,
+    "timezone": "Asia/Tokyo",
+    "timezone_abbreviation": "GMT+9",
+    "elevation": 23.0,
+    "daily_units": {
+      "time": "iso8601",
+      "temperature_2m_max": "°C",
+      "temperature_2m_min": "°C",
+      "precipitation_probability_max": "%",
+      "rain_sum": "mm",
+      "showers_sum": "mm"
     },
-    {
-      "city": "Tokyo",
-      "matched": "Tokyo",
-      "timezone": "Asia/Tokyo",
-      "dates": [
+    "daily": {
+      "time": [
         "2026-11-11",
         "2026-11-12",
         "2026-11-13",
         "2026-11-14"
       ],
-      "yesterday_rain_mm": 0.0,
-      "today_probability": 0,
-      "tomorrow_probability": 0
-    },
-    {
-      "city": "Osaka",
-      "matched": "Osaka",
-      "timezone": "Asia/Tokyo",
-      "dates": [
-        "2026-11-11",
-        "2026-11-12",
-        "2026-11-13",
-        "2026-11-14"
+      "temperature_2m_max": [
+        14.3,
+        17.4,
+        19.4,
+        20.0
       ],
-      "yesterday_rain_mm": 0.0,
-      "today_probability": 0,
-      "tomorrow_probability": 8
-    },
-    {
-      "city": "Naha",
-      "matched": "Naha",
-      "timezone": "Asia/Tokyo",
-      "dates": [
-        "2026-11-11",
-        "2026-11-12",
-        "2026-11-13",
-        "2026-11-14"
+      "temperature_2m_min": [
+        7.0,
+        7.8,
+        8.8,
+        9.8
       ],
-      "yesterday_rain_mm": 0.0,
-      "today_probability": 6,
-      "tomorrow_probability": 20
+      "precipitation_probability_max": [
+        0,
+        0,
+        0,
+        4
+      ],
+      "rain_sum": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "showers_sum": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
     }
-  ],
+  },
   "hashes": [
     "ad5b12805dec1fbaa1bb1dde60b0078bb77a5bb926b1728f3eeef156966df98b",
     "f9cea23178f3a9c84bd4b365762e54de48a2fa922fe173f8fad0d9bea8528c59"
@@ -110,7 +107,7 @@
         "data": {
           "text/plain": "('Kashiwa', 'Chiba', 'Japan')"
         },
-        "execution_count": 1
+        "execution_count": 4
       }
     ],
     [
@@ -118,10 +115,13 @@
         "output_type": "execute_result",
         "metadata": {},
         "data": {
-          "text/plain": "{'time': ['2026-11-11', '2026-11-12', '2026-11-13', '2026-11-14'],\n 'temperature_2m_max': [14.3, 17.4, 19.4, 20.0],\n 'temperature_2m_min': [7.0, 7.8, 8.8, 9.8],\n 'precipitation_probability_max': [0, 0, 0, 6],\n 'rain_sum': [0.0, 0.0, 0.0, 0.0],\n 'showers_sum': [0.0, 0.0, 0.0, 0.0]}"
+          "text/plain": "{'time': ['2026-11-11', '2026-11-12', '2026-11-13', '2026-11-14'],\n 'temperature_2m_max': [14.3, 17.4, 19.4, 20.0],\n 'temperature_2m_min': [7.0, 7.8, 8.8, 9.8],\n 'precipitation_probability_max': [0, 0, 0, 4],\n 'rain_sum': [0.0, 0.0, 0.0, 0.0],\n 'showers_sum': [0.0, 0.0, 0.0, 0.0]}"
         },
-        "execution_count": 2
+        "execution_count": 5
       }
     ]
-  ]
+  ],
+  "meteo_sha256": "a432b59a7d65bc508edd06cc52b54c4ca753f01ef7b2fb907b0761457b4d23c2",
+  "meteo_output": "{'time': ['2026-11-11', '2026-11-12', '2026-11-13', '2026-11-14'],\n 'temperature_2m_max': [14.3, 17.4, 19.4, 20.0],\n 'temperature_2m_min': [7.0, 7.8, 8.8, 9.8],\n 'precipitation_probability_max': [0, 0, 0, 4],\n 'rain_sum': [0.0, 0.0, 0.0, 0.0],\n 'showers_sum': [0.0, 0.0, 0.0, 0.0]}",
+  "read_output": "('2026-11-12', 17.4, 0)"
 }

@@ -1,27 +1,27 @@
 {
-  "retrieved_at": "2026-11-12T01:38:22.038309+00:00",
+  "retrieved_at": "2026-11-12T02:48:15.089357+00:00",
   "examples": {
     "today": {
-      "sha256": "6c09ea97b8eaa1ae84379b30a4ed8e47aa7919091ca5a6a4f2ba5dc8dec6a839",
-      "output": "Kashiwa 2026-11-12\nMaximum precipitation probability: 0 %\nA lower rain chance, but not a guarantee.\n",
+      "sha256": "81bcbf1dfbe482fff6eae886ff95bc4b84e6ffae4562cfb8b4518cbdcb779010",
+      "output": "2026-11-12\nMaximum precipitation probability: 0 %\nA lower rain chance, but not a guarantee.\n",
       "requests": [],
       "inputs": []
     },
     "yesterday": {
-      "sha256": "483a47113f51ed683a67ded5fcf6631a72dfe69ac87a0966837ce57817889ee8",
-      "output": "Kashiwa 2026-11-11\nModel-estimated rainfall: 0.0 mm\nThe model estimates no rain.\n",
+      "sha256": "09a22795c2cea10b4f1efa2464804f748bf30821befd32a94a7207d9c43c3041",
+      "output": "2026-11-11\nModel-estimated rainfall: 0.0 mm\nThe model estimates no rain.\n",
       "requests": [],
       "inputs": []
     },
     "days": {
       "sha256": "650c10fd96ee7927fb71ee601e36caf0e12954813ad7f86aecdbb0a7e228af43",
-      "output": "2026-11-12 7.8 to 17.4 °C | 0 %\n2026-11-13 8.8 to 19.4 °C | 0 %\n2026-11-14 9.8 to 20.0 °C | 6 %\n",
+      "output": "2026-11-12 7.8 to 17.4 °C | 0 %\n2026-11-13 8.8 to 19.4 °C | 0 %\n2026-11-14 9.8 to 20.0 °C | 4 %\n",
       "requests": [],
       "inputs": []
     },
     "cities": {
-      "sha256": "92a651af7338e178fe4268e40c792fb2fc04937a52548bc2514f98c30371af23",
-      "output": "Tokyo 2026-11-13 0 %\nOsaka 2026-11-13 8 %\nNaha 2026-11-13 20 %\n",
+      "sha256": "859df9102eb1ac664f19c4dd0e79dc5504a4b192dc172d163bc58bfa400c15b6",
+      "output": "Tokyo 2026-11-13 0 %\nOsaka 2026-11-13 10 %\nNaha 2026-11-13 14 %\n",
       "requests": [
         {
           "url": "https://geocoding-api.open-meteo.com/v1/search?name=Tokyo&count=1&language=en&countryCode=JP",
@@ -43,7 +43,7 @@
                 "admin1": "Tokyo"
               }
             ],
-            "generationtime_ms": 0.10418892
+            "generationtime_ms": 0.20956993
           }
         },
         {
@@ -51,7 +51,7 @@
           "response": {
             "latitude": 35.7,
             "longitude": 139.6875,
-            "generationtime_ms": 0.041365623474121094,
+            "generationtime_ms": 0.04184246063232422,
             "utc_offset_seconds": 32400,
             "timezone": "Asia/Tokyo",
             "timezone_abbreviation": "GMT+9",
@@ -71,7 +71,7 @@
                 0,
                 0,
                 0,
-                6
+                0
               ]
             }
           }
@@ -100,7 +100,7 @@
                 "admin3": "Kita-ku"
               }
             ],
-            "generationtime_ms": 0.118136406
+            "generationtime_ms": 0.10764599
           }
         },
         {
@@ -108,7 +108,7 @@
           "response": {
             "latitude": 34.7,
             "longitude": 135.5,
-            "generationtime_ms": 0.032067298889160156,
+            "generationtime_ms": 0.044345855712890625,
             "utc_offset_seconds": 32400,
             "timezone": "Asia/Tokyo",
             "timezone_abbreviation": "GMT+9",
@@ -127,8 +127,8 @@
               "precipitation_probability_max": [
                 0,
                 0,
-                8,
-                2
+                10,
+                10
               ]
             }
           }
@@ -155,7 +155,7 @@
                 "admin2": "Naha Shi"
               }
             ],
-            "generationtime_ms": 0.09453297
+            "generationtime_ms": 0.13053417
           }
         },
         {
@@ -163,7 +163,7 @@
           "response": {
             "latitude": 26.18629,
             "longitude": 127.69737,
-            "generationtime_ms": 0.03790855407714844,
+            "generationtime_ms": 0.03540515899658203,
             "utc_offset_seconds": 32400,
             "timezone": "Asia/Tokyo",
             "timezone_abbreviation": "GMT+9",
@@ -181,9 +181,9 @@
               ],
               "precipitation_probability_max": [
                 0,
-                6,
-                20,
-                38
+                12,
+                14,
+                43
               ]
             }
           }
@@ -192,8 +192,8 @@
       "inputs": []
     },
     "visual": {
-      "sha256": "49019ffd71accc07fbfc81df1369d7ccac5bb6d8470c3ca7dbf91c1e938dff83",
-      "output": "Kashiwa | Maximum precipitation probability\nEach block is about 5 percentage points.\n2026-11-12 |░░░░░░░░░░░░░░░░░░░░|   0%\n2026-11-13 |░░░░░░░░░░░░░░░░░░░░|   0%\n2026-11-14 |█░░░░░░░░░░░░░░░░░░░|   6%\n",
+      "sha256": "d7016174b3a7cc4292f115e899f3a9b9f080eb09d57fc487881dbefc84612b73",
+      "output": "Maximum precipitation probability\nEach block is about 5 percentage points.\n2026-11-12 |░░░░░░░░░░░░░░░░░░░░|   0%\n2026-11-13 |░░░░░░░░░░░░░░░░░░░░|   0%\n2026-11-14 |█░░░░░░░░░░░░░░░░░░░|   4%\n",
       "requests": [],
       "inputs": []
     },

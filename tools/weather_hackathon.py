@@ -183,19 +183,19 @@ SPEC = dict(
     date='2026-11-12', due='2026-11-18', version=VERSION,
     aim=('APIの天気データとforを使い、人に役立つ天気アプリを作る。whileは任意。',
          'Use weather API data and for loops to build a useful weather app. while is optional.'),
-    brief=('2〜3人で、人に役立つ天気アプリをNotebookで作ろう。問いを一つ選び、APIのデータをforで扱い、結果を見やすく伝える。最後は全チームが実演。',
-           'In teams of 2–3, build a useful weather app in a notebook. Choose a question, use API data and a for loop, and present a clear visual answer. Every team demos.'),
+    brief=('3人グループで、人に役立つ天気アプリをNotebookで作ろう。問いを一つ選び、APIのデータをforで扱い、結果を見やすく伝える。Notebookに3人全員の氏名を必ず記入し、同じ完成版を各メンバーがUNIPAへ提出。',
+           'In groups of three, build a useful weather app in a notebook. Choose a question, use API data and a for loop, and present a clear visual answer. List all three members in the notebook; each member submits the same completed version to UNIPA.'),
     flow=('13:10 説明10分 / 13:20 準備5分 / 13:25 チーム制作60分 / 14:25 発表20分 / 14:45 保存・まとめ5分。',
           '13:10 briefing 10 min / 13:20 setup 5 min / 13:25 build 60 min / 14:25 demos 20 min / 14:45 save and wrap up 5 min.'),
     requirements=[
-        ('自分たちで空のNotebookを作成し、使う人と問いをMarkdownで書く。', 'Create your own notebook from scratch; explain the user and question in Markdown.'),
+        ('一番上のMarkdown Cellに、作品タイトルとグループ3人全員の氏名を必ず記入。使う人と問いも書こう。', 'Required: put the project title and all three group members’ names in the first Markdown cell. Explain the user and question.'),
         ('APIの天気データを使い、自分たちのforループを入れる。whileは任意。関数の定義は不要。', 'Use API weather data and add your own for loop. while is optional; no function definitions required.'),
         ('結果が見て分かる表示を一つ。表・文字の棒・絵文字・グラフなど。Notebookの中でよい。', 'Include a readable visual: a table, text bars, emoji or a chart. It can stay inside the notebook.'),
         ('場所や条件を2通り試し、結果・単位・日付・出典を確認する。', 'Test two locations or settings; check the results, units, dates and source.'),
         ('全員が自分の変更を説明できる。コードと結果が残る実行済みNotebookにする。', 'Everyone can explain their contribution. Save an executed notebook with code and outputs.'),
     ],
-    homework=('実演の意見を使い、同じアプリを一つ改善する。各自の実行済み.ipynbをUNIPAへ提出（追加ファイルを使った場合は添付）。チームの氏名、自分の担当、改善点、2通りの確認を短く記す。AIを使った場合は、用途と自分で確認したことも書く。',
-              'Improve one part of the app using demo feedback. Each student submits an executed .ipynb to UNIPA, plus any extra files their app needs. Briefly name the team, your contribution, improvement and two checks. Note any AI help and what you verified.'),
+    homework=('グループで取り組んだ天気Notebookを完成させよう。一番上のMarkdown Cellに、作品タイトルと3人全員の氏名を必ず記入。何ができるか、天気データの出典URL、追加した機能・特徴、これから改善したいことを短く書く。全Cellを実行し、結果を保存した.ipynbと必要なファイルをUNIPAへ。代表者だけでなく、メンバー全員がそれぞれ同じ完成版を提出。締切：2026年11月18日（水）23:59 JST。',
+              'Finish your group’s weather notebook. Required: project title and all three members’ names in the first Markdown cell. Briefly describe what it does, the data source URL, original features, and future improvements. Run all cells and save the outputs. Every member submits the same completed .ipynb and required files separately to UNIPA, not just the representative. Deadline: Wednesday, November 18, 2026, 23:59 JST.'),
     slides=[('今日は、天気ハッカソン','Today: Weather Hackathon'),
             ('天気で、誰の何を助ける？','Whose weather question will you answer?'),
             ('どう作る？','How will you build it?'),
@@ -304,7 +304,7 @@ def build(root, c):
     c.write(folder/'challenge.html',c.page_head('Week 07 · Weather Hackathon','course-pages.css','course-page.js',VERSION)+f'<link rel="stylesheet" href="hackathon.css?v={VERSION}"></head><body class="course-challenge weather-hackathon" data-release="{release}"><header class="lecture-header"><a href="../../agenda.html?open=07#week-07">← '+c.bi('授業予定','Agenda')+'</a><span class="lecture-mark">WEEK 07</span><button id="language-toggle" class="language-toggle" type="button">EN</button></header><main id="course-page" hidden><p class="slide-kicker">'+c.bi('授業内ハッカソン＋宿題','In-class hackathon + homework')+'</p><h1>'+c.bi(SPEC['title_ja'],SPEC['title'])+'</h1>'+body+'</main></body></html>')
 
     old = (root/'content/weeks/07-logic-loops.md').read_text(); front=old.split('---',2)[1]
-    updates=dict(title=SPEC['title'],title_ja=SPEC['title_ja'],overview=SPEC['aim'][1],overview_ja=SPEC['aim'][0],homework_title='Improve your weather app',homework_title_ja='天気アプリを改善する',challenge_title='60-min hackathon',challenge_title_ja='60分ハッカソン')
+    updates=dict(title=SPEC['title'],title_ja=SPEC['title_ja'],overview=SPEC['aim'][1],overview_ja=SPEC['aim'][0],homework_title='Group weather notebook',homework_title_ja='グループでつくる天気Notebook',challenge_title='60-min hackathon',challenge_title_ja='60分ハッカソン')
     front=re.sub(r'^practice_mix(?:_ja)?:.*\n','',front,flags=re.M)
     for key,value in updates.items():
         if re.search(r'^'+key+':',front,re.M): front=re.sub(r'^'+key+r':.*$',key+': '+value,front,flags=re.M)

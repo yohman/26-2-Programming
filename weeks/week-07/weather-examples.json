@@ -2,25 +2,25 @@
   "retrieved_at": "2026-11-12T03:00:56.836159+00:00",
   "examples": {
     "today": {
-      "sha256": "d18580f9a83d0335795101a02b177743410282d3d5ec4766fd6b39fa21c35865",
+      "sha256": "678ff03bb0fd6b4cf0ef76acd70428e4cd3da2502d2097e8d19286c479a8bca6",
       "output": "2026-11-12\nMaximum precipitation probability: 0 %\nA lower rain chance, but not a guarantee.\n",
       "requests": [],
       "inputs": []
     },
     "yesterday": {
-      "sha256": "f391d36e275deb860f197d50f180ea3d61ac18366f4eccdadd02b2664fd2eba6",
+      "sha256": "3c81a13478860a6f77bedb57882ff17dc378dba6e26f8c3710aede02d25b26b3",
       "output": "2026-11-11\nModel-estimated rainfall: 0.0 mm\nThe model estimates no rain.\n",
       "requests": [],
       "inputs": []
     },
     "days": {
-      "sha256": "daffc0e536dab1c44c5e7772978771b8d3857f981afe31fb44d16415bfe2928f",
+      "sha256": "7ff105218511f2a2423719fb9c4119a5a4d4e29f6ee56827b2cc15b9e43040ec",
       "output": "2026-11-12 7.8 to 17.4 °C | 0 %\n2026-11-13 8.8 to 19.4 °C | 0 %\n2026-11-14 9.8 to 20.0 °C | 4 %\n",
       "requests": [],
       "inputs": []
     },
     "cities": {
-      "sha256": "3f316753e24f75bc3b9ca8a09c8349725db10c1cc82919037242f191841dd8d0",
+      "sha256": "0768a561836a458e2bf70d712f9f4380c3cff2fc0a9c328d6b1c41f57b1e623b",
       "output": "Tokyo 2026-11-13 0 %\nOsaka 2026-11-13 10 %\nNaha 2026-11-13 14 %\n",
       "requests": [
         {
@@ -192,13 +192,13 @@
       "inputs": []
     },
     "visual": {
-      "sha256": "9e4c1164d87b994e22a451ec183c70976e385dd40bcae2e38b95d1632704c6c2",
+      "sha256": "20b2bc683a06a4f0caa2c7d0c5f4e1ac5d0b398251ffbd83e4155ddda54a349b",
       "output": "Maximum precipitation probability\nEach block is about 5.0 percentage points.\n2026-11-12 |░░░░░░░░░░░░░░░░░░░░|   0%\n2026-11-13 |░░░░░░░░░░░░░░░░░░░░|   0%\n2026-11-14 |█░░░░░░░░░░░░░░░░░░░|   4%\n",
       "requests": [],
       "inputs": []
     },
     "repeat": {
-      "sha256": "e5d0a224c3e1e4eed77be6715d9ab3d81009206d4a6e390424f69fbfe57e9e28",
+      "sha256": "ef4ee269c28000c7495f9ef4fb7ee2760faa7c17bd4b6e098f913dd50c54b5f8",
       "output": "2026-11-12 17.4 °C\n2026-11-13 19.4 °C\n",
       "requests": [],
       "inputs": [

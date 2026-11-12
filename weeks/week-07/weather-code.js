@@ -1,9 +1,25 @@
 (() => {
   const query = new URLSearchParams(location.search);
   const page = document.getElementById('weather-guide');
+  const toggle = document.getElementById('language-toggle');
+  function language(value) {
+    document.documentElement.lang = value;
+    document.documentElement.dataset.language = value;
+    toggle.textContent = value === 'ja' ? 'EN' : 'JP';
+    toggle.setAttribute('aria-label', value === 'ja' ? 'Switch to English' : '日本語に切り替える');
+    document.title = value === 'ja' ? '天気コード集 · Week 07 プログラミング' : 'Weather web tutorial · Week 07 Programming';
+    document.querySelectorAll('[data-label-ja]').forEach(element => {
+      element.setAttribute('aria-label', element.dataset[value === 'ja' ? 'labelJa' : 'labelEn']);
+    });
+    try { localStorage.setItem('programming-language', value); } catch {}
+  }
+  let initial = 'ja';
+  try { initial = localStorage.getItem('programming-language') === 'en' ? 'en' : 'ja'; } catch {}
+  language(initial);
+  toggle.addEventListener('click', () => language(document.documentElement.lang === 'ja' ? 'en' : 'ja'));
   if (!query.has('p') && Date.now() < Date.parse(document.body.dataset.release)) {
     const notice = document.createElement('p');
-    notice.textContent = 'Week 07 · 11月12日 12:00 JST 公開 / Available November 12 at noon JST.';
+    notice.textContent = initial === 'ja' ? '第7週 · 11月12日 12:00 JST 公開' : 'Week 07 · Available November 12 at noon JST.';
     document.body.append(notice); return;
   }
   page.hidden = false;

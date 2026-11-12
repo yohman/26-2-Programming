@@ -1,6 +1,15 @@
 {
+  "parameters": {
+    "lat": 35.86224,
+    "lon": 139.97733,
+    "past_days": 1,
+    "forecast_days": 3,
+    "timezone": "auto",
+    "daily_fields": "temperature_2m_max,temperature_2m_min,precipitation_probability_max,rain_sum,showers_sum",
+    "timeout": 10
+  },
   "provider": "Open-Meteo",
-  "retrieved_at": "2026-11-12T02:48:15.003443+00:00",
+  "retrieved_at": "2026-11-12T03:00:56.737229+00:00",
   "location": {
     "id": 1859924,
     "name": "Kashiwa",
@@ -38,12 +47,12 @@
         "admin2": "Kashiwa Shi"
       }
     ],
-    "generationtime_ms": 0.19872189
+    "generationtime_ms": 0.07104874
   },
   "location_weather": {
     "latitude": 35.85,
     "longitude": 140.0,
-    "generationtime_ms": 0.09655952453613281,
+    "generationtime_ms": 0.08320808410644531,
     "utc_offset_seconds": 32400,
     "timezone": "Asia/Tokyo",
     "timezone_abbreviation": "GMT+9",
@@ -96,8 +105,8 @@
     }
   },
   "hashes": [
-    "ad5b12805dec1fbaa1bb1dde60b0078bb77a5bb926b1728f3eeef156966df98b",
-    "f9cea23178f3a9c84bd4b365762e54de48a2fa922fe173f8fad0d9bea8528c59"
+    "47f234438e870b35767c1629eec0f5c89fb7e31677dcf7e38882ddae64fd6717",
+    "6a88e90e73c3876d1cdaefbeba1e10d9fc2c284fee12c1c83e138a0102008f96"
   ],
   "outputs": [
     [
@@ -121,7 +130,7 @@
       }
     ]
   ],
-  "meteo_sha256": "a432b59a7d65bc508edd06cc52b54c4ca753f01ef7b2fb907b0761457b4d23c2",
+  "meteo_sha256": "e6d283d08f74950841062899550df3f886c86514fb66e4761ffb2c816a4a00c0",
   "meteo_output": "{'time': ['2026-11-11', '2026-11-12', '2026-11-13', '2026-11-14'],\n 'temperature_2m_max': [14.3, 17.4, 19.4, 20.0],\n 'temperature_2m_min': [7.0, 7.8, 8.8, 9.8],\n 'precipitation_probability_max': [0, 0, 0, 4],\n 'rain_sum': [0.0, 0.0, 0.0, 0.0],\n 'showers_sum': [0.0, 0.0, 0.0, 0.0]}",
   "read_output": "('2026-11-12', 17.4, 0)"
 }

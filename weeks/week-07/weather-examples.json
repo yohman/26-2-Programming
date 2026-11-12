@@ -1,26 +1,26 @@
 {
-  "retrieved_at": "2026-11-12T02:48:15.089357+00:00",
+  "retrieved_at": "2026-11-12T03:00:56.836159+00:00",
   "examples": {
     "today": {
-      "sha256": "81bcbf1dfbe482fff6eae886ff95bc4b84e6ffae4562cfb8b4518cbdcb779010",
+      "sha256": "c3b68ed9de9ef99d093d3867f489604dbcbf3af37c51b5c4bcc94010df1f1163",
       "output": "2026-11-12\nMaximum precipitation probability: 0 %\nA lower rain chance, but not a guarantee.\n",
       "requests": [],
       "inputs": []
     },
     "yesterday": {
-      "sha256": "09a22795c2cea10b4f1efa2464804f748bf30821befd32a94a7207d9c43c3041",
+      "sha256": "13ccd46640e70664cd0b9461f177a50362ea947c26b735f14f98376ccdfbf043",
       "output": "2026-11-11\nModel-estimated rainfall: 0.0 mm\nThe model estimates no rain.\n",
       "requests": [],
       "inputs": []
     },
     "days": {
-      "sha256": "650c10fd96ee7927fb71ee601e36caf0e12954813ad7f86aecdbb0a7e228af43",
+      "sha256": "1e0befb18c3c6b97633e9c7e078aca034d8c181eef6bd7713126de40c1850cfb",
       "output": "2026-11-12 7.8 to 17.4 °C | 0 %\n2026-11-13 8.8 to 19.4 °C | 0 %\n2026-11-14 9.8 to 20.0 °C | 4 %\n",
       "requests": [],
       "inputs": []
     },
     "cities": {
-      "sha256": "859df9102eb1ac664f19c4dd0e79dc5504a4b192dc172d163bc58bfa400c15b6",
+      "sha256": "c160f4fdc33f294d108c24a908b81b8904bc0722a42b7095c5d41d95c04ea32a",
       "output": "Tokyo 2026-11-13 0 %\nOsaka 2026-11-13 10 %\nNaha 2026-11-13 14 %\n",
       "requests": [
         {
@@ -43,7 +43,7 @@
                 "admin1": "Tokyo"
               }
             ],
-            "generationtime_ms": 0.20956993
+            "generationtime_ms": 0.08499622
           }
         },
         {
@@ -51,7 +51,7 @@
           "response": {
             "latitude": 35.7,
             "longitude": 139.6875,
-            "generationtime_ms": 0.04184246063232422,
+            "generationtime_ms": 0.029802322387695312,
             "utc_offset_seconds": 32400,
             "timezone": "Asia/Tokyo",
             "timezone_abbreviation": "GMT+9",
@@ -100,7 +100,7 @@
                 "admin3": "Kita-ku"
               }
             ],
-            "generationtime_ms": 0.10764599
+            "generationtime_ms": 0.20742416
           }
         },
         {
@@ -108,7 +108,7 @@
           "response": {
             "latitude": 34.7,
             "longitude": 135.5,
-            "generationtime_ms": 0.044345855712890625,
+            "generationtime_ms": 0.030040740966796875,
             "utc_offset_seconds": 32400,
             "timezone": "Asia/Tokyo",
             "timezone_abbreviation": "GMT+9",
@@ -155,7 +155,7 @@
                 "admin2": "Naha Shi"
               }
             ],
-            "generationtime_ms": 0.13053417
+            "generationtime_ms": 0.099897385
           }
         },
         {
@@ -163,7 +163,7 @@
           "response": {
             "latitude": 26.18629,
             "longitude": 127.69737,
-            "generationtime_ms": 0.03540515899658203,
+            "generationtime_ms": 0.031232833862304688,
             "utc_offset_seconds": 32400,
             "timezone": "Asia/Tokyo",
             "timezone_abbreviation": "GMT+9",
@@ -192,18 +192,18 @@
       "inputs": []
     },
     "visual": {
-      "sha256": "d7016174b3a7cc4292f115e899f3a9b9f080eb09d57fc487881dbefc84612b73",
-      "output": "Maximum precipitation probability\nEach block is about 5 percentage points.\n2026-11-12 |░░░░░░░░░░░░░░░░░░░░|   0%\n2026-11-13 |░░░░░░░░░░░░░░░░░░░░|   0%\n2026-11-14 |█░░░░░░░░░░░░░░░░░░░|   4%\n",
+      "sha256": "3b89a22641dbcb105ae8d62da001ff305e560a78cff7fb1f1f747946c6590e3a",
+      "output": "Maximum precipitation probability\nEach block is about 5.0 percentage points.\n2026-11-12 |░░░░░░░░░░░░░░░░░░░░|   0%\n2026-11-13 |░░░░░░░░░░░░░░░░░░░░|   0%\n2026-11-14 |█░░░░░░░░░░░░░░░░░░░|   4%\n",
       "requests": [],
       "inputs": []
     },
     "repeat": {
-      "sha256": "bf4fe338a281b946b6ca46e6d8eaf5ee2b5b07db82c4defb3923d1cdcbc9b163",
+      "sha256": "0ad7302291635400a3a6487b3c913dc6f665e46fcb08c6aef0381ff9c1d6f4a4",
       "output": "2026-11-12 17.4 °C\n2026-11-13 19.4 °C\n",
       "requests": [],
       "inputs": [
+        "0",
         "1",
-        "2",
         "q"
       ]
     }

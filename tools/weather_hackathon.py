@@ -9,55 +9,89 @@ import json
 import re
 from datetime import datetime, timedelta, timezone
 
-VERSION = '20261112-web-tutorial-links'
+VERSION = '20261112-weather-parameters'
+IMPORTS = '''import json
+from urllib.request import urlopen
+from urllib.parse import urlencode'''
+
+METEO_SETTINGS = '''# Kashiwa, Japan — change these settings first
+lat = 35.86224
+lon = 139.97733
+past_days = 1
+forecast_days = 3
+timezone = "auto"
+daily_fields = (
+    "temperature_2m_max,temperature_2m_min,"
+    "precipitation_probability_max,rain_sum,showers_sum"
+)
+timeout = 10'''
+
+METEO_REQUEST = '''url = "https://api.open-meteo.com/v1/forecast?" + urlencode({
+    "latitude": lat, "longitude": lon,
+    "daily": daily_fields,
+    "past_days": past_days, "forecast_days": forecast_days,
+    "timezone": timezone
+})
+with urlopen(url, timeout=timeout) as response:
+    weather = json.load(response)
+weather["daily"]'''
+
 LOCATION_CODE = '''import json
 from urllib.request import urlopen
 from urllib.parse import urlencode
 
-city = "Kashiwa"  # Change this city name
+# Change these settings first
+city = "Kashiwa"
+match_count = 1
+language = "en"
+timeout = 10
+
 url = "https://geocoding-api.open-meteo.com/v1/search?" + urlencode({
-    "name": city, "count": 1, "language": "en"
+    "name": city, "count": match_count, "language": language
 })
-with urlopen(url, timeout=10) as response:
+with urlopen(url, timeout=timeout) as response:
     locations = json.load(response)
 place = locations["results"][0]
 place["name"], place.get("admin1"), place["country"]'''
 
-WEATHER_CODE = '''url = "https://api.open-meteo.com/v1/forecast?" + urlencode({
-    "latitude": place["latitude"], "longitude": place["longitude"],
-    "daily": ("temperature_2m_max,temperature_2m_min,"
-              "precipitation_probability_max,rain_sum,showers_sum"),
-    "past_days": 1, "forecast_days": 3, "timezone": "auto"
-})
-with urlopen(url, timeout=10) as response:
-    weather = json.load(response)
-weather["daily"]'''
+WEATHER_CODE = '''# Use the city found in the previous cell
+lat = place["latitude"]
+lon = place["longitude"]
+past_days = 1
+forecast_days = 3
+timezone = "auto"
+daily_fields = (
+    "temperature_2m_max,temperature_2m_min,"
+    "precipitation_probability_max,rain_sum,showers_sum"
+)
+timeout = 10
 
-METEO_CODE = '''import json
-from urllib.request import urlopen
-from urllib.parse import urlencode
-
-# Kashiwa, Japan
 url = "https://api.open-meteo.com/v1/forecast?" + urlencode({
-    "latitude": 35.86224, "longitude": 139.97733,
-    "daily": ("temperature_2m_max,temperature_2m_min,"
-              "precipitation_probability_max,rain_sum,showers_sum"),
-    "past_days": 1, "forecast_days": 3, "timezone": "auto"
+    "latitude": lat, "longitude": lon,
+    "daily": daily_fields,
+    "past_days": past_days, "forecast_days": forecast_days,
+    "timezone": timezone
 })
-with urlopen(url, timeout=10) as response:
+with urlopen(url, timeout=timeout) as response:
     weather = json.load(response)
 weather["daily"]'''
 
-READ_CODE = '''daily = weather["daily"]
-i = 1  # Today
+READ_CODE = '''day_offset = 0  # 0 = today, 1 = tomorrow, -1 = yesterday
+
+daily = weather["daily"]
+i = past_days + day_offset
 (daily["time"][i], daily["temperature_2m_max"][i],
  daily["precipitation_probability_max"][i])'''
 
-FOR_CODE = '''daily = weather["daily"]
-for i in range(1, len(daily["time"])):
+FOR_CODE = '''start_day = 0  # 0 = start today, 1 = start tomorrow
+
+daily = weather["daily"]
+for i in range(past_days + start_day, len(daily["time"])):
     print(daily["time"][i],
           daily["temperature_2m_max"][i], "°C",
           daily["precipitation_probability_max"][i], "%")'''
+
+METEO_CODE = IMPORTS + "\n\n" + METEO_SETTINGS + "\n\n" + METEO_REQUEST
 
 IDEAS = [
     ('場所を入力 → その街の天気を分かりやすく見せる。', 'Enter a city and show its weather clearly.'),
@@ -108,8 +142,8 @@ SPEC = dict(
             ('どう作る？','How will you build it?'),
             ('必要なもの','What is required?'),
             ('最後は、動くところを見せる','How will you present it?'),
-            ('Open-Meteoからデータ取得','Get data from Open-Meteo'),
-            ('返ってきたデータを読む','Read the returned data'),
+            ('設定を、先に決める','Set the parameters first'),
+            ('設定を使って、APIへ','Use the settings to request data'),
             ('forで、日ごとに取り出す','Use for to read each day'),
             ('グループで、うまく進める','Working well together'),
             ('グループで制作開始','Groups: build time'),
@@ -136,7 +170,7 @@ def build(root, c):
     assert source['hashes'] == [hashlib.sha256(code.encode()).hexdigest() for code in [LOCATION_CODE, WEATHER_CODE]]
     retrieved = datetime.fromisoformat(source['retrieved_at']).astimezone(timezone(timedelta(hours=9))).strftime('%Y-%m-%d %H:%M JST')
     assert source['meteo_sha256'] == hashlib.sha256(METEO_CODE.encode()).hexdigest()
-    loop_output, _ = execute_cell(FOR_CODE, {'weather':data})
+    loop_output, _ = execute_cell(FOR_CODE, {'weather':data,'past_days':source['parameters']['past_days']})
     guide_link = ('weather-code.html','Webチュートリアル・実行結果','Web tutorial / outputs')
     source_line = c.p('実際のPython実行結果：柏、'+retrieved+'取得。今実行すると値が変わります。<a href="https://open-meteo.com/en/docs">Open-Meteo</a>。',
                       'Actual Python output: Kashiwa, retrieved '+retrieved+'. Fresh requests return updated values. <a href="https://open-meteo.com/en/docs">Open-Meteo</a>.','weather-source')
@@ -153,9 +187,9 @@ def build(root, c):
         steps(BUILD_STEPS)+c.p('必要な例だけ、別ページのコード集から選べます。追加インストールは不要。','Use the web tutorial as a reference for your own notebook. No extra packages to install.')+c.links([guide_link]),
         c.list_html(SPEC['requirements']),
         c.p('1チーム60〜90秒。Notebookをそのまま見せる。別の発表スライドは不要。','60–90 seconds per team. Present from the notebook; no separate slide deck.','lesson-lead')+steps(DEMO_GUIDE),
-        c.p('自分で作ったNotebookのCode Cellへ。urlopenでAPIに接続し、json.loadで辞書に読む。最後の値はprintなしで表示できる。','Run this in a Code cell in your own notebook. urlopen connects to the API; json.load reads a dictionary. The final value displays without print().')+'<div class="api-example">'+shown(METEO_CODE,source['meteo_output'])+'</div>'+source_line,
-        c.p('weather["daily"]は辞書。その中のリストから、同じ番号iの日付・最高気温・降水確率を取り出す。','weather["daily"] is a dictionary. Use the same index i to read a date, high temperature and precipitation probability from its lists.')+'<div class="api-example">'+shown(READ_CODE,source['read_output'])+'</div>'+c.p('この設定では0＝昨日、1＝今日、2＝明日、3＝明後日。表示の順番は日付・°C・%。昨日はモデル推定値。','With these settings: 0 = yesterday, 1 = today, 2 = tomorrow, 3 = the next day. Output order: date, °C, %. Yesterday is a model estimate.'),
-        c.p('1から始め、昨日を飛ばす。同じ番号iで日付・最高気温・降水確率を取り出す。','Start at 1 to skip yesterday. Use the same index i for the date, high temperature and rain probability.')+'<div class="api-example">'+shown(FOR_CODE,loop_output)+'</div>'+c.p('このforを自分たちで書き、目的に合わせて変えよう。printはループ内の各行を表示するために使う。','Write and adapt a for loop for your own app. Here print is needed to show each row inside the loop.')+c.links([guide_link]),
+        c.p('緯度・経度、日数、欲しい項目を変数にする。変更はここから。','Set the coordinates, day counts and weather fields first. This is where you make changes.')+c.code_html(METEO_SETTINGS)+c.p('lat / lon＝場所。past_days＝過去の日数。forecast_days＝今日を含む予報の日数。設定を変えたら、次のAPIセルも再実行。','lat / lon choose the place. past_days adds past dates; forecast_days includes today. After changing a setting, rerun the API cell too.'),
+        c.p('前の設定をURLのパラメータに渡す。urlopenで接続し、json.loadで辞書に読む。','Pass the settings into the URL parameters. urlopen connects; json.load reads the response into a dictionary.')+'<div class="api-example">'+shown(IMPORTS+'\n\n'+METEO_REQUEST,source['meteo_output'])+'</div>'+source_line,
+        c.p('start_dayで開始日を選ぶ。past_daysを足すと、設定に合わせて今日・明日の番号になる。','Choose where to start with start_day. Adding past_days keeps the date index aligned with your request settings.')+'<div class="api-example">'+shown(FOR_CODE,loop_output)+'</div>'+c.p('0＝今日から、1＝明日から。同じ番号iで日付・気温・降水確率を取り出す。','0 starts today; 1 starts tomorrow. Use the same index i for the date, temperature and precipitation probability.')+c.links([guide_link]),
         c.list_html(GROUP_GUIDE)+c.p(*AI_GUIDE,'weather-ai-note'),
         c.p('2〜3人で集まろう。空のNotebookを自分たちで作り、保存。Markdownのタイトルと問いを書き、Webチュートリアルを参考に制作開始。','Form groups of 2–3. Create and save your own blank notebook. Add a Markdown title and question, then use the web tutorial to begin.','lesson-lead')+timer('build',3600,'minutes')+c.links([('challenge.html','課題の手順','Challenge instructions'),guide_link]),
         c.p('14:25–14:45。全チームが実演。20分をチーム数で割り、1組60〜90秒を目安に調整。','14:25–14:45. Every team demos. Divide 20 minutes among teams, aiming for 60–90 seconds each.','lesson-lead')+timer('presentation',90,'seconds')+c.p('目的を一文。表示を見せる。条件を変える。forを一行説明。全員が一言。','State the purpose. Show the visual. Change a setting. Explain one for-loop line. Everyone speaks.'),

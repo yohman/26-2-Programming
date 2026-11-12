@@ -26,6 +26,6 @@ qa_network.start()''')
     for cell,value in zip(notebook.cells[1:5],expected):
         assert cell.outputs[0]['data']['text/plain']==value
     assert all(not any(o.output_type=='error' for o in cell.outputs) for cell in notebook.cells)
-    assert notebook.cells[-1].outputs[0]['text']==lesson.execute_cell(lesson.FOR_CODE,{'weather':source['location_weather']})[0]
+    assert notebook.cells[-1].outputs[0]['text']==lesson.execute_cell(lesson.FOR_CODE,{'weather':source['location_weather'],'past_days':source['parameters']['past_days']})[0]
     print('PASS: a new blank Jupyter notebook reproduces all displayed API, indexing, city and loop outputs.')
 assert not (folder/'challenge-starter.ipynb').exists()

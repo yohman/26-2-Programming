@@ -9,7 +9,7 @@ import json
 import re
 from datetime import datetime, timedelta, timezone
 
-VERSION = '20261112-web-tutorial'
+VERSION = '20261112-web-tutorial-links'
 LOCATION_CODE = '''import json
 from urllib.request import urlopen
 from urllib.parse import urlencode

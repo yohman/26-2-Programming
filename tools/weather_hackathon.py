@@ -9,84 +9,102 @@ import json
 import re
 from datetime import datetime, timedelta, timezone
 
-VERSION = '20261112-weather-parameters'
-IMPORTS = '''import json
+VERSION = '20261112-japanese-comments'
+IMPORTS = '''# 通信とJSONの読み取りに使う標準ライブラリ
+import json
 from urllib.request import urlopen
 from urllib.parse import urlencode'''
 
-METEO_SETTINGS = '''# Kashiwa, Japan — change these settings first
-lat = 35.86224
-lon = 139.97733
-past_days = 1
-forecast_days = 3
-timezone = "auto"
+METEO_SETTINGS = '''# ① 取得する場所と期間を設定する（柏市の例）
+lat = 35.86224  # 緯度
+lon = 139.97733  # 経度
+past_days = 1  # 過去何日分を含めるか
+forecast_days = 3  # 今日を含む予報の日数
+timezone = "auto"  # 取得する場所の現地時間を使う
+# 欲しい天気の項目を、カンマ区切りの文字列で指定する
 daily_fields = (
     "temperature_2m_max,temperature_2m_min,"
     "precipitation_probability_max,rain_sum,showers_sum"
 )
-timeout = 10'''
+timeout = 10  # 通信を待つ最大秒数'''
 
-METEO_REQUEST = '''url = "https://api.open-meteo.com/v1/forecast?" + urlencode({
-    "latitude": lat, "longitude": lon,
-    "daily": daily_fields,
-    "past_days": past_days, "forecast_days": forecast_days,
-    "timezone": timezone
-})
-with urlopen(url, timeout=timeout) as response:
-    weather = json.load(response)
-weather["daily"]'''
-
-LOCATION_CODE = '''import json
-from urllib.request import urlopen
-from urllib.parse import urlencode
-
-# Change these settings first
-city = "Kashiwa"
-match_count = 1
-language = "en"
-timeout = 10
-
-url = "https://geocoding-api.open-meteo.com/v1/search?" + urlencode({
-    "name": city, "count": match_count, "language": language
-})
-with urlopen(url, timeout=timeout) as response:
-    locations = json.load(response)
-place = locations["results"][0]
-place["name"], place.get("admin1"), place["country"]'''
-
-WEATHER_CODE = '''# Use the city found in the previous cell
-lat = place["latitude"]
-lon = place["longitude"]
-past_days = 1
-forecast_days = 3
-timezone = "auto"
-daily_fields = (
-    "temperature_2m_max,temperature_2m_min,"
-    "precipitation_probability_max,rain_sum,showers_sum"
-)
-timeout = 10
-
+METEO_REQUEST = '''# ② 設定した変数をパラメータに渡し、URLを作る
 url = "https://api.open-meteo.com/v1/forecast?" + urlencode({
     "latitude": lat, "longitude": lon,
     "daily": daily_fields,
     "past_days": past_days, "forecast_days": forecast_days,
     "timezone": timezone
 })
+# ③ APIから取得したJSONを、Pythonの辞書に変換する
 with urlopen(url, timeout=timeout) as response:
     weather = json.load(response)
+# ④ 日別データを表示する（セルの最後の値はprint不要）
 weather["daily"]'''
 
-READ_CODE = '''day_offset = 0  # 0 = today, 1 = tomorrow, -1 = yesterday
+LOCATION_CODE = '''# 通信とJSONの読み取りに使う標準ライブラリ
+import json
+from urllib.request import urlopen
+from urllib.parse import urlencode
 
+# ① 調べたい都市名と検索条件を設定する
+city = "Kashiwa"  # 別の都市名に変えてみよう
+match_count = 1  # 取得する候補の数
+language = "en"  # 地名の表示言語
+timeout = 10  # 通信を待つ最大秒数
+
+# ② 都市名を検索用のURLに入れ、場所の情報を取得する
+url = "https://geocoding-api.open-meteo.com/v1/search?" + urlencode({
+    "name": city, "count": match_count, "language": language
+})
+with urlopen(url, timeout=timeout) as response:
+    locations = json.load(response)
+# ③ 最初の候補を選び、都市・地域・国が合っているか確認する
+place = locations["results"][0]
+place["name"], place.get("admin1"), place["country"]'''
+
+WEATHER_CODE = '''# ① 前のセルで見つけた場所を使い、取得条件を設定する
+lat = place["latitude"]  # 検索結果の緯度
+lon = place["longitude"]  # 検索結果の経度
+past_days = 1  # 過去何日分を含めるか
+forecast_days = 3  # 今日を含めて何日分を取得するか
+timezone = "auto"  # その場所の現地時間
+# 必要な天気の項目を、カンマでつなぐ
+daily_fields = (
+    "temperature_2m_max,temperature_2m_min,"
+    "precipitation_probability_max,rain_sum,showers_sum"
+)
+timeout = 10  # 通信を待つ最大秒数
+
+# ② 緯度・経度と取得条件を、天気APIに渡す
+url = "https://api.open-meteo.com/v1/forecast?" + urlencode({
+    "latitude": lat, "longitude": lon,
+    "daily": daily_fields,
+    "past_days": past_days, "forecast_days": forecast_days,
+    "timezone": timezone
+})
+# ③ 返ってきたJSONを辞書として読み込む
+with urlopen(url, timeout=timeout) as response:
+    weather = json.load(response)
+# ④ 日別データを表示する
+weather["daily"]'''
+
+READ_CODE = '''# ① 表示する日を選ぶ（0＝今日、1＝明日、-1＝昨日）
+day_offset = 0
+
+# ② 過去の日数を足し、選んだ日の番号を求める
 daily = weather["daily"]
 i = past_days + day_offset
+# ③ 同じ番号iの日付・最高気温・降水確率をまとめて表示する
 (daily["time"][i], daily["temperature_2m_max"][i],
  daily["precipitation_probability_max"][i])'''
 
-FOR_CODE = '''start_day = 0  # 0 = start today, 1 = start tomorrow
+FOR_CODE = '''# ① 何日目から表示するかを選ぶ（0＝今日、1＝明日）
+start_day = 0
 
+# ② 過去の日数を足し、指定した日から1日ずつ取り出す
 daily = weather["daily"]
 for i in range(past_days + start_day, len(daily["time"])):
+    # 同じ番号iを使うと、日付と天気の値が対応する
     print(daily["time"][i],
           daily["temperature_2m_max"][i], "°C",
           daily["precipitation_probability_max"][i], "%")'''

@@ -105,8 +105,8 @@
     }
   },
   "hashes": [
-    "47f234438e870b35767c1629eec0f5c89fb7e31677dcf7e38882ddae64fd6717",
-    "6a88e90e73c3876d1cdaefbeba1e10d9fc2c284fee12c1c83e138a0102008f96"
+    "311bc55361ccb97a488126652cf32df600fd9c2f9c8b3f238f06ad2e3bd49015",
+    "b08fc141422601a802022016e42ecef579da11a02c48a043575266d9d024a9f9"
   ],
   "outputs": [
     [
@@ -130,7 +130,7 @@
       }
     ]
   ],
-  "meteo_sha256": "e6d283d08f74950841062899550df3f886c86514fb66e4761ffb2c816a4a00c0",
+  "meteo_sha256": "d88b048c5e9b14b57da18b12b62f4a346fb502ed01ca80612af912e1340418b4",
   "meteo_output": "{'time': ['2026-11-11', '2026-11-12', '2026-11-13', '2026-11-14'],\n 'temperature_2m_max': [14.3, 17.4, 19.4, 20.0],\n 'temperature_2m_min': [7.0, 7.8, 8.8, 9.8],\n 'precipitation_probability_max': [0, 0, 0, 4],\n 'rain_sum': [0.0, 0.0, 0.0, 0.0],\n 'showers_sum': [0.0, 0.0, 0.0, 0.0]}",
   "read_output": "('2026-11-12', 17.4, 0)"
 }

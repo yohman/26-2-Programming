@@ -4,32 +4,40 @@ import html
 import json
 from datetime import datetime, timedelta, timezone
 
-TODAY = '''day_offset = 0  # 0 = today, 1 = tomorrow
-umbrella_threshold = 50  # Percent
+TODAY = '''# ① 調べる日と、傘を勧める基準を決める
+day_offset = 0  # 0＝今日、1＝明日
+umbrella_threshold = 50  # 降水確率の基準（%）
 
+# ② 対象の日の降水確率を取り出す
 daily = weather["daily"]
 i = past_days + day_offset
 chance = daily["precipitation_probability_max"][i]
 print(daily["time"][i])
+# Noneはデータなし。0%とは区別する
 if chance is None:
     print("Rain probability is unavailable.")
 else:
     print("Maximum precipitation probability:", chance, "%")
+    # ③ 自分たちで決めた基準と比べ、メッセージを変える
     if chance >= umbrella_threshold:
         print("An umbrella may be useful.")
     else:
         print("A lower rain chance, but not a guarantee.")'''
 
-YESTERDAY = '''day_offset = -1  # -1 = yesterday, 0 = today
+YESTERDAY = '''# ① 昨日を選ぶ（取得セルのpast_daysは1以上にする）
+day_offset = -1  # -1＝昨日、0＝今日
 
+# ② 日付の番号を計算し、2種類の雨量を取り出す（mm）
 daily = weather["daily"]
 i = past_days + day_offset
 rain = daily["rain_sum"][i]
 showers = daily["showers_sum"][i]
 print(daily["time"][i])
+# どちらかの値がないときは、合計を計算しない
 if rain is None or showers is None:
     print("Rainfall estimate is unavailable.")
 else:
+    # ③ 雨量を合計する。昨日の値は観測ではなくモデルの推定
     amount = rain + showers
     print("Model-estimated rainfall:", amount, "mm")
     if amount > 0:
@@ -37,28 +45,33 @@ else:
     else:
         print("The model estimates no rain.")'''
 
-DAYS = '''start_day = 0  # 0 = start today, 1 = start tomorrow
+DAYS = '''# ① 表示を始める日を選ぶ（0＝今日、1＝明日）
+start_day = 0
 
+# ② 指定した日から、取得済みの最後の日まで繰り返す
 daily = weather["daily"]
 for i in range(past_days + start_day, len(daily["time"])):
+    # 日付・最低気温・最高気温・降水確率を、同じiで取り出す
     print(daily["time"][i],
           daily["temperature_2m_min"][i], "to",
           daily["temperature_2m_max"][i], "°C |",
           daily["precipitation_probability_max"][i], "%")'''
 
-CITIES = '''# Choose the places, date and API settings first
+CITIES = '''# ① 比べる都市と、APIの取得条件を先に設定する
 cities = ["Tokyo", "Osaka", "Naha"]
-country_code = "JP"
-language = "en"
-match_count = 1
-past_days = 1
-forecast_days = 3
-timezone = "auto"
+country_code = "JP"  # 日本の都市に絞る
+language = "en"  # 地名の表示言語
+match_count = 1  # 各都市の検索候補数
+past_days = 1  # 過去何日分を含めるか
+forecast_days = 3  # 今日を含む取得日数
+timezone = "auto"  # 各都市の現地時間
 daily_fields = "precipitation_probability_max"
-day_offset = 1  # 0 = today, 1 = tomorrow
-timeout = 10
+day_offset = 1  # 0＝今日、1＝明日
+timeout = 10  # 通信を待つ最大秒数
 
+# ② 都市ごとに「場所の検索→天気の取得→表示」を繰り返す
 for city in cities:
+    # 都市名から、最初の候補の場所を調べる
     url = "https://geocoding-api.open-meteo.com/v1/search?" + urlencode({
         "name": city, "count": match_count,
         "language": language, "countryCode": country_code
@@ -66,6 +79,7 @@ for city in cities:
     with urlopen(url, timeout=timeout) as response:
         city_place = json.load(response)["results"][0]
 
+    # 見つかった緯度・経度を、天気APIに渡す
     lat = city_place["latitude"]
     lon = city_place["longitude"]
     url = "https://api.open-meteo.com/v1/forecast?" + urlencode({
@@ -76,42 +90,53 @@ for city in cities:
     with urlopen(url, timeout=timeout) as response:
         city_weather = json.load(response)
 
+    # ③ 指定した日の日付と降水確率を表示する
     daily = city_weather["daily"]
     i = past_days + day_offset
     chance = daily["precipitation_probability_max"][i]
     print(city_place["name"], daily["time"][i], chance, "%")'''
 
-BARS = '''start_day = 0  # 0 = start today, 1 = start tomorrow
-bar_width = 20
-filled = "█"
-empty = "░"
+BARS = '''# ① 表示する日と、文字の棒の見た目を決める
+start_day = 0  # 0＝今日から、1＝明日から
+bar_width = 20  # 棒全体の文字数（正の整数）
+filled = "█"  # 確率に応じて塗る部分
+empty = "░"  # 残りの部分
 
+# ② 100%を棒の長さで割り、1文字分の割合を求める
 daily = weather["daily"]
 points_per_block = 100 / bar_width
 print("Maximum precipitation probability")
 print("Each block is about", points_per_block, "percentage points.")
+# ③ 各日の降水確率を、文字の棒で表示する
 for i in range(past_days + start_day, len(daily["time"])):
     chance = daily["precipitation_probability_max"][i]
     if chance is None:
         print(daily["time"][i], "No data")
     else:
+        # 文字数を丸め、塗る部分と残りの部分をつなぐ
         blocks = round(chance / points_per_block)
         bar = filled * blocks + empty * (bar_width - blocks)
+        # 丸める前の正確な%も、棒の横に表示する
         print(f'{daily["time"][i]} |{bar}| {chance:3}%')'''
 
-REPEAT = '''day_options = ["0", "1"]  # Days ahead: 0 = today, 1 = tomorrow
-quit_command = "q"
+REPEAT = '''# ① 選べる日と、終了用の入力を決める
+day_options = ["0", "1"]  # 0＝今日、1＝明日
+quit_command = "q"  # この文字を入力したら終了
 prompt = f"Days ahead {day_options}, {quit_command} = quit: "
 
+# ② 取得済みのデータを使い、最初の入力を受け取る
 daily = weather["daily"]
 choice = input(prompt)
+# ③ 終了コマンドが入力されるまで繰り返す
 while choice != quit_command:
     if choice in day_options:
+        # 入力は文字列なので、計算する前にintで整数にする
         i = past_days + int(choice)
         print(daily["time"][i],
               daily["temperature_2m_max"][i], "°C")
     else:
         print("Choose from", day_options, "or", quit_command)
+    # 入力を更新し、次のwhileの条件で確かめる
     choice = input(prompt)'''
 
 EXAMPLES = [
@@ -150,7 +175,7 @@ def build(root,c,meteo_code,location_code,weather_code,version,release):
         '<section id="city" data-topic hidden><p class="eyebrow">02 / CHOOSE A LOCATION</p><h2>街の天気 / Weather by city</h2><p>都市名を選びたいときの例。新しいCode Cellで①→②の順に実行すると、<code>weather</code>がその街の日別データに変わります。<br>To choose a city, run ① then ② in new Code cells. weather will then contain that city’s daily data.</p><h3>① 都市名 → 場所 / Find the city</h3><p>都市名・候補数・言語・待ち時間を先に設定し、最初の候補<code>results[0]</code>の地域・国を確認。 / Set the city, match count, language and timeout first, then check the first match’s region and country.</p>'
         +code(location_code)+output(source['outputs'][0][0]['data']['text/plain'])
         +'<details><summary>入力して街を選ぶ / Let the user enter a city</summary><p>①の<code>city = "Kashiwa"</code>の行をこれに置き換え、①と②を再実行。 / Replace that line in ①, then rerun ① and ②.</p>'
-        +code('city = input("City: ")')
+        +code('# 都市名の入力を受け取る（例：Tokyo）\ncity = input("City: ")')
         +'<p>入力例：<code>Tokyo</code>。該当なしなら別の表記を試す。検索の辞書に<code>"countryCode": "JP"</code>を加えると日本に絞れます。 / Example input: Tokyo. Try another spelling if needed; countryCode can restrict matches to Japan.</p></details><h3>② 場所 → 天気 / Get its weather</h3><p>①の<code>place</code>の緯度・経度を使い、項目・日数などを先に設定して取得。 / Set lat and lon from the result of ①, then choose the weather fields, day counts, timezone and timeout before requesting data.</p>'
         +code(weather_code)+output(source['outputs'][1][0]['data']['text/plain'])+'</section>',
     ]

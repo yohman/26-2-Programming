@@ -9,7 +9,7 @@ import json
 import re
 from datetime import datetime, timedelta, timezone
 
-VERSION = '20261112-tutorial-language'
+VERSION = '20261112-tutorial-walkthrough'
 IMPORTS = '''# 通信とJSONの読み取りに使う標準ライブラリ
 import json
 from urllib.request import urlopen
@@ -201,6 +201,7 @@ SPEC = dict(
             ('どう作る？','How will you build it?'),
             ('必要なもの','What is required?'),
             ('最後は、動くところを見せる','How will you present it?'),
+            ('Tutorial 01 · データ取得','Tutorial 01 · Get the data'),
             ('設定を、先に決める','Set the parameters first'),
             ('設定を使って、APIへ','Use the settings to request data'),
             ('forで、日ごとに取り出す','Use for to read each day'),
@@ -230,7 +231,8 @@ def build(root, c):
     retrieved = datetime.fromisoformat(source['retrieved_at']).astimezone(timezone(timedelta(hours=9))).strftime('%Y-%m-%d %H:%M JST')
     assert source['meteo_sha256'] == hashlib.sha256(METEO_CODE.encode()).hexdigest()
     loop_output, _ = execute_cell(FOR_CODE, {'weather':data,'past_days':source['parameters']['past_days']})
-    guide_link = ('weather-code.html','Webチュートリアル・実行結果','Web tutorial / outputs')
+    guide_link = (f'weather-code.html?v={VERSION}','Webチュートリアル・実行結果','Web tutorial / outputs')
+    tutorial01_link = (f'weather-code.html?v={VERSION}#data','01 データ取得を開く','Open Tutorial 01: Get the data')
     source_line = c.p('実際のPython実行結果：柏、'+retrieved+'取得。今実行すると値が変わります。<a href="https://open-meteo.com/en/docs">Open-Meteo</a>。',
                       'Actual Python output: Kashiwa, retrieved '+retrieved+'. Fresh requests return updated values. <a href="https://open-meteo.com/en/docs">Open-Meteo</a>.','weather-source')
     def steps(items): return '<ol class="weather-steps">'+''.join('<li>'+c.bi(*item)+'</li>' for item in items)+'</ol>'
@@ -246,6 +248,15 @@ def build(root, c):
         steps(BUILD_STEPS)+c.p('必要な例だけ、別ページのコード集から選べます。追加インストールは不要。','Use the web tutorial as a reference for your own notebook. No extra packages to install.')+c.links([guide_link]),
         c.list_html(SPEC['requirements']),
         c.p('1チーム60〜90秒。Notebookをそのまま見せる。別の発表スライドは不要。','60–90 seconds per team. Present from the notebook; no separate slide deck.','lesson-lead')+steps(DEMO_GUIDE),
+        c.p('自分の空のNotebookで、最初のコード例を実行しよう。','Run the first example in your own blank notebook.','lesson-lead')
+        +c.links([tutorial01_link])
+        +steps([
+            ('設定する：<code>lat</code> / <code>lon</code>は場所、<code>past_days</code> / <code>forecast_days</code>は期間、<code>daily_fields</code>は欲しい項目。', 'Set the inputs: <code>lat</code> / <code>lon</code> choose the place, day counts set the period, and <code>daily_fields</code> selects the weather fields.'),
+            ('取得する：<code>urlencode</code>でURLを作り、<code>urlopen</code>で接続。<code>json.load</code>でJSONをPythonの辞書にする。', 'Fetch the data: <code>urlencode</code> builds the URL; <code>urlopen</code> connects; <code>json.load</code> reads JSON into a Python dictionary.'),
+            ('読む：<code>weather["daily"]</code>には、日付・気温・降水確率・雨量のリストが入っている。', 'Read the result: <code>weather["daily"]</code> contains lists of dates, temperatures, precipitation probabilities and rainfall.'),
+        ])
+        +c.p(f'初期設定は過去{source["parameters"]["past_days"]}日＋今日を含む予報{source["parameters"]["forecast_days"]}日＝{len(data["daily"]["time"])}日分。同じ番号iの日付と数値が対応します。',
+             f'Defaults: {source["parameters"]["past_days"]} past day + {source["parameters"]["forecast_days"]} forecast days including today = {len(data["daily"]["time"])} dates. The same index i matches a date with its values.'),
         c.p('緯度・経度、日数、欲しい項目を変数にする。変更はここから。','Set the coordinates, day counts and weather fields first. This is where you make changes.')+c.code_html(METEO_SETTINGS)+c.p('lat / lon＝場所。past_days＝過去の日数。forecast_days＝今日を含む予報の日数。設定を変えたら、次のAPIセルも再実行。','lat / lon choose the place. past_days adds past dates; forecast_days includes today. After changing a setting, rerun the API cell too.'),
         c.p('前の設定をURLのパラメータに渡す。urlopenで接続し、json.loadで辞書に読む。','Pass the settings into the URL parameters. urlopen connects; json.load reads the response into a dictionary.')+'<div class="api-example">'+shown(IMPORTS+'\n\n'+METEO_REQUEST,source['meteo_output'])+'</div>'+source_line,
         c.p('start_dayで開始日を選ぶ。past_daysを足すと、設定に合わせて今日・明日の番号になる。','Choose where to start with start_day. Adding past_days keeps the date index aligned with your request settings.')+'<div class="api-example">'+shown(FOR_CODE,loop_output)+'</div>'+c.p('0＝今日から、1＝明日から。同じ番号iで日付・気温・降水確率を取り出す。','0 starts today; 1 starts tomorrow. Use the same index i for the date, temperature and precipitation probability.')+c.links([guide_link]),
@@ -254,12 +265,13 @@ def build(root, c):
         c.p('14:25–14:45。全チームが実演。20分をチーム数で割り、1組60〜90秒を目安に調整。','14:25–14:45. Every team demos. Divide 20 minutes among teams, aiming for 60–90 seconds each.','lesson-lead')+timer('presentation',90,'seconds')+c.p('目的を一文。表示を見せる。条件を変える。forを一行説明。全員が一言。','State the purpose. Show the visual. Change a setting. Explain one for-loop line. Everyone speaks.'),
         c.p(*SPEC['homework'],'lesson-lead')+c.p('締切：2026年11月18日（水）23:59 JST。作品はクラスギャラリーへ。','Due: Wednesday, November 18, 2026, 23:59 JST. Projects go to the class gallery.')+c.links([('challenge.html','課題・提出方法','Assignment / submission')]),
     ]
-    layouts = ['hero','question','plain','requirements','plain','api','api','api','pair','timer','presentation','exit']
+    layouts = ['hero','question','plain','requirements','plain','tutorial','api','api','api','pair','timer','presentation','exit']
     sections = []
-    assert len(bodies)==len(layouts)==len(SPEC['slides'])
-    for i,((ja,en),body,layout) in enumerate(zip(SPEC['slides'],bodies,layouts),1):
+    ink_ids=[f'w7-weather-{n}' for n in range(1,6)]+['w7-weather-tutorial-01']+[f'w7-weather-{n}' for n in range(6,13)]
+    assert len(bodies)==len(layouts)==len(SPEC['slides'])==len(ink_ids)
+    for i,((ja,en),body,layout,ink_id) in enumerate(zip(SPEC['slides'],bodies,layouts,ink_ids),1):
         tag = 'h1' if i==1 else 'h2'
-        sections.append(f'<section class="slide lesson-slide layout-{layout}" data-slide data-slide-number="{i}" data-ink-id="w7-weather-{i}" hidden><p class="slide-kicker">WEEK 07 · WEATHER HACKATHON</p><{tag}>'+c.bi(ja,en)+f'</{tag}>'+body+'</section>')
+        sections.append(f'<section class="slide lesson-slide layout-{layout}" data-slide data-slide-number="{i}" data-ink-id="{ink_id}" hidden><p class="slide-kicker">WEEK 07 · WEATHER HACKATHON</p><{tag}>'+c.bi(ja,en)+f'</{tag}>'+body+'</section>')
     release = SPEC['date']+'T12:00:00+09:00'
     head = c.page_head('Week 07 · Weather Hackathon','course-decks.css','course-decks.js',VERSION)
     head += f'<link rel="stylesheet" href="hackathon.css?v={VERSION}"><script src="hackathon.js?v={VERSION}" defer></script><link rel="stylesheet" href="../../assets/slide-annotations.css"><script src="../../assets/slide-annotations.js" defer></script><script src="../../assets/slide-swipe.js" defer></script></head>'

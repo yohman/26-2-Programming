@@ -8,39 +8,38 @@ title_ja: 天気ハッカソン
 course_date: 2026-11-12
 homework_due: 2026-11-18T23:59:00+09:00
 course_time: 13:10–14:50
-overview: Combine API data, dictionaries, if, for and while to build a small weather tool.
-overview_ja: API・辞書のリスト・if・for・whileを組み合わせ、天気を使う小さな道具を作る。
+overview: Use weather API data and for loops to build a useful weather app. while is optional.
+overview_ja: APIの天気データとforを使い、人に役立つ天気アプリを作る。whileは任意。
 
-homework_title: Improve your weather tool
-homework_title_ja: 天気の道具を改善する
+homework_title: Improve your weather app
+homework_title_ja: 天気アプリを改善する
 challenge_title: 60-min hackathon
 challenge_title_ja: 60分ハッカソン
 ---
 ## Lecture Flow
-EN: 13:10 briefing 10 min / 13:20 setup 5 min / 13:25 team build 60 min / 14:25 demos 20 min / 14:45 save and wrap up 5 min.
+EN: 13:10 briefing 10 min / 13:20 setup 5 min / 13:25 build 60 min / 14:25 demos 20 min / 14:45 save and wrap up 5 min.
 JP: 13:10 説明10分 / 13:20 準備5分 / 13:25 チーム制作60分 / 14:25 発表20分 / 14:45 保存・まとめ5分。
 ## In-Class Notebook
-EN: Run the first two code cells to load the forecast. The saved JSON lets everyone start if the API is unavailable.
-JP: 最初の2つのコードセルで予報を準備。APIが使えなくても保存JSONで全員スタートできる。
+EN: One starter, two code cells: find a city, then get its weather. Add your own app below.
+JP: スターターは一つ、コードは2セル。都市名から場所を探し、APIで天気を取得。下に自分たちのセルを追加する。
 ## In-Class Challenge
-EN: Build a weather-assistant notebook with a visual answer to someone’s question. Work in teams of 2–3 and give a short demo at the end. [Instructions and files](weeks/week-07/challenge.html).
-JP: 天気予報を使って、誰かの「いつ・どうする？」に視覚的に答えるNotebookを作ろう。2〜3人で制作し、最後に全チームが実演する。 [手順と教材](weeks/week-07/challenge.html)。
+EN: In teams of 2–3, build a useful weather app in a notebook. Choose a question, use API data and a for loop, and present a clear visual answer. Every team demos. [Instructions](weeks/week-07/challenge.html).
+JP: 2〜3人で、人に役立つ天気アプリをNotebookで作ろう。問いを一つ選び、APIのデータをforで扱い、結果を見やすく伝える。最後は全チームが実演。 [手順と教材](weeks/week-07/challenge.html)。
 ## Student Work
-EN: Every team demos at the end. Everyone speaks briefly and explains the code and results.
-JP: 最後の20分で全チームが実演。全員が一言話し、コードと結果を説明する。
+EN: Every team demos. Everyone speaks briefly and explains their for loop and results.
+JP: 最後に全チームが実演。全員が一言話し、forと結果を説明する。
 ## Take-Home Assignment
-EN: Improve the same tool using demo feedback. Each student submits an executed notebook and weather-response.json to UNIPA. Name the team, your contribution, one improvement and two tested settings. Briefly note any AI help and what you checked yourself.
-JP: 発表でもらった意見を使い、同じ道具を一つ改善する。各自のNotebookにチーム全員の氏名、自分の担当、改善点と設定2通りの確認を書く。実行済み.ipynbとweather-response.jsonをUNIPAへ提出。AIを使った場合は、用途と自分で確認したことを短く記す。
+EN: Improve one part of the app using demo feedback. Each student submits an executed .ipynb to UNIPA, plus any extra files their app needs. Briefly name the team, your contribution, improvement and two checks. Note any AI help and what you verified.
+JP: 実演の意見を使い、同じアプリを一つ改善する。各自の実行済み.ipynbをUNIPAへ提出（追加ファイルを使った場合は添付）。チームの氏名、自分の担当、改善点、2通りの確認を短く記す。AIを使った場合は、用途と自分で確認したことも書く。
 ## Aha!
-EN: Combine API data, dictionaries, if, for and while to build a small weather tool.
-JP: API・辞書のリスト・if・for・whileを組み合わせ、天気を使う小さな道具を作る。
+EN: Use weather API data and for loops to build a useful weather app. while is optional.
+JP: APIの天気データとforを使い、人に役立つ天気アプリを作る。whileは任意。
 ## Takeaway
-EN: Turn API data into a tool using your own rules and a repeating interaction.
-JP: APIのデータを、自分の条件と繰り返しで使える道具にする。
+EN: Turn API data into an answer someone can use.
+JP: APIのデータを、使う人に役立つ答えに変える。
 ## Resources
 - [Weather Hackathon — Briefing & Timers](weeks/week-07/lecture.html) {lecture}
-- [制作を始めるNotebook / Start-building notebook](weeks/week-07/challenge-starter.ipynb) {notebook}
-- [コードの実行例 / Worked examples](weeks/week-07/practice.ipynb) {fundamentals}
+- [スターターNotebook（コード2セル） / Starter notebook (2 code cells)](weeks/week-07/challenge-starter.ipynb) {notebook}
+- [天気コード集・実行結果 / Weather code guide / outputs](weeks/week-07/weather-code.html) {experiment}
 - [ハッカソンの手順 / Hackathon instructions](weeks/week-07/challenge.html) {challenge}
 - [宿題・提出方法 / Homework and submission](weeks/week-07/challenge.html) {homework}
-- [天気予報JSON / Forecast JSON](weeks/week-07/weather-response.json) {data}

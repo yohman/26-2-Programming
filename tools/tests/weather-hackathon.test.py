@@ -1,64 +1,92 @@
-"""Exercise actual notebook cells against a failed API and a fresh response."""
+"""Execute the exact student starter and guide samples against recorded API data."""
 from pathlib import Path
 from unittest.mock import patch
-from urllib.error import URLError
-import contextlib, hashlib, io, json, subprocess, sys, tempfile
+from urllib.parse import urlparse, parse_qs
+import ast, copy, hashlib, io, json, sys
 
 ROOT=Path(__file__).resolve().parents[2]
 sys.path.insert(0,str(ROOT/'tools'))
 import weather_hackathon as lesson
+import weather_examples as guide
+folder=ROOT/'weeks/week-07'
+weather=json.loads((folder/'weather-response.json').read_text())
+source=json.loads((folder/'weather-source.json').read_text())
+recorded=json.loads((folder/'weather-examples.json').read_text())
+nb=json.loads((folder/'challenge-starter.ipynb').read_text())
+code=[c for c in nb['cells'] if c['cell_type']=='code']
+assert [c['source'] for c in code]==[lesson.LOCATION_CODE,lesson.WEATHER_CODE]
+for cell in code:
+    assert not any(isinstance(node,(ast.FunctionDef,ast.AsyncFunctionDef,ast.Lambda)) for node in ast.walk(ast.parse(cell['source'])))
+    assert cell['outputs'] and cell['execution_count']
+assert source['hashes']==[hashlib.sha256(c['source'].encode()).hexdigest() for c in code]
+assert not any((folder/name).exists() for name in ['practice.ipynb','starter-files.zip','week-07-in-class-logic-review.ipynb'])
 
-fixture=json.loads((ROOT/'weeks/week-07/weather-response.json').read_text())
-starter=json.loads((ROOT/'weeks/week-07/challenge-starter.ipynb').read_text())
-code=[''.join(c['source']) for c in starter['cells'] if c['cell_type']=='code']
-assert code[0]==lesson.LIVE_LOAD and code[1]==lesson.NORMALIZE
-assert not any('solo-check' in c.get('metadata',{}).get('tags',[]) for c in starter['cells'])
+calls=[]
+def starter_open(url,timeout):
+    calls.append(url)
+    response=source['location_response'] if 'geocoding-api' in url else weather
+    return io.BytesIO(json.dumps(response).encode())
+scope={}
+with patch('urllib.request.urlopen',side_effect=starter_open):
+    printed,result=lesson.execute_cell(lesson.LOCATION_CODE,scope)
+    assert printed=='' and result==('Kashiwa','Chiba','Japan')
+    printed,result=lesson.execute_cell(lesson.WEATHER_CODE,scope)
+    assert printed=='' and result==weather['daily']
+params=parse_qs(urlparse(calls[-1]).query)
+assert params['past_days']==['1'] and params['forecast_days']==['3'] and params['timezone']==['auto']
+assert all(len(values)==4 for values in result.values())
+# A different city must change the lookup, not stay fixed to Kashiwa coordinates.
+calls.clear()
+with patch('urllib.request.urlopen',side_effect=starter_open):
+    lesson.execute_cell(lesson.LOCATION_CODE.replace('city = "Kashiwa"','city = "Tokyo"'),{})
+assert parse_qs(urlparse(calls[0]).query)['name']==['Tokyo']
 
-source=json.loads((ROOT/'weeks/week-07/weather-source.json').read_text())
-assert source['example_sha256']==hashlib.sha256(lesson.API_EXAMPLE.encode()).hexdigest()
-with patch('urllib.request.urlopen',return_value=io.BytesIO(json.dumps(fixture).encode())):
-    printed,result=lesson.execute_cell(lesson.API_EXAMPLE,{})
-assert printed=='' and repr(result)==source['example_output']
-
-with tempfile.TemporaryDirectory() as directory,contextlib.chdir(directory):
-    Path('weather-response.json').write_text(json.dumps(fixture))
-    scope={};output=io.StringIO()
-    with patch('urllib.request.urlopen',side_effect=URLError('classroom offline')),contextlib.redirect_stdout(output):
-        exec(lesson.LIVE_LOAD,scope);exec(lesson.NORMALIZE,scope)
-    assert 'Saved JSON' in output.getvalue()
-    assert len(scope['forecast'])==24
-    assert scope['forecast'][0]['time']==fixture['hourly']['time'][0]
-    live=json.loads(json.dumps(fixture));live['hourly']['temperature_2m'][0]=27.5
-    with patch('urllib.request.urlopen',return_value=io.BytesIO(json.dumps(live).encode())),contextlib.redirect_stdout(io.StringIO()):
-        exec(lesson.LIVE_LOAD,scope);exec(lesson.NORMALIZE,scope)
-    saved=json.loads(Path('weather-response.json').read_text())
-    assert saved['hourly']['temperature_2m'][0]==27.5
-    assert saved['_source']['url'].startswith('https://api.open-meteo.com/v1/forecast?')
-    assert scope['forecast'][0]['temp']==27.5
-    exec(lesson.VISUAL_SETUP,scope)
-    boards=[]
-    scope.update(max_rain=30,min_temp=10,HTML=lambda value:value,display=boards.append)
-    answers=iter(['?', 'show','warmer','quit'])
-    scope['input']=lambda prompt:next(answers)
-    with contextlib.redirect_stdout(io.StringIO()):exec(lesson.WHILE_CODE,scope)
-    assert scope['min_temp']==11 and scope['command']=='quit'
-    assert '<table' in boards[-1] and 'hours match' in boards[-1]
-    scope['min_temp']=50;answers=iter(['show','quit']);output=io.StringIO()
-    with contextlib.redirect_stdout(output):exec(lesson.WHILE_CODE,scope)
-    assert output.getvalue()==''  # the visual already explains the empty result
-    assert '0 / 24 hours match' in boards[-1] and 'No hours match' in boards[-1]
-print('PASS: starter cells handle offline/live data, notebook expression results, visual output, repeated input and quit.')
-
-# Compare the browser simulation with the actual Python filter and selected rows.
-scope={'data': fixture}
-lesson.execute_cell(lesson.NORMALIZE,scope)
-cases=[]
-for max_rain,min_temp in [(30,10),(30,15),(100,50),(0,fixture['hourly']['temperature_2m'][0])]:
-    code=lesson.FILTER_CODE.replace('max_rain = 30',f'max_rain = {max_rain}').replace('min_temp = 10',f'min_temp = {min_temp}')
-    printed,result=lesson.execute_cell(code,scope)
-    assert printed=='' and result==len(scope['chosen'])
-    cases.append(dict(maxRain=max_rain,minTemp=min_temp,expected=scope['chosen']))
-script="const fs=require('node:fs');const model=require('./weeks/week-07/hackathon.js');const data=JSON.parse(fs.readFileSync(0,'utf8'));process.stdout.write(JSON.stringify(data.cases.map(c=>model.selectHours(data.forecast,c.maxRain,c.minTemp))));"
-actual=json.loads(subprocess.check_output(['node','-e',script],input=json.dumps(dict(forecast=scope['forecast'],cases=cases)),text=True,cwd=ROOT))
-assert actual==[case['expected'] for case in cases]
-print('PASS: browser simulation matches actual Python rows for normal, warmer, empty and boundary settings.')
+for example in guide.EXAMPLES:
+    saved=recorded['examples'][example['id']]
+    assert saved['sha256']==hashlib.sha256(example['code'].encode()).hexdigest()
+    assert not any(isinstance(node,(ast.FunctionDef,ast.AsyncFunctionDef,ast.Lambda)) for node in ast.walk(ast.parse(example['code'])))
+    requests=iter(saved['requests']);answers=iter(saved['inputs'])
+    def recorded_open(url,timeout):
+        request=next(requests)
+        assert url==request['url']
+        return io.BytesIO(json.dumps(request['response']).encode())
+    scope={'weather':copy.deepcopy(weather),'place':source['location'],'json':json,'urlencode':lesson.urlencode,'urlopen':recorded_open,'input':lambda prompt:next(answers)}
+    printed,value=lesson.execute_cell(example['code'],scope)
+    assert value is None and printed==saved['output'],example['id']
+    assert next(requests,None) is None and next(answers,None) is None
+    if example['id']=='cities':
+        assert len(saved['requests'])==6
+        expected=[]
+        for n in range(0,6,2):
+            city=saved['requests'][n]['response']['results'][0]['name']
+            data=saved['requests'][n+1]['response']['daily']
+            expected.append(f'{city} {data["time"][2]} {data["precipitation_probability_max"][2]} %')
+        assert printed.strip().splitlines()==expected
+# Missing values must never masquerade as a dry day.
+missing=copy.deepcopy(weather)
+missing['daily']['precipitation_probability_max'][1]=None
+missing['daily']['rain_sum'][0]=None
+for snippet in [guide.TODAY,guide.YESTERDAY]:
+    printed,_=lesson.execute_cell(snippet,{'weather':missing,'place':source['location']})
+    assert 'unavailable' in printed
+# Exercise the rainy branches even if Kashiwa's snapshot happens to be dry.
+rainy=copy.deepcopy(weather)
+rainy['daily']['precipitation_probability_max'][1]=70
+rainy['daily']['rain_sum'][0]=2.5
+rainy['daily']['showers_sum'][0]=0.4
+assert 'umbrella' in lesson.execute_cell(guide.TODAY,{'weather':rainy,'place':source['location']})[0]
+assert '2.9 mm' in lesson.execute_cell(guide.YESTERDAY,{'weather':rainy,'place':source['location']})[0]
+# The optional loop handles invalid choices and exits.
+answers=iter(['bad','2','q'])
+printed,_=lesson.execute_cell(guide.REPEAT,{'weather':weather,'input':lambda prompt:next(answers)})
+assert 'Please enter' in printed and weather['daily']['time'][2] in printed
+for filename in ['challenge.html','lecture.html','weather-code.html']:
+    text=(folder/filename).read_text()
+    assert '2026-11-12T12:00:00+09:00' in text
+    assert 'practice.ipynb' not in text and 'starter-files.zip' not in text
+    assert 'weather-code.html' in text or filename=='weather-code.html'
+panel=(ROOT/'content/weeks/07-logic-loops.md').read_text()
+assert panel.count('{notebook}')==1 and '{fundamentals}' not in panel
+assert 'weather-code.html' in panel
+assert 'while is optional' in panel
+print('PASS: single two-cell starter, all six guide examples, actual multi-city responses, missing/rainy values, optional loop and aligned links.')

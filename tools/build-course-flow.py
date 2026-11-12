@@ -511,7 +511,7 @@ def main():
     bike=[mdcell('# 選択：千葉の自転車盗を集計\n\n作品タイトル：\n氏名：\n\n同じフォルダにbicycle-theft.csvを保存。授業配布の実際の事件データを集計します。件数は、駐輪された全自転車の被害確率ではありません。出典：https://www.police.pref.chiba.jp/seisoka/safe-life_publicspace-statistics_00002.html'),codecell('import csv\nwith open("bicycle-theft.csv", encoding="utf-8-sig", newline="") as file:\n    incidents = list(csv.DictReader(file))\nprint(len(incidents), "reported incidents")'),codecell('def count_places(rows, column):\n    counts = {}\n    for row in rows:\n        place = row[column]\n        counts[place] = counts.get(place, 0) + 1\n    return counts\n\ncounts = count_places(incidents, "発生場所")\nprint(counts)'),mdcell('## 自分の変更\n発生場所・時間・施錠関係など、別の列で数えてみる。列名はlist(incidents[0])で確認。元データ数行と照合し、何が言えて何が言えないかを書く。'),codecell('# Your change\n')]
     notebook(ROOT/'weeks/week-08/bicycle-theft-guide.ipynb',bike)
     # Keep incoming links to the established in-class notebooks useful.
-    aliases={7:'week-07-in-class-logic-review.ipynb',8:'week-08-in-class-bicycle-theft.ipynb',9:'week-09-in-class-functions.ipynb',10:'week-10-in-class-systems.ipynb',11:'week-11-in-class-modules.ipynb',12:'week-12-in-class-review-prototype.ipynb',13:'week-13-in-class-project-testing.ipynb',14:'week-14-in-class-final.ipynb'}
+    aliases={8:'week-08-in-class-bicycle-theft.ipynb',9:'week-09-in-class-functions.ipynb',10:'week-10-in-class-systems.ipynb',11:'week-11-in-class-modules.ipynb',12:'week-12-in-class-review-prototype.ipynb',13:'week-13-in-class-project-testing.ipynb',14:'week-14-in-class-final.ipynb'}
     for week,name in aliases.items():shutil.copyfile(ROOT/f'weeks/week-{week:02}/practice.ipynb',ROOT/f'weeks/week-{week:02}'/name)
     shutil.copyfile(ROOT/'weeks/week-09/practice.ipynb',ROOT/'weeks/week-09/fundamentals-functions.ipynb')
     vision=json.loads((ROOT/'weeks/week-11/challenge-starter.ipynb').read_text())['cells']
@@ -541,9 +541,9 @@ result.pack(pady=10)
 root.mainloop()'''
     notebook(ROOT/'weeks/week-13/workshop-tkinter.ipynb',[mdcell('# 任意：関数をボタンから呼ぶ\n\nTkinterの画面が使える環境向けの発展。新しい完成条件ではありません。下のコードをbudget_window.pyへ保存してTerminalで実行できます。Notebookで動かした場合は、画面を閉じるまでCellは実行中です。\n\ncommand=show_balance は関数を渡します。show_balance()と書くと今呼んでしまいます。中心のremaining関数はNotebookやTerminalと同じです。'),codecell(tk_code),mdcell('## 自分で試す\n470円、1,000円、文字列で確認。結果の単位、エラーの案内、関数へ渡る値を説明しよう。')])
     for week in W:
+        if week==7:continue  # Week 7 has a single starter notebook, no duplicate pack.
         folder=ROOT/f'weeks/week-{week:02}'
         files=['practice.ipynb','challenge-starter.ipynb']
-        if week==7:files+=['weather-response.json','README.txt']
         if week in [8,9,10]:files+=['student-menu.csv']
         if week==8:files+=['bicycle-theft-guide.ipynb','bicycle-theft.csv']
         if week==10:files+=['budget_tool.py']

@@ -1,13 +1,10 @@
-Weather Hackathon · Week 07
+Week 07 · Weather Hackathon
 
-Unzip these files into one folder. Open challenge-starter.ipynb and run the first two code cells. Only Python standard-library modules are used for fetching and processing data.
+One starter: challenge-starter.ipynb. Run its two code cells in order, check the city, then add your own app below. No custom functions, extra packages or API key required.
 
-Live API first; weather-response.json is the fallback and is updated when fetching succeeds. The data preview shows this JSON as a table. practice.ipynb uses the bundled snapshot. The visual display uses the notebook’s built-in IPython support.
+Required: API data, your own for loop and a clear visual answer. while is optional. Reference examples: weather-code.html. Instructions: challenge.html.
 
-Weather data: Open-Meteo https://open-meteo.com/
-Kashiwa · 2026-11-12 00:23 JST · Asia/Tokyo · Open-Meteo
-Units: temp °C; rain probability %.
+Data: Open-Meteo https://open-meteo.com/en/docs
+Yesterday is model-estimated rainfall, not a confirmed observation. Forecast probability is not certainty. Dates use the chosen location’s time zone.
 
-Build in teams of 2–3 for 60 minutes. Share coding, checking and visual explanation. Everyone contributes a code change and understands it. AI may explain errors or offer small hints; check its suggestions yourselves. Every team demos and every member speaks.
-
-Each student submits an executed notebook and the JSON used. Include your contribution, one improvement and two tested settings. Due 2026-11-18 23:59 JST.
+Build for 60 minutes in teams of 2–3. Every member contributes and explains a change. Demo in 60–90 seconds. Submit an executed .ipynb and any extra files actually used by 2026-11-18 23:59 JST.

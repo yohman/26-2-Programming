@@ -1,98 +1,55 @@
 {
   "latitude": 35.85,
   "longitude": 140.0,
-  "generationtime_ms": 0.07152557373046875,
+  "generationtime_ms": 0.09453296661376953,
   "utc_offset_seconds": 32400,
   "timezone": "Asia/Tokyo",
   "timezone_abbreviation": "GMT+9",
-  "elevation": 21.0,
-  "hourly_units": {
+  "elevation": 23.0,
+  "daily_units": {
     "time": "iso8601",
-    "temperature_2m": "°C",
-    "precipitation_probability": "%"
+    "temperature_2m_max": "°C",
+    "temperature_2m_min": "°C",
+    "precipitation_probability_max": "%",
+    "rain_sum": "mm",
+    "showers_sum": "mm"
   },
-  "hourly": {
+  "daily": {
     "time": [
-      "2026-11-12T00:00",
-      "2026-11-12T01:00",
-      "2026-11-12T02:00",
-      "2026-11-12T03:00",
-      "2026-11-12T04:00",
-      "2026-11-12T05:00",
-      "2026-11-12T06:00",
-      "2026-11-12T07:00",
-      "2026-11-12T08:00",
-      "2026-11-12T09:00",
-      "2026-11-12T10:00",
-      "2026-11-12T11:00",
-      "2026-11-12T12:00",
-      "2026-11-12T13:00",
-      "2026-11-12T14:00",
-      "2026-11-12T15:00",
-      "2026-11-12T16:00",
-      "2026-11-12T17:00",
-      "2026-11-12T18:00",
-      "2026-11-12T19:00",
-      "2026-11-12T20:00",
-      "2026-11-12T21:00",
-      "2026-11-12T22:00",
-      "2026-11-12T23:00"
+      "2026-11-11",
+      "2026-11-12",
+      "2026-11-13",
+      "2026-11-14"
     ],
-    "temperature_2m": [
-      9.8,
-      9.7,
-      9.5,
-      9.2,
-      8.9,
-      8.5,
-      8.2,
-      8.1,
-      9.1,
-      10.7,
-      12.4,
-      14.1,
-      15.7,
-      16.8,
-      17.1,
-      16.9,
-      16.1,
-      14.8,
-      14.1,
-      13.6,
-      13.0,
-      12.6,
-      12.2,
-      11.9
+    "temperature_2m_max": [
+      14.3,
+      17.4,
+      19.4,
+      20.0
     ],
-    "precipitation_probability": [
+    "temperature_2m_min": [
+      7.0,
+      7.8,
+      8.8,
+      9.8
+    ],
+    "precipitation_probability_max": [
       0,
       0,
       0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
+      6
+    ],
+    "rain_sum": [
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "showers_sum": [
+      0.0,
+      0.0,
+      0.0,
+      0.0
     ]
-  },
-  "_source": {
-    "url": "https://api.open-meteo.com/v1/forecast?latitude=35.86&longitude=139.97&hourly=temperature_2m%2Cprecipitation_probability&forecast_hours=24&timezone=Asia%2FTokyo",
-    "retrieved_at": "2026-11-11T15:23:55.327927+00:00"
   }
 }

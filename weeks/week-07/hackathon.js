@@ -6,19 +6,11 @@
   const start=(state,now)=>({...state,deadline:now+remaining(state,now)});
   const pause=(state,now)=>({...state,remainingMs:remaining(state,now),deadline:null});
   const format=milliseconds=>{const seconds=Math.ceil(Math.max(0,milliseconds)/1000);return String(Math.floor(seconds/60)).padStart(2,'0')+':'+String(seconds%60).padStart(2,'0');};
-  const selectHours=(forecast,maxRain,minTemp)=>forecast.filter(hour=>hour.rain!==null&&hour.temp!==null&&hour.rain<=maxRain&&hour.temp>=minTemp);
-  function weatherBoard(forecast,chosen,minTemp,maxRain){
-    const escape=value=>String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-    const rows=[...chosen,...forecast.filter(hour=>!chosen.includes(hour))].map(hour=>{const match=chosen.includes(hour);return '<tr style="background:'+(match?'#dceee2':'#f1f3f2')+'"><td>'+escape(hour.time.replace('T',' '))+'</td><td>'+Number(hour.temp).toFixed(1)+'</td><td>'+hour.rain+'%</td><td>'+(match?'✓ Match / 合う':'— / 合わない')+'</td></tr>';}).join('');
-    return '<div class="weather-board"><strong>'+chosen.length+' / '+forecast.length+' hours match · 条件に合う時間</strong><p>Temperature ≥ '+escape(minTemp)+'°C · Precipitation ≤ '+escape(maxRain)+'% · Japan time · Matches first / 合う時間を先に表示</p><div class="weather-board-scroll"><table><thead><tr><th>Time / 時刻</th><th>°C</th><th>Rain %</th><th>Your rule / 条件</th></tr></thead><tbody>'+rows+'</tbody></table></div>'+(chosen.length?'':'<p>No hours match. Try another setting. / 条件を変えて試そう。</p>')+'</div>';
-  }
-  const api={remaining,reset,start,pause,format,selectHours,weatherBoard};
+  const api={remaining,reset,start,pause,format};
   if(typeof module!=='undefined'&&module.exports){module.exports=api;return;}
   root.WeatherHackathon=api;
   if(typeof document==='undefined')return;
   const isJapanese=()=>document.documentElement.lang==='ja';
-  const payload=document.getElementById('lesson-data');
-  const data=payload?JSON.parse(payload.textContent):{};
   document.querySelectorAll('[data-countdown]').forEach(clock=>{
     const duration=clock.querySelector('[data-clock-duration]'),toggle=clock.querySelector('[data-clock-toggle]');
     const output=clock.querySelector('[data-clock]'),status=clock.querySelector('[data-clock-status]');
@@ -55,27 +47,5 @@
     window.addEventListener('storage',event=>{if(event.key===key){state=initial;restore(event.newValue);render();}});
     new MutationObserver(render).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
     setInterval(render,250);render();
-  });
-  function highlight(code,source){
-    const pattern=/("[^"]*")|\b(for|in|if|and|from|import)\b|\b(print|len|display|HTML|weather_board)\b|\b(-?\d+(?:\.\d+)?)\b/g;
-    code.replaceChildren();let pos=0;
-    for(const match of source.matchAll(pattern)){
-      code.append(document.createTextNode(source.slice(pos,match.index)));
-      const span=document.createElement('span');span.className=match[1]?'syntax-string':match[2]?'syntax-keyword':match[3]?'syntax-function':'syntax-number';span.textContent=match[0];code.append(span);pos=match.index+match[0].length;
-    }
-    code.append(document.createTextNode(source.slice(pos)));
-  }
-  document.querySelectorAll('[data-weather-demo]').forEach(demo=>{
-    const code=demo.querySelector('[data-weather-code]');
-    const rain=demo.querySelector('[data-rain]'),temp=demo.querySelector('[data-temp]');
-    function run(){
-      if(!rain.reportValidity()||!temp.reportValidity())return;
-      const maxRain=Number(rain.value),minTemp=Number(temp.value);
-      const source=data.weatherDemo.replace(/^max_rain = .*$/m,'max_rain = '+maxRain).replace(/^min_temp = .*$/m,'min_temp = '+minTemp);
-      highlight(code,source);
-      const hours=selectHours(data.weather,maxRain,minTemp);
-      demo.querySelector('[data-weather-board]').innerHTML=weatherBoard(data.weather,hours,minTemp,maxRain);
-    }
-    demo.querySelector('[data-weather-run]').addEventListener('click',run);run();
   });
 })(typeof globalThis==='undefined'?this:globalThis);

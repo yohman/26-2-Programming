@@ -6,7 +6,7 @@ ROOT=Path(__file__).resolve().parents[2]
 sys.path.insert(0,str(ROOT/'tools'))
 from weather_hackathon import execute_cell
 cells_run=0
-for week in range(7,15):
+for week in range(8,15):
     folder=ROOT/f'weeks/week-{week:02}'
     nb=json.loads((folder/'practice.ipynb').read_text())
     scope={}
@@ -79,4 +79,4 @@ game.seconds_left=1;game.root.jobs.clear();game.tick()
 assert game.seconds_left==0 and game.timer is None and game.target.hidden
 game.on_hit();assert game.score==1
 if real_tk:sys.modules['tkinter']=real_tk
-print(f'PASS: {cells_run} worked cells, 8 starter packs, portable CLI inputs, cached boxes and single-timer game callbacks.')
+print(f'PASS: {cells_run} worked cells, 7 starter packs, portable CLI inputs, cached boxes and single-timer game callbacks.')

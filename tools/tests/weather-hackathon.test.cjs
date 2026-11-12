@@ -17,9 +17,3 @@ test('countdown uses a deadline, survives reload, pauses and resumes without dri
  assert.equal(clock.format(3600000),'60:00');
  assert.deepEqual(clock.reset(90000),{durationMs:90000,remainingMs:90000,deadline:null});
 });
-test('weather rules include exact boundaries and support empty results',()=>{
- const hours=[{time:'A',temp:10,rain:30},{time:'B',temp:9,rain:0},{time:'C',temp:18,rain:60},{time:'D',temp:null,rain:0}];
- assert.deepEqual(clock.selectHours(hours,30,10),[hours[0]]);
- assert.deepEqual(clock.selectHours(hours,100,50),[]);
- assert.deepEqual(clock.selectHours([],30,10),[]);
-});

@@ -1,9 +1,127 @@
 {
   "provider": "Open-Meteo",
-  "place": "Kashiwa",
-  "url": "https://api.open-meteo.com/v1/forecast?latitude=35.86&longitude=139.97&hourly=temperature_2m%2Cprecipitation_probability&forecast_hours=24&timezone=Asia%2FTokyo",
-  "retrieved_at": "2026-11-11T15:23:55.327927+00:00",
-  "timezone": "Asia/Tokyo",
-  "example_output": "24",
-  "example_sha256": "74967c3ebe8f7aba9e1302b38b5c7c4b56c5241c695cc02dad41240dcfc53a8b"
+  "retrieved_at": "2026-11-12T01:29:19.727365+00:00",
+  "location": {
+    "id": 1859924,
+    "name": "Kashiwa",
+    "latitude": 35.86224,
+    "longitude": 139.97733,
+    "elevation": 24.0,
+    "feature_code": "PPLA2",
+    "country_code": "JP",
+    "admin1_id": 2113014,
+    "admin2_id": 2112330,
+    "timezone": "Asia/Tokyo",
+    "population": 433436,
+    "country_id": 1861060,
+    "country": "Japan",
+    "admin1": "Chiba",
+    "admin2": "Kashiwa Shi"
+  },
+  "location_response": {
+    "results": [
+      {
+        "id": 1859924,
+        "name": "Kashiwa",
+        "latitude": 35.86224,
+        "longitude": 139.97733,
+        "elevation": 24.0,
+        "feature_code": "PPLA2",
+        "country_code": "JP",
+        "admin1_id": 2113014,
+        "admin2_id": 2112330,
+        "timezone": "Asia/Tokyo",
+        "population": 433436,
+        "country_id": 1861060,
+        "country": "Japan",
+        "admin1": "Chiba",
+        "admin2": "Kashiwa Shi"
+      }
+    ],
+    "generationtime_ms": 0.19156933
+  },
+  "checks": [
+    {
+      "city": "Kashiwa",
+      "matched": "Kashiwa",
+      "timezone": "Asia/Tokyo",
+      "dates": [
+        "2026-11-11",
+        "2026-11-12",
+        "2026-11-13",
+        "2026-11-14"
+      ],
+      "yesterday_rain_mm": 0.0,
+      "today_probability": 0,
+      "tomorrow_probability": 0
+    },
+    {
+      "city": "Tokyo",
+      "matched": "Tokyo",
+      "timezone": "Asia/Tokyo",
+      "dates": [
+        "2026-11-11",
+        "2026-11-12",
+        "2026-11-13",
+        "2026-11-14"
+      ],
+      "yesterday_rain_mm": 0.0,
+      "today_probability": 0,
+      "tomorrow_probability": 0
+    },
+    {
+      "city": "Osaka",
+      "matched": "Osaka",
+      "timezone": "Asia/Tokyo",
+      "dates": [
+        "2026-11-11",
+        "2026-11-12",
+        "2026-11-13",
+        "2026-11-14"
+      ],
+      "yesterday_rain_mm": 0.0,
+      "today_probability": 0,
+      "tomorrow_probability": 8
+    },
+    {
+      "city": "Naha",
+      "matched": "Naha",
+      "timezone": "Asia/Tokyo",
+      "dates": [
+        "2026-11-11",
+        "2026-11-12",
+        "2026-11-13",
+        "2026-11-14"
+      ],
+      "yesterday_rain_mm": 0.0,
+      "today_probability": 6,
+      "tomorrow_probability": 20
+    }
+  ],
+  "hashes": [
+    "ad5b12805dec1fbaa1bb1dde60b0078bb77a5bb926b1728f3eeef156966df98b",
+    "f9cea23178f3a9c84bd4b365762e54de48a2fa922fe173f8fad0d9bea8528c59"
+  ],
+  "outputs": [
+    [
+      {
+        "output_type": "execute_result",
+        "metadata": {},
+        "data": {
+          "text/plain": "('Kashiwa', 'Chiba', 'Japan')"
+        },
+        "execution_count": 1
+      }
+    ],
+    [
+      {
+        "output_type": "execute_result",
+        "metadata": {},
+        "data": {
+          "text/plain": "{'time': ['2026-11-11', '2026-11-12', '2026-11-13', '2026-11-14'],\n 'temperature_2m_max': [14.3, 17.4, 19.4, 20.0],\n 'temperature_2m_min': [7.0, 7.8, 8.8, 9.8],\n 'precipitation_probability_max': [0, 0, 0, 6],\n 'rain_sum': [0.0, 0.0, 0.0, 0.0],\n 'showers_sum': [0.0, 0.0, 0.0, 0.0]}"
+        },
+        "execution_count": 2
+      }
+    ]
+  ]
 }

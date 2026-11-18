@@ -3,7 +3,7 @@
 
 Run using admin/.venv/bin/python tools/local-admin/review.py --serve
 Never modifies student originals. Private replays live in ignored admin/_review;
-explicitly hearted notebook exports are published separately to submissions/gallery.json.
+public notebook exports are published separately; hearts mark featured work.
 """
 import argparse
 import ast
@@ -460,7 +460,15 @@ def read_roster():
     return roster, notes
 
 
-def prepare():
+def submission_week(folder):
+    """Prefer UNIPA's assignment number when an export is inside a later-week folder."""
+    exports = {int(match[1]) for path in folder.iterdir() if path.is_dir()
+               and (match := re.fullmatch(r'\d{4}_[A-Z0-9]+_(\d{1,2})_\d{14}', path.name))}
+    folder_week = int(re.fullmatch(r'week[-_]?0?(\d+)', folder.name)[1])
+    return next(iter(exports)) if len(exports) == 1 else folder_week
+
+
+def prepare(only_week=None):
     roster, roster_notes = read_roster()
     OUTPUT.mkdir(parents=True, exist_ok=True)
     API_CACHE.mkdir(exist_ok=True)
@@ -472,7 +480,12 @@ def prepare():
         match = re.fullmatch(r'week[-_]?0?(\d+)', folder.name)
         if not folder.is_dir() or not match:
             continue
-        week = int(match[1]); groups = {}
+        week = submission_week(folder)
+        if only_week is not None and week != only_week:
+            continue
+        if week != int(match[1]):
+            print(f'{folder.name}: UNIPA assignment Week {week}', flush=True)
+        groups = {}
         # UNIPA exports may be kept inside their timestamped extraction folder.
         for file in sorted(folder.rglob('*')):
             match = re.match(r'^(\d{8,12})_', file.name)
@@ -516,6 +529,16 @@ def prepare():
                 submissions.append({'id': digest, 'student': student, 'student_name': record['student_name'], 'student_reading': record['student_reading'], 'title': title, 'file': record['file'], 'attachments': len(files), 'saved_outputs': sum(bool(c.get('outputs')) for c in (notebook or {}).get('cells', [])), 'execution': counts, 'notes': execution['notes']})
                 total += 1
         weeks.append({'week': week, 'students': len(groups), 'submissions': submissions})
+    if only_week is not None and (OUTPUT / 'index.json').exists():
+        previous = json.loads((OUTPUT / 'index.json').read_text())
+        weeks += [week for week in previous['weeks'] if week['week'] != only_week]
+    combined = {}
+    for week in weeks:
+        target = combined.setdefault(week['week'], {'week': week['week'], 'submissions': []})
+        target['submissions'].extend(week['submissions'])
+    weeks = sorted(combined.values(), key=lambda week: week['week'])
+    for week in weeks:
+        week['students'] = len({item['student'] for item in week['submissions']})
     submitted_ids = {submission['student'] for week in weeks for submission in week['submissions']}
     manifest = {'generated': datetime.now().astimezone().isoformat(), 'weeks': weeks, 'roster': {'matched': len(submitted_ids & roster.keys()), 'unmatched': sorted(submitted_ids - roster.keys()), 'notes': roster_notes}}
     (OUTPUT / 'index.json').write_text(json.dumps(manifest, ensure_ascii=False))
@@ -584,11 +607,12 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--worker')
     parser.add_argument('--serve', action='store_true')
+    parser.add_argument('--week', type=int, help='Refresh one assignment week; preserve other previews')
     args = parser.parse_args()
     if args.worker:
         worker(args.worker)
     else:
-        prepare()
+        prepare(args.week)
         if args.serve:
             print('Local admin: http://127.0.0.1:8766/admin/', flush=True)
             ThreadingHTTPServer(('127.0.0.1', 8766), Handler).serve_forever()

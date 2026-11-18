@@ -18,7 +18,7 @@ from collections import Counter
 import quiz_package
 import bicycle_ascii as ascii_bike
 
-VERSION = '20261118-w8-weather'
+VERSION = '20261118-w8-gallery'
 RELEASE = '2026-11-19T12:00:00+09:00'
 POLICE = 'https://www.police.pref.chiba.jp/seisoka/safe-life_publicspace-statistics_00002.html'
 SPEC = dict(title='Bicycle theft: what does the data say?', title_ja='自転車盗を、データで調べる', date='2026-11-19', due='2026-11-25', slides=[{}]*23)
@@ -285,7 +285,7 @@ def build(root, c):
         slide('share','2分で、根拠を見せる。','Two minutes. Show your evidence.', '<div class="share-sequence">'+bi('問い → 図 → 発見 → 提案','Question → visual → finding → action')+'</div>'+p('使った列とforの役割を説明。相手の「それは何を数えたの？」に答えよう。','Explain the columns and the role of your for loop. Be ready to answer: what exactly did you count?')+p('件数 ≠ 被害率。不明な日付・時刻は不明のまま扱う。緯度・経度はないので、地図は任意。','Counts are not rates. Keep unknown dates and hours separate. Coordinates are not supplied; maps are optional.'),'statement'),
         slide('homework','同じレポートを、仕上げる。','Finish the same report.', ascii_bike.art('finish')+p('11月25日（水）23:59まで。コード・出力・グラフ・Markdownの説明を保存し、実行済み.ipynbをUNIPAへ提出。','Due Wednesday, November 25 at 23:59 JST. Save code, outputs, chart and Markdown explanations; submit the executed .ipynb to UNIPA.')+p('GitHubにもNotebookとCSVを保存し、Notebookへの直接リンクを添える。提出作品はクラスギャラリーへ。','Save the notebook and CSV on GitHub too, and include the direct notebook link. Reports will appear in the class gallery.')+links([('challenge.html#homework','課題・提出方法','Assignment and submission')]),'exit')
     ]
-    review = slide('review','先週の天気アプリ。','Last week’s weather apps.', '<div class="ascii-review-row"><div class="large-stamp">20 MIN</div>'+ascii_bike.weather_art()+'</div>'+p('使う人に、何ができるアプリ？ 実際に動かしながら、作品をクラスで振り返ります。','Who is the app for, and what can it do? Run the work and review it together.')+'<div class="review-prompts">'+bi('目的 → 天気の見せ方 → forの役割 → 改善','Purpose → weather display → role of for → improvements')+'</div>'+links([('../week-07/challenge.html','先週の天気ハッカソンの要件','Last week’s weather hackathon requirements')]),'hero')
+    review = slide('review','先週の天気アプリ。','Last week’s weather apps.', '<div class="ascii-review-row"><div class="large-stamp">20 MIN</div>'+ascii_bike.weather_art()+'</div>'+p('使う人に、何ができるアプリ？ 実際に動かしながら、作品をクラスで振り返ります。','Who is the app for, and what can it do? Run the work and review it together.')+'<div class="review-prompts">'+bi('目的 → 天気の見せ方 → forの役割 → 改善','Purpose → weather display → role of for → improvements')+'</div>'+links([('../../gallery.html?week=7','みんなの作品：天気ハッカソン','Class gallery: weather hackathon'),('../week-07/challenge.html','先週の天気ハッカソンの要件','Last week’s weather hackathon requirements')]),'hero')
     moments = [
         ('Tsukada先生の自転車が盗まれた。','Tsukada sensei’s bike was stolen.','2024-10-23 · 08:10:06 · さつき駐輪場','2024-10-23 · 08:10:06 · Satsuki bicycle parking'),
         ('17:25:04','17:25:04','2024-10-23 · さつき駐輪場','2024-10-23 · Satsuki bicycle parking'),
@@ -375,6 +375,7 @@ homework_title_ja: 自転車盗レポートを仕上げる
 ---
 '''
     sections = [
+        ('Student Work',('[みんなの作品：Week 7 天気ハッカソン](gallery.html?week=7) — Notebookと実行結果をプレビュー。同じNotebookは提出者をまとめて表示し、Colabでも開けます。','[Student work: Week 7 weather hackathon](gallery.html?week=7) — Preview notebooks and saved outputs. Identical submissions share one project with submitter credits; open notebooks in Colab too.')),
         ('Lecture Flow',('13:10–13:30：先週の天気アプリをレビュー（約20分）、13:30–13:45：パスワードで問題を入手・準備→小テスト6分＋6分、13:45–14:00：学内の防犯カメラ事例→千葉県警データのミニ講義、14:00–14:45：チャレンジ、14:45–14:50：共有・保存。','13:10–13:30 review last week’s weather apps (~20 min); 13:30–13:45 unlock/download and prepare → quiz (6 + 6 min); 13:45–14:00 campus camera case → Chiba Police data mini-lecture; 14:00–14:45 challenge; 14:45–14:50 share and save.')),
         ('In-Class Notebook',('成績評価対象：個人・6問・30点（各問、処理3点＋出力2点）。最初の6分は自力、次の6分は教科書・ノート・通常のWeb検索OK。生成AI・他者との相談は不可。パスワードは授業中に案内。開いてダウンロードし、準備後に合図で開始。解けたセルの出力を保存し、13:45を目安にUNIPAへ提出。未完成でも提出する。','Graded individual quiz: 6 questions, 30 points (3 for logic + 2 for output per question). Work independently for 6 minutes, then use textbooks, notes and ordinary web search for 6 minutes. No generative AI or collaboration. The password is announced in class. Unlock, download, and wait for the start signal. Save completed outputs and submit to UNIPA around 13:45, even if unfinished.')),
         ('In-Class Challenge',('まず[千葉県警のオープンデータ](https://www.police.pref.chiba.jp/seisoka/safe-life_publicspace-statistics_00002.html)から[2025年の自転車盗CSV](https://www.police.pref.chiba.jp/content/common/000074746.csv)をダウンロード。根拠のある防犯の提案を作る。空のNotebookに、forでの集計・ランキング・グラフ・Markdownの説明をまとめる。pandasなしでも取り組める。[手順を開く](weeks/week-08/challenge.html)。','Start at [Chiba Police open data](https://www.police.pref.chiba.jp/seisoka/safe-life_publicspace-statistics_00002.html) and download the [2025 bicycle-theft CSV](https://www.police.pref.chiba.jp/content/common/000074746.csv). Make an evidence-based prevention recommendation in a blank notebook with a for-loop count, ranking, chart and Markdown explanations. A no-pandas route is provided. [Open instructions](weeks/week-08/challenge.html).')),

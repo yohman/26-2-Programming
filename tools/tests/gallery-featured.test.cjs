@@ -15,3 +15,19 @@ test('a missing new feed preserves the legacy gallery until it is available',asy
  vm.runInContext("galleryRecords=[{id:'old',featured:true}]",ctx);await vm.runInContext('updateFeatured()',ctx);
  assert.equal(vm.runInContext('galleryRecords[0].featured',ctx),true);
 });
+test('a heart on any identical submission features the grouped project',async()=>{
+ const a='a'.repeat(20),b='b'.repeat(20);
+ const ctx=context(async()=>({ok:true,json:async()=>({ids:[b]})}));
+ vm.runInContext(`galleryRecords=[{id:'${a}',submission_ids:['${a}','${b}'],featured:false}]`,ctx);
+ await vm.runInContext('updateFeatured()',ctx);
+ assert.equal(vm.runInContext('galleryRecords[0].featured',ctx),true);
+});
+const gallerySource=fs.readFileSync(require('node:path').join(__dirname,'../../assets/gallery.js'),'utf8');
+test('Colab links use committed notebook paths and reject outside paths',()=>{
+ const helper=gallerySource.slice(gallerySource.indexOf('function colabURL'),gallerySource.indexOf('const featuredBadge'));
+ const ctx=vm.createContext({});vm.runInContext(helper,ctx);
+ assert.equal(vm.runInContext(`colabURL({notebook_path:'submissions/notebooks/${'a'.repeat(20)}.ipynb'})`,ctx),`https://colab.research.google.com/github/yohman/26-2-Programming/blob/main/submissions/notebooks/${'a'.repeat(20)}.ipynb`);
+ for(const path of ['https://other.example/a.ipynb','../admin/private.ipynb','submissions/notebooks/bad.ipynb']){
+  ctx.path=path;assert.equal(vm.runInContext('colabURL({notebook_path:path})',ctx),null);
+ }
+});

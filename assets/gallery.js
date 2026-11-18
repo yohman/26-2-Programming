@@ -2,7 +2,7 @@
 let galleryVersion='',galleryRecords=[],galleryTag='';
 let galleryWeeks=[];
 let featuredIDs=null,featuredVersion='';
-function applyFeatured(){if(featuredIDs!==null)galleryRecords.forEach(record=>{record.featured=featuredIDs.has(record.id);});}
+function applyFeatured(){if(featuredIDs!==null)galleryRecords.forEach(record=>{record.featured=(record.submission_ids||[record.id]).some(id=>featuredIDs.has(id));});}
 async function updateFeatured(){
   try{
     const response=await fetch('submissions/featured.json?t='+Date.now(),{cache:'no-store'});
@@ -21,6 +21,17 @@ function assignmentTitle(week,language) {
 }
 function weekEntries(week) {
   return galleryRecords.filter(record=>record.week===week).sort((a,b)=>Number(!!b.featured)-Number(!!a.featured));
+}
+function submitterLabel(record) {
+  const people=record.submitters||[{name:record.student_name,reading:record.student_reading}];
+  return people.map(person=>person.name+(people.length===1&&person.reading?' · '+person.reading:'')).join(' / ');
+}
+function groupLabel(record) {
+  return record.submission_count>1?'<p class="gallery-group-note"><span class="lang-ja">同じNotebookの提出 '+record.submission_count+'件をまとめて表示</span><span class="lang-en">'+record.submission_count+' identical submissions, shown once</span></p>':'';
+}
+function colabURL(record) {
+  return /^submissions\/notebooks\/[a-f0-9]{20}\.ipynb$/.test(record.notebook_path||'')
+    ? 'https://colab.research.google.com/github/yohman/26-2-Programming/blob/main/'+record.notebook_path : null;
 }
 const featuredBadge='<span class="gallery-featured-label"><span aria-hidden="true">♥</span> <span class="lang-ja">注目の作品</span><span class="lang-en">Featured</span></span>';
 function downloadableNotebook(record) {
@@ -53,7 +64,14 @@ function notebookDownload(record) {
     document.body.append(link);link.click();link.remove();
     setTimeout(()=>URL.revokeObjectURL(url),1000);
   };
-  actions.append(button);return actions;
+  actions.append(button);
+  const colab=colabURL(record);
+  if(colab){
+    const link=document.createElement('a');link.className='gallery-colab';link.href=colab;link.target='_blank';link.rel='noopener noreferrer';
+    link.innerHTML='<span class="lang-ja">Colabで開く ↗</span><span class="lang-en">Open in Colab ↗</span>';
+    actions.append(link);
+  }
+  return actions;
 }
 function fillWeekPicker(selected) {
   const weeks=[...new Set([...galleryWeeks.map(w=>w.week),...galleryRecords.map(s=>s.week)])].sort((a,b)=>a-b);
@@ -76,7 +94,7 @@ function thumbnail(record) {
 }
 function renderGallery() {
   const query=new URLSearchParams(location.search),id=query.get('id');
-  const record=galleryRecords.find(s=>s.id===id);
+  const record=galleryRecords.find(s=>s.id===id||s.submission_ids?.includes(id));
   const requested=Number(query.get('week'));
   const week=record?.week||(requested>=1&&requested<=14?requested:Math.max(1,...galleryRecords.map(s=>s.week)));
   fillWeekPicker(week);
@@ -86,19 +104,22 @@ function renderGallery() {
   document.getElementById('gallery-back').href='gallery.html?week='+week;
   if(record){
     const heading=document.createElement('header');heading.className='gallery-notebook-title';
-    heading.innerHTML='<p class="eyebrow">WEEK '+String(record.week).padStart(2,'0')+'</p><p><span class="lang-ja">'+esc(assignmentTitle(week,'ja'))+'</span><span class="lang-en">'+esc(assignmentTitle(week,'en'))+'</span></p><h1>'+esc(record.title)+'</h1><p>'+esc(record.student_name)+' · '+esc(record.student_reading)+'</p>';
+    heading.innerHTML='<p class="eyebrow">WEEK '+String(record.week).padStart(2,'0')+'</p><p><span class="lang-ja">'+esc(assignmentTitle(week,'ja'))+'</span><span class="lang-en">'+esc(assignmentTitle(week,'en'))+'</span></p><h1>'+esc(record.title)+'</h1><p>'+esc(submitterLabel(record))+'</p>';
+    heading.insertAdjacentHTML('beforeend',groupLabel(record));
     if(record.featured)heading.insertAdjacentHTML('afterbegin',featuredBadge);
     const navigation=()=>notebookNavigation(weekEntries(week),record.id,item=>'gallery.html?week='+week+'&id='+item.id);
     galleryHost.append(navigation(),heading,notebookDownload(record),renderNotebook(record),notebookDownload(record),navigation());document.title=record.title+' · Student work';return;
   }
   if(id){history.replaceState(null,'','gallery.html?week='+week);document.getElementById('gallery-status').textContent='この作品は現在公開されていません。';}
   const entries=weekEntries(week);
+  const submitted=entries.reduce((count,entry)=>count+(entry.submission_count||1),0);
   {
-    const title=document.createElement('header');title.className='gallery-assignment';title.innerHTML='<p class="eyebrow">WEEK '+String(week).padStart(2,'0')+'</p><h2><span class="lang-ja">'+esc(assignmentTitle(week,'ja'))+'</span><span class="lang-en">'+esc(assignmentTitle(week,'en'))+'</span></h2><p><span class="lang-ja">公開作品 '+entries.length+'件</span><span class="lang-en">'+entries.length+' published projects</span></p>';
+    const title=document.createElement('header');title.className='gallery-assignment';title.innerHTML='<p class="eyebrow">WEEK '+String(week).padStart(2,'0')+'</p><h2><span class="lang-ja">'+esc(assignmentTitle(week,'ja'))+'</span><span class="lang-en">'+esc(assignmentTitle(week,'en'))+'</span></h2><p><span class="lang-ja">公開作品 '+entries.length+'件'+(submitted>entries.length?'（提出 '+submitted+'件）':'')+'</span><span class="lang-en">'+entries.length+' published projects'+(submitted>entries.length?' from '+submitted+' submissions':'')+'</span></p>';
     const grid=document.createElement('div');grid.className='gallery-grid';
     entries.forEach(record=>{
       const card=document.createElement('a');card.className='gallery-card'+(record.featured?' gallery-card--featured':'');card.href='gallery.html?week='+week+'&id='+record.id;
-      card.innerHTML='<div class="gallery-thumb" aria-hidden="true"></div><h2>'+esc(record.title)+'</h2><p>'+esc(record.student_name)+' · '+esc(record.student_reading)+'</p>';
+      card.innerHTML='<div class="gallery-thumb" aria-hidden="true"></div><h2>'+esc(record.title)+'</h2><p>'+esc(submitterLabel(record))+'</p>';
+      card.insertAdjacentHTML('beforeend',groupLabel(record));
       if(record.featured)card.insertAdjacentHTML('afterbegin',featuredBadge);
       const frame=document.createElement('iframe');frame.sandbox='';frame.loading='lazy';frame.tabIndex=-1;frame.title=record.title;
       frame.srcdoc='<meta http-equiv="Content-Security-Policy" content="default-src \'none\'; style-src \'unsafe-inline\'; img-src data: https:; base-uri \'none\'; form-action \'none\'"><style>body{font-family:sans-serif;padding:16px;color:#24323e}pre{font-size:15px}</style>'+thumbnail(record);

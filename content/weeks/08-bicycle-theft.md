@@ -19,6 +19,9 @@ overview_ja: 先週の天気アプリを振り返り、小テストの後、学�
 homework_title: Finish your bicycle-theft report
 homework_title_ja: 自転車盗レポートを仕上げる
 ---
+## Student Work
+EN: [Student work: Week 7 weather hackathon](gallery.html?week=7) — Preview notebooks and saved outputs. Identical submissions share one project with submitter credits; open notebooks in Colab too.
+JP: [みんなの作品：Week 7 天気ハッカソン](gallery.html?week=7) — Notebookと実行結果をプレビュー。同じNotebookは提出者をまとめて表示し、Colabでも開けます。
 ## Lecture Flow
 EN: 13:10–13:30 review last week’s weather apps (~20 min); 13:30–13:45 unlock/download and prepare → quiz (6 + 6 min); 13:45–14:00 campus camera case → Chiba Police data mini-lecture; 14:00–14:45 challenge; 14:45–14:50 share and save.
 JP: 13:10–13:30：先週の天気アプリをレビュー（約20分）、13:30–13:45：パスワードで問題を入手・準備→小テスト6分＋6分、13:45–14:00：学内の防犯カメラ事例→千葉県警データのミニ講義、14:00–14:45：チャレンジ、14:45–14:50：共有・保存。

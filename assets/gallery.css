@@ -35,3 +35,7 @@
 .gallery-colab{padding:.7rem 1rem;border:1px solid var(--blue);color:var(--blue);font:600 .9rem/1.4 var(--sans);text-decoration:none}
 .gallery-colab:hover{background:#edf3f6}.gallery-colab:focus-visible{outline:2px solid var(--blue);outline-offset:4px}
 .gallery-card .gallery-group-note,.gallery-group-note{font-size:.8rem;color:var(--muted);line-height:1.6}
+
+.gallery-thumb>img{width:100%;height:100%;object-fit:contain;display:block}
+
+.gallery-thumb:has(>pre){padding:1rem;box-sizing:border-box}.gallery-thumb h2{font-size:.95rem;margin:0 0 .7rem}.gallery-thumb pre{font:.8rem/1.5 var(--mono);margin:0;overflow-wrap:anywhere}

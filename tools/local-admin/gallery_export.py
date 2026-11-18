@@ -1,6 +1,7 @@
 """Export every submission; hearts mark featured work. Private records stay in admin/."""
 import hashlib
 import csv
+import base64
 import json
 from pathlib import Path
 import re
@@ -172,13 +173,34 @@ def publish(hearts, push=True):
     if re.search(r'Bearer\s+[A-Za-z0-9_-]{20,}|sk-[A-Za-z0-9_-]{20,}|AIza[A-Za-z0-9_-]{25,}', body):
         raise ValueError('Possible API credential detected; publication stopped.')
     PUBLIC.parent.mkdir(exist_ok=True)
+    manifest = []
     for entry in entries:
         if entry['has_notebook']:
             path = ROOT / entry['notebook_path']
             write_json_atomic(path, public_notebook(entry))
-    PUBLIC.write_text(body)
+        # Keep the index small: saved outputs load with the chosen notebook only.
+        record = {key: value for key, value in entry.items() if key not in ('notebook', 'replay')}
+        first = next((cell for cell in entry['notebook']['cells'] if cell['cell_type']=='code'), {})
+        text = first.get('source', '')
+        text = ''.join(text) if isinstance(text, list) else text
+        record['thumbnail_code'] = '\n'.join(text.splitlines()[:10])[:1600]
+        outputs = [output for cell in entry['notebook']['cells'] for output in cell.get('outputs', [])]
+        visual = next((output for output in outputs if any(kind in output.get('data', {}) for kind in ('image/png','image/jpeg'))), None)
+        if visual:
+            kind = 'image/png' if 'image/png' in visual['data'] else 'image/jpeg'
+            encoded = visual['data'][kind]
+            encoded = ''.join(encoded) if isinstance(encoded, list) else encoded
+            record['thumbnail_path'] = 'submissions/thumbnails/'+entry['id']+('.png' if kind=='image/png' else '.jpg')
+            target = ROOT / record['thumbnail_path']; target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(base64.b64decode(encoded))
+        replay = [cell for cell in entry['replay']['cells'] if cell['outputs']]
+        if replay:
+            record['replay_path'] = 'submissions/previews/'+entry['id']+'.json'
+            write_json_atomic(ROOT / record['replay_path'], {'cells': replay})
+        manifest.append(record)
+    write_json_atomic(PUBLIC, {'updated':datetime.now().astimezone().isoformat(), 'submissions':manifest})
     STATE.write_text(json.dumps(accepted, ensure_ascii=False))
     save_hearts(accepted)
     if push:
-        push_files(['submissions/gallery.json', 'submissions/featured.json', 'submissions/notebooks'], 'Update student gallery')
+        push_files(['submissions/gallery.json', 'submissions/featured.json', 'submissions/notebooks', 'submissions/thumbnails', 'submissions/previews'], 'Update student gallery')
     return {'count': len(entries), 'submissions': submission_count, 'featured': len(accepted), 'hearts': accepted}

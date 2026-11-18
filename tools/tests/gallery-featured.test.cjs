@@ -31,3 +31,17 @@ test('Colab links use committed notebook paths and reject outside paths',()=>{
   ctx.path=path;assert.equal(vm.runInContext('colabURL({notebook_path:path})',ctx),null);
  }
 });
+test('notebooks load on demand, share requests, and survive refreshed gallery records',async()=>{
+ const helper=gallerySource.slice(gallerySource.indexOf('async function loadNotebook'),gallerySource.indexOf('function downloadableNotebook'));
+ let requests=[];
+ const ctx=vm.createContext({Map,Promise,Error,fetch:async path=>{requests.push(path);return {ok:true,json:async()=>path.endsWith('.ipynb')?{cells:[{cell_type:'code',source:'weather'}]}:{cells:[{cell:0,outputs:[]}]}}}});
+ vm.runInContext('const notebookLoads=new Map();'+helper,ctx);
+ vm.runInContext("var a={id:'same',notebook_path:'one.ipynb',replay_path:'preview.json'};var b={...a}",ctx);
+ assert.equal(requests.length,0);
+ await vm.runInContext('Promise.all([loadNotebook(a),loadNotebook(b)])',ctx);
+ assert.equal(requests.length,2);
+ assert.equal(vm.runInContext('a.notebook.cells[0].source',ctx),'weather');
+ assert.equal(vm.runInContext('b.notebook.cells[0].source',ctx),'weather');
+ await vm.runInContext('loadNotebook({...b,notebook:undefined,replay:undefined})',ctx);
+ assert.equal(requests.length,2);
+});

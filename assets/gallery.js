@@ -1,6 +1,8 @@
 /* Every exported submission is visible; hearted projects are featured first. */
 let galleryVersion='',galleryRecords=[],galleryTag='';
 let galleryWeeks=[];
+let galleryRender=0;
+const notebookLoads=new Map();
 let featuredIDs=null,featuredVersion='';
 function applyFeatured(){if(featuredIDs!==null)galleryRecords.forEach(record=>{record.featured=(record.submission_ids||[record.id]).some(id=>featuredIDs.has(id));});}
 async function updateFeatured(){
@@ -34,6 +36,18 @@ function colabURL(record) {
     ? 'https://colab.research.google.com/github/yohman/26-2-Programming/blob/main/'+record.notebook_path : null;
 }
 const featuredBadge='<span class="gallery-featured-label"><span aria-hidden="true">♥</span> <span class="lang-ja">注目の作品</span><span class="lang-en">Featured</span></span>';
+async function loadNotebook(record) {
+  if(record.notebook?.cells || record.has_notebook===false)return;
+  if(!notebookLoads.has(record.id))notebookLoads.set(record.id,(async()=>{
+    const requests=[fetch(record.notebook_path)];
+    if(record.replay_path)requests.push(fetch(record.replay_path));
+    const responses=await Promise.all(requests);
+    if(responses.some(response=>!response.ok))throw new Error('Notebook unavailable');
+    const data=await Promise.all(responses.map(response=>response.json()));
+    return {notebook:data[0],replay:data[1]||{cells:[]}};
+  })().catch(error=>{notebookLoads.delete(record.id);throw error;}));
+  Object.assign(record,await notebookLoads.get(record.id));
+}
 function downloadableNotebook(record) {
   return {
     nbformat:4,nbformat_minor:4,
@@ -56,7 +70,8 @@ function notebookDownload(record) {
   }
   const button=document.createElement('button');button.type='button';button.className='gallery-download';
   button.innerHTML='<span class="lang-ja">↓ Notebookをダウンロード (.ipynb)</span><span class="lang-en">↓ Download notebook (.ipynb)</span>';
-  button.onclick=()=>{
+  button.onclick=async()=>{
+    await loadNotebook(record);
     // Download only the already-public, sanitized code and saved outputs.
     const blob=new Blob([JSON.stringify(downloadableNotebook(record),null,2)],{type:'application/x-ipynb+json'});
     const url=URL.createObjectURL(blob),link=document.createElement('a');
@@ -84,15 +99,11 @@ function fillWeekPicker(selected) {
   }));
 }
 function thumbnail(record) {
-  const widget=record.replay.cells.flatMap(c=>c.outputs).find(o=>o.data?.['text/html']);
-  const outputs=record.notebook.cells.flatMap(c=>c.outputs||[]);
-  const visual=widget||outputs.find(o=>o.data?.['image/png']||o.data?.['text/html']);
-  if(visual?.data?.['text/html'])return joined(visual.data['text/html']);
-  if(visual?.data?.['image/png'])return '<img style="max-width:100%" src="data:image/png;base64,'+joined(visual.data['image/png'])+'">';
-  const first=record.notebook.cells.find(c=>c.cell_type==='code');
-  return '<h2>'+esc(record.title)+'</h2><pre style="white-space:pre-wrap">'+esc(joined(first?.source).split('\n').slice(0,10).join('\n'))+'</pre>';
+  const source=record.thumbnail_code||joined(record.notebook?.cells.find(cell=>cell.cell_type==='code')?.source);
+  return '<h2>'+esc(record.title)+'</h2><pre style="white-space:pre-wrap">'+esc(source.split('\n').slice(0,10).join('\n'))+'</pre>';
 }
-function renderGallery() {
+async function renderGallery() {
+  const render=++galleryRender;
   const query=new URLSearchParams(location.search),id=query.get('id');
   const record=galleryRecords.find(s=>s.id===id||s.submission_ids?.includes(id));
   const requested=Number(query.get('week'));
@@ -108,7 +119,20 @@ function renderGallery() {
     heading.insertAdjacentHTML('beforeend',groupLabel(record));
     if(record.featured)heading.insertAdjacentHTML('afterbegin',featuredBadge);
     const navigation=()=>notebookNavigation(weekEntries(week),record.id,item=>'gallery.html?week='+week+'&id='+item.id);
-    galleryHost.append(navigation(),heading,notebookDownload(record),renderNotebook(record),notebookDownload(record),navigation());document.title=record.title+' · Student work';return;
+    const loading=document.createElement('p');loading.setAttribute('role','status');
+    loading.innerHTML='<span class="lang-ja">Notebookを読み込み中…</span><span class="lang-en">Loading notebook…</span>';
+    galleryHost.append(navigation(),heading,notebookDownload(record),loading);document.title=record.title+' · Student work';
+    try{
+      await loadNotebook(record);
+      if(render!==galleryRender)return;
+      record.replay ||= {cells:[]};record.attachments ||= [];
+      if(!record.notebook)record.notebook={cells:[{cell_type:'markdown',source:'Notebookのプレビューはありません。 / No notebook preview available.'}]};
+      loading.replaceWith(renderNotebook(record));galleryHost.append(notebookDownload(record),navigation());
+    }catch{
+      if(render!==galleryRender)return;
+      loading.innerHTML='<span class="lang-ja">Notebookを読み込めませんでした。ページを再読み込みしてください。</span><span class="lang-en">Unable to load the notebook. Please reload this page.</span>';
+    }
+    return;
   }
   if(id){history.replaceState(null,'','gallery.html?week='+week);document.getElementById('gallery-status').textContent='この作品は現在公開されていません。';}
   const entries=weekEntries(week);
@@ -121,9 +145,14 @@ function renderGallery() {
       card.innerHTML='<div class="gallery-thumb" aria-hidden="true"></div><h2>'+esc(record.title)+'</h2><p>'+esc(submitterLabel(record))+'</p>';
       card.insertAdjacentHTML('beforeend',groupLabel(record));
       if(record.featured)card.insertAdjacentHTML('afterbegin',featuredBadge);
-      const frame=document.createElement('iframe');frame.sandbox='';frame.loading='lazy';frame.tabIndex=-1;frame.title=record.title;
-      frame.srcdoc='<meta http-equiv="Content-Security-Policy" content="default-src \'none\'; style-src \'unsafe-inline\'; img-src data: https:; base-uri \'none\'; form-action \'none\'"><style>body{font-family:sans-serif;padding:16px;color:#24323e}pre{font-size:15px}</style>'+thumbnail(record);
-      card.querySelector('.gallery-thumb').append(frame);grid.append(card);
+      const thumb=card.querySelector('.gallery-thumb');
+      if(/^submissions\/thumbnails\/[a-f0-9]{20}\.(png|jpg)$/.test(record.thumbnail_path||'')){
+        const image=document.createElement('img');image.src=record.thumbnail_path;image.loading='lazy';image.alt='';thumb.append(image);
+      }else{
+        // Both title and code are escaped; no student HTML executes here.
+        thumb.innerHTML=thumbnail(record);
+      }
+      grid.append(card);
     });galleryHost.append(title,grid);
     if(!entries.length){const empty=document.createElement('p');empty.innerHTML='<span class="lang-ja">この週の公開作品はまだありません。</span><span class="lang-en">No projects have been published for this week yet.</span>';galleryHost.append(empty);}
   }

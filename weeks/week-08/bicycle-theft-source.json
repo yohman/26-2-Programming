@@ -1,0 +1,22 @@
+{
+  "title": "千葉県警察 2025年（令和7年）自転車盗データ",
+  "publication_year": 2025,
+  "source_page": "https://www.police.pref.chiba.jp/seisoka/safe-life_publicspace-statistics_00002.html",
+  "source_csv": "https://www.police.pref.chiba.jp/content/common/000074746.csv",
+  "notes_pdf": "https://www.police.pref.chiba.jp/content/common/000066981.pdf",
+  "retrieved_at": "2026-11-18",
+  "http_last_modified": "2026-08-27T15:00:44Z",
+  "encoding": "cp932",
+  "record_count": 10054,
+  "source_sha256": "1588e5773caee1aa6ee5873c7b5ea07e9188575743a7cf01de7e67883ef59ea5",
+  "snapshot_sha256": "e992959ac66230450cca5c20943e04ddd4ce3bf9eb1b2ca46c788eb70b50937d",
+  "transformation": "Line endings normalized to LF. All field values and CP932 encoding preserved.",
+  "occurrence_start_years": {
+    "2019": 1,
+    "2022": 3,
+    "2023": 7,
+    "2024": 281,
+    "2025": 9686,
+    "不明": 76
+  }
+}

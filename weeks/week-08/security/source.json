@@ -1,0 +1,45 @@
+{
+  "source": "2025 Material / Week08 / 20241023_17時25分さつき駐輪場 (1).pdf",
+  "event_date": "2024-10-23",
+  "location": "Reitaku University, Satsuki bicycle parking",
+  "pdf_sha256": "b84e0dd92df0a1f2ef93e19f360b747cbcbfc4935e7685ca533341ea12eff59d",
+  "transformation": "Original embedded JPEG images extracted without alteration.",
+  "images": [
+    {
+      "file": "camera-01.jpg",
+      "page": 1,
+      "original_image": "Image6.jpg",
+      "sha256": "9d2309140529c210b61fd4498155ce8bc47f7dbe3ccac14a13b56c029d73069d"
+    },
+    {
+      "file": "camera-02.jpg",
+      "page": 1,
+      "original_image": "Image8.jpg",
+      "sha256": "abe49b7f77addf4ce8c2d83797c32cb5f24030a867f2d74a9230cbbd6e074db6"
+    },
+    {
+      "file": "camera-03.jpg",
+      "page": 2,
+      "original_image": "Image11.jpg",
+      "sha256": "a412eeff92a73faf319420a2fa39f35e013f3d1dbb95221b78c35a0d1442a189"
+    },
+    {
+      "file": "camera-04.jpg",
+      "page": 2,
+      "original_image": "Image12.jpg",
+      "sha256": "3dd4499db4440a336bdc5af3b7a688755f84e6b20bd69f6f878936609c448fe5"
+    },
+    {
+      "file": "camera-05.jpg",
+      "page": 3,
+      "original_image": "Image15.jpg",
+      "sha256": "b0be1da2dc4aeee9a516ab40e8a4fb0dc3724b9a5d5f95e4308d386a667ebc5b"
+    },
+    {
+      "file": "camera-06.jpg",
+      "page": 3,
+      "original_image": "Image16.jpg",
+      "sha256": "94c28c6994847c6252622554c9b799c8d2d1581727a35cf713d561147dfae2a0"
+    }
+  ]
+}

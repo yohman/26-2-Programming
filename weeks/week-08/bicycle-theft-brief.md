@@ -8,6 +8,6 @@
 
 [実行例Notebook](bicycle-theft-guide.ipynb) / [CSV](bicycle-theft.csv)
 
-2025年度教材から引き継いだ千葉県警公開CSV・9,943件。発生日は2019〜2024年と不明を含む。最新の事件情報ではありません。
+千葉県警察が2025年分として公開している自転車盗CSV・10,054件（2026年11月18日取得）。発生年月日（始期）は2019〜2025年と不明を含みます。
 
 出典：https://www.police.pref.chiba.jp/seisoka/safe-life_publicspace-statistics_00002.html

@@ -8,20 +8,25 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT/'tools'))
 import bicycle_week as lesson
 folder = ROOT/'weeks/week-08'
-quiz = json.loads((folder/'quiz-01.ipynb').read_text())
-answers = [c for c in quiz['cells'] if c['cell_type']=='code']
-assert len(answers)==6 and all(not ''.join(c['source']).strip() and not c['outputs'] for c in answers)
-# Where the teacher's private archive is available, compare all six original prompts.
-archive = ROOT/'2025 Material/Week08/小テスト①.ipynb'
-if archive.exists():
-    old = json.loads(archive.read_text())['cells']
-    originals = [''.join(c['source']).strip() for c in old if c['cell_type']=='markdown' and not ''.join(c['source']).startswith('## 小テスト')]
-    current = [text for _,text in lesson.QUESTIONS]
-    normalize = lambda s: re.sub(r'\s+', ' ', s).strip()
-    assert list(map(normalize, originals)) == list(map(normalize, current))
-with (folder/'bicycle-theft.csv').open(encoding='utf-8-sig', newline='') as f:
+private = ROOT/'admin/.course-private/week08/quiz-source.json'
+payload = json.loads((folder/'quiz-01.enc.json').read_text())
+assert not (folder/'quiz-01.ipynb').exists()
+assert payload['algorithm']=='AES-GCM' and payload['iterations']>=250000
+if private.exists():
+    import quiz_package
+    config=json.loads(private.read_text())
+    quiz=json.loads(quiz_package.decrypt(payload,config['passphrase']))
+    answers=[c for c in quiz['cells'] if c['cell_type']=='code']
+    assert len(answers)==6 and all(not ''.join(c['source']).strip() and not c['outputs'] for c in answers)
+    archive=ROOT/'2025 Material/Week08/小テスト①.ipynb'
+    if archive.exists():
+        old=json.loads(archive.read_text())['cells']
+        originals=[''.join(c['source']).strip() for c in old if c['cell_type']=='markdown' and not ''.join(c['source']).startswith('## 小テスト')]
+        normalize=lambda text:re.sub(r'\s+',' ',text).strip()
+        assert list(map(normalize,originals))==list(map(normalize,[text for _,text in config['questions']]))
+with (folder/'bicycle-theft.csv').open(encoding='cp932', newline='') as f:
     rows = list(csv.DictReader(f))
-assert len(rows)==9943
+assert len(rows)==10054
 nb = json.loads((folder/'bicycle-theft-guide.ipynb').read_text())
 code = [c for c in nb['cells'] if c['cell_type']=='code']
 # Run the first eight cells with a clean standard-library-only interpreter.
@@ -32,7 +37,7 @@ print(r.stdout.strip())
 assert ast.literal_eval(code[0]['outputs'][0]['data']['text/plain'])==len(rows)
 lock = collections.Counter(r['施錠関係'] for r in rows)
 assert ast.literal_eval(code[2]['outputs'][0]['data']['text/plain'])==dict(lock)
-assert sum(lock.values())==len(rows) and lock=={'施錠せず':6781,'施錠した':3162}
+assert sum(lock.values())==len(rows) and lock=={'施錠せず':6879,'施錠した':3175}
 assert ast.literal_eval(code[3]['outputs'][0]['data']['text/plain'])==sum(r['市区町村（発生地）']=='柏市' for r in rows)
 expected = collections.Counter(r['市区町村（発生地）'] for r in rows).most_common(5)
 assert ast.literal_eval(code[4]['outputs'][0]['data']['text/plain'])==expected
@@ -44,13 +49,16 @@ with contextlib.chdir(folder):
     exec(lesson.PANDAS,scope)
     assert list(scope['df']['市区町村（発生地）'].value_counts().head(5).items())==expected
     exec(lesson.PLOT.replace('plt.show()',''),scope)
-    assert [p.get_height() for p in plt.gca().patches]==[6781,3162]
+    assert [p.get_height() for p in plt.gca().patches]==[6879,3175]
     assert plt.gca().get_xlabel()=='Lock status'
     plt.close('all')
 lecture = (folder/'lecture.html').read_text()
-assert lecture.count('data-slide data-ink-id=')==16
+assert lecture.count('data-slide data-ink-id=')==23
 assert 'data-ink-id="w8-bike-quiz-clock"' in lecture
 assert 'data-release="2026-11-19T12:00:00+09:00"' in lecture
 assert not any(x in lecture for x in ['student-menu.csv','remaining(','def count_places','earthquakes'])
+assert lecture.index('w8-bike-review') < lecture.index('w8-bike-quiz\"') < lecture.index('w8-bike-cctv-01') < lecture.index('w8-bike-police-source') < lecture.index('w8-bike-data')
+assert lecture.count('class="camera-frame"')==6
+assert (folder/'challenge.html').read_text().index('000074746.csv') < (folder/'challenge.html').read_text().index('2. 空のNotebook')
 assert (folder/'bicycle-lock-status.png').read_bytes().startswith(b'\x89PNG')
 print('PASS: six unanswered quiz questions; CSV counts, rankings, pandas chart and Week 8 release gate verified')

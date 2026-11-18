@@ -29,3 +29,10 @@
 .bike-code-pair{display:grid;grid-template-columns:1.35fr 1fr;gap:1.5rem;align-items:start}.bike-code-pair .lesson-code,.bike-code-pair .lesson-output{min-width:0}.bike-code-pair .lesson-output{margin-top:0}.bike-code-pair pre{white-space:pre-wrap}
 .bike-chart-pair .bike-plot-output{margin:0;padding:0;background:transparent;border:0}
 @media(max-width:850px){.bike-code-pair{grid-template-columns:1fr}}
+/* The real campus case: preserve the full original camera frame. */
+.bicycle-week.course-deck .layout-camera{background:#131b1f;color:#f8f8f3;padding:1.2rem 2rem}
+.bicycle-week.course-deck .layout-camera h2{font-size:clamp(1.3rem,2.2vw,2rem);margin:0 0 .5rem;color:inherit}
+.camera-frame{margin:0;display:flex;flex-direction:column;align-items:center;gap:.5rem}.camera-frame img{display:block;max-width:100%;width:auto;height:min(61vh,650px);object-fit:contain}.camera-frame figcaption{font-size:.8rem;color:#c9d3ce;line-height:1.5;max-width:1100px}
+.bicycle-week .review-prompts{font-size:clamp(1.6rem,3vw,3rem);line-height:1.7;margin:2rem 0}
+.bicycle-week .quiz-entry{margin:2rem 0;max-width:650px}.quiz-entry label{display:block;margin-bottom:.7rem}.quiz-entry form>div{display:flex;gap:.7rem;align-items:stretch}.quiz-entry input{font:inherit;min-width:0;flex:1;padding:.75rem;border:1px solid #91a298;background:#fff}.quiz-entry button,.quiz-download{font:inherit;font-weight:700;padding:.75rem 1rem;border:1px solid #315876;background:#315876;color:#fff;cursor:pointer;text-decoration:none;display:inline-block}.quiz-entry [hidden]{display:none!important}.quiz-entry [role="status"]{min-height:1.8em;font-size:.95rem}.quiz-entry details{margin-top:2rem}.quiz-entry summary{cursor:pointer;font-weight:700}.quiz-entry details section{border-top:1px solid #cbd2ce;margin-top:1.5rem;padding-top:1rem}.quiz-entry pre{white-space:pre-wrap}
+.bicycle-week.course-deck .lesson-slide>p.source-note{font-size:.9rem;line-height:1.7}

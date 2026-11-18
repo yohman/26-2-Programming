@@ -698,7 +698,7 @@ function agendaWeek(w, defaultOpen = false) {
   const lecturePath = lectureMatch?.[2] || '';
   const lectureViewer = lecturePath ? `viewer.html?file=${encodeURIComponent(lecturePath)}&title=${encodeURIComponent(lectureMatch[1])}` : '';
   const lectureThumb = lecturePath && fileType(lecturePath, false) === 'PDF' ? pdfPageImage(lecturePath, w.week === 1 ? 5 : 1) : '';
-const lectureDeck = lectureFiles ? w.week >= 3 && lecturePath.endsWith('.html') ? `<section class="lecture-slide-card"><h4 class="lecture-section-title"><span class="lang-ja jp">講義スライド</span><span class="lang-en">Lecture slides</span></h4><iframe class="lecture-inline-deck" src="${escapeHtml(lecturePath)}?embed=1&amp;v=${w.week === 7 ? '20261112-tutorial-walkthrough' : w.week === 8 ? '20261118-quiz-six' : w.week >= 9 ? '20261106-flow' : w.week === 6 ? '20261105-class-review' : w.week === 5 ? '20261028-week05-final' : '20261021-week04'}${new URLSearchParams(location.search).has('p') ? '&amp;p' : ''}" title="Week ${String(w.week).padStart(2,'0')} — 講義スライド / Lecture slides" loading="lazy" allow="fullscreen"></iframe><div class="lecture-card-action"><a class="file-preview" data-lecture-page href="${escapeHtml(lecturePath)}"><span class="lang-ja jp" lang="ja">スライドをプレビュー</span><span class="lang-en">Preview slides</span> ↗</a></div></section>` : `<aside class="lecture-deck-panel"><p class="lecture-deck-label"><span class="lang-en">LECTURE SLIDES</span><span class="lang-ja jp" lang="ja">講義スライド</span></p>${lectureThumb ? `<a class="lecture-deck-thumbnail" data-file-preview href="${lectureViewer}" aria-label="${escapeHtml(lectureMatch[1])}"><img src="${escapeHtml(lectureThumb)}" alt="${escapeHtml(lectureMatch[1])} slide preview" loading="lazy"></a>` : ''}<p class="lecture-deck-title">${escapeHtml(lectureMatch?.[1] || '')}</p></aside>` : '';
+const lectureDeck = lectureFiles ? w.week >= 3 && lecturePath.endsWith('.html') ? `<section class="lecture-slide-card"><h4 class="lecture-section-title"><span class="lang-ja jp">講義スライド</span><span class="lang-en">Lecture slides</span></h4><iframe class="lecture-inline-deck" src="${escapeHtml(lecturePath)}?embed=1&amp;v=${w.week === 7 ? '20261112-tutorial-walkthrough' : w.week === 8 ? '20261118-w8-class-flow' : w.week >= 9 ? '20261106-flow' : w.week === 6 ? '20261105-class-review' : w.week === 5 ? '20261028-week05-final' : '20261021-week04'}${new URLSearchParams(location.search).has('p') ? '&amp;p' : ''}" title="Week ${String(w.week).padStart(2,'0')} — 講義スライド / Lecture slides" loading="lazy" allow="fullscreen"></iframe><div class="lecture-card-action"><a class="file-preview" data-lecture-page href="${escapeHtml(lecturePath)}"><span class="lang-ja jp" lang="ja">スライドをプレビュー</span><span class="lang-en">Preview slides</span> ↗</a></div></section>` : `<aside class="lecture-deck-panel"><p class="lecture-deck-label"><span class="lang-en">LECTURE SLIDES</span><span class="lang-ja jp" lang="ja">講義スライド</span></p>${lectureThumb ? `<a class="lecture-deck-thumbnail" data-file-preview href="${lectureViewer}" aria-label="${escapeHtml(lectureMatch[1])}"><img src="${escapeHtml(lectureThumb)}" alt="${escapeHtml(lectureMatch[1])} slide preview" loading="lazy"></a>` : ''}<p class="lecture-deck-title">${escapeHtml(lectureMatch?.[1] || '')}</p></aside>` : '';
   const weekTwoLecture = `<div class="lecture-offerings">
     <section class="lecture-slide-card" aria-label="Lecture slides">
       <div class="lecture-thumbnail"><small>WEEK 02 · LECTURE</small><h4><span class="lang-ja jp" lang="ja">Pythonを動かす。<br>世界を地図にする。</span><span class="lang-en">Make Python work.<br>Map what is happening.</span></h4><p>Part 1 · Markdown & Python<br>Part 2 · Earthquake Map</p></div>
@@ -987,6 +987,12 @@ function renderCsvPreview(root, source, title, actions, download) {
   showPage();
 }
 
+async function csvResponseText(response) {
+  const bytes = await response.arrayBuffer();
+  try { return new TextDecoder('utf-8', {fatal:true}).decode(bytes); }
+  catch (_) { return new TextDecoder('shift_jis').decode(bytes); }
+}
+
 async function fileReleaseStatus(file) {
   const match = /^weeks\/week-(\d{2})\//.exec(file);
   if (!match || previewAll()) return null;
@@ -1003,6 +1009,14 @@ async function setupFileViewer() {
   if (!root) return;
   const params = new URLSearchParams(location.search);
   const file = params.get('file') || '';
+  if (file === 'weeks/week-08/quiz-01.ipynb') {
+    const quiz = new URL('weeks/week-08/quiz.html', location.href);
+    if (params.has('p')) quiz.searchParams.set('p','');
+    if (params.get('return')) quiz.searchParams.set('return',params.get('return'));
+    quiz.searchParams.set('v','20261118-w8-class-flow');
+    location.replace(quiz.href);
+    return;
+  }
   if (file === 'content/final-project.md') {
     location.replace(new URL('final-project.html', location.href).href);
     return;
@@ -1056,7 +1070,7 @@ async function setupFileViewer() {
     }
     const response = await fetch(file, { cache:'no-cache' });
     if (!response.ok) throw new Error('File not found');
-    const source = await response.text();
+    const source = extension === 'csv' ? await csvResponseText(response) : await response.text();
     if (extension === 'json') {
       const data = JSON.parse(source);
       if (Array.isArray(data.hourly?.time) && Array.isArray(data.hourly?.temperature_2m) && Array.isArray(data.hourly?.precipitation_probability)) {

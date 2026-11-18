@@ -54,7 +54,7 @@ test('direct file previews check the week release before loading content',async(
  let metadata=future;
  class FixedDate extends Date {constructor(value){super(value===undefined?'2026-11-18T13:00:00+09:00':value);}}
  const context={URL,URLSearchParams,Date:FixedDate,Intl,weekFiles:['08-bicycle-theft.md'],escapeHtml:value=>String(value),
-  location:{search:'?file=weeks%2Fweek-08%2Fquiz-01.ipynb',href:'https://example.org/course/viewer.html',protocol:'https:',host:'example.org',hostname:'example.org'},
+  location:{search:'?file=weeks%2Fweek-08%2Fbicycle-theft-guide.ipynb',href:'https://example.org/course/viewer.html',protocol:'https:',host:'example.org',hostname:'example.org'},
   document:{querySelector:()=>rootNode},
   fetch:async url=>{fetched.push(url);assert.equal(url,'content/weeks/08-bicycle-theft.md');return {ok:true,text:async()=>metadata};}
  };
@@ -65,16 +65,35 @@ test('direct file previews check the week release before loading content',async(
  assert.match(rootNode.innerHTML,/Available/);
  assert.doesNotMatch(rootNode.innerHTML,/viewer-download|ダウンロード|Reitaku University/);
  context.location.search='?p=';
- assert.equal(await context.fileReleaseStatus('weeks/week-08/quiz-01.ipynb'),null);
+ assert.equal(await context.fileReleaseStatus('weeks/week-08/bicycle-theft-guide.ipynb'),null);
  assert.equal(fetched.length,1);
  context.location.search='';
  metadata=future.replace('2026-11-19T12:00:00+09:00','2026-11-17T12:00:00+09:00');
  assert.equal(await context.fileReleaseStatus('weeks/week-08/bicycle-theft.csv'),null);
  metadata=metadata.replace('preview: true','publication_hold: true');
  assert.equal((await context.fileReleaseStatus('weeks/week-08/lecture.pdf')).publication_hold,'true');
- context.location.search='?file=weeks%2Fweek-08%2Fquiz-01.ipynb';
+ context.location.search='?file=weeks%2Fweek-08%2Fbicycle-theft-guide.ipynb';
  context.fetch=async()=>{throw new Error('Network failure');};
  await context.setupFileViewer();
  assert.match(rootNode.innerHTML,/Please refresh/);
  assert.doesNotMatch(rootNode.innerHTML,/viewer-download/);
+});
+test('CSV previews decode both UTF-8 and the official CP932 file',async()=>{
+ const site=fs.readFileSync(path.join(root,'assets/site.js'),'utf8');
+ const code=site.slice(site.indexOf('async function csvResponseText('),site.indexOf('async function fileReleaseStatus('));
+ const context={TextDecoder};vm.runInNewContext(code,context);
+ const utf8=new TextEncoder().encode('\ufeffPrefecture,都道府県\nChiba,千葉県\n');
+ assert.equal(await context.csvResponseText({arrayBuffer:async()=>utf8.buffer}),'Prefecture,都道府県\nChiba,千葉県\n');
+ const cp932=fs.readFileSync(path.join(root,'weeks/week-08/bicycle-theft.csv'));
+ const decoded=await context.csvResponseText({arrayBuffer:async()=>cp932.buffer.slice(cp932.byteOffset,cp932.byteOffset+cp932.byteLength)});
+ assert.match(decoded,/市区町村（発生地）/);assert.match(decoded,/千葉県/);assert.ok(!decoded.includes('\ufffd'));
+ assert.equal(decoded.trim().split('\n').length,10055);
+});
+test('legacy quiz previews route to the password page, including p previews',async()=>{
+ const site=fs.readFileSync(path.join(root,'assets/site.js'),'utf8');
+ const start=site.indexOf('async function setupFileViewer('),end=site.indexOf('async function loadWeeks(',start);
+ let destination='';
+ const context={URL,URLSearchParams,document:{querySelector:()=>({})},location:{search:'?file=weeks%2Fweek-08%2Fquiz-01.ipynb&p=',href:'https://example.org/course/viewer.html',replace:url=>destination=url}};
+ vm.runInNewContext(site.slice(start,end),context);await context.setupFileViewer();
+ const url=new URL(destination);assert.equal(url.pathname,'/course/weeks/week-08/quiz.html');assert.ok(url.searchParams.has('p'));
 });

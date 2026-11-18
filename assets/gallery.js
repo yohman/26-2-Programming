@@ -25,11 +25,27 @@ function weekEntries(week) {
   return galleryRecords.filter(record=>record.week===week).sort((a,b)=>Number(!!b.featured)-Number(!!a.featured));
 }
 function submitterLabel(record) {
-  const people=record.submitters||[{name:record.student_name,reading:record.student_reading}];
+  const people=record.members||record.submitters||[{name:record.student_name,reading:record.student_reading}];
   return people.map(person=>person.name+(people.length===1&&person.reading?' · '+person.reading:'')).join(' / ');
 }
+function credits(record) {
+  const count=(record.members||record.submitters||[]).length;
+  return '<span class="lang-ja">'+(count>1?'メンバー：':'作成者：')+'</span><span class="lang-en">'+(count>1?'Members: ':'Author: ')+'</span>'+esc(submitterLabel(record));
+}
 function groupLabel(record) {
-  return record.submission_count>1?'<p class="gallery-group-note"><span class="lang-ja">同じNotebookの提出 '+record.submission_count+'件をまとめて表示</span><span class="lang-en">'+record.submission_count+' identical submissions, shown once</span></p>':'';
+  return record.submission_count>1?'<p class="gallery-group-note"><span class="lang-ja">提出 '+record.submission_count+'件をグループで表示</span><span class="lang-en">'+record.submission_count+' submissions, one group</span></p>':'';
+}
+function versionLinks(record,chosen) {
+  if((record.variants||[]).length<2)return null;
+  const nav=document.createElement('nav');nav.className='gallery-versions';nav.setAttribute('aria-label','Submitted notebook versions');
+  const label=document.createElement('span');label.innerHTML='<span class="lang-ja">提出Notebook：</span><span class="lang-en">Submitted notebooks: </span>';nav.append(label);
+  record.variants.forEach(version=>{
+    const link=document.createElement('a');link.href='gallery.html?week='+record.week+'&id='+record.id+'&variant='+version.id;
+    link.textContent=version.submitters.map(person=>person.name).join(' / ');
+    if(version.notebook_path===chosen.notebook_path)link.setAttribute('aria-current','page');
+    nav.append(link);
+  });
+  return nav;
 }
 function colabURL(record) {
   return /^submissions\/notebooks\/[a-f0-9]{20}\.ipynb$/.test(record.notebook_path||'')
@@ -38,15 +54,16 @@ function colabURL(record) {
 const featuredBadge='<span class="gallery-featured-label"><span aria-hidden="true">♥</span> <span class="lang-ja">注目の作品</span><span class="lang-en">Featured</span></span>';
 async function loadNotebook(record) {
   if(record.notebook?.cells || record.has_notebook===false)return;
-  if(!notebookLoads.has(record.id))notebookLoads.set(record.id,(async()=>{
-    const requests=[fetch(record.notebook_path)];
-    if(record.replay_path)requests.push(fetch(record.replay_path));
+  const cacheKey=record.notebook_path||record.id;
+  if(!notebookLoads.has(cacheKey))notebookLoads.set(cacheKey,(async()=>{
+    const requests=[fetch(record.notebook_path,{cache:'no-store'})];
+    if(record.replay_path)requests.push(fetch(record.replay_path,{cache:'no-store'}));
     const responses=await Promise.all(requests);
     if(responses.some(response=>!response.ok))throw new Error('Notebook unavailable');
     const data=await Promise.all(responses.map(response=>response.json()));
     return {notebook:data[0],replay:data[1]||{cells:[]}};
-  })().catch(error=>{notebookLoads.delete(record.id);throw error;}));
-  Object.assign(record,await notebookLoads.get(record.id));
+  })().catch(error=>{notebookLoads.delete(cacheKey);throw error;}));
+  Object.assign(record,await notebookLoads.get(cacheKey));
 }
 function downloadableNotebook(record) {
   return {
@@ -114,20 +131,24 @@ async function renderGallery() {
   document.getElementById('gallery-back').hidden=!record;
   document.getElementById('gallery-back').href='gallery.html?week='+week;
   if(record){
+    const variantID=query.get('variant')||(id!==record.id?id:null);
+    const variant=record.variants?.find(version=>version.id===variantID);
+    const view=variant?{...record,...variant,notebook:undefined,replay:undefined}:record;
     const heading=document.createElement('header');heading.className='gallery-notebook-title';
-    heading.innerHTML='<p class="eyebrow">WEEK '+String(record.week).padStart(2,'0')+'</p><p><span class="lang-ja">'+esc(assignmentTitle(week,'ja'))+'</span><span class="lang-en">'+esc(assignmentTitle(week,'en'))+'</span></p><h1>'+esc(record.title)+'</h1><p>'+esc(submitterLabel(record))+'</p>';
+    heading.innerHTML='<p class="eyebrow">WEEK '+String(record.week).padStart(2,'0')+'</p><p><span class="lang-ja">'+esc(assignmentTitle(week,'ja'))+'</span><span class="lang-en">'+esc(assignmentTitle(week,'en'))+'</span></p><h1>'+esc(record.title)+'</h1><p>'+credits(record)+'</p>';
     heading.insertAdjacentHTML('beforeend',groupLabel(record));
+    const versions=versionLinks(record,view);if(versions)heading.append(versions);
     if(record.featured)heading.insertAdjacentHTML('afterbegin',featuredBadge);
     const navigation=()=>notebookNavigation(weekEntries(week),record.id,item=>'gallery.html?week='+week+'&id='+item.id);
     const loading=document.createElement('p');loading.setAttribute('role','status');
     loading.innerHTML='<span class="lang-ja">Notebookを読み込み中…</span><span class="lang-en">Loading notebook…</span>';
-    galleryHost.append(navigation(),heading,notebookDownload(record),loading);document.title=record.title+' · Student work';
+    galleryHost.append(navigation(),heading,notebookDownload(view),loading);document.title=record.title+' · Student work';
     try{
-      await loadNotebook(record);
+      await loadNotebook(view);
       if(render!==galleryRender)return;
-      record.replay ||= {cells:[]};record.attachments ||= [];
-      if(!record.notebook)record.notebook={cells:[{cell_type:'markdown',source:'Notebookのプレビューはありません。 / No notebook preview available.'}]};
-      loading.replaceWith(renderNotebook(record));galleryHost.append(notebookDownload(record),navigation());
+      view.replay ||= {cells:[]};view.attachments ||= [];
+      if(!view.notebook)view.notebook={cells:[{cell_type:'markdown',source:'Notebookのプレビューはありません。 / No notebook preview available.'}]};
+      loading.replaceWith(renderNotebook(view));galleryHost.append(notebookDownload(view),navigation());
     }catch{
       if(render!==galleryRender)return;
       loading.innerHTML='<span class="lang-ja">Notebookを読み込めませんでした。ページを再読み込みしてください。</span><span class="lang-en">Unable to load the notebook. Please reload this page.</span>';
@@ -142,7 +163,7 @@ async function renderGallery() {
     const grid=document.createElement('div');grid.className='gallery-grid';
     entries.forEach(record=>{
       const card=document.createElement('a');card.className='gallery-card'+(record.featured?' gallery-card--featured':'');card.href='gallery.html?week='+week+'&id='+record.id;
-      card.innerHTML='<div class="gallery-thumb" aria-hidden="true"></div><h2>'+esc(record.title)+'</h2><p>'+esc(submitterLabel(record))+'</p>';
+      card.innerHTML='<div class="gallery-thumb" aria-hidden="true"></div><h2>'+esc(record.title)+'</h2><p>'+credits(record)+'</p>';
       card.insertAdjacentHTML('beforeend',groupLabel(record));
       if(record.featured)card.insertAdjacentHTML('afterbegin',featuredBadge);
       const thumb=card.querySelector('.gallery-thumb');
@@ -167,7 +188,7 @@ async function updateGallery() {
     if(!response.ok)throw new Error('Gallery unavailable');
     const data=await response.json();
     galleryTag=response.headers.get('etag')||response.headers.get('last-modified')||'';
-    if(data.updated!==galleryVersion){galleryVersion=data.updated;galleryRecords=data.submissions;applyFeatured();renderGallery();}
+    if(data.updated!==galleryVersion){galleryVersion=data.updated;notebookLoads.clear();galleryRecords=data.submissions;applyFeatured();renderGallery();}
   } catch(error){if(!galleryVersion)document.getElementById('gallery-status').textContent='作品を読み込めませんでした。しばらくしてから再度お試しください。';}
 }
 updateGallery();

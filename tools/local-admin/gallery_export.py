@@ -10,6 +10,8 @@ import os
 import tempfile
 import threading
 from datetime import datetime
+from gallery_teams import declared_members, group_projects
+from review import read_roster
 
 ROOT = Path(__file__).resolve().parents[2]
 STATE = ROOT / 'admin/.gallery-hearts.json'
@@ -137,7 +139,11 @@ def publish(hearts, push=True):
         raise ValueError('Invalid heart selection')
     index = json.loads((ROOT / 'admin/_review/index.json').read_text())
     selected = {tuple(json.loads(key)) for key in hearts}
-    entries, accepted = [], []
+    entries, accepted, context = [], [], {}
+    roster_people, _ = read_roster(ROOT / 'admin/roster.csv')
+    alias_path = ROOT / 'admin/.gallery-author-aliases.json'
+    author_aliases = json.loads(alias_path.read_text()) if alias_path.exists() else {}
+    previous = json.loads(PUBLIC.read_text()).get('submissions', []) if PUBLIC.exists() and PUBLIC.read_text().lstrip().startswith('{') else []
     student_ids = {s['student'] for w in index['weeks'] for s in w['submissions']}
     roster = ROOT / 'admin/roster.csv'
     if roster.exists():
@@ -159,22 +165,33 @@ def publish(hearts, push=True):
             cells = [{k: cell[k] for k in ('cell_type', 'source', 'outputs', 'execution_count', 'attachments') if k in cell} for cell in notebook['cells']]
             runs = [{'cell': run['cell'], 'outputs': [o for o in run['outputs'] if o.get('metadata', {}).get('local_widget_preview')]} for run in record['replay']['cells']]
             entry_id = public_id(key)
+            roster_people.setdefault(item['student'], {'name':record['student_name'] or 'Student','reading':record['student_reading'] or ''})
+            context[entry_id] = {'student':item['student'], 'key':key, 'authors':declared_members(notebook, roster_people, author_aliases) if week['week']==7 else set()}
             entries.append(clean({'id': entry_id, 'week': week['week'], 'featured': key in selected, 'has_notebook': bool(record.get('notebook')), 'student_name': record['student_name'] or 'Student', 'student_reading': record['student_reading'] or '', 'title': re.sub(r'^\d{8,12}_\d+_\d+_', '', record['title']), 'notebook': {'cells': cells}, 'replay': {'cells': runs}, 'attachments': []}))
             if key in selected:
                 accepted.append(json.dumps(list(key), ensure_ascii=False, separators=(',', ':')))
     submission_count = len(entries)
-    entries = group_identical(entries)
+    source_entries = entries
+    entries = group_projects(entries, context, roster_people, previous, notebook_fingerprint)
+    selected_ids = {public_id(key) for key in selected}
     for entry in entries:
-        if entry['has_notebook']:
-            entry['notebook_path'] = 'submissions/notebooks/' + entry['id'] + '.ipynb'
+        # An updated attachment name must not erase an existing group heart.
+        inherited = any(selected_ids.intersection(prior.get('submission_ids',[prior['id']])) for prior in entry['_previous'])
+        if inherited and not entry['featured']:
+            key = context[entry['_sources'][0]['id']]['key']
+            accepted.append(json.dumps(list(key),ensure_ascii=False,separators=(',',':')))
+            entry['featured'] = True
     entries.sort(key=lambda entry: (entry['week'], not entry['featured']))
     # Basic credential guard: do not publish a literal bearer token or common API secret.
-    body = json.dumps({'updated': datetime.now().astimezone().isoformat(), 'submissions': entries}, ensure_ascii=False)
+    body = json.dumps({'updated': datetime.now().astimezone().isoformat(), 'submissions': source_entries}, ensure_ascii=False)
     if re.search(r'Bearer\s+[A-Za-z0-9_-]{20,}|sk-[A-Za-z0-9_-]{20,}|AIza[A-Za-z0-9_-]{25,}', body):
         raise ValueError('Possible API credential detected; publication stopped.')
     PUBLIC.parent.mkdir(exist_ok=True)
-    manifest = []
-    for entry in entries:
+    del body
+    assets = {}
+    for entry in source_entries:
+        if entry['has_notebook']:
+            entry['notebook_path'] = 'submissions/notebooks/' + entry['id'] + '.ipynb'
         if entry['has_notebook']:
             path = ROOT / entry['notebook_path']
             write_json_atomic(path, public_notebook(entry))
@@ -197,6 +214,23 @@ def publish(hearts, push=True):
         if replay:
             record['replay_path'] = 'submissions/previews/'+entry['id']+'.json'
             write_json_atomic(ROOT / record['replay_path'], {'cells': replay})
+        assets[entry['id']] = record
+    manifest = []
+    for entry in entries:
+        primary = assets[entry['_primary_id']]
+        record = {key:value for key,value in entry.items() if key not in ('notebook','replay') and not key.startswith('_')}
+        for key in ('notebook_path','thumbnail_code','thumbnail_path','replay_path'):
+            if key in primary:record[key]=primary[key]
+        versions = {}
+        for source in entry['_sources']:
+            signature = notebook_fingerprint(source)
+            if signature not in versions:
+                asset = assets[source['id']]
+                versions[signature] = {key:asset[key] for key in ('id','title','notebook_path','replay_path') if key in asset}
+                versions[signature]['submitters'] = []
+            person = {'name':source['student_name'],'reading':source['student_reading']}
+            if person not in versions[signature]['submitters']:versions[signature]['submitters'].append(person)
+        record['variants'] = list(versions.values())
         manifest.append(record)
     write_json_atomic(PUBLIC, {'updated':datetime.now().astimezone().isoformat(), 'submissions':manifest})
     STATE.write_text(json.dumps(accepted, ensure_ascii=False))

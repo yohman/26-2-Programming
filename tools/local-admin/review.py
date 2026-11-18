@@ -23,6 +23,8 @@ import sys
 import tempfile
 import threading
 import unicodedata
+import zipfile
+from zoneinfo import ZoneInfo
 from datetime import datetime
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import unquote, urlsplit
@@ -414,8 +416,8 @@ def replay(notebook, files, folder, digest, api_responses=None):
     return result
 
 
-def read_roster():
-    path = ADMIN / 'roster.csv'
+def read_roster(path=None):
+    path = Path(path) if path is not None else ADMIN / 'roster.csv'
     if not path.exists():
         return {}, ['roster.csv not found; student IDs shown.']
     raw = path.read_bytes()
@@ -453,7 +455,7 @@ def read_roster():
             roman = ''
         if student in roster and roster[student]['name'] != name:
             conflicts.add(student)
-        roster[student] = {'name': name, 'reading': roman or hiragana}
+        roster[student] = {'name': name, 'reading': roman or hiragana, 'kana': hiragana}
     for student in conflicts:
         del roster[student]
         notes.append('Conflicting roster names; ID left unmatched: ' + student)
@@ -468,11 +470,64 @@ def submission_week(folder):
     return next(iter(exports)) if len(exports) == 1 else folder_week
 
 
+
+
+def extract_new_exports(folder):
+    """Extract new timestamped UNIPA ZIPs privately, without replacing originals."""
+    for archive in sorted(folder.glob('*.zip')):
+        if not re.fullmatch(r'\d{4}_[A-Z0-9]+_\d{1,2}_\d{14}',archive.stem):continue
+        destination=folder/archive.stem
+        if destination.exists():continue
+        with zipfile.ZipFile(archive) as package:
+            entries=package.infolist()
+            if sum(item.file_size for item in entries)>500_000_000:raise ValueError('UNIPA export is unexpectedly large')
+            for item in entries:
+                path=Path(item.filename)
+                if path.is_absolute() or '..' in path.parts or ((item.external_attr>>16)&0o170000)==0o120000:
+                    raise ValueError('Unsafe archive member path')
+            with tempfile.TemporaryDirectory(prefix='.extract-',dir=folder) as staging:
+                for item in entries:
+                    target=Path(staging)/item.filename
+                    if item.is_dir():target.mkdir(parents=True,exist_ok=True);continue
+                    target.parent.mkdir(parents=True,exist_ok=True)
+                    with package.open(item) as source,target.open('wb') as output:shutil.copyfileobj(source,output)
+                Path(staging).rename(destination)
+
+
+def latest_student_files(folder):
+    """A later UNIPA export replaces an earlier export for that student only."""
+    batches = {}
+    for file in sorted(folder.rglob('*')):
+        match = re.match(r'^(\d{8,12})_', file.name)
+        if not match or not file.is_file():continue
+        batch = next((parent for parent in file.parents if parent!=folder
+                      and re.fullmatch(r'\d{4}_[A-Z0-9]+_\d{1,2}_\d{14}', parent.name)), folder)
+        timestamp = batch.name[-14:] if batch!=folder else '00000000000000'
+        batches.setdefault(match[1],{}).setdefault((timestamp,str(batch)),[]).append(file)
+    result = {}
+    for student, versions in batches.items():
+        ordered = {}
+        for (stamp,path),files in versions.items():
+            if stamp=='00000000000000':
+                stamp=datetime.fromtimestamp(max(max(p.stat().st_mtime,p.stat().st_ctime) for p in files),ZoneInfo('Asia/Tokyo')).strftime('%Y%m%d%H%M%S')
+            ordered[(stamp,path)]=files
+        result[student]=ordered[max(ordered)]
+    return result
+
+
 def prepare(only_week=None):
     roster, roster_notes = read_roster()
     OUTPUT.mkdir(parents=True, exist_ok=True)
     API_CACHE.mkdir(exist_ok=True)
     worker_version = hashlib.sha256(inspect.getsource(worker).encode()).hexdigest()
+    previous_records = {}
+    if (OUTPUT / 'index.json').exists():
+        for old_week in json.loads((OUTPUT / 'index.json').read_text())['weeks']:
+            for item in old_week['submissions']:
+                if not item.get('id'):continue
+                record_path = OUTPUT / item['id'] / 'submission.json'
+                if record_path.exists():
+                    previous_records[(old_week['week'],item['student'],item['file'])] = json.loads(record_path.read_text())
     for name in ['index.html', 'admin.js', 'admin.css', 'heart-sync.js']:
         shutil.copy2(UI / name, ADMIN / name)
     weeks, total = [], 0
@@ -480,17 +535,13 @@ def prepare(only_week=None):
         match = re.fullmatch(r'week[-_]?0?(\d+)', folder.name)
         if not folder.is_dir() or not match:
             continue
+        extract_new_exports(folder)
         week = submission_week(folder)
         if only_week is not None and week != only_week:
             continue
         if week != int(match[1]):
             print(f'{folder.name}: UNIPA assignment Week {week}', flush=True)
-        groups = {}
-        # UNIPA exports may be kept inside their timestamped extraction folder.
-        for file in sorted(folder.rglob('*')):
-            match = re.match(r'^(\d{8,12})_', file.name)
-            if match and file.is_file():
-                groups.setdefault(match[1], []).append(file)
+        groups = latest_student_files(folder)
         submissions = []
         for student, files in groups.items():
             notebooks = [file for file in files if file.suffix.lower() == '.ipynb']
@@ -509,7 +560,10 @@ def prepare(only_week=None):
                 identity = (str(file) if file else str(folder / student))
                 digest = hashlib.sha256(('review-v5:' + worker_version + identity + ''.join(hashlib.sha256(f.read_bytes()).hexdigest() for f in files) + json.dumps(responses, sort_keys=True)).encode()).hexdigest()[:20]
                 destination = OUTPUT / digest; destination.mkdir(exist_ok=True)
-                execution = replay(notebook, files, folder, digest, responses) if notebook else {'cells': [], 'notes': [invalid or 'No notebook submitted.'], 'generated': []}
+                previous_record = previous_records.get((week, student, file.name if file else None))
+                unchanged_notebook_only = (previous_record and notebook==previous_record.get('notebook')
+                                           and all(path.suffix.lower()=='.ipynb' for path in files))
+                execution = previous_record['replay'] if unchanged_notebook_only else replay(notebook, files, folder, digest, responses) if notebook else {'cells': [], 'notes': [invalid or 'No notebook submitted.'], 'generated': []}
                 if recovered and recovered not in execution['notes']: execution['notes'].append(recovered)
                 assets = []
                 for attached in files:

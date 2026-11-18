@@ -45,3 +45,12 @@ test('notebooks load on demand, share requests, and survive refreshed gallery re
  await vm.runInContext('loadNotebook({...b,notebook:undefined,replay:undefined})',ctx);
  assert.equal(requests.length,2);
 });
+test('different submitted versions of one group load their own notebook',async()=>{
+ const helper=gallerySource.slice(gallerySource.indexOf('async function loadNotebook'),gallerySource.indexOf('function downloadableNotebook'));
+ const ctx=vm.createContext({Map,Promise,Error,fetch:async path=>({ok:true,json:async()=>({cells:[{cell_type:'code',source:path}]})})});
+ vm.runInContext('const notebookLoads=new Map();'+helper,ctx);
+ vm.runInContext("var a={id:'group',notebook_path:'first.ipynb'};var b={id:'group',notebook_path:'second.ipynb'}",ctx);
+ await vm.runInContext('Promise.all([loadNotebook(a),loadNotebook(b)])',ctx);
+ assert.equal(vm.runInContext('a.notebook.cells[0].source',ctx),'first.ipynb');
+ assert.equal(vm.runInContext('b.notebook.cells[0].source',ctx),'second.ipynb');
+});

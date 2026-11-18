@@ -88,3 +88,12 @@ body.camera-active .annotation-tools{position:absolute;bottom:4.5rem;right:1rem;
 /* Override code-block spacing for the three-line artwork itself. */
 .bicycle-week.course-deck .ascii-scene pre,.bicycle-week.course-challenge .ascii-scene pre{padding:0;margin:0;font:500 1.35rem/1.05 var(--mono);white-space:pre;background:transparent;border:0;overflow:visible}
 .bicycle-week.course-deck .ascii-spin pre{font-size:2rem}.bicycle-week.course-deck .layout-challenge .ascii-scene pre{font-size:1.05rem}
+
+/* Weather belongs to the weather-app review: no bicycle or road here. */
+.ascii-sky{display:flex;align-items:center;justify-content:space-around;gap:1rem;padding-right:2rem;min-height:8rem}
+.bicycle-week.course-deck .ascii-weather pre{position:static;flex:none;bottom:auto;left:auto;width:10ch;font:500 clamp(.85rem,1.5vw,1.35rem)/1.05 var(--mono)}
+.bicycle-week.course-deck .ascii-weather .ascii-sun{color:#cb720b}
+.bicycle-week.course-deck .ascii-weather .ascii-rain{color:#287ac1}
+.bicycle-week.course-deck .ascii-weather .ascii-lightning{color:#ad8500}
+.bicycle-week.course-deck .ascii-weather .ascii-snow{color:#4f95b9}
+@media(max-width:650px){.ascii-review-row:has(.ascii-weather){display:block}.ascii-sky{gap:.5rem;min-height:7rem}.bicycle-week.course-deck .ascii-weather pre{font-size:.8rem}.ascii-weather .ascii-toggle{top:-1rem}}

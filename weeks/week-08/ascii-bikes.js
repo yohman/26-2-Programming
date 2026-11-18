@@ -1,9 +1,13 @@
-/* The art is text. Swap four spoke characters; CSS moves the rider. */
+/* Text art: spinning bicycle spokes and the weather-app review sky. */
 (() => {
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const scenes = [...document.querySelectorAll('[data-ascii-scene]')].map(root => ({
-    root, bike: root.querySelector('[data-ascii-bike]'), button: root.querySelector('[data-ascii-toggle]'),
-    frames: JSON.parse(root.dataset.frames), wanted: !reduced.matches, visible: false, frame: 0
+    root, button: root.querySelector('[data-ascii-toggle]'),
+    sprites: [...root.querySelectorAll('[data-ascii-bike], [data-ascii-weather-art]')].map(art => ({
+      art, frames: JSON.parse(art.dataset.asciiFrames || root.dataset.frames), frame: 0
+    })),
+    label: root.dataset.animationLabel || 'bicycle animation', period: Number(root.dataset.frameMs) || 160,
+    updated: 0, wanted: !reduced.matches, visible: false
   }));
   let timer = null, active = [];
   const sync = () => {
@@ -13,10 +17,18 @@
       scene.root.classList.toggle('ascii-running', running);
       scene.button.textContent = scene.wanted ? 'Ⅱ' : '▶';
       scene.button.setAttribute('aria-pressed', String(scene.wanted));
-      scene.button.setAttribute('aria-label', scene.wanted ? 'Pause bicycle animation' : 'Play bicycle animation');
+      scene.button.setAttribute('aria-label', (scene.wanted ? 'Pause ' : 'Play ') + scene.label);
     });
     if (active.length && timer === null) timer = setInterval(() => {
-      active.forEach(scene => { scene.frame = (scene.frame + 1) % scene.frames.length; scene.bike.textContent = scene.frames[scene.frame]; });
+      const now = performance.now();
+      active.forEach(scene => {
+        if (now - scene.updated < scene.period) return;
+        scene.updated = now;
+        scene.sprites.forEach(sprite => {
+          sprite.frame = (sprite.frame + 1) % sprite.frames.length;
+          sprite.art.textContent = sprite.frames[sprite.frame];
+        });
+      });
     }, 160);
     if (!active.length && timer !== null) { clearInterval(timer); timer = null; }
   };

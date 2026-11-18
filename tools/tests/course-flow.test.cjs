@@ -47,3 +47,34 @@ test('instruction links with section anchors open as pages without a download ac
  assert.doesNotMatch(instructions,/file-download|viewer\.html/);
  assert.match(context.resourcesHtml('- [Quiz](weeks/week-08/quiz-01.ipynb) {notebook}'),/file-download/);
 });
+test('direct file previews check the week release before loading content',async()=>{
+ const site=fs.readFileSync(path.join(root,'assets/site.js'),'utf8');
+ const rootNode={innerHTML:''}, fetched=[];
+ const future=fs.readFileSync(path.join(root,'content/weeks/08-bicycle-theft.md'),'utf8');
+ let metadata=future;
+ class FixedDate extends Date {constructor(value){super(value===undefined?'2026-11-18T13:00:00+09:00':value);}}
+ const context={URL,URLSearchParams,Date:FixedDate,Intl,weekFiles:['08-bicycle-theft.md'],escapeHtml:value=>String(value),
+  location:{search:'?file=weeks%2Fweek-08%2Fquiz-01.ipynb',href:'https://example.org/course/viewer.html',protocol:'https:',host:'example.org',hostname:'example.org'},
+  document:{querySelector:()=>rootNode},
+  fetch:async url=>{fetched.push(url);assert.equal(url,'content/weeks/08-bicycle-theft.md');return {ok:true,text:async()=>metadata};}
+ };
+ const block=(start,end)=>site.slice(site.indexOf(start),site.indexOf(end,site.indexOf(start)));
+ vm.runInNewContext(block('function parseFrontMatter(','function parseBilingual(')+block('function previewAll()','function preservePreviewParameter(')+block('function releaseDateLabels(','function practiceMixHtml(')+block('async function fileReleaseStatus(','async function loadWeeks('),context);
+ await context.setupFileViewer();
+ assert.equal(fetched.length,1);
+ assert.match(rootNode.innerHTML,/Available/);
+ assert.doesNotMatch(rootNode.innerHTML,/viewer-download|ダウンロード|Reitaku University/);
+ context.location.search='?p=';
+ assert.equal(await context.fileReleaseStatus('weeks/week-08/quiz-01.ipynb'),null);
+ assert.equal(fetched.length,1);
+ context.location.search='';
+ metadata=future.replace('2026-11-19T12:00:00+09:00','2026-11-17T12:00:00+09:00');
+ assert.equal(await context.fileReleaseStatus('weeks/week-08/bicycle-theft.csv'),null);
+ metadata=metadata.replace('preview: true','publication_hold: true');
+ assert.equal((await context.fileReleaseStatus('weeks/week-08/lecture.pdf')).publication_hold,'true');
+ context.location.search='?file=weeks%2Fweek-08%2Fquiz-01.ipynb';
+ context.fetch=async()=>{throw new Error('Network failure');};
+ await context.setupFileViewer();
+ assert.match(rootNode.innerHTML,/Please refresh/);
+ assert.doesNotMatch(rootNode.innerHTML,/viewer-download/);
+});

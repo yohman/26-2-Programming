@@ -987,6 +987,17 @@ function renderCsvPreview(root, source, title, actions, download) {
   showPage();
 }
 
+async function fileReleaseStatus(file) {
+  const match = /^weeks\/week-(\d{2})\//.exec(file);
+  if (!match || previewAll()) return null;
+  const source = weekFiles.find(name => name.startsWith(match[1] + '-'));
+  if (!source) throw new Error('Unknown course week');
+  const response = await fetch(`content/weeks/${source}`, { cache:'no-cache' });
+  if (!response.ok) throw new Error('Release information unavailable');
+  const week = parseFrontMatter(await response.text());
+  return isAvailable(week) ? null : week;
+}
+
 async function setupFileViewer() {
   const root = document.querySelector('[data-file-viewer]');
   if (!root) return;
@@ -1016,7 +1027,22 @@ async function setupFileViewer() {
   const back = `<a class="viewer-back" href="${escapeHtml(returnUrl)}"><span class="lang-en">← BACK TO ${backEn}</span><span class="lang-ja jp" lang="ja">← ${backJa}に戻る</span></a>`;
   const actions = download => `<div class="viewer-actions">${back}${download}</div>`;
   if (!/^(weeks|content)\//.test(file)) { root.innerHTML = `<div class="viewer-title"><p class="eyebrow">FILE PREVIEW</p><h1>${escapeHtml(title)}</h1>${actions('')}</div><p class="agenda-locked">File preview is unavailable.</p>`; return; }
-  const extension = file.split('.').pop().toLowerCase();
+  // Check the week before fetching the notebook, CSV, PDF or other lesson file.
+  try {
+    const week = await fileReleaseStatus(file);
+    if (week) {
+      const release = week.publication_hold === 'true' ? null : releaseDateLabels(week.publish_at);
+      const message = release
+        ? `<span class="lang-ja jp" lang="ja">${escapeHtml(release.ja)} 公開</span><span class="lang-en">Available ${escapeHtml(release.en)}</span>`
+        : '<span class="lang-ja jp" lang="ja">教材は準備中</span><span class="lang-en">Materials coming soon</span>';
+      root.innerHTML = `<div class="viewer-title"><p class="eyebrow">WEEK ${String(week.week).padStart(2,'0')}</p><h1>${escapeHtml(title)}</h1>${actions('')}</div><p class="agenda-locked">${message}</p>`;
+      return;
+    }
+  } catch (_) {
+    root.innerHTML = `<div class="viewer-title"><h1>${escapeHtml(title)}</h1>${actions('')}</div><p class="agenda-locked"><span class="lang-ja jp" lang="ja">公開情報を読み込めません。再読み込みしてください。</span><span class="lang-en">Could not check the release time. Please refresh.</span></p>`;
+    return;
+  }
+  const extension = file.split(/[?#]/)[0].split('.').pop().toLowerCase();
   const isTutorial = /^weeks\/week-01\/tutorials\//.test(file);
   const download = isTutorial ? '' : `<a class="file-download viewer-download" href="${escapeHtml(file)}" download><span class="lang-ja jp" lang="ja">ダウンロード</span><span class="lang-en">Download</span></a>`;
   try {

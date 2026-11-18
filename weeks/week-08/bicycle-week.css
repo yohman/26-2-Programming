@@ -1,0 +1,31 @@
+/* Week 8: quiz time, then evidence. Same course type and palette. */
+.bicycle-week .lesson-slide>h1,.bicycle-week .lesson-slide>h2{margin-top:0}
+.bicycle-week .lesson-slide>p{font-size:clamp(1rem,1.6vw,1.35rem);line-height:1.8;max-width:1050px}
+.quiz-score{display:flex;gap:1.2rem;align-items:baseline;font-size:clamp(2rem,5vw,4.5rem);margin:1rem 0 2rem}
+.quiz-score>span:last-child{font:600 clamp(3rem,9vw,8rem)/1.1 var(--mono);color:#315876;margin-left:auto}
+.quiz-clock{max-width:950px;margin:1rem auto 2rem}
+.quiz-phases{display:flex;gap:1.5rem;flex-wrap:wrap;border-bottom:1px solid #bbc9c2;padding-bottom:1rem}
+.quiz-phases button{border:0;background:transparent;padding:.6rem 0;opacity:.55;font-size:1.1rem;border-bottom:3px solid transparent}
+.quiz-phases button[aria-pressed="true"]{opacity:1;border-bottom-color:#315876}
+.quiz-clock output{display:block;font:500 clamp(5rem,16vw,12rem)/1.2 var(--mono);font-variant-numeric:tabular-nums;color:#315876;margin:1rem 0}
+.quiz-clock [data-clock-toggle],.quiz-clock [data-clock-reset]{min-width:3rem;min-height:3rem;margin-right:.6rem}
+.quiz-clock [data-clock-status]{margin-left:.5rem}
+.big-filename{font:500 clamp(1rem,3vw,2.5rem)/1.5 var(--mono);overflow-wrap:anywhere}
+.bike-deliverable,.share-sequence{font-size:clamp(1.5rem,4vw,3.7rem);font-weight:700;line-height:1.6;margin:2rem 0}
+.bike-table{overflow-x:auto;margin:2rem 0}.bike-table table{border-collapse:collapse;width:100%;font-size:clamp(1rem,2vw,1.65rem);text-align:left}.bike-table th,.bike-table td{padding:1rem .8rem;border-bottom:1px solid #cbd2ce}.bike-table th{font-size:.8em;font-weight:500;color:#5a6a61}
+.bicycle-week .source-note{font-size:clamp(.8rem,1.1vw,1rem);line-height:1.7;color:#586860}
+.bike-chart-pair{display:grid;grid-template-columns:1.2fr 1fr;align-items:center;gap:2rem}.bike-chart{width:100%;height:auto;display:block;margin:0}.bike-chart-pair pre{font-size:clamp(.7rem,1vw,1rem)}
+.bicycle-week .lesson-output{white-space:pre-wrap;overflow-wrap:anywhere}
+.report-steps{font-size:clamp(1.1rem,2vw,1.7rem);line-height:1.9;padding-left:1.5em}
+.bicycle-week .lesson-links{margin-top:1.5rem}
+.bicycle-week.course-challenge pre{overflow-x:auto;padding:1.4rem;background:#fff;font:400 .94rem/1.75 var(--mono)}
+.bicycle-week.course-challenge .lesson-code{margin-top:1.5rem}.bicycle-week.course-challenge .code-toolbar{display:flex;justify-content:space-between;color:#56665d;font-size:.8rem}
+@media(max-width:850px){.bike-chart-pair{grid-template-columns:1fr}.bike-chart{max-width:600px;margin:auto}.quiz-phases{gap:.6rem}.quiz-phases button{font-size:.9rem}.quiz-score{gap:.6rem}}
+/* Leave room for an example and its revealed result on a classroom display. */
+.bicycle-week.course-deck .lesson-slide{padding:clamp(1.5rem,2.5vw,2.7rem)}
+.bicycle-week.course-deck .lesson-slide pre{font-size:clamp(.82rem,1.15vw,1rem);line-height:1.6;padding:1.1rem}
+.bicycle-week.course-deck .lesson-output{margin-top:.65rem;padding:.8rem 1.1rem}
+.bicycle-week.course-deck .bike-chart-pair pre{font-size:clamp(.72rem,1vw,.9rem)}
+.bike-code-pair{display:grid;grid-template-columns:1.35fr 1fr;gap:1.5rem;align-items:start}.bike-code-pair .lesson-code,.bike-code-pair .lesson-output{min-width:0}.bike-code-pair .lesson-output{margin-top:0}.bike-code-pair pre{white-space:pre-wrap}
+.bike-chart-pair .bike-plot-output{margin:0;padding:0;background:transparent;border:0}
+@media(max-width:850px){.bike-code-pair{grid-template-columns:1fr}}

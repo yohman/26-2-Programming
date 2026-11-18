@@ -34,3 +34,16 @@ test('all eight new lecture and challenge pages preserve their release gates',()
   assert.ok(source.includes('slide-annotations.js'));assert.ok(source.includes('slide-swipe.js'));
  }
 });
+test('instruction links with section anchors open as pages without a download action',()=>{
+ const site=fs.readFileSync(path.join(root,'assets/site.js'),'utf8');
+ const start=site.indexOf('function fileType('),end=site.indexOf('function tutorialsHtml(',start);
+ const context={escapeHtml:value=>String(value)};
+ vm.runInNewContext(site.slice(start,end),context);
+ assert.equal(context.fileType('weeks/week-08/challenge.html#homework',false),'HTML');
+ assert.equal(context.fileType('weeks/week-08/quiz-01.ipynb?v=1#top',false),'IPYNB');
+ const instructions=context.resourcesHtml('- [Homework](weeks/week-08/challenge.html#homework) {homework}');
+ assert.match(instructions,/data-lecture-page/);
+ assert.match(instructions,/href="weeks\/week-08\/challenge.html#homework"/);
+ assert.doesNotMatch(instructions,/file-download|viewer\.html/);
+ assert.match(context.resourcesHtml('- [Quiz](weeks/week-08/quiz-01.ipynb) {notebook}'),/file-download/);
+});

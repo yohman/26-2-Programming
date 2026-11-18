@@ -6,6 +6,7 @@ Rebuild: admin/.venv/bin/python tools/build-course-flow.py
 from pathlib import Path
 import contextlib, csv, html, io, json, re, shutil, zipfile, sys
 import weather_hackathon
+import bicycle_week
 from urllib.parse import urljoin, urlencode
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -71,25 +72,7 @@ W={}
 
 W[7]=weather_hackathon.SPEC
 
-W[8]=dict(title='Make it work for a friend',title_ja='友だちの条件でも使える？',date='2026-11-19',due='2026-11-25',
- aim=('先週のプログラムを、違う条件でも使えるように直す。','Make last week’s program work for different settings.'),
- flow=('0–10：動作チェック、10–22：同じ処理を関数に、22–60：改善、60–78：ペアテスト、78–93：見せ合う、93–100：保存。','0–10 run check; 10–22 one small function; 22–60 improve; 60–78 peer test; 78–93 share; 93–100 save.'),
- brief=('予算ツールを、友だちが条件を変えて使えるようにする。先週の提出がなくても、今日のスターターから始められる。自転車盗データの集計は選択課題。','Make a budget tool a friend can use with different settings. Start with today’s notebook even without last week’s work. Bicycle-theft counting is an alternative challenge.'),
- requirements=[('二つの予算（事件課題は二つの集計列）で使い、違いを説明する。','Run two budgets, or two grouping columns for incident data, and explain the difference.'),('候補0件・対象0行でも、読み手に伝わる結果を出す。','Give an understandable result when no options or records match.'),('一つの処理を関数にし、相手に試してもらって一か所直す。','Put one operation in a function; improve one issue found by a partner.')],
- homework=('授業の同じ作品を改善し、変更前後・通常と候補0件の確認・相手の反応を短く記録。実行済みNotebookと必要なデータをUNIPAへ。','Improve the same work and record before/after, normal/no-match checks and a partner’s feedback. Submit the executed notebook and needed data to UNIPA.'),
- slides=[
- H('「これ、使っていい？」','説明なしで、友だちは動かせる？','Can a friend use it without your explanation?'),
- Q('誰の予算？','自分の500円をコードの3か所で変えている。友だちは700円。どこを直す？','You copied the ¥500 budget into three places. A friend has ¥700. What must change?',('一つのbudget変数へまとめる。次に繰り返す処理を関数へ。','Use one budget variable, then put repeated work into a function.')),
- C('同じ引き算を一つに','defは処理の定義。呼ぶまで動かない。budgetとpriceは受け取る値。returnは結果を呼び出し元へ返す。','def defines the operation; calling runs it. Parameters receive values; return sends the result back.',REMAIN+'\n\nprint(remaining(1000, 470))\nprint(remaining(700, 470))'),
- slide('中に入る値、戻る値','引数→計算→returnを一段ずつ追う。','Step through arguments, calculation and return.','interactive',demo='call'),
- C('候補0件を伝える','空のリストはFalseとして扱える。not chosenなら一件もなかった。','An empty list is falsey; not chosen means no item matched.', 'chosen = []\nfor item in menu:\n    if item["price"] <= 0:\n        chosen.append(item["name"])\nif not chosen:\n    print("No options. Try another budget.")'),
- slide('2つのテスト','通常：500円で候補がある。境界：150円でOnigiriが入る。0円の結果は、使ったデータに0円の活動があるかでも変わる。','Normal: ¥500 finds options. Boundary: ¥150 includes Onigiri. A ¥0 result depends on whether your data includes free activities.','comparison'),
- C('結果を、目で照合する','assertは条件が違えば止まる確認。まず手で計算してから書く。','assert stops when a check is false. Calculate the expected answer first.', 'assert remaining(1000, 470) == 530\nassert remaining(470, 470) == 0\nprint("Two checks passed")'),
- slide('選択課題：自転車をどこに停める？','千葉県警の事件データで、発生場所別の件数を数える。事件の件数から盗まれる確率は計算できない。','Count reported bicycle thefts by place. Incident counts cannot establish the risk per parked bicycle.','data',extra=links([('../week-08/bicycle-theft-guide.ipynb','CSV集計のスターター','Counting notebook')],8,'lecture.html')),
- C('集計も、同じfor','この3行は説明用の小さな例。完全な事件データは選択Notebookで読み込む。','These three rows are a teaching example. The alternative notebook loads the actual incident CSV.', 'places = ["Parking", "Road", "Parking"]\ncounts = {}\nfor place in places:\n    counts[place] = counts.get(place, 0) + 1\nprint(counts)'),
- CH('予算ツールを改善するか、事件データを集計する。どちらも「条件を変えた結果」を一つ示そう。','Improve the budget tool or count incident data. Show how one changed setting changes the result.'),
- slide('ペアテストは、実況しない','操作する人は読みながら使う。作った人は観察し、詰まった場所を一つメモする。','Let the tester read and use it. The author watches and notes one obstacle.','pair'),
- slide('直した一か所を見せる','変更前→変更後→確認した結果。次回は、この処理をもっと分かりやすく関数へまとめる。','Before → after → checked result. Next week we make the function-and-loop relationship explicit.','exit')])
+W[8]=bicycle_week.SPEC
 
 W[9]=dict(title='One function, many calls',title_ja='関数を一つ、何度でも',date='2026-11-26',due='2026-12-02',
  aim=('引数と戻り値を追い、ループ内から関数を呼び、関数の中のループも説明する。','Trace arguments and returns; distinguish a loop calling a function from a loop inside a function.'),
@@ -408,9 +391,11 @@ def demo_html(kind):
 def build_week(week,spec):
     if week==7:
         return weather_hackathon.build(ROOT,sys.modules[__name__])
+    if week==8:
+        return bicycle_week.build(ROOT,sys.modules[__name__])
     dest=ROOT/f'weeks/week-{week:02}'
     date=spec['date']; release=date+'T12:00:00+09:00'
-    if week in [8,9,10]:
+    if week in [9,10]:
         with (dest/'student-menu.csv').open('w',encoding='utf-8',newline='') as file:
             writer=csv.DictWriter(file,lineterminator=chr(10),fieldnames=['name','price','minutes','category']);writer.writeheader();writer.writerows(MENU_DICTS)
     small_menu=spec.get('small_menu',SMALL)
@@ -460,14 +445,13 @@ def build_week(week,spec):
     cells += [mdcell('## Your challenge / 自分で試す\n'+spec['brief'][0]+'\n\n'+'\n'.join('- '+r[0] for r in spec['requirements'])+'\n\nUse a Markdown cell to document your prediction, change, result and checks.'),codecell('# Write your own change here. / 自分の変更を書こう。\n'),mdcell('## Check / 確認\n通常：\n境界・失敗：\n手計算・元データとの照合：\n\n## Reflection / 気づき\n自分で説明できるコード：\n改善したこと：\n残る限界：')]
     notebook(dest/'practice.ipynb',cells)
     challenge=[mdcell(f'# Week {week:02} challenge · {spec["title_ja"]}\n\n作品タイトル：\n氏名：\n\n'+spec['brief'][0]+'\n\n'+'\n'.join('- '+r[0] for r in spec['requirements']))]
-    if week in [8,9,10]:challenge += [mdcell('## Load / 読み込み\n同じフォルダへstudent-menu.csvを保存。追加パッケージ不要。'),codecell(LOAD)]
+    if week in [9,10]:challenge += [mdcell('## Load / 読み込み\n同じフォルダへstudent-menu.csvを保存。追加パッケージ不要。'),codecell(LOAD)]
     if week==11:challenge += [mdcell('## OpenCVなしの入口 / Cached detections\n同じフォルダにdetected-boxes.csvを置く。これは配布画像に対する実際の検出結果。検出自体は再実行していません。'),codecell('import csv\nwith open("detected-boxes.csv", encoding="utf-8", newline="") as file:\n    boxes = list(csv.DictReader(file))\nfor box in boxes:\n    for key in ["x", "y", "w", "h"]:\n        box[key] = int(box[key])\nprint(len(boxes), "cached boxes")')]
     if week==12:challenge += [mdcell('## 画面なしのモデル / Headless model\nclick_model.pyを同じフォルダへ。GUIがなくても実際のPythonで確認できます。'),codecell('from click_model import hit, tick_state\nprint(hit(0, 3))\nprint(hit(1, 0))\nprint(tick_state(1))')]
     challenge += [mdcell('## Predict / 予想\n変更前に何が起きると思う？'),codecell('# Your program / 自分のプログラム\n'),mdcell('## Checks / 確認\n入力 → 期待値 → 実際の結果\n\n通常：\n境界・失敗：\n手計算・元データとの照合：\n\n## Explain / 説明\n何を変えた？ なぜ？ 何がまだできない？')]
     notebook(dest/'challenge-starter.ipynb',challenge)
     extras=[('starter-files.zip','必要ファイルをまとめてダウンロード','Download the starter pack'),('practice.ipynb','ミニ講義の実行例Notebook','Worked-example notebook'),('challenge-starter.ipynb','空欄つきチャレンジNotebook','Challenge notebook')]
-    if week in [8,9,10]:extras.append(('student-menu.csv','メニュー CSV','Menu CSV'))
-    if week==8:extras.append(('bicycle-theft-guide.ipynb','選択：実際の事件CSVを集計','Alternative: actual incident CSV'))
+    if week in [9,10]:extras.append(('student-menu.csv','メニュー CSV','Menu CSV'))
     if week==10:extras += [('budget_tool.py','予算ツール.py','Budget tool script')]
     if week==11:extras += [('detect_faces.py','OpenCV検出.py','OpenCV detection script'),('reitaku.jpg','入力画像','Input image'),('detected-boxes.csv','検出済み座標CSV','Cached detection CSV'),('vision-input.jpg','座標に対応する縮小入力画像','Resized input matching cached coordinates'),('detected-faces.jpg','実際の出力画像','Actual output image')]
     if week==12:extras += [('click_game.py','クリックゲーム.py','Click game script'),('click_model.py','画面なしのルール.py','Headless game rules')]
@@ -493,8 +477,7 @@ def build_week(week,spec):
         else:front+='\n'+key+': '+value
     front=front.rstrip()+'\n'
     resources=[f'- [Week {week:02} Lecture — {spec["title"]}](weeks/week-{week:02}/lecture.html) {{lecture}}',f'- [ミニ講義の実行例 / Worked Examples](weeks/week-{week:02}/practice.ipynb) {{fundamentals}}',f'- [チャレンジ・スターター / Challenge Starter](weeks/week-{week:02}/challenge-starter.ipynb) {{notebook}}',f'- [チャレンジの手順 / Challenge Instructions](weeks/week-{week:02}/challenge.html) {{challenge}}',f'- [宿題・提出方法 / Homework and Submission](weeks/week-{week:02}/challenge.html) {{homework}}']
-    if week in [8,9,10]:resources.append(f'- [メニュー / Menu](weeks/week-{week:02}/student-menu.csv) {{data}}')
-    if week==8:resources.append('- [選択：千葉の自転車盗 / Optional Bicycle-Theft Investigation](weeks/week-08/bicycle-theft-guide.ipynb) {support}')
+    if week in [9,10]:resources.append(f'- [メニュー / Menu](weeks/week-{week:02}/student-menu.csv) {{data}}')
     if week in [10,11,12,13]:resources.append('- [Final Project Requirements](content/final-project.md) {support}')
     sections=[('Lecture Flow',spec['flow']),('In-Class Notebook',('スライドの短いコードを予想→実行→一つ修正。説明と結果が入った実行例Notebookを使う。','Predict, run and modify short slide examples using the worked-example notebook.')),('In-Class Challenge',(spec['brief'][0]+f' [手順とファイルを開く](weeks/week-{week:02}/challenge.html)。',spec['brief'][1]+f' [Open instructions and files](weeks/week-{week:02}/challenge.html).')),('Take-Home Assignment',spec['homework']),('Aha!',spec['aim']),('Takeaway',('自分で変え、結果を確かめ、理由を説明する。','Change it yourself, check the result and explain why.'))]
     text='---'+front+'---\n'
@@ -508,10 +491,8 @@ def main():
     write(ROOT/'weeks/week-11/detect_faces.py',DETECT_SCRIPT)
     write(ROOT/'weeks/week-12/click_model.py',CLICK_MODEL)
     write(ROOT/'weeks/week-12/click_game.py',CLICK_GAME)
-    bike=[mdcell('# 選択：千葉の自転車盗を集計\n\n作品タイトル：\n氏名：\n\n同じフォルダにbicycle-theft.csvを保存。授業配布の実際の事件データを集計します。件数は、駐輪された全自転車の被害確率ではありません。出典：https://www.police.pref.chiba.jp/seisoka/safe-life_publicspace-statistics_00002.html'),codecell('import csv\nwith open("bicycle-theft.csv", encoding="utf-8-sig", newline="") as file:\n    incidents = list(csv.DictReader(file))\nprint(len(incidents), "reported incidents")'),codecell('def count_places(rows, column):\n    counts = {}\n    for row in rows:\n        place = row[column]\n        counts[place] = counts.get(place, 0) + 1\n    return counts\n\ncounts = count_places(incidents, "発生場所")\nprint(counts)'),mdcell('## 自分の変更\n発生場所・時間・施錠関係など、別の列で数えてみる。列名はlist(incidents[0])で確認。元データ数行と照合し、何が言えて何が言えないかを書く。'),codecell('# Your change\n')]
-    notebook(ROOT/'weeks/week-08/bicycle-theft-guide.ipynb',bike)
     # Keep incoming links to the established in-class notebooks useful.
-    aliases={8:'week-08-in-class-bicycle-theft.ipynb',9:'week-09-in-class-functions.ipynb',10:'week-10-in-class-systems.ipynb',11:'week-11-in-class-modules.ipynb',12:'week-12-in-class-review-prototype.ipynb',13:'week-13-in-class-project-testing.ipynb',14:'week-14-in-class-final.ipynb'}
+    aliases={9:'week-09-in-class-functions.ipynb',10:'week-10-in-class-systems.ipynb',11:'week-11-in-class-modules.ipynb',12:'week-12-in-class-review-prototype.ipynb',13:'week-13-in-class-project-testing.ipynb',14:'week-14-in-class-final.ipynb'}
     for week,name in aliases.items():shutil.copyfile(ROOT/f'weeks/week-{week:02}/practice.ipynb',ROOT/f'weeks/week-{week:02}'/name)
     shutil.copyfile(ROOT/'weeks/week-09/practice.ipynb',ROOT/'weeks/week-09/fundamentals-functions.ipynb')
     vision=json.loads((ROOT/'weeks/week-11/challenge-starter.ipynb').read_text())['cells']
@@ -541,11 +522,10 @@ result.pack(pady=10)
 root.mainloop()'''
     notebook(ROOT/'weeks/week-13/workshop-tkinter.ipynb',[mdcell('# 任意：関数をボタンから呼ぶ\n\nTkinterの画面が使える環境向けの発展。新しい完成条件ではありません。下のコードをbudget_window.pyへ保存してTerminalで実行できます。Notebookで動かした場合は、画面を閉じるまでCellは実行中です。\n\ncommand=show_balance は関数を渡します。show_balance()と書くと今呼んでしまいます。中心のremaining関数はNotebookやTerminalと同じです。'),codecell(tk_code),mdcell('## 自分で試す\n470円、1,000円、文字列で確認。結果の単位、エラーの案内、関数へ渡る値を説明しよう。')])
     for week in W:
-        if week==7:continue  # Week 7 uses the web tutorial; students create a blank notebook.
+        if week in [7,8]:continue  # Students author their own challenge notebooks.
         folder=ROOT/f'weeks/week-{week:02}'
         files=['practice.ipynb','challenge-starter.ipynb']
-        if week in [8,9,10]:files+=['student-menu.csv']
-        if week==8:files+=['bicycle-theft-guide.ipynb','bicycle-theft.csv']
+        if week in [9,10]:files+=['student-menu.csv']
         if week==10:files+=['budget_tool.py']
         if week==11:files+=['detect_faces.py','reitaku.jpg','vision-input.jpg','detected-faces.jpg','detected-boxes.csv','challenge-face-detection.ipynb']
         if week==12:files+=['click_model.py','click_game.py']

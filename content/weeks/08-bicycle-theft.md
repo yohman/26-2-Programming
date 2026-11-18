@@ -20,11 +20,11 @@ homework_title: Finish your bicycle-theft report
 homework_title_ja: 自転車盗レポートを仕上げる
 ---
 ## Lecture Flow
-EN: 13:10–13:30 quiz (10 minutes independent + 10 open-book); 13:30–13:45 CSV and counting; 13:45–14:30 investigate; 14:30–14:45 share; 14:45–14:50 save.
-JP: 13:10–13:30：小テスト（自力10分＋オープンブック10分）、13:30–13:45：データの読み方・集計、13:45–14:30：調査、14:30–14:45：共有、14:45–14:50：保存。
+EN: 13:10–13:22 quiz (6 minutes independent + 6 open-book); 13:22–13:45 CSV and counting; 13:45–14:30 investigate; 14:30–14:45 share; 14:45–14:50 save.
+JP: 13:10–13:22：小テスト（自力6分＋オープンブック6分）、13:22–13:45：データの読み方・集計、13:45–14:30：調査、14:30–14:45：共有、14:45–14:50：保存。
 ## In-Class Notebook
-EN: Graded individual quiz: 6 questions, 30 points (3 for logic + 2 for output per question). Work independently for 10 minutes, then use textbooks, notes and ordinary web search for 10 minutes. No generative AI or collaboration. Save completed outputs and submit to UNIPA at 13:30, even if unfinished.
-JP: 成績評価対象：個人・6問・30点（各問、処理3点＋出力2点）。最初の10分は自力、次の10分は教科書・ノート・通常のWeb検索OK。生成AI・他者との相談は不可。解けたセルの出力を保存し、13:30にUNIPAへ提出。未完成でも提出する。
+EN: Graded individual quiz: 6 questions, 30 points (3 for logic + 2 for output per question). Work independently for 6 minutes, then use textbooks, notes and ordinary web search for 6 minutes. No generative AI or collaboration. Save completed outputs and submit to UNIPA at 13:22, even if unfinished.
+JP: 成績評価対象：個人・6問・30点（各問、処理3点＋出力2点）。最初の6分は自力、次の6分は教科書・ノート・通常のWeb検索OK。生成AI・他者との相談は不可。解けたセルの出力を保存し、13:22にUNIPAへ提出。未完成でも提出する。
 ## In-Class Challenge
 EN: Use Chiba bicycle-theft data to make an evidence-based prevention recommendation. Start a blank notebook with a for-loop count, ranking, chart and Markdown explanations. A no-pandas route is provided. [Open instructions](weeks/week-08/challenge.html).
 JP: 千葉の自転車盗データから、根拠のある防犯の提案を作る。空のNotebookに、forでの集計・ランキング・グラフ・Markdownの説明をまとめる。pandasなしでも取り組める。[手順を開く](weeks/week-08/challenge.html)。

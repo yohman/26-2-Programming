@@ -14,7 +14,7 @@ import json
 import re
 import sys
 
-VERSION = '20261118-bike-quiz'
+VERSION = '20261118-quiz-six'
 RELEASE = '2026-11-19T12:00:00+09:00'
 POLICE = 'https://www.police.pref.chiba.jp/seisoka/safe-life_publicspace-statistics_00002.html'
 SPEC = dict(title='Bicycle theft: what does the data say?', title_ja='自転車盗を、データで調べる', date='2026-11-19', due='2026-11-25', slides=[{}]*16)
@@ -222,7 +222,7 @@ def build(root, c):
     cells += [c.mdcell('## 問いに戻る\n\n件数の違いから何が言えますか？ 分母（駐輪台数など）がないため、盗まれる確率や施錠の効果は計算できません。\n\n緯度・経度はありません。架空の座標を作って事件地点として表示しないこと。地図は任意。地域の代表点を使う場合は「地域別の集計」と明記してください。\n\n発生日の不明93件、時刻の不明115件を含みます。除外した場合は、何件除外したかを説明してください。')]
     c.notebook(folder/'bicycle-theft-guide.ipynb', cells)
 
-    quiz = [c.mdcell('# Week 08 小テスト①（成績評価対象）\n\n氏名：\n\n2026年11月19日 13:10〜13:30／個人・6問・30点満点（各5点）\n\n- 最初の10分：自分で解く（この問題文とHintのみ）。\n- 次の10分：教科書・ノート・教材・通常のWeb検索を使ってよい。\n- 20分を通して、生成AI・他者との相談・他者の解答のコピーは不可。\n- 採点：各問、指定された処理3点＋指定どおりの出力2点。未完成でも途中のコードを残してください。\n- 問題1-5は、指定された計算を順番にコードで行うこと。結果の数値だけを書いても処理の点はつきません。\n- 解けたセルを実行して出力を保存。`week08_quiz_氏名.ipynb` として13:30にUNIPAへ提出。未完成でも提出してください。\n- この小テストと、後半の自転車盗レポートは別の提出です。')]
+    quiz = [c.mdcell('# Week 08 小テスト①（成績評価対象）\n\n氏名：\n\n2026年11月19日 13:10〜13:22／個人・6問・30点満点（各5点）\n\n- 最初の6分：自分で解く（この問題文とHintのみ）。\n- 次の6分：教科書・ノート・教材・通常のWeb検索を使ってよい。\n- 12分を通して、生成AI・他者との相談・他者の解答のコピーは不可。\n- 採点：各問、指定された処理3点＋指定どおりの出力2点。未完成でも途中のコードを残してください。\n- 問題1-5は、指定された計算を順番にコードで行うこと。結果の数値だけを書いても処理の点はつきません。\n- 解けたセルを実行して出力を保存。`week08_quiz_氏名.ipynb` として13:22にUNIPAへ提出。未完成でも提出してください。\n- この小テストと、後半の自転車盗レポートは別の提出です。')]
     for ident, text in QUESTIONS:
         quiz += [c.mdcell('## 小テスト①問題'+ident+'（5点）\n\n'+text), c.codecell('')]
     quiz += [c.mdcell('## メモ（任意）\n\n途中まで考えたことや、動かなかった箇所があれば短く記す。')]
@@ -238,7 +238,7 @@ def build(root, c):
         return f'<section class="slide lesson-slide layout-{layout}" data-slide data-ink-id="w8-bike-{key}" hidden><{level}>'+bi(ja,en)+f'</{level}>'+body+'</section>'
     quiz_links = links([('quiz-01.ipynb','小テスト①・問題Notebook','Quiz 01 · question notebook')],8,'lecture.html')
     guide_links = links([('bicycle-theft-guide.ipynb','CSVの読み込み〜集計・グラフ：実行例','Worked examples: CSV → counts → chart')],8,'lecture.html')
-    clock = '<div class="quiz-clock" data-quiz-clock><div class="quiz-phases"><button data-phase="0" aria-pressed="true">'+bi('① 自力で10分','① Independent · 10 min')+'</button><button data-phase="1" aria-pressed="false">'+bi('② Open book 10分','② Open book · 10 min')+'</button></div><output data-clock aria-live="off">10:00</output><div><button data-clock-toggle aria-label="Start / pause">▶</button><button data-clock-reset aria-label="Reset">↶</button><span data-clock-status>'+bi('開始待ち','Ready')+'</span></div></div>'
+    clock = '<div class="quiz-clock" data-quiz-clock><div class="quiz-phases"><button data-phase="0" aria-pressed="true">'+bi('① 自力で6分','① Independent · 6 min')+'</button><button data-phase="1" aria-pressed="false">'+bi('② Open book 6分','② Open book · 6 min')+'</button></div><output data-clock aria-live="off">06:00</output><div><button data-clock-toggle aria-label="Start / pause">▶</button><button data-clock-reset aria-label="Reset">↶</button><span data-clock-status>'+bi('開始待ち','Ready')+'</span></div></div>'
     first_rows = '<div class="bike-table"><table><thead><tr>'+''.join('<th>'+bi(j,e)+'</th>' for j,e in [('市区町村','Municipality'),('発生時（始期）','Hour (start)'),('施錠関係','Lock status')])+'</tr></thead><tbody>'
     for row in incidents[:3]:
         first_rows += '<tr>'+''.join('<td>'+html.escape(row[k])+'</td>' for k in ['市区町村（発生地）','発生時（始期）','施錠関係'])+'</tr>'
@@ -246,9 +246,9 @@ def build(root, c):
     plot_code = c.code_html(PLOT, 'chart').split('<pre class="lesson-output"',1)[0]
     plot_code += '<figure class="lesson-output bike-plot-output" hidden><img class="bike-chart" src="bicycle-lock-status.png" alt="Reported thefts: unlocked 6,781; locked 3,162"></figure>'
     slides = [
-        slide('quiz','まずは、小テスト。','First: a short quiz.', '<div class="quiz-score">6 '+bi('問','questions')+'<span>30 '+bi('点','points')+'</span></div>'+p('これまでの入力・文字列・リスト・計算を、自分のコードで。20分、個人で取り組みます。','Input, strings, lists and arithmetic, in your own code. Work individually for 20 minutes.')+quiz_links,'hero'),
-        slide('quiz-clock','10分 ＋ 10分','10 minutes + 10 minutes', clock+p('前半は自力。後半は教科書・ノート・教材・通常のWeb検索OK。20分を通して、生成AI・他者との相談は不可。','First work independently; then use notes, textbooks, course materials and ordinary web search. No generative AI or collaboration during either phase.'),'quiz'),
-        slide('quiz-save','13:30、途中でも提出。','13:30: submit what you have.', '<p class="big-filename">week08_quiz_氏名.ipynb</p>'+p('解けたセルを実行して、出力を保存。UNIPAの小テスト提出先へ。','Run the cells you have completed and save their outputs. Submit to the quiz assignment on UNIPA.')+p('各問：指定された処理3点＋指定どおりの出力2点。問1-5は計算の手順も採点します。','Each question: 3 points for the required logic and 2 for the required output. Question 1-5 must perform the specified calculation steps.'),'statement'),
+        slide('quiz','まずは、小テスト。','First: a short quiz.', '<div class="quiz-score">6 '+bi('問','questions')+'<span>30 '+bi('点','points')+'</span></div>'+p('これまでの入力・文字列・リスト・計算を、自分のコードで。12分、個人で取り組みます。','Input, strings, lists and arithmetic, in your own code. Work individually for 12 minutes.')+quiz_links,'hero'),
+        slide('quiz-clock','6分 ＋ 6分','6 minutes + 6 minutes', clock+p('前半は自力。後半は教科書・ノート・教材・通常のWeb検索OK。12分を通して、生成AI・他者との相談は不可。','First work independently; then use notes, textbooks, course materials and ordinary web search. No generative AI or collaboration during either phase.'),'quiz'),
+        slide('quiz-save','13:22、途中でも提出。','13:22: submit what you have.', '<p class="big-filename">week08_quiz_氏名.ipynb</p>'+p('解けたセルを実行して、出力を保存。UNIPAの小テスト提出先へ。','Run the cells you have completed and save their outputs. Submit to the quiz assignment on UNIPA.')+p('各問：指定された処理3点＋指定どおりの出力2点。問1-5は計算の手順も採点します。','Each question: 3 points for the required logic and 2 for the required output. Question 1-5 must perform the specified calculation steps.'),'statement'),
         slide('brief','自転車が、なくなった。','The bike is gone.', p('あなたは千葉県警の調査担当。自転車盗データから、どんな防犯の呼びかけを提案する？','You are investigating bicycle theft in Chiba. What prevention message would you recommend from the data?')+'<div class="bike-deliverable">'+bi('件数 → 比較 → 根拠のある提案','Count → compare → recommend')+'</div>','question'),
         slide('data','9,943件の記録。','9,943 incident records.', first_rows+p(*source_note,'source-note')+p('1行が1件。市区町村、場所、年月日、時刻、年齢、職業、施錠関係があります。','One row is one record: municipality, place, date, hour, age group, occupation and lock status.')),
         slide('load','まず、CSVを読む。','First, read the CSV.', p('新しい空のNotebookを作成。CSVを同じフォルダに保存します。pandasは不要。','Create a blank notebook and save the CSV beside it. No pandas required.')+code('load',LOAD)) ,
@@ -317,8 +317,8 @@ homework_title_ja: 自転車盗レポートを仕上げる
 ---
 '''
     sections = [
-        ('Lecture Flow',('13:10–13:30：小テスト（自力10分＋オープンブック10分）、13:30–13:45：データの読み方・集計、13:45–14:30：調査、14:30–14:45：共有、14:45–14:50：保存。','13:10–13:30 quiz (10 minutes independent + 10 open-book); 13:30–13:45 CSV and counting; 13:45–14:30 investigate; 14:30–14:45 share; 14:45–14:50 save.')),
-        ('In-Class Notebook',('成績評価対象：個人・6問・30点（各問、処理3点＋出力2点）。最初の10分は自力、次の10分は教科書・ノート・通常のWeb検索OK。生成AI・他者との相談は不可。解けたセルの出力を保存し、13:30にUNIPAへ提出。未完成でも提出する。','Graded individual quiz: 6 questions, 30 points (3 for logic + 2 for output per question). Work independently for 10 minutes, then use textbooks, notes and ordinary web search for 10 minutes. No generative AI or collaboration. Save completed outputs and submit to UNIPA at 13:30, even if unfinished.')),
+        ('Lecture Flow',('13:10–13:22：小テスト（自力6分＋オープンブック6分）、13:22–13:45：データの読み方・集計、13:45–14:30：調査、14:30–14:45：共有、14:45–14:50：保存。','13:10–13:22 quiz (6 minutes independent + 6 open-book); 13:22–13:45 CSV and counting; 13:45–14:30 investigate; 14:30–14:45 share; 14:45–14:50 save.')),
+        ('In-Class Notebook',('成績評価対象：個人・6問・30点（各問、処理3点＋出力2点）。最初の6分は自力、次の6分は教科書・ノート・通常のWeb検索OK。生成AI・他者との相談は不可。解けたセルの出力を保存し、13:22にUNIPAへ提出。未完成でも提出する。','Graded individual quiz: 6 questions, 30 points (3 for logic + 2 for output per question). Work independently for 6 minutes, then use textbooks, notes and ordinary web search for 6 minutes. No generative AI or collaboration. Save completed outputs and submit to UNIPA at 13:22, even if unfinished.')),
         ('In-Class Challenge',('千葉の自転車盗データから、根拠のある防犯の提案を作る。空のNotebookに、forでの集計・ランキング・グラフ・Markdownの説明をまとめる。pandasなしでも取り組める。[手順を開く](weeks/week-08/challenge.html)。','Use Chiba bicycle-theft data to make an evidence-based prevention recommendation. Start a blank notebook with a for-loop count, ranking, chart and Markdown explanations. A no-pandas route is provided. [Open instructions](weeks/week-08/challenge.html).')),
         ('Take-Home Assignment',('授業の同じレポートを仕上げる。問い・集計・ランキング・グラフ・発見2つ・防犯の提案1つを含める。11月25日（水）23:59までに実行済み.ipynbとGitHubの直接リンクをUNIPAへ。[要件・提出方法](weeks/week-08/challenge.html#homework)。','Finish the same report: a question, count, ranking, chart, two findings and one prevention recommendation. Submit the executed .ipynb and direct GitHub link to UNIPA by November 25, 23:59 JST. [Requirements and submission](weeks/week-08/challenge.html#homework).')),
         ('Aha!',('同じforで、何千件の記録から自分の問いを調べられる。','The same for loop can investigate your question across thousands of records.')),

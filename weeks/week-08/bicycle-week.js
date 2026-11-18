@@ -1,11 +1,12 @@
-/* Instructor's two 10-minute phases. Time is based on the clock, not interval ticks. */
+/* Instructor's two 6-minute phases. Time is based on the clock, not interval ticks. */
 (() => {
   const root = document.querySelector('[data-quiz-clock]');
   if (!root) return;
   const display = root.querySelector('[data-clock]');
   const toggle = root.querySelector('[data-clock-toggle]');
   const status = root.querySelector('[data-clock-status]');
-  let remaining = 600, deadline = 0, running = false;
+  const phaseSeconds = 6 * 60;
+  let remaining = phaseSeconds, deadline = 0, running = false;
   function message(ja, en) {
     const jp = document.createElement('span'), eng = document.createElement('span');
     jp.className = 'ja'; jp.textContent = ja;
@@ -19,11 +20,11 @@
     toggle.textContent = running ? 'Ⅱ' : '▶';
     toggle.setAttribute('aria-label', running ? 'Pause timer' : 'Start timer');
   }
-  function reset() { running = false; remaining = 600; message('開始待ち', 'Ready'); render(); }
+  function reset() { running = false; remaining = phaseSeconds; message('開始待ち', 'Ready'); render(); }
   toggle.addEventListener('click', () => {
     if (running) { render(); running = false; message('一時停止', 'Paused'); }
     else {
-      if (!remaining) remaining = 600;
+      if (!remaining) remaining = phaseSeconds;
       deadline = Date.now() + remaining * 1000; running = true; message('計測中', 'Running');
     }
     render();

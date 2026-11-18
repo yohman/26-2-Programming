@@ -29,8 +29,8 @@ JP: 成績評価対象：個人・6問・30点（各問、処理3点＋出力2�
 EN: Start at [Chiba Police open data](https://www.police.pref.chiba.jp/seisoka/safe-life_publicspace-statistics_00002.html) and download the [2025 bicycle-theft CSV](https://www.police.pref.chiba.jp/content/common/000074746.csv). Make an evidence-based prevention recommendation in a blank notebook with a for-loop count, ranking, chart and Markdown explanations. A no-pandas route is provided. [Open instructions](weeks/week-08/challenge.html).
 JP: まず[千葉県警のオープンデータ](https://www.police.pref.chiba.jp/seisoka/safe-life_publicspace-statistics_00002.html)から[2025年の自転車盗CSV](https://www.police.pref.chiba.jp/content/common/000074746.csv)をダウンロード。根拠のある防犯の提案を作る。空のNotebookに、forでの集計・ランキング・グラフ・Markdownの説明をまとめる。pandasなしでも取り組める。[手順を開く](weeks/week-08/challenge.html)。
 ## Take-Home Assignment
-EN: Finish the same report: a question, count, ranking, chart, two findings and one prevention recommendation. Submit the executed .ipynb and direct GitHub link to UNIPA by November 25, 23:59 JST. [Requirements and submission](weeks/week-08/challenge.html#homework).
-JP: 授業の同じレポートを仕上げる。問い・集計・ランキング・グラフ・発見2つ・防犯の提案1つを含める。11月25日（水）23:59までに実行済み.ipynbとGitHubの直接リンクをUNIPAへ。[要件・提出方法](weeks/week-08/challenge.html#homework)。
+EN: Finish the same report; creative ASCII displays are welcome. Include a question, count, ranking, chart, two findings and one prevention recommendation. Submit the executed .ipynb and direct GitHub link to UNIPA by November 25, 23:59 JST. [Requirements and submission](weeks/week-08/challenge.html#homework).
+JP: 授業の同じレポートを仕上げる。ASCIIなど、見せ方の工夫も歓迎。問い・集計・ランキング・グラフ・発見2つ・防犯の提案1つを含める。11月25日（水）23:59までに実行済み.ipynbとGitHubの直接リンクをUNIPAへ。[要件・提出方法](weeks/week-08/challenge.html#homework)。
 ## Aha!
 EN: The same for loop can investigate your question across thousands of records.
 JP: 同じforで、何千件の記録から自分の問いを調べられる。

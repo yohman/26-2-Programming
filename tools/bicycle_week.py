@@ -16,8 +16,9 @@ import sys
 import hashlib
 from collections import Counter
 import quiz_package
+import bicycle_ascii as ascii_bike
 
-VERSION = '20261118-w8-fullbleed-bike'
+VERSION = '20261118-w8-ascii'
 RELEASE = '2026-11-19T12:00:00+09:00'
 POLICE = 'https://www.police.pref.chiba.jp/seisoka/safe-life_publicspace-statistics_00002.html'
 SPEC = dict(title='Bicycle theft: what does the data say?', title_ja='自転車盗を、データで調べる', date='2026-11-19', due='2026-11-25', slides=[{}]*23)
@@ -74,14 +75,22 @@ for row in incidents:
 top_places = counts.most_common(top_n)
 top_places'''.strip()
 
+RANK_PRETTY = '''
+# 数字を右寄せすると、日本語の市名の長さが違っても揃う
+print(f"CHIBA / TOP {top_n}")
+print("-" * 24)
+for place, count in top_places:
+    print(f"{count:>6,}件  {place}")'''.strip()
+
 BARS = '''
 # 棒1個を何件にするか設定する
 scale = 100
 
-# 正確な件数も表示する（棒の長さは100件未満を切り捨て）
+# 都市名と棒を別の行に。棒はすべて同じ位置から始まる
 for place, count in top_places:
-    bar = "█" * (count // scale)
-    print(f"{place}: {bar} {count:,}件")'''.strip()
+    bar = "#" * (count // scale)
+    print(f"{place} ({count:,}件)")
+    print(bar)'''.strip()
 PANDAS = '''
 # pandasが使える場合の別ルート。同じCSVを読む
 filename = "bike.csv"
@@ -194,8 +203,10 @@ def build(root, c):
         ('count', '4. forで数える', 'counts.get(label, 0)は、登録済みなら件数、未登録なら0。その値に1を足して保存します。事件の総数と集計の合計が一致するか確かめよう。', COUNT),
         ('filter', '5. 市区町村を絞る', '==は一致の比較。appendはリストの末尾へ1件追加。市名を変えて再実行し、件数を比較してみよう。', FILTER),
         ('rank', '6. ランキング', 'CounterはPython標準ライブラリ。未登録のキーは0から数えられます。most_common(5)は件数の多い上位5組を返します。件数は人口や駐輪台数で補正した被害率ではありません。', RANK),
-        ('bars', '7. pandasなしで棒を描く', '文字の繰り返しで簡単な棒グラフを作れます。棒1個は100件。//は整数の商、:,は3桁ごとの桁区切りです。棒は切り捨てなので、正確な数値も必ず添えます。', BARS),
+        ('pretty', '6+. 結果を読みやすく', 'forで各組を取り出し、f文字列で表示を整えます。{count:>6,}は6文字幅で右寄せし、3桁ごとにカンマを付けます。日本語の市名より先に数字を置くので、列が揃います。', RANK_PRETTY),
+        ('bars', '7. pandasなしで棒を描く', '文字の繰り返しで簡単な棒グラフを作れます。#一つは100件。都市名の次の行に棒を出すと、開始位置が揃います。//は整数の商、:,は3桁ごとの桁区切りです。棒は切り捨てなので、正確な数値も必ず添えます。', BARS),
         ('months', '発展：年月ごとの件数', '日付不明は別に数えます。同じ「9月」でも年が違えば別の集計。既存CSVのため、毎月・毎年が完全な期間とは限りません。', MONTHS),
+        ('ascii', '遊び：文字だけで自転車', 'レポートのタイトルや区切りに使ってみよう。r付きの文字列ではバックスラッシュをそのまま書けます。自転車や背景を自分で変えてみよう。', ascii_bike.STILL),
         ('hours', '発展：時間帯', '不明を0時に変えないでください。発生時（始期）は警察データの項目名です。事件が起きた正確な時刻とは限りません。', HOURS),
     ]
     with contextlib.chdir(folder):
@@ -208,22 +219,30 @@ def build(root, c):
         import matplotlib
         matplotlib.use('Agg')
         import matplotlib.pyplot as plt
-        outputs = execute(PANDAS, scope, 9)
-        cell = c.codecell(PANDAS, count=9); cell['outputs'] = outputs
+        optional_count = len(examples) + 1
+        outputs = execute(PANDAS, scope, optional_count)
+        cell = c.codecell(PANDAS, count=optional_count); cell['outputs'] = outputs
         cells += [c.mdcell('## 任意：pandasで同じ集計\n\npandas・Matplotlibが使える人向け。使えなくても上のルートで課題を完成できます。\n\n[pandas公式ガイド](https://pandas.pydata.org/docs/getting_started/intro_tutorials/index.html)\n\nvalue_counts()は値ごとの件数を降順に並べ、head(5)は先頭5件を表示します。'), cell]
         results['pandas'] = outputs[-1]['data']['text/plain']
-        outputs = execute(PANDAS_LOOP, scope, 10)
-        loop_cell = c.codecell(PANDAS_LOOP, count=10); loop_cell['outputs'] = outputs
+        outputs = execute(PANDAS_LOOP, scope, optional_count + 1)
+        loop_cell = c.codecell(PANDAS_LOOP, count=optional_count + 1); loop_cell['outputs'] = outputs
         cells += [c.mdcell('## 任意：pandasとforを組み合わせる\n\npandasを使う場合も、レポートにforを含めます。citiesの市名を自分で選び直し、結果を比較しよう。内側の条件は、列の値がcityと一致する行を選びます。'), loop_cell]
         plt.close('all')
-        execute(PLOT.replace('plt.show()', ''), scope, 11)
+        execute(PLOT.replace('plt.show()', ''), scope, optional_count + 2)
         image = io.BytesIO(); plt.gcf().savefig(image, format='png', dpi=130)
         png = image.getvalue(); (folder/'bicycle-lock-status.png').write_bytes(png)
-        plot_cell = c.codecell(PLOT, count=11)
+        plot_cell = c.codecell(PLOT, count=optional_count + 2)
         plot_cell['outputs'] = [dict(output_type='display_data', metadata={}, data={'image/png': base64.b64encode(png).decode(), 'text/plain': f'Lock status: Unlocked {locks["施錠せず"]}; Locked {locks["施錠した"]}.'})]
         cells += [c.mdcell('## 任意：Matplotlibの棒グラフ\n\n同じデータを使った実際の出力です。環境ごとの日本語フォント問題を避けるためラベルだけ英訳しています。'), plot_cell]
         plt.close('all')
     cells += [c.mdcell(f'## 問いに戻る\n\n件数の違いから何が言えますか？ 分母（駐輪台数など）がないため、盗まれる確率や施錠の効果は計算できません。\n\n緯度・経度はありません。架空の座標を作って事件地点として表示しないこと。地図は任意。地域の代表点を使う場合は「地域別の集計」と明記してください。\n\n発生日の不明{unknown_dates}件、時刻の不明{unknown_hours}件を含みます。除外した場合は、何件除外したかを説明してください。')]
+    # Execute the optional animation too, keeping the final notebook frame as output.
+    # Verify the authored animation, suppressing terminal clearing escape sequences.
+    with contextlib.redirect_stdout(io.StringIO()):
+        exec(ascii_bike.ANIMATION)
+    animation_cell = c.codecell(ascii_bike.ANIMATION, count=optional_count + 3)
+    animation_cell['outputs'] = [dict(output_type='stream',name='stdout',text=ascii_bike.FRAMES[-1]+'\n')]
+    cells += [c.mdcell('## 任意：タイヤを回す\n\n上の自転車をforで動かしてみよう。4種類のスポークを4周、0.15秒ずつ表示します。clear_outputは前の出力を消し、time.sleepは少し待ちます。Jupyter / VS CodeのNotebookで実行。turns・pause・wheelsを変えてみよう。保存時は最後のコマだけ残します。'), animation_cell]
     c.notebook(folder/'bicycle-theft-guide.ipynb', cells)
 
     quiz_package.build(root,c)
@@ -237,7 +256,6 @@ def build(root, c):
         level = 'h1' if layout=='hero' else 'h2'
         return f'<section class="slide lesson-slide layout-{layout}" data-slide data-ink-id="w8-bike-{key}" hidden><{level}>'+bi(ja,en)+f'</{level}>'+body+'</section>'
     quiz_links = links([('quiz.html','パスワードを入力してNotebookを入手','Enter the password to get the notebook')])
-    guide_links = links([('bicycle-theft-guide.ipynb','CSVの読み込み〜集計・グラフ：実行例','Worked examples: CSV → counts → chart')],8,'lecture.html')
     clock = '<div class="quiz-clock" data-quiz-clock><div class="quiz-phases"><button data-phase="0" aria-pressed="true">'+bi('① 自力で6分','① Independent · 6 min')+'</button><button data-phase="1" aria-pressed="false">'+bi('② Open book 6分','② Open book · 6 min')+'</button></div><output data-clock aria-live="off">06:00</output><div><button data-clock-toggle aria-label="Start / pause">▶</button><button data-clock-reset aria-label="Reset">↶</button><span data-clock-status>'+bi('開始待ち','Ready')+'</span></div></div>'
     first_rows = '<div class="bike-table"><table><thead><tr>'+''.join('<th>'+bi(j,e)+'</th>' for j,e in [('市区町村','Municipality'),('発生時（始期）','Hour (start)'),('施錠関係','Lock status')])+'</tr></thead><tbody>'
     for row in incidents[:3]:
@@ -245,9 +263,13 @@ def build(root, c):
     first_rows+='</tbody></table></div>'
     plot_code = c.code_html(PLOT, 'chart').split('<pre class="lesson-output"',1)[0]
     plot_code += '<figure class="lesson-output bike-plot-output" hidden><img class="bike-chart" src="bicycle-lock-status.png" alt="Reported thefts by lock status in the 2025 Chiba Police CSV"></figure>'
+    # One reveal shows the next small formatting step and its real CSV result.
+    rank_html = c.code_html(RANK, results['rank']).split('<pre class="lesson-output"',1)[0]
+    rank_html += '<div class="rank-readout" hidden>'+p('続けて、表示を整える。','Then format the display.')+'<pre data-language="python"><code>'+html.escape(RANK_PRETTY)+'</code></pre><pre class="rank-result">'+html.escape(results['pretty'])+'</pre></div>'
+    rank_html = '<div class="bike-code-pair bike-rank-pair">'+rank_html+'</div>'
     slides = [
         slide('quiz','では、小テスト。','Now: a short quiz.', '<div class="quiz-score">6 '+bi('問','questions')+'<span>30 '+bi('点','points')+'</span></div>'+p('これまでの入力・文字列・リスト・計算を、自分のコードで。12分、個人で取り組みます。','Input, strings, lists and arithmetic, in your own code. Work individually for 12 minutes.')+p('パスワードで開く → ダウンロード → VS Codeで準備。合図で開始。','Unlock → download → open in VS Code. Start on the instructor’s signal.')+quiz_links,'hero'),
-        slide('quiz-clock','6分 ＋ 6分','6 minutes + 6 minutes', clock+p('前半は自力。後半は教科書・ノート・教材・通常のWeb検索OK。12分を通して、生成AI・他者との相談は不可。','First work independently; then use notes, textbooks, course materials and ordinary web search. No generative AI or collaboration during either phase.'),'quiz'),
+        slide('quiz-clock','6分 ＋ 6分','6 minutes + 6 minutes', '<div class="ascii-clock-row">'+clock+ascii_bike.art('spin')+'</div>'+p('前半は自力。後半は教科書・ノート・教材・通常のWeb検索OK。12分を通して、生成AI・他者との相談は不可。','First work independently; then use notes, textbooks, course materials and ordinary web search. No generative AI or collaboration during either phase.'),'quiz'),
         slide('quiz-save','12分後、途中でも提出。','After 12 minutes: submit what you have.', '<p class="big-filename">week08_quiz_氏名.ipynb</p>'+p('解けたセルを実行して、出力を保存。UNIPAの小テスト提出先へ。','Run the cells you have completed and save their outputs. Submit to the quiz assignment on UNIPA.')+p('各問：指定された処理3点＋指定どおりの出力2点。問1-5は計算の手順も採点します。','Each question: 3 points for the required logic and 2 for the required output. Question 1-5 must perform the specified calculation steps.'),'statement'),
         slide('brief','自転車が、なくなった。','The bike is gone.', p('あなたは千葉県警の調査担当。自転車盗データから、どんな防犯の呼びかけを提案する？','You are investigating bicycle theft in Chiba. What prevention message would you recommend from the data?')+'<div class="bike-deliverable">'+bi('件数 → 比較 → 根拠のある提案','Count → compare → recommend')+'</div>','question'),
         slide('data',f'{total:,}件の記録。',f'{total:,} incident records.', first_rows+p(*source_note,'source-note')+p('1行が1件。市区町村、場所、年月日、時刻、年齢、職業、施錠関係があります。','One row is one record: municipality, place, date, hour, age group, occupation and lock status.')),
@@ -255,15 +277,15 @@ def build(root, c):
         slide('row','リストの中に、辞書。','A list of dictionaries.', code('row',ROW)+p('<code>incidents[0]</code> は最初の1行。<code>["列名"]</code> で、その列の値を取り出します。','<code>incidents[0]</code> is the first row. <code>["column name"]</code> selects one value.')),
         slide('count','forで、1件ずつ数える。','Count one record at a time.', code('count',COUNT)+p('<code>.get(label, 0)</code>：まだないキーなら0。そこに1を足して、同じキーへ保存。','<code>.get(label, 0)</code>: start at zero for a new key, add one, then save it back.')),
         slide('filter','柏市だけなら？','What about Kashiwa?', code('filter',FILTER)+p('<code>==</code> は一致の確認。<code>.append(row)</code> は一致した1件をリストへ追加。市名を変えたら、どうなる？','<code>==</code> checks equality. <code>.append(row)</code> adds a matching record. Predict what changes with another city.')),
-        slide('rank','件数の多い順に。','Rank by incident count.', code('rank',RANK)+p('<code>Counter</code> は標準ライブラリ。<code>.most_common(5)</code> は上位5組を返します。','<code>Counter</code> is in the standard library. <code>.most_common(5)</code> returns the five most frequent pairs.')),
-        slide('bars','棒にすると、比べやすい。','Make the comparison visible.', code('bars',BARS)+p('棒1個 ≈ 100件。正確な数値も添える。この文字の棒グラフでもOK。','Each block represents about 100 records. Include exact counts. This text bar chart meets the visual requirement.')),
+        slide('rank','件数の多い順に。','Rank by incident count.', rank_html+p('<code>Counter</code> は標準ライブラリ。<code>.most_common(5)</code> は上位5組を返します。<code>{count:>6,}</code>：6文字幅・右寄せ・桁区切り。','<code>Counter</code> is in the standard library. <code>.most_common(5)</code> returns the five most frequent pairs. <code>{count:>6,}</code>: width 6, right aligned, comma separators.')),
+        slide('bars','棒にすると、比べやすい。','Make the comparison visible.', code('bars',BARS)+p('<code>#</code>一つ＝100件（端数は切り捨て）。<code>print(bar)</code>で改行し、左端を揃える。正確な数値も添える。','Each <code>#</code> represents 100 records, rounded down. <code>print(bar)</code> puts every bar at the left edge on a new line. Include exact counts.')),
         slide('pandas','pandasが使える人は。','If pandas works for you.', code('pandas',PANDAS)+p('<code>value_counts()</code>：値ごとの件数を降順に。<code>head(5)</code>：先頭5件だけ。','<code>value_counts()</code> counts values in descending order. <code>head(5)</code> shows the first five.')+'<div class="lesson-links"><a href="https://pandas.pydata.org/docs/getting_started/intro_tutorials/index.html">'+bi('pandas公式チュートリアル','Official pandas tutorials')+' ↗</a></div>'),
         slide('chart','同じ集計を、グラフへ。','Turn the count into a chart.', '<div class="bike-chart-pair">'+plot_code+'</div>'+p(f'「盗難記録のうち、施錠せずが{locks["施錠せず"]:,}件」。これだけでは施錠の効果や被害確率は分かりません。',f'{locks["施錠せず"]:,} of the reported cases were unlocked. These counts alone cannot establish theft risk or the effect of locking.','source-note')),
-        slide('challenge','何を、誰に伝える？','What will you tell whom?', p('45分。空のNotebookから、自分の調査レポートを作る。地域・時間帯・年代・施錠などから、問いを一つ選ぼう。','45 minutes. Build your own report in a blank notebook. Choose a question about location, time, age group or lock status.')+'<ol class="report-steps"><li>'+bi('forで集計・絞り込み','Use a for loop to count or filter')+'</li><li>'+bi('ランキング＋グラフを一つ以上','Include a ranking and at least one chart')+'</li><li>'+bi('数値を使った発見＋防犯の提案','Explain a numerical finding and recommend an action')+'</li></ol>'+links([('challenge.html','チャレンジ・宿題の手順','Challenge and homework instructions')])+guide_links,'challenge'),
+        slide('challenge','何を、誰に伝える？','What will you tell whom?', ascii_bike.art('ride')+p('45分。空のNotebookから、自分の調査レポートを作る。地域・時間帯・年代・施錠などから、問いを一つ選ぼう。','45 minutes. Build your own report in a blank notebook. Choose a question about location, time, age group or lock status.')+'<ol class="report-steps"><li>'+bi('forで集計・絞り込み','Use a for loop to count or filter')+'</li><li>'+bi('ランキング＋グラフを一つ以上','Include a ranking and at least one chart')+'</li><li>'+bi('数値を使った発見＋防犯の提案','Explain a numerical finding and recommend an action')+'</li></ol>'+links([('challenge.html','チャレンジ・宿題の手順','Challenge and homework instructions'),('challenge.html#ascii','ASCIIで遊ぶ・タイヤを回す','ASCII fun: spin the wheels')]),'challenge'),
         slide('share','2分で、根拠を見せる。','Two minutes. Show your evidence.', '<div class="share-sequence">'+bi('問い → 図 → 発見 → 提案','Question → visual → finding → action')+'</div>'+p('使った列とforの役割を説明。相手の「それは何を数えたの？」に答えよう。','Explain the columns and the role of your for loop. Be ready to answer: what exactly did you count?')+p('件数 ≠ 被害率。不明な日付・時刻は不明のまま扱う。緯度・経度はないので、地図は任意。','Counts are not rates. Keep unknown dates and hours separate. Coordinates are not supplied; maps are optional.'),'statement'),
-        slide('homework','同じレポートを、仕上げる。','Finish the same report.', p('11月25日（水）23:59まで。コード・出力・グラフ・Markdownの説明を保存し、実行済み.ipynbをUNIPAへ提出。','Due Wednesday, November 25 at 23:59 JST. Save code, outputs, chart and Markdown explanations; submit the executed .ipynb to UNIPA.')+p('GitHubにもNotebookとCSVを保存し、Notebookへの直接リンクを添える。提出作品はクラスギャラリーへ。','Save the notebook and CSV on GitHub too, and include the direct notebook link. Reports will appear in the class gallery.')+links([('challenge.html#homework','課題・提出方法','Assignment and submission')]),'exit')
+        slide('homework','同じレポートを、仕上げる。','Finish the same report.', ascii_bike.art('finish')+p('11月25日（水）23:59まで。コード・出力・グラフ・Markdownの説明を保存し、実行済み.ipynbをUNIPAへ提出。','Due Wednesday, November 25 at 23:59 JST. Save code, outputs, chart and Markdown explanations; submit the executed .ipynb to UNIPA.')+p('GitHubにもNotebookとCSVを保存し、Notebookへの直接リンクを添える。提出作品はクラスギャラリーへ。','Save the notebook and CSV on GitHub too, and include the direct notebook link. Reports will appear in the class gallery.')+links([('challenge.html#homework','課題・提出方法','Assignment and submission')]),'exit')
     ]
-    review = slide('review','先週の天気アプリ。','Last week’s weather apps.', '<div class="large-stamp">20 MIN</div>'+p('使う人に、何ができるアプリ？ 実際に動かしながら、作品をクラスで振り返ります。','Who is the app for, and what can it do? Run the work and review it together.')+'<div class="review-prompts">'+bi('目的 → 天気の見せ方 → forの役割 → 改善','Purpose → weather display → role of for → improvements')+'</div>'+links([('../week-07/challenge.html','先週の天気ハッカソンの要件','Last week’s weather hackathon requirements')]),'hero')
+    review = slide('review','先週の天気アプリ。','Last week’s weather apps.', '<div class="ascii-review-row"><div class="large-stamp">20 MIN</div>'+ascii_bike.art('ride')+'</div>'+p('使う人に、何ができるアプリ？ 実際に動かしながら、作品をクラスで振り返ります。','Who is the app for, and what can it do? Run the work and review it together.')+'<div class="review-prompts">'+bi('目的 → 天気の見せ方 → forの役割 → 改善','Purpose → weather display → role of for → improvements')+'</div>'+links([('../week-07/challenge.html','先週の天気ハッカソンの要件','Last week’s weather hackathon requirements')]),'hero')
     moments = [
         ('Tsukada先生の自転車が盗まれた。','Tsukada sensei’s bike was stolen.','2024-10-23 · 08:10:06 · さつき駐輪場','2024-10-23 · 08:10:06 · Satsuki bicycle parking'),
         ('17:25:04','17:25:04','2024-10-23 · さつき駐輪場','2024-10-23 · Satsuki bicycle parking'),
@@ -288,12 +310,12 @@ def build(root, c):
         view_box = ' '.join(map(str,crop))
         picture = f'<svg class="camera-image" viewBox="{view_box}" preserveAspectRatio="{alignment} slice" role="img" aria-labelledby="camera-title-{index:02}"><title id="camera-title-{index:02}">'+html.escape(en)+f'</title><image href="{image}" width="{width}" height="{height}"/></svg>'
         camera_slides.append(slide(f'cctv-{index:02}',ja,en,'<figure class="camera-frame">'+picture+'<figcaption>'+label+'</figcaption></figure>','camera'))
-    police_source = slide('police-source','まずは、千葉県警のデータへ。','Start with Chiba Police open data.', p('2024年の学内事例から、県全体へ。公式サイトの「令和7年中の発生情報」→「自転車盗（CSV形式）」を開こう。','From the 2024 campus case to the whole prefecture. On the official site, choose the 2025 section and its bicycle-theft CSV.')+source_links+p('ダウンロード後、bike.csvに名前変更。文字コードはCP932。問いを選び、件数・ランキング・グラフから防犯の提案を作ります。','Rename the download to bike.csv. Its encoding is CP932. Choose a question and use counts, rankings and a chart to recommend a prevention action.')+p(*source_note,'source-note'),'question')
+    police_source = slide('police-source','まずは、千葉県警のデータへ。','Start with Chiba Police open data.', p('2024年の学内事例から、県全体へ。公式サイトの「令和7年中の発生情報」→「自転車盗（CSV形式）」を開こう。','From the 2024 campus case to the whole prefecture. On the official site, choose the 2025 section and its bicycle-theft CSV.')+source_links+ascii_bike.art('data')+p('ダウンロード後、bike.csvに名前変更。文字コードはCP932。問いを選び、件数・ランキング・グラフから防犯の提案を作ります。','Rename the download to bike.csv. Its encoding is CP932. Choose a question and use counts, rankings and a chart to recommend a prevention action.')+p(*source_note,'source-note'),'question')
     # Review → protected quiz → original camera sequence → official data → investigation.
     slides = [review] + slides[:3] + camera_slides + [police_source] + slides[4:]
     assert len(slides) == len(SPEC['slides'])
     head = c.page_head('Week 08 · '+SPEC['title'],'course-decks.css','course-decks.js',VERSION)
-    head += '<link rel="stylesheet" href="bicycle-week.css?v='+VERSION+'"><link rel="stylesheet" href="../../assets/slide-annotations.css"><script src="../../assets/slide-annotations.js" defer></script><script src="../../assets/slide-swipe.js" defer></script><script src="bicycle-week.js?v='+VERSION+'" defer></script></head>'
+    head += '<link rel="stylesheet" href="bicycle-week.css?v='+VERSION+'"><link rel="stylesheet" href="../../assets/slide-annotations.css"><script src="../../assets/slide-annotations.js" defer></script><script src="../../assets/slide-swipe.js" defer></script><script src="bicycle-week.js?v='+VERSION+'" defer></script><script src="ascii-bikes.js?v='+VERSION+'" defer></script></head>'
     header = '<header class="lecture-header"><a id="lecture-return" href="../../agenda.html?open=08#week-08">← '+bi('授業予定','Agenda')+'</a><span class="lecture-mark">PRG / 26–2 · W08</span><button id="language-toggle" class="language-toggle" type="button">EN</button></header>'
     nav = '<nav class="slide-controls" aria-label="Slide navigation"><div class="slide-nav-group"><button id="previous-slide" type="button">← '+bi('前へ','Previous')+'</button><span id="slide-count" aria-live="polite"></span><button id="next-slide" type="button">'+bi('次へ','Next')+' →</button></div><button id="slide-fullscreen" type="button" class="slide-fullscreen" aria-pressed="false">⛶</button></nav>'
     c.write(folder/'lecture.html',head+f'<body class="lecture-page course-deck bicycle-week" data-week="8" data-release="{RELEASE}">'+header+'<main><div id="slides-view" class="view">'+nav+'<div class="slide-stage">'+''.join(slides)+'</div></div></main><script type="application/json" id="lesson-data">{}</script></body></html>')
@@ -304,7 +326,7 @@ def build(root, c):
     quiz_body += '<div class="quiz-entry" data-quiz-lock><form><label for="quiz-password">'+bi('パスワード','Password')+'</label><div><input id="quiz-password" type="password" autocomplete="off" autocapitalize="none" spellcheck="false" required><button type="submit">'+bi('開く','Open')+' →</button></div></form><p role="status" data-quiz-status></p><section data-quiz-unlocked hidden><h2>'+bi('ダウンロードして、準備する','Download and get ready')+'</h2><a class="quiz-download" data-quiz-download>'+bi('小テストNotebookをダウンロード','Download quiz notebook')+' ↓</a>'+p('ダウンロードした.ipynbをVS Codeで開き、氏名を記入。準備ができたら合図を待つ。小テストは自力6分＋オープンブック6分です。','Open the downloaded .ipynb in VS Code and add your name. Wait for the start signal. The quiz is 6 minutes independent + 6 minutes open-book.')+'<details><summary>'+bi('問題をプレビュー','Preview the questions')+'</summary><div data-quiz-preview></div></details></section></div>'
     c.write(folder/'quiz.html',quiz_head+f'<body class="course-challenge bicycle-week quiz-page" data-release="{RELEASE}">'+header+'<main id="course-page" hidden>'+quiz_body+'</main></body></html>')
 
-    challenge_body = '<p class="slide-kicker">'+bi('授業内チャレンジ → 同じ作品を宿題へ','In class → finish the same report at home')+'</p><h1>'+bi('千葉の自転車盗を調査せよ','Investigate bicycle theft in Chiba')+'</h1>'
+    challenge_body = '<p class="slide-kicker">'+bi('授業内チャレンジ → 同じ作品を宿題へ','In class → finish the same report at home')+'</p><h1>'+bi('千葉の自転車盗を調査せよ','Investigate bicycle theft in Chiba')+'</h1>'+ascii_bike.art('ride')
     challenge_body += p('あなたは千葉県警の調査担当。データに基づく防犯の提案を、読みやすいNotebookにまとめてください。','You are investigating bicycle theft in Chiba. Produce a readable notebook with an evidence-based prevention recommendation.')
     challenge_body += '<h2>'+bi('1. 千葉県警のオープンデータを開く','1. Open Chiba Police open data')+'</h2>'+source_links+p('「令和7年中の発生情報」から「自転車盗（CSV形式）」をダウンロード。ファイル名をbike.csvに変更します。','In the 2025 section, download the bicycle-theft CSV and rename it to bike.csv.')+p(*source_note)+p('同じ内容の授業用コピーも下にあります。文字コードは公式ファイルと同じCP932です。','The class copy below contains the same data and retains the official CP932 encoding.')
     challenge_body += '<h2>'+bi('2. 空のNotebookを作る','2. Create a blank notebook')+'</h2><ol>'+''.join('<li>'+bi(j,e)+'</li>' for j,e in [
@@ -322,12 +344,13 @@ def build(root, c):
         ('数値を使った発見を2つ以上、それに基づく防犯の提案を一つ。結果をMarkdownで説明する。','At least two numerical findings and one prevention recommendation. Explain them in Markdown.'),
         ('元の数行や集計の合計を照合し、確認したことと限界を短く書く。自分のforが何をしているか説明できるように。','Check a few original rows or the sum of your counts. Note the check and a limitation. Be able to explain your for loop.')])+'</ol>'
     challenge_body += '<h2>'+bi('授業中：45分 → 2分で共有','In class: 45 minutes → a 2-minute share')+'</h2>'+p('3〜4人で相談してよいですが、Notebookは各自で作成。まず一つの集計を動かし、次にグラフ、最後に説明と提案。共有は「問い→図→発見→提案」の順で。','You may discuss in groups of 3–4; each student creates their own notebook. Get one count working, add a chart, then explain and recommend. Share in this order: question → visual → finding → action.')+p('AIは部分的な説明・デバッグに使ってよい。ただし、自分で変更・実行・確認する。使った場合は、何を頼み、どこを自分で確かめたかを記す。','AI may help explain a concept or debug a part. Make, run and check your own changes. If used, state what you asked and what you verified yourself.')
-    challenge_body += '<h2>'+bi('データを正しく読む','Read the evidence carefully')+'</h2>'+p(*source_note)+p(f'日付不明{unknown_dates}件、時刻不明{unknown_hours}件。別の年の同じ月を混ぜず、除外した行数を示す。件数だけでは、人口・駐輪台数あたりの被害率や、施錠の効果は分かりません。',f'There are {unknown_dates} unknown dates and {unknown_hours} unknown hours. Keep years separate and report exclusions. Counts alone do not measure risk per resident or parked bicycle, or the effect of locking.')+p('地図は任意。緯度・経度の列はありません。使うなら住所を確認し、地域の代表点は「地域別の集計」と明記。架空の座標を事件地点として表示しないこと。','Maps are optional; coordinates are not supplied. Verify locations first. Label representative area points as area-level summaries; do not invent incident locations.')+'<p><a href="'+POLICE+'">'+bi('出典：千葉県警察 オープンデータ','Source: Chiba Police open data')+'</a></p>'
+    challenge_body += '<section class="ascii-playground" id="ascii"><h2>'+bi('文字だけで、遊んでみよう。','Play with letters, lines and wheels.')+'</h2>'+ascii_bike.art('ride')+p('レポートの見せ方は自由。ASCIIの自転車をタイトルに置いたり、タイヤを回したり。中心はデータの発見と防犯の提案です。','Make the report your own: add an ASCII bicycle to its title or spin the wheels. Build around your data findings and prevention recommendation.')+c.code_html(ascii_bike.STILL)+'<pre class="ascii-result">'+html.escape(results['ascii'])+'</pre>'+'<details><summary>'+bi('任意：forでタイヤを回す','Optional: spin the wheels with for')+'</summary>'+p('Notebook用。4種類のスポークを4周、0.15秒ずつ表示。clear_outputは前の出力を消す、time.sleepは少し待つ。数字や文字を変えてみよう。','For notebooks: show four spoke positions four times, 0.15 seconds each. clear_output replaces the previous frame; time.sleep pauses briefly. Try changing the numbers and characters.')+c.code_html(ascii_bike.ANIMATION)+'</details></section>'
+    challenge_body += '<h2>'+bi('データを正しく読む' ,'Read the evidence carefully')+'</h2>'+p(*source_note)+p(f'日付不明{unknown_dates}件、時刻不明{unknown_hours}件。別の年の同じ月を混ぜず、除外した行数を示す。件数だけでは、人口・駐輪台数あたりの被害率や、施錠の効果は分かりません。',f'There are {unknown_dates} unknown dates and {unknown_hours} unknown hours. Keep years separate and report exclusions. Counts alone do not measure risk per resident or parked bicycle, or the effect of locking.')+p('地図は任意。緯度・経度の列はありません。使うなら住所を確認し、地域の代表点は「地域別の集計」と明記。架空の座標を事件地点として表示しないこと。','Maps are optional; coordinates are not supplied. Verify locations first. Label representative area points as area-level summaries; do not invent incident locations.')+'<p><a href="'+POLICE+'">'+bi('出典：千葉県警察 オープンデータ','Source: Chiba Police open data')+'</a></p>'
     challenge_body += '<h2 id="homework">'+bi('宿題・提出','Homework and submission')+'</h2>'+p('授業のレポートを仕上げる。11月25日（水）23:59までに、実行結果を保存した.ipynbをUNIPAへ提出。NotebookとCSVをGitHubにも保存し、Notebookへの直接リンクを添えてください。','Finish the same report. Submit the executed .ipynb to UNIPA by Wednesday, November 25, 23:59 JST. Save the notebook and CSV on GitHub and include the direct notebook link.')+p('全セルを上から実行して、結果とグラフが残る状態で保存。評価は、動くコード・集計と図の正確さ・根拠のある説明と提案を重視します。提出作品はクラスギャラリーへ。','Run cells from the top and save outputs and charts. Assessment focuses on working code, accurate counts and visuals, and evidence-based explanations and recommendations. Reports will appear in the class gallery.')+links([('lecture.html','講義スライド','Lecture slides')])
-    challenge_head = c.page_head('Week 08 · Bicycle-theft challenge','course-pages.css','course-page.js',VERSION)+'<link rel="stylesheet" href="bicycle-week.css?v='+VERSION+'"></head>'
+    challenge_head = c.page_head('Week 08 · Bicycle-theft challenge','course-pages.css','course-page.js',VERSION)+'<link rel="stylesheet" href="bicycle-week.css?v='+VERSION+'"><script src="ascii-bikes.js?v='+VERSION+'" defer></script></head>'
     c.write(folder/'challenge.html', challenge_head+f'<body class="course-challenge bicycle-week" data-release="{RELEASE}">'+header+'<main id="course-page" hidden>'+challenge_body+'</main></body></html>')
     # Keep the old text brief useful without a second set of stale instructions.
-    c.write(folder/'bicycle-theft-brief.md', '# Week 08 · 千葉の自転車盗を調査せよ\n\n[チャレンジ・宿題の手順](challenge.html)\n\n新しい空のNotebookを作り、配布のbike.csvを読む。forで集計または絞り込み、ランキング、グラフ（文字の棒でも可）、数値を使った発見2つと防犯の提案1つをまとめる。\n\n2026年11月25日23:59 JSTまでに実行済み.ipynbとGitHubの直接リンクをUNIPAへ。\n\n[実行例Notebook](bicycle-theft-guide.ipynb) / [CSV](bike.csv)\n\n'+source_note[0]+'\n\n出典：'+POLICE+'\n')
+    c.write(folder/'bicycle-theft-brief.md', '# Week 08 · 千葉の自転車盗を調査せよ\n\n[チャレンジ・宿題の手順](challenge.html)\n\n新しい空のNotebookを作り、配布のbike.csvを読む。forで集計または絞り込み、ランキング、グラフ（文字の棒でも可）、数値を使った発見2つと防犯の提案1つをまとめる。\n\n2026年11月25日23:59 JSTまでに実行済み.ipynbとGitHubの直接リンクをUNIPAへ。\n\n任意：ASCII自転車や文字の棒グラフで、レポートの見せ方も工夫しよう。タイヤを回すforの例は[課題ページ](challenge.html#ascii)へ。\n\n[実行例Notebook](bicycle-theft-guide.ipynb) / [CSV](bike.csv)\n\n'+source_note[0]+'\n\n出典：'+POLICE+'\n')
 
     front = '''---
 week: 8
@@ -355,7 +378,7 @@ homework_title_ja: 自転車盗レポートを仕上げる
         ('Lecture Flow',('13:10–13:30：先週の天気アプリをレビュー（約20分）、13:30–13:45：パスワードで問題を入手・準備→小テスト6分＋6分、13:45–14:00：学内の防犯カメラ事例→千葉県警データのミニ講義、14:00–14:45：チャレンジ、14:45–14:50：共有・保存。','13:10–13:30 review last week’s weather apps (~20 min); 13:30–13:45 unlock/download and prepare → quiz (6 + 6 min); 13:45–14:00 campus camera case → Chiba Police data mini-lecture; 14:00–14:45 challenge; 14:45–14:50 share and save.')),
         ('In-Class Notebook',('成績評価対象：個人・6問・30点（各問、処理3点＋出力2点）。最初の6分は自力、次の6分は教科書・ノート・通常のWeb検索OK。生成AI・他者との相談は不可。パスワードは授業中に案内。開いてダウンロードし、準備後に合図で開始。解けたセルの出力を保存し、13:45を目安にUNIPAへ提出。未完成でも提出する。','Graded individual quiz: 6 questions, 30 points (3 for logic + 2 for output per question). Work independently for 6 minutes, then use textbooks, notes and ordinary web search for 6 minutes. No generative AI or collaboration. The password is announced in class. Unlock, download, and wait for the start signal. Save completed outputs and submit to UNIPA around 13:45, even if unfinished.')),
         ('In-Class Challenge',('まず[千葉県警のオープンデータ](https://www.police.pref.chiba.jp/seisoka/safe-life_publicspace-statistics_00002.html)から[2025年の自転車盗CSV](https://www.police.pref.chiba.jp/content/common/000074746.csv)をダウンロード。根拠のある防犯の提案を作る。空のNotebookに、forでの集計・ランキング・グラフ・Markdownの説明をまとめる。pandasなしでも取り組める。[手順を開く](weeks/week-08/challenge.html)。','Start at [Chiba Police open data](https://www.police.pref.chiba.jp/seisoka/safe-life_publicspace-statistics_00002.html) and download the [2025 bicycle-theft CSV](https://www.police.pref.chiba.jp/content/common/000074746.csv). Make an evidence-based prevention recommendation in a blank notebook with a for-loop count, ranking, chart and Markdown explanations. A no-pandas route is provided. [Open instructions](weeks/week-08/challenge.html).')),
-        ('Take-Home Assignment',('授業の同じレポートを仕上げる。問い・集計・ランキング・グラフ・発見2つ・防犯の提案1つを含める。11月25日（水）23:59までに実行済み.ipynbとGitHubの直接リンクをUNIPAへ。[要件・提出方法](weeks/week-08/challenge.html#homework)。','Finish the same report: a question, count, ranking, chart, two findings and one prevention recommendation. Submit the executed .ipynb and direct GitHub link to UNIPA by November 25, 23:59 JST. [Requirements and submission](weeks/week-08/challenge.html#homework).')),
+        ('Take-Home Assignment',('授業の同じレポートを仕上げる。ASCIIなど、見せ方の工夫も歓迎。問い・集計・ランキング・グラフ・発見2つ・防犯の提案1つを含める。11月25日（水）23:59までに実行済み.ipynbとGitHubの直接リンクをUNIPAへ。[要件・提出方法](weeks/week-08/challenge.html#homework)。','Finish the same report; creative ASCII displays are welcome. Include a question, count, ranking, chart, two findings and one prevention recommendation. Submit the executed .ipynb and direct GitHub link to UNIPA by November 25, 23:59 JST. [Requirements and submission](weeks/week-08/challenge.html#homework).')),
         ('Aha!',('同じforで、何千件の記録から自分の問いを調べられる。','The same for loop can investigate your question across thousands of records.')),
         ('Takeaway',('件数を数え、比較し、言えることと言えないことを分ける。','Count, compare, and distinguish what the evidence does and does not show.'))]
     text = front

@@ -55,3 +55,36 @@ body.camera-active .annotation-tools{position:absolute;bottom:4.5rem;right:1rem;
 @media(max-width:650px){body.camera-active #slides-view .slide-controls{right:.5rem;bottom:.5rem;gap:.2rem}.camera-frame figcaption{bottom:4.5rem}}
 @media(prefers-reduced-motion:reduce){body.camera-active .lecture-header,body.camera-active #slides-view .slide-controls{transition:none}}
 @media print{body.camera-active{overflow:visible}body.camera-active #slides-view,body.camera-active #slides-view .slide-stage{position:static;display:block;width:auto;height:auto;overflow:visible}.bicycle-week.course-deck .layout-camera{position:relative;width:100%;height:7.5in;min-height:7.5in;padding:0}}
+
+/* Small, literal ASCII scenes, with no image assets or decorative cards. */
+.ascii-scene{position:relative;color:#315876;margin:1rem 0;max-width:1050px}
+.ascii-lane{position:relative;height:5.2rem;overflow:hidden;border-bottom:1px dashed #91a298}
+.bicycle-week .ascii-scene pre{position:absolute;bottom:.15rem;left:0;width:max-content;margin:0;padding:0;border:0;box-shadow:none;background:transparent;font:500 1.35rem/1.05 var(--mono);white-space:pre;overflow:visible;color:inherit}
+.ascii-ride [data-ascii-bike],.ascii-data [data-ascii-bike]{animation:ascii-roll 13s linear infinite;animation-play-state:paused}
+.ascii-running [data-ascii-bike]{animation-play-state:running}
+.ascii-toggle{position:absolute;right:0;top:0;min-width:2rem;min-height:2rem;padding:.15rem;border:0;background:transparent;color:#53665d;font:500 1rem var(--mono);cursor:pointer}
+.ascii-toggle:focus-visible{outline:2px solid #315876;outline-offset:2px}
+.ascii-data .ascii-lane{margin-right:9rem}
+.ascii-data::after{content:'-> bike.csv';position:absolute;right:0;bottom:.4rem;font:500 1.1rem var(--mono)}
+.ascii-finish .ascii-lane{margin-right:8rem}
+.ascii-finish [data-ascii-bike]{left:45%}
+.ascii-finish::after{content:'|> .ipynb\a|';white-space:pre;position:absolute;right:0;bottom:0;font:500 1.1rem/1.4 var(--mono)}
+.ascii-review-row{display:flex;gap:3rem;align-items:center}.ascii-review-row .ascii-scene{flex:1;margin:0}.ascii-review-row .large-stamp{margin:0}
+.ascii-clock-row{display:flex;align-items:center;gap:2rem}.ascii-clock-row .quiz-clock{flex:1;margin-left:0}.ascii-clock-row .ascii-scene{width:14rem;flex:none}.ascii-spin .ascii-lane{border:0;height:8rem}.bicycle-week .ascii-spin pre{font-size:2rem;left:1rem;bottom:1rem}
+.bicycle-week.course-deck .rank-readout{padding:0;background:transparent;border:0;overflow:visible}
+.rank-readout>p{font-size:1rem;margin:.1rem 0 .7rem}
+.bicycle-week.course-deck .rank-readout pre{font-size:clamp(.74rem,1vw,.94rem);margin:.5rem 0;white-space:pre}
+.bicycle-week.course-deck .rank-readout .rank-result{font-size:clamp(1rem,1.4vw,1.25rem);line-height:1.7;color:#315876;background:transparent;padding-top:.4rem}
+.bike-rank-pair{grid-template-columns:1.2fr 1fr}
+.ascii-playground{margin:3rem 0}.ascii-playground summary{cursor:pointer;font-weight:600;margin:1rem 0}
+@keyframes ascii-roll{from{left:0}to{left:calc(100% - 8.5rem)}}
+@media(max-width:650px){.ascii-review-row{gap:1rem}.ascii-clock-row{display:block}.ascii-clock-row .ascii-scene{display:none}.bike-rank-pair{grid-template-columns:1fr}.ascii-review-row .ascii-scene pre{font-size:1rem}}
+@media(prefers-reduced-motion:reduce){.ascii-scene [data-ascii-bike]{animation:none}}
+@media print{.ascii-toggle{display:none}.ascii-scene [data-ascii-bike]{animation:none}}
+.bicycle-week.course-deck .rank-readout .rank-result{font-size:1.05rem;line-height:1.45;padding:.4rem 1.1rem;margin:.4rem 0;white-space:pre}
+.bicycle-week.course-deck [data-ink-id="w8-bike-rank"]>p{font-size:1rem;line-height:1.6;margin:.75rem 0 0}
+.bicycle-week .quiz-clock output{font-size:clamp(4rem,12vw,9rem);line-height:1.05;margin:.5rem 0}
+.bicycle-week .layout-challenge .ascii-scene{margin:.3rem 0}.layout-challenge .ascii-lane{height:3.7rem}.bicycle-week .layout-challenge .ascii-scene pre{font-size:1.05rem}
+/* Override code-block spacing for the three-line artwork itself. */
+.bicycle-week.course-deck .ascii-scene pre,.bicycle-week.course-challenge .ascii-scene pre{padding:0;margin:0;font:500 1.35rem/1.05 var(--mono);white-space:pre;background:transparent;border:0;overflow:visible}
+.bicycle-week.course-deck .ascii-spin pre{font-size:2rem}.bicycle-week.course-deck .layout-challenge .ascii-scene pre{font-size:1.05rem}

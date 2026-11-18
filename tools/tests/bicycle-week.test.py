@@ -29,9 +29,9 @@ with (folder/'bike.csv').open(encoding='cp932', newline='') as f:
 assert len(rows)==10054
 nb = json.loads((folder/'bicycle-theft-guide.ipynb').read_text())
 code = [c for c in nb['cells'] if c['cell_type']=='code']
-# Run the first eight cells with a clean standard-library-only interpreter.
-script = 'import ast, contextlib, io, json, sys\nscope={}\nfor c in json.load(sys.stdin):\n tree=ast.parse(c["source"]); stream=io.StringIO()\n with contextlib.redirect_stdout(stream):\n  value=None\n  if tree.body and isinstance(tree.body[-1],ast.Expr):\n   exec(compile(ast.Module(body=tree.body[:-1],type_ignores=[]),"<student>","exec"),scope)\n   value=eval(compile(ast.Expression(tree.body[-1].value),"<student>","eval"),scope)\n  else:exec(compile(tree,"<student>","exec"),scope)\n saved=c["outputs"]\n actual=[]\n if stream.getvalue():actual.append(stream.getvalue())\n if value is not None:actual.append(repr(value))\n expected=[o["text"] if o["output_type"]=="stream" else o["data"]["text/plain"] for o in saved]\n assert actual==expected,(actual,expected)\nprint("PASS: 8 cells work without pandas, saved outputs match")'
-r = subprocess.run(['/usr/bin/python3','-I','-c',script],input=json.dumps(code[:8]),text=True,capture_output=True,cwd=folder)
+# Run all ten standard-library cells in a clean interpreter, including ASCII art.
+script = 'import ast, contextlib, io, json, sys\nscope={}\nfor c in json.load(sys.stdin):\n tree=ast.parse(c["source"]); stream=io.StringIO()\n with contextlib.redirect_stdout(stream):\n  value=None\n  if tree.body and isinstance(tree.body[-1],ast.Expr):\n   exec(compile(ast.Module(body=tree.body[:-1],type_ignores=[]),"<student>","exec"),scope)\n   value=eval(compile(ast.Expression(tree.body[-1].value),"<student>","eval"),scope)\n  else:exec(compile(tree,"<student>","exec"),scope)\n saved=c["outputs"]\n actual=[]\n if stream.getvalue():actual.append(stream.getvalue())\n if value is not None:actual.append(repr(value))\n expected=[o["text"] if o["output_type"]=="stream" else o["data"]["text/plain"] for o in saved]\n assert actual==expected,(actual,expected)\nprint("PASS: 10 cells work without pandas, saved outputs match")'
+r = subprocess.run(['/usr/bin/python3','-I','-c',script],input=json.dumps(code[:10]),text=True,capture_output=True,cwd=folder)
 assert r.returncode==0, r.stderr
 print(r.stdout.strip())
 assert ast.literal_eval(code[0]['outputs'][0]['data']['text/plain'])==len(rows)
@@ -41,6 +41,23 @@ assert sum(lock.values())==len(rows) and lock=={'施錠せず':6879,'施錠し�
 assert ast.literal_eval(code[3]['outputs'][0]['data']['text/plain'])==sum(r['市区町村（発生地）']=='柏市' for r in rows)
 expected = collections.Counter(r['市区町村（発生地）'] for r in rows).most_common(5)
 assert ast.literal_eval(code[4]['outputs'][0]['data']['text/plain'])==expected
+# Formatting is checked against independent counts, including bar start positions.
+by_source = {cell['source']: cell for cell in code}
+pretty = by_source[lesson.RANK_PRETTY]['outputs'][0]['text'].splitlines()[2:]
+assert [line.strip() for line in pretty] == [f"{count:,}件  {place}" for place,count in expected]
+bars = by_source[lesson.BARS]['outputs'][0]['text'].splitlines()
+assert bars[::2] == [f"{place} ({count:,}件)" for place,count in expected]
+assert bars[1::2] == ['#' * (count//100) for place,count in expected]
+# The saved frame and browser animation frames must match the actual Python frames.
+from unittest.mock import patch
+import bicycle_ascii
+stream=io.StringIO()
+with contextlib.redirect_stdout(stream), patch('IPython.display.clear_output') as clear, patch('time.sleep'):
+    exec(bicycle_ascii.ANIMATION,{})
+assert clear.call_count==16
+assert stream.getvalue() == ''.join(frame+'\n' for frame in bicycle_ascii.FRAMES)*4
+assert by_source[bicycle_ascii.ANIMATION]['outputs'][0]['text']==bicycle_ascii.FRAMES[-1]+'\n'
+print('PASS: readable ranking, left-aligned bars, 16 Python animation frames match the display')
 # The pandas alternative must give the same ranking; the chart uses those exact lock counts.
 import matplotlib
 matplotlib.use('Agg')

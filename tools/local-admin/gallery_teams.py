@@ -23,12 +23,16 @@ def author_blocks(notebook):
             if not re.search(r'メンバー|氏名|名前|作成者|作者|\bauthors?\b|\bmembers?\b|\bteam\b', line, re.I):
                 continue
             block = [line]
+            heading_only = re.fullmatch(r'[\s#*_]*(?:グループ|チーム)?(?:メンバー|氏名|名前|authors?|members?|team)[\s#*_：:]*',line,re.I)
             for following in lines[i+1:i+9]:
                 if not following.strip():
                     if len(block)>1: break
                     continue
                 if re.match(r'^\s*(?:[-*・]|氏名|名前)', following):
                     block.append(following)
+                elif heading_only and len(block)==1 and not re.match(r'\s*#',following):
+                    block.append(following)
+                    break
                 else:
                     break
             result.extend(block)
@@ -130,9 +134,12 @@ def group_projects(entries, context, roster, previous, strict_fingerprint, group
             cells=entry['notebook']['cells']
             md=sum(len(''.join(c.get('source',''))) for c in cells if c['cell_type']=='markdown')
             output=sum(bool(c.get('outputs')) for c in cells)
-            return (md>0,output,md)
+            return (bool(entry['has_notebook']),md>0,output,md)
         primary=max(sources,key=quality)
         project=dict(primary)
+        generic_titles={'メンバー','グループメンバー','チームメンバー','氏名','名前','members','team','authors'}
+        if normalize(project.get('title','')) in {normalize(t) for t in generic_titles}:
+            project['title']=next((e['title'] for e in sources if e.get('title') and normalize(e['title']) not in {normalize(t) for t in generic_titles}),project['title'])
         project['id']=old[0]['id'] if old else sources[0]['id']
         aliases=list(dict.fromkeys([e['id'] for e in sources]+[sid for e in old for sid in e.get('submission_ids',[e['id']])]))
         project['submission_ids']=aliases

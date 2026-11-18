@@ -21,6 +21,7 @@ def notebook(header,result='sun'):
 assert teams.declared_members(notebook('メンバー：しんご、ゆずき、ひなた'),roster)==set(list(roster)[:3])
 assert teams.declared_members(notebook('氏名：高谷柚希・馬場信吾・井上太陽'),roster)==set(list(roster)[:3])
 assert teams.declared_members(notebook('メンバー: sugiura ryusei'),roster)=={'4444444444'}
+assert teams.declared_members(notebook('#### メンバー\n\n高谷柚希 馬場信吾 井上太陽\n\n#### 機能'),roster)==set(list(roster)[:3])
 # A first name shared by two roster entries is never guessed.
 ambiguous=dict(roster);ambiguous['5555555555']={'name':'別の 太陽','reading':'OTHER HINATA','kana':'べつの ひなた'}
 assert '3333333333' not in teams.declared_members(notebook('メンバー：ひなた'),ambiguous)
@@ -70,4 +71,22 @@ with tempfile.TemporaryDirectory() as directory:
   assert 'updated.ipynb' in json.loads(state.read_text())[0]
   gallery.publish([],push=False)
   assert not json.loads(public.read_text())['submissions'][0]['featured']
+  empty_items=index_for('empty-third',True,True)
+  empty_record=output/empty_items[-1]['id']/'submission.json'
+  damaged=json.loads(empty_record.read_text());damaged['notebook']=None;empty_record.write_text(json.dumps(damaged))
+  gallery.publish([],push=False)
+  damaged_group=json.loads(public.read_text())['submissions'][0]
+  unreadable=[v for v in damaged_group['variants'] if v.get('preview_status')=='unreadable']
+  assert damaged_group['has_notebook'] and damaged_group['submission_count']==3 and len(damaged_group['members'])==3
+  assert len(unreadable)==1 and unreadable[0]['notebook_path'] is None and unreadable[0]['has_notebook'] is False
+
+
+# A corrupt/empty group upload cannot become the default or inherit a teammate's path.
+valid={'id':'a'*20,'week':7,'title':'Weather radar','has_notebook':True,'featured':False,'student_name':'高谷 柚希','student_reading':'','notebook':{'cells':[{'cell_type':'code','source':'weather','outputs':[]}]}}
+invalid={'id':'b'*20,'week':7,'title':'Empty upload','has_notebook':False,'featured':False,'student_name':'馬塲 信吾','student_reading':'','notebook':{'cells':[{'cell_type':'markdown','source':'No preview available'}]}}
+context={valid['id']:{'student':'1111111111','authors':{'1111111111','2222222222'}},invalid['id']:{'student':'2222222222','authors':set()}}
+group=teams.group_projects([invalid,valid],context,roster,[],gallery.notebook_fingerprint)[0]
+assert group['_primary_id']==valid['id'] and group['has_notebook']
+assert group['submission_count']==2 and len(group['members'])==2
+
 print('PASS: author names/kana/roman variants, no ambiguous-name guesses, latest ZIP selection, full member credits, distinct versions, stable links and hearts across tomorrow’s refresh.')

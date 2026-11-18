@@ -42,7 +42,7 @@ function versionLinks(record,chosen) {
   record.variants.forEach(version=>{
     const link=document.createElement('a');link.href='gallery.html?week='+record.week+'&id='+record.id+'&variant='+version.id;
     link.textContent=version.submitters.map(person=>person.name).join(' / ');
-    if(version.notebook_path===chosen.notebook_path)link.setAttribute('aria-current','page');
+    if(version.has_notebook===false?version.id===chosen.id:version.notebook_path===chosen.notebook_path)link.setAttribute('aria-current','page');
     nav.append(link);
   });
   return nav;
@@ -82,7 +82,7 @@ function downloadableNotebook(record) {
 function notebookDownload(record) {
   const actions=document.createElement('div');actions.className='gallery-download-actions';
   if(record.has_notebook===false){
-    actions.innerHTML='<p><span class="lang-ja">Notebookファイルは提出されていません。ダウンロードはありません。</span><span class="lang-en">No notebook file was submitted; no download is available.</span></p>';
+    actions.innerHTML=record.preview_status==='unreadable'?'<p><span class="lang-ja">提出ファイルが空か読み取れないため、プレビュー・ダウンロードはありません。</span><span class="lang-en">The submitted file is empty or unreadable; no preview or download is available.</span></p>':'<p><span class="lang-ja">Notebookファイルは提出されていません。ダウンロードはありません。</span><span class="lang-en">No notebook file was submitted; no download is available.</span></p>';
     return actions;
   }
   const button=document.createElement('button');button.type='button';button.className='gallery-download';
@@ -147,8 +147,10 @@ async function renderGallery() {
       await loadNotebook(view);
       if(render!==galleryRender)return;
       view.replay ||= {cells:[]};view.attachments ||= [];
-      if(!view.notebook)view.notebook={cells:[{cell_type:'markdown',source:'Notebookのプレビューはありません。 / No notebook preview available.'}]};
-      loading.replaceWith(renderNotebook(view));galleryHost.append(notebookDownload(view),navigation());
+      if(view.notebook)loading.replaceWith(renderNotebook(view));
+      else loading.remove();
+      if(view.has_notebook!==false)galleryHost.append(notebookDownload(view));
+      galleryHost.append(navigation());
     }catch{
       if(render!==galleryRender)return;
       loading.innerHTML='<span class="lang-ja">Notebookを読み込めませんでした。ページを再読み込みしてください。</span><span class="lang-en">Unable to load the notebook. Please reload this page.</span>';

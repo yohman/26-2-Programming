@@ -167,7 +167,7 @@ def publish(hearts, push=True):
             entry_id = public_id(key)
             roster_people.setdefault(item['student'], {'name':record['student_name'] or 'Student','reading':record['student_reading'] or ''})
             context[entry_id] = {'student':item['student'], 'key':key, 'authors':declared_members(notebook, roster_people, author_aliases) if week['week']==7 else set()}
-            entries.append(clean({'id': entry_id, 'week': week['week'], 'featured': key in selected, 'has_notebook': bool(record.get('notebook')), 'student_name': record['student_name'] or 'Student', 'student_reading': record['student_reading'] or '', 'title': re.sub(r'^\d{8,12}_\d+_\d+_', '', record['title']), 'notebook': {'cells': cells}, 'replay': {'cells': runs}, 'attachments': []}))
+            entries.append(clean({'id': entry_id, 'week': week['week'], 'featured': key in selected, 'has_notebook': bool(record.get('notebook')), **({'preview_status':'ready' if record.get('notebook') else 'unreadable' if item['file'] else 'missing'} if week['week']==7 else {}), 'student_name': record['student_name'] or 'Student', 'student_reading': record['student_reading'] or '', 'title': re.sub(r'^\d{8,12}_\d+_\d+_', '', record['title']), 'notebook': {'cells': cells}, 'replay': {'cells': runs}, 'attachments': []}))
             if key in selected:
                 accepted.append(json.dumps(list(key), ensure_ascii=False, separators=(',', ':')))
     submission_count = len(entries)
@@ -226,7 +226,11 @@ def publish(hearts, push=True):
             signature = notebook_fingerprint(source)
             if signature not in versions:
                 asset = assets[source['id']]
-                versions[signature] = {key:asset[key] for key in ('id','title','notebook_path','replay_path') if key in asset}
+                fields = ('id','title','notebook_path','replay_path') + (('has_notebook','preview_status') if entry['week']==7 else ())
+                versions[signature] = {key:asset[key] for key in fields if key in asset}
+                if entry['week']==7:
+                    versions[signature].setdefault('notebook_path',None)
+                    versions[signature].setdefault('replay_path',None)
                 versions[signature]['submitters'] = []
             person = {'name':source['student_name'],'reading':source['student_reading']}
             if person not in versions[signature]['submitters']:versions[signature]['submitters'].append(person)

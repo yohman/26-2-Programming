@@ -14,6 +14,12 @@ Place the student roster in `admin/roster.csv`. The importer finds the student-t
 
 The entire `admin/` folder is ignored by Git: originals, exports, generated pages, review JSON, and the Python environment must never be committed or copied to GitHub Pages. Public notebook excerpts are exported separately (see below).
 
+## Group review
+
+Admin uses the same project groups, thumbnails, titles and member credits as the class gallery. Counts distinguish projects from submitted notebooks. Open a group to switch between distinct submitted notebook versions, saved outputs, local replays and original attachments. Previous private submission links still open the corresponding group/version.
+
+There is one heart per group on the grid, mirrored at the top and bottom of its preview. A heart on any member makes the group selected. Turning the group off clears all member selections in one immediate, batched save. Existing selections are retained. The private submission index and originals remain in ignored `admin/`; the browser joins them to the already-published gallery metadata without exporting student IDs.
+
 ## Public student work
 
 The **みんなの作品 / Student work** menu opens `gallery.html`. Cards preview the notebook; selecting one opens the full notebook in cell order with inline outputs.

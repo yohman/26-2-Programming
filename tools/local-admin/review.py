@@ -528,7 +528,7 @@ def prepare(only_week=None):
                 record_path = OUTPUT / item['id'] / 'submission.json'
                 if record_path.exists():
                     previous_records[(old_week['week'],item['student'],item['file'])] = json.loads(record_path.read_text())
-    for name in ['index.html', 'admin.js', 'admin.css', 'heart-sync.js']:
+    for name in ['index.html', 'admin.js', 'admin.css', 'heart-sync.js', 'admin-groups.js']:
         shutil.copy2(UI / name, ADMIN / name)
     weeks, total = [], 0
     for folder in sorted(ADMIN.iterdir()):

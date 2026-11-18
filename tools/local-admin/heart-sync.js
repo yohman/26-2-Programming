@@ -20,6 +20,7 @@
     rebuild();if(Object.keys(changes).length)schedule();
     return {
       toggle(key){changes[key]=!values.has(key);rebuild();onStatus({saving:true});schedule();},
+      setMany(next){for(const [key,on] of Object.entries(next)){if(typeof on!=='boolean')throw new TypeError('Heart values must be boolean');changes[key]=on;}rebuild();onStatus({saving:true});schedule();},
       accept(hearts){saved=new Set(hearts);rebuild();},
       get values(){return new Set(values);},get pending(){return {...changes};},
       get busy(){return running||!!Object.keys(changes).length;},flush,

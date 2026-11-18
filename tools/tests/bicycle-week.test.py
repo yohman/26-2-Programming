@@ -24,7 +24,7 @@ if private.exists():
         originals=[''.join(c['source']).strip() for c in old if c['cell_type']=='markdown' and not ''.join(c['source']).startswith('## 小テスト')]
         normalize=lambda text:re.sub(r'\s+',' ',text).strip()
         assert list(map(normalize,originals))==list(map(normalize,[text for _,text in config['questions']]))
-with (folder/'bicycle-theft.csv').open(encoding='cp932', newline='') as f:
+with (folder/'bike.csv').open(encoding='cp932', newline='') as f:
     rows = list(csv.DictReader(f))
 assert len(rows)==10054
 nb = json.loads((folder/'bicycle-theft-guide.ipynb').read_text())

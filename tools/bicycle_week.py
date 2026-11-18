@@ -17,14 +17,14 @@ import hashlib
 from collections import Counter
 import quiz_package
 
-VERSION = '20261118-w8-class-flow'
+VERSION = '20261118-w8-fullbleed-bike'
 RELEASE = '2026-11-19T12:00:00+09:00'
 POLICE = 'https://www.police.pref.chiba.jp/seisoka/safe-life_publicspace-statistics_00002.html'
 SPEC = dict(title='Bicycle theft: what does the data say?', title_ja='自転車盗を、データで調べる', date='2026-11-19', due='2026-11-25', slides=[{}]*23)
 
 LOAD = '''
 # 読み込むファイルを設定する（Notebookと同じフォルダに保存）
-filename = "bicycle-theft.csv"
+filename = "bike.csv"
 encoding = "cp932"
 
 # 千葉県警のCSVはShift-JIS（CP932）。追加インストールは不要
@@ -84,7 +84,7 @@ for place, count in top_places:
     print(f"{place}: {bar} {count:,}件")'''.strip()
 PANDAS = '''
 # pandasが使える場合の別ルート。同じCSVを読む
-filename = "bicycle-theft.csv"
+filename = "bike.csv"
 encoding = "cp932"
 import pandas as pd
 df = pd.read_csv(filename, encoding=encoding)
@@ -174,8 +174,8 @@ def build(root, c):
     folder = root/'weeks/week-08'
     bi, p, links = c.bi, c.p, c.links
     metadata = json.loads((folder/'bicycle-theft-source.json').read_text())
-    assert hashlib.sha256((folder/'bicycle-theft.csv').read_bytes()).hexdigest() == metadata['snapshot_sha256']
-    with (folder/'bicycle-theft.csv').open(encoding=metadata['encoding'], newline='') as f:
+    assert hashlib.sha256((folder/'bike.csv').read_bytes()).hexdigest() == metadata['snapshot_sha256']
+    with (folder/'bike.csv').open(encoding=metadata['encoding'], newline='') as f:
         incidents = list(csv.DictReader(f))
     total = len(incidents)
     assert total == metadata['record_count']
@@ -187,7 +187,7 @@ def build(root, c):
     source_links = '<div class="lesson-links"><a href="'+POLICE+'" target="_blank" rel="noopener">'+bi('① 千葉県警のオープンデータを開く','① Open Chiba Police open data')+' ↗</a><a href="'+source_csv+'" target="_blank" rel="noopener">'+bi('② 2025年・自転車盗 CSV','② 2025 bicycle-theft CSV')+' ↗</a></div>'
     scope = {}
     results = {}
-    cells = [c.mdcell('# 千葉の自転車盗：実行例\n\nこれは解説用の実行例です。提出用は新しい空のNotebookを作成してください。\n\n'+source_note[0]+'\n\n出典：'+POLICE+'\n\n[公式ページを開く]('+POLICE+') → 令和7年の「自転車盗（CSV形式）」をダウンロード。\n\n## 1. 準備\nダウンロードしたファイルを `bicycle-theft.csv` に名前変更し、Notebookと同じフォルダに保存。文字コードはCP932です。標準ライブラリのルートは追加インストール不要。')]
+    cells = [c.mdcell('# 千葉の自転車盗：実行例\n\nこれは解説用の実行例です。提出用は新しい空のNotebookを作成してください。\n\n'+source_note[0]+'\n\n出典：'+POLICE+'\n\n[公式ページを開く]('+POLICE+') → 令和7年の「自転車盗（CSV形式）」をダウンロード。\n\n## 1. 準備\nダウンロードしたファイルを `bike.csv` に名前変更し、Notebookと同じフォルダに保存。文字コードはCP932です。標準ライブラリのルートは追加インストール不要。')]
     examples = [
         ('load', '2. CSVを読む', 'csv.DictReaderは、各行を「列名: 値」の辞書にします。listで全行をまとめ、lenで件数を確認します。', LOAD),
         ('row', '3. 1件の内容を見る', 'incidentsはリスト、incidents[0]は最初の事件の辞書。列名をキーに値を取り出します。列名一覧は list(incidents[0]) で確認。', ROW),
@@ -251,7 +251,7 @@ def build(root, c):
         slide('quiz-save','12分後、途中でも提出。','After 12 minutes: submit what you have.', '<p class="big-filename">week08_quiz_氏名.ipynb</p>'+p('解けたセルを実行して、出力を保存。UNIPAの小テスト提出先へ。','Run the cells you have completed and save their outputs. Submit to the quiz assignment on UNIPA.')+p('各問：指定された処理3点＋指定どおりの出力2点。問1-5は計算の手順も採点します。','Each question: 3 points for the required logic and 2 for the required output. Question 1-5 must perform the specified calculation steps.'),'statement'),
         slide('brief','自転車が、なくなった。','The bike is gone.', p('あなたは千葉県警の調査担当。自転車盗データから、どんな防犯の呼びかけを提案する？','You are investigating bicycle theft in Chiba. What prevention message would you recommend from the data?')+'<div class="bike-deliverable">'+bi('件数 → 比較 → 根拠のある提案','Count → compare → recommend')+'</div>','question'),
         slide('data',f'{total:,}件の記録。',f'{total:,} incident records.', first_rows+p(*source_note,'source-note')+p('1行が1件。市区町村、場所、年月日、時刻、年齢、職業、施錠関係があります。','One row is one record: municipality, place, date, hour, age group, occupation and lock status.')),
-        slide('load','まず、CSVを読む。','First, read the CSV.', p('空のNotebookを作り、公式CSVをbicycle-theft.csvに名前変更して同じフォルダへ。pandasは不要。','Create a blank notebook. Rename the official CSV to bicycle-theft.csv and save it beside the notebook. No pandas required.')+code('load',LOAD)) ,
+        slide('load','まず、CSVを読む。','First, read the CSV.', p('空のNotebookを作り、公式CSVをbike.csvに名前変更して同じフォルダへ。pandasは不要。','Create a blank notebook. Rename the official CSV to bike.csv and save it beside the notebook. No pandas required.')+code('load',LOAD)) ,
         slide('row','リストの中に、辞書。','A list of dictionaries.', code('row',ROW)+p('<code>incidents[0]</code> は最初の1行。<code>["列名"]</code> で、その列の値を取り出します。','<code>incidents[0]</code> is the first row. <code>["column name"]</code> selects one value.')),
         slide('count','forで、1件ずつ数える。','Count one record at a time.', code('count',COUNT)+p('<code>.get(label, 0)</code>：まだないキーなら0。そこに1を足して、同じキーへ保存。','<code>.get(label, 0)</code>: start at zero for a new key, add one, then save it back.')),
         slide('filter','柏市だけなら？','What about Kashiwa?', code('filter',FILTER)+p('<code>==</code> は一致の確認。<code>.append(row)</code> は一致した1件をリストへ追加。市名を変えたら、どうなる？','<code>==</code> checks equality. <code>.append(row)</code> adds a matching record. Predict what changes with another city.')),
@@ -271,12 +271,24 @@ def build(root, c):
         ('17:25:33','17:25:33','2024-10-23 · 別のカメラへ','2024-10-23 · A different camera'),
         ('17:25:35','17:25:35','2024-10-23 · 駐輪場の外側','2024-10-23 · Outside the bicycle parking area'),
         ('同じ資料の、拡大画像。','An enlarged still from the same document.','ここから記録できる項目は？ 場所・日付・時刻…','What could become data? Location, date, time…')]
+    # Display only the camera picture, excluding the document frame and black bands.
+    # The original JPEGs remain unchanged; SVG view boxes perform the display crop.
+    frames = [
+        (781,527,(13,89,753,423),'xMinYMid'),
+        (761,510,(3,84,754,423),'xMidYMid'),
+        (764,582,(9,90,752,423),'xMinYMid'),
+        (770,561,(10,89,750,423),'xMidYMid'),
+        (772,556,(18,90,751,423),'xMidYMid'),
+        (1189,928,(0,120,1189,740),'xMidYMid')]
     camera_slides = []
-    for index,(ja,en,caption,caption_en) in enumerate(moments,1):
+    for index,((ja,en,caption,caption_en),(width,height,crop,alignment)) in enumerate(zip(moments,frames),1):
         image = f'security/camera-{index:02}.jpg'
         assert (folder/image).exists()
-        camera_slides.append(slide(f'cctv-{index:02}',ja,en,'<figure class="camera-frame"><img src="'+image+'" alt="Security-camera still '+str(index)+' from the October 23, 2024 Reitaku University bicycle case"><figcaption>'+bi(html.escape(caption),html.escape(caption_en))+' · '+bi('2025年度の授業資料にある防犯カメラ静止画','Original security-camera stills from the 2025 teaching materials')+'</figcaption></figure>','camera'))
-    police_source = slide('police-source','まずは、千葉県警のデータへ。','Start with Chiba Police open data.', p('2024年の学内事例から、県全体へ。公式サイトの「令和7年中の発生情報」→「自転車盗（CSV形式）」を開こう。','From the 2024 campus case to the whole prefecture. On the official site, choose the 2025 section and its bicycle-theft CSV.')+source_links+p('ダウンロード後、bicycle-theft.csvに名前変更。文字コードはCP932。問いを選び、件数・ランキング・グラフから防犯の提案を作ります。','Rename the download to bicycle-theft.csv. Its encoding is CP932. Choose a question and use counts, rankings and a chart to recommend a prevention action.')+p(*source_note,'source-note'),'question')
+        label = bi('Tsukada先生の自転車 · 2024/10/23 08:10:06','Tsukada’s bike · 2024/10/23 08:10:06') if index==1 else bi('同資料の拡大画像','Enlarged still') if index==6 else html.escape(ja)
+        view_box = ' '.join(map(str,crop))
+        picture = f'<svg class="camera-image" viewBox="{view_box}" preserveAspectRatio="{alignment} slice" role="img" aria-labelledby="camera-title-{index:02}"><title id="camera-title-{index:02}">'+html.escape(en)+f'</title><image href="{image}" width="{width}" height="{height}"/></svg>'
+        camera_slides.append(slide(f'cctv-{index:02}',ja,en,'<figure class="camera-frame">'+picture+'<figcaption>'+label+'</figcaption></figure>','camera'))
+    police_source = slide('police-source','まずは、千葉県警のデータへ。','Start with Chiba Police open data.', p('2024年の学内事例から、県全体へ。公式サイトの「令和7年中の発生情報」→「自転車盗（CSV形式）」を開こう。','From the 2024 campus case to the whole prefecture. On the official site, choose the 2025 section and its bicycle-theft CSV.')+source_links+p('ダウンロード後、bike.csvに名前変更。文字コードはCP932。問いを選び、件数・ランキング・グラフから防犯の提案を作ります。','Rename the download to bike.csv. Its encoding is CP932. Choose a question and use counts, rankings and a chart to recommend a prevention action.')+p(*source_note,'source-note'),'question')
     # Review → protected quiz → original camera sequence → official data → investigation.
     slides = [review] + slides[:3] + camera_slides + [police_source] + slides[4:]
     assert len(slides) == len(SPEC['slides'])
@@ -294,11 +306,11 @@ def build(root, c):
 
     challenge_body = '<p class="slide-kicker">'+bi('授業内チャレンジ → 同じ作品を宿題へ','In class → finish the same report at home')+'</p><h1>'+bi('千葉の自転車盗を調査せよ','Investigate bicycle theft in Chiba')+'</h1>'
     challenge_body += p('あなたは千葉県警の調査担当。データに基づく防犯の提案を、読みやすいNotebookにまとめてください。','You are investigating bicycle theft in Chiba. Produce a readable notebook with an evidence-based prevention recommendation.')
-    challenge_body += '<h2>'+bi('1. 千葉県警のオープンデータを開く','1. Open Chiba Police open data')+'</h2>'+source_links+p('「令和7年中の発生情報」から「自転車盗（CSV形式）」をダウンロード。ファイル名をbicycle-theft.csvに変更します。','In the 2025 section, download the bicycle-theft CSV and rename it to bicycle-theft.csv.')+p(*source_note)+p('同じ内容の授業用コピーも下にあります。文字コードは公式ファイルと同じCP932です。','The class copy below contains the same data and retains the official CP932 encoding.')
+    challenge_body += '<h2>'+bi('1. 千葉県警のオープンデータを開く','1. Open Chiba Police open data')+'</h2>'+source_links+p('「令和7年中の発生情報」から「自転車盗（CSV形式）」をダウンロード。ファイル名をbike.csvに変更します。','In the 2025 section, download the bicycle-theft CSV and rename it to bike.csv.')+p(*source_note)+p('同じ内容の授業用コピーも下にあります。文字コードは公式ファイルと同じCP932です。','The class copy below contains the same data and retains the official CP932 encoding.')
     challenge_body += '<h2>'+bi('2. 空のNotebookを作る','2. Create a blank notebook')+'</h2><ol>'+''.join('<li>'+bi(j,e)+'</li>' for j,e in [
-        ('自分のリポジトリ内にweek08フォルダを作り、新しいJupyter Notebookを保存する。ファイル名は bicycle_report_氏名.ipynb。','Create a week08 folder in your repository and a new Jupyter notebook named bicycle_report_YourName.ipynb.'),
-        ('bicycle-theft.csvを同じフォルダへ保存。最初のMarkdownセルにタイトル・氏名・調べたい問いを書く。','Save bicycle-theft.csv in the same folder. In the first Markdown cell, write your title, name and question.'),
-        ('＋コードでPython、＋Markdownで説明を追加。以下の読み込みコードから始め、実行結果の下に自分の説明を置く。','Add Code cells for Python and Markdown cells for explanations. Begin with the loading code below; explain each result underneath.')])+'</ol>'+c.code_html(LOAD)+p(f'実行すると {total}。読み込めないときは、ファイル名とNotebookから見た保存場所を確認。',f'Expected result: {total}. If loading fails, check the filename and its location relative to your notebook.')+links([('bicycle-theft.csv','配布CSV','Class CSV'),('bicycle-theft-guide.ipynb','読み込み・集計・グラフの実行例','Worked examples: load, count and chart')],8)
+        ('自分のリポジトリ内にweek08フォルダを作り、新しいJupyter Notebookを保存する。ファイル名は bike.ipynb。','Create a week08 folder in your repository and a new Jupyter notebook named bike.ipynb.'),
+        ('bike.csvを同じフォルダへ保存。最初のMarkdownセルにタイトル・氏名・調べたい問いを書く。','Save bike.csv in the same folder. In the first Markdown cell, write your title, name and question.'),
+        ('＋コードでPython、＋Markdownで説明を追加。以下の読み込みコードから始め、実行結果の下に自分の説明を置く。','Add Code cells for Python and Markdown cells for explanations. Begin with the loading code below; explain each result underneath.')])+'</ol>'+c.code_html(LOAD)+p(f'実行すると {total}。読み込めないときは、ファイル名とNotebookから見た保存場所を確認。',f'Expected result: {total}. If loading fails, check the filename and its location relative to your notebook.')+links([('bike.csv','配布CSV','Class CSV'),('bicycle-theft-guide.ipynb','読み込み・集計・グラフの実行例','Worked examples: load, count and chart')],8)
     challenge_body += '<h2>'+bi('問いを選ぶ','Choose a question')+'</h2>'+c.list_html([
         ('どの市区町村で報告件数が多い？ 自分の通学エリアでは？','Which municipalities have more reported cases? What about your commuting area?'),
         ('どの時間帯・場所に多い？ どんな呼びかけが役に立ちそう？','Which hours or places have more cases? What message might help?'),
@@ -315,7 +327,7 @@ def build(root, c):
     challenge_head = c.page_head('Week 08 · Bicycle-theft challenge','course-pages.css','course-page.js',VERSION)+'<link rel="stylesheet" href="bicycle-week.css?v='+VERSION+'"></head>'
     c.write(folder/'challenge.html', challenge_head+f'<body class="course-challenge bicycle-week" data-release="{RELEASE}">'+header+'<main id="course-page" hidden>'+challenge_body+'</main></body></html>')
     # Keep the old text brief useful without a second set of stale instructions.
-    c.write(folder/'bicycle-theft-brief.md', '# Week 08 · 千葉の自転車盗を調査せよ\n\n[チャレンジ・宿題の手順](challenge.html)\n\n新しい空のNotebookを作り、配布のbicycle-theft.csvを読む。forで集計または絞り込み、ランキング、グラフ（文字の棒でも可）、数値を使った発見2つと防犯の提案1つをまとめる。\n\n2026年11月25日23:59 JSTまでに実行済み.ipynbとGitHubの直接リンクをUNIPAへ。\n\n[実行例Notebook](bicycle-theft-guide.ipynb) / [CSV](bicycle-theft.csv)\n\n'+source_note[0]+'\n\n出典：'+POLICE+'\n')
+    c.write(folder/'bicycle-theft-brief.md', '# Week 08 · 千葉の自転車盗を調査せよ\n\n[チャレンジ・宿題の手順](challenge.html)\n\n新しい空のNotebookを作り、配布のbike.csvを読む。forで集計または絞り込み、ランキング、グラフ（文字の棒でも可）、数値を使った発見2つと防犯の提案1つをまとめる。\n\n2026年11月25日23:59 JSTまでに実行済み.ipynbとGitHubの直接リンクをUNIPAへ。\n\n[実行例Notebook](bicycle-theft-guide.ipynb) / [CSV](bike.csv)\n\n'+source_note[0]+'\n\n出典：'+POLICE+'\n')
 
     front = '''---
 week: 8
@@ -354,7 +366,7 @@ homework_title_ja: 自転車盗レポートを仕上げる
 - [小テスト①・パスワードで開く / Open Graded Quiz 01](weeks/week-08/quiz.html) {notebook}
 - [自転車盗チャレンジ / Bicycle-Theft Challenge](weeks/week-08/challenge.html) {challenge}
 - [宿題・提出方法 / Homework and Submission](weeks/week-08/challenge.html#homework) {homework}
-- [自転車盗CSV / Bicycle-Theft CSV](weeks/week-08/bicycle-theft.csv) {data}
+- [自転車盗CSV / Bicycle-Theft CSV](weeks/week-08/bike.csv) {data}
 - [集計・グラフの実行例 / Counting and Chart Examples](weeks/week-08/bicycle-theft-guide.ipynb) {support}
 '''
     c.write(root/'content/weeks/08-bicycle-theft.md',text)

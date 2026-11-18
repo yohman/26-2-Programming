@@ -42,5 +42,5 @@ JP: 件数を数え、比較し、言えることと言えないことを分け�
 - [小テスト①・パスワードで開く / Open Graded Quiz 01](weeks/week-08/quiz.html) {notebook}
 - [自転車盗チャレンジ / Bicycle-Theft Challenge](weeks/week-08/challenge.html) {challenge}
 - [宿題・提出方法 / Homework and Submission](weeks/week-08/challenge.html#homework) {homework}
-- [自転車盗CSV / Bicycle-Theft CSV](weeks/week-08/bicycle-theft.csv) {data}
+- [自転車盗CSV / Bicycle-Theft CSV](weeks/week-08/bike.csv) {data}
 - [集計・グラフの実行例 / Counting and Chart Examples](weeks/week-08/bicycle-theft-guide.ipynb) {support}

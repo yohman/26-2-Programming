@@ -69,7 +69,7 @@ test('direct file previews check the week release before loading content',async(
  assert.equal(fetched.length,1);
  context.location.search='';
  metadata=future.replace('2026-11-19T12:00:00+09:00','2026-11-17T12:00:00+09:00');
- assert.equal(await context.fileReleaseStatus('weeks/week-08/bicycle-theft.csv'),null);
+ assert.equal(await context.fileReleaseStatus('weeks/week-08/bike.csv'),null);
  metadata=metadata.replace('preview: true','publication_hold: true');
  assert.equal((await context.fileReleaseStatus('weeks/week-08/lecture.pdf')).publication_hold,'true');
  context.location.search='?file=weeks%2Fweek-08%2Fbicycle-theft-guide.ipynb';
@@ -84,7 +84,7 @@ test('CSV previews decode both UTF-8 and the official CP932 file',async()=>{
  const context={TextDecoder};vm.runInNewContext(code,context);
  const utf8=new TextEncoder().encode('\ufeffPrefecture,都道府県\nChiba,千葉県\n');
  assert.equal(await context.csvResponseText({arrayBuffer:async()=>utf8.buffer}),'Prefecture,都道府県\nChiba,千葉県\n');
- const cp932=fs.readFileSync(path.join(root,'weeks/week-08/bicycle-theft.csv'));
+ const cp932=fs.readFileSync(path.join(root,'weeks/week-08/bike.csv'));
  const decoded=await context.csvResponseText({arrayBuffer:async()=>cp932.buffer.slice(cp932.byteOffset,cp932.byteOffset+cp932.byteLength)});
  assert.match(decoded,/市区町村（発生地）/);assert.match(decoded,/千葉県/);assert.ok(!decoded.includes('\ufffd'));
  assert.equal(decoded.trim().split('\n').length,10055);

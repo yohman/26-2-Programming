@@ -2,11 +2,11 @@
 
 [チャレンジ・宿題の手順](challenge.html)
 
-新しい空のNotebookを作り、配布のbicycle-theft.csvを読む。forで集計または絞り込み、ランキング、グラフ（文字の棒でも可）、数値を使った発見2つと防犯の提案1つをまとめる。
+新しい空のNotebookを作り、配布のbike.csvを読む。forで集計または絞り込み、ランキング、グラフ（文字の棒でも可）、数値を使った発見2つと防犯の提案1つをまとめる。
 
 2026年11月25日23:59 JSTまでに実行済み.ipynbとGitHubの直接リンクをUNIPAへ。
 
-[実行例Notebook](bicycle-theft-guide.ipynb) / [CSV](bicycle-theft.csv)
+[実行例Notebook](bicycle-theft-guide.ipynb) / [CSV](bike.csv)
 
 千葉県警察が2025年分として公開している自転車盗CSV・10,054件（2026年11月18日取得）。発生年月日（始期）は2019〜2025年と不明を含みます。
 

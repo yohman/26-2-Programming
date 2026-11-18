@@ -1,5 +1,27 @@
 /* Instructor's two 6-minute phases. Time is based on the clock, not interval ticks. */
 (() => {
+  const view = document.getElementById('slides-view');
+  if (view) {
+    let fadeTimer;
+    const reveal = () => {
+      if (!document.body.classList.contains('camera-active')) return;
+      document.body.classList.add('camera-controls-visible');
+      clearTimeout(fadeTimer);
+      fadeTimer = setTimeout(() => document.body.classList.remove('camera-controls-visible'), 1500);
+    };
+    const sync = () => {
+      const active = view.querySelector('[data-slide]:not([hidden])');
+      document.body.classList.toggle('camera-active', !!active?.classList.contains('layout-camera'));
+      document.body.classList.remove('camera-controls-visible');
+      clearTimeout(fadeTimer);
+    };
+    view.addEventListener('lecture:slidechange', sync);
+    view.addEventListener('pointermove', reveal);
+    view.addEventListener('pointerdown', reveal);
+    document.addEventListener('keydown', event => { if (event.key === 'Tab') reveal(); });
+    document.querySelector('.lecture-header')?.addEventListener('pointermove', reveal);
+    sync();
+  }
   const root = document.querySelector('[data-quiz-clock]');
   if (!root) return;
   const display = root.querySelector('[data-clock]');

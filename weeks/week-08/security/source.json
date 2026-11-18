@@ -9,37 +9,74 @@
       "file": "camera-01.jpg",
       "page": 1,
       "original_image": "Image6.jpg",
-      "sha256": "9d2309140529c210b61fd4498155ce8bc47f7dbe3ccac14a13b56c029d73069d"
+      "sha256": "9d2309140529c210b61fd4498155ce8bc47f7dbe3ccac14a13b56c029d73069d",
+      "display_view_box": [
+        13,
+        89,
+        753,
+        423
+      ]
     },
     {
       "file": "camera-02.jpg",
       "page": 1,
       "original_image": "Image8.jpg",
-      "sha256": "abe49b7f77addf4ce8c2d83797c32cb5f24030a867f2d74a9230cbbd6e074db6"
+      "sha256": "abe49b7f77addf4ce8c2d83797c32cb5f24030a867f2d74a9230cbbd6e074db6",
+      "display_view_box": [
+        3,
+        84,
+        754,
+        423
+      ]
     },
     {
       "file": "camera-03.jpg",
       "page": 2,
       "original_image": "Image11.jpg",
-      "sha256": "a412eeff92a73faf319420a2fa39f35e013f3d1dbb95221b78c35a0d1442a189"
+      "sha256": "a412eeff92a73faf319420a2fa39f35e013f3d1dbb95221b78c35a0d1442a189",
+      "display_view_box": [
+        9,
+        90,
+        752,
+        423
+      ]
     },
     {
       "file": "camera-04.jpg",
       "page": 2,
       "original_image": "Image12.jpg",
-      "sha256": "3dd4499db4440a336bdc5af3b7a688755f84e6b20bd69f6f878936609c448fe5"
+      "sha256": "3dd4499db4440a336bdc5af3b7a688755f84e6b20bd69f6f878936609c448fe5",
+      "display_view_box": [
+        10,
+        89,
+        750,
+        423
+      ]
     },
     {
       "file": "camera-05.jpg",
       "page": 3,
       "original_image": "Image15.jpg",
-      "sha256": "b0be1da2dc4aeee9a516ab40e8a4fb0dc3724b9a5d5f95e4308d386a667ebc5b"
+      "sha256": "b0be1da2dc4aeee9a516ab40e8a4fb0dc3724b9a5d5f95e4308d386a667ebc5b",
+      "display_view_box": [
+        18,
+        90,
+        751,
+        423
+      ]
     },
     {
       "file": "camera-06.jpg",
       "page": 3,
       "original_image": "Image16.jpg",
-      "sha256": "94c28c6994847c6252622554c9b799c8d2d1581727a35cf713d561147dfae2a0"
+      "sha256": "94c28c6994847c6252622554c9b799c8d2d1581727a35cf713d561147dfae2a0",
+      "display_view_box": [
+        0,
+        120,
+        1189,
+        740
+      ]
     }
-  ]
+  ],
+  "presentation": "Edge-to-edge SVG view boxes exclude the document borders and black bands; source JPEGs are unchanged."
 }

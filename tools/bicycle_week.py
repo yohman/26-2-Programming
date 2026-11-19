@@ -17,11 +17,12 @@ import hashlib
 from collections import Counter
 import quiz_package
 import bicycle_ascii as ascii_bike
+import bicycle_data
 
-VERSION = '20261119-bike-hackathon'
+VERSION = '20261119-bike-data-guide'
 RELEASE = '2026-11-19T12:00:00+09:00'
 POLICE = 'https://www.police.pref.chiba.jp/seisoka/safe-life_publicspace-statistics_00002.html'
-SPEC = dict(title='Bike Hackathon', title_ja='自転車盗ハッカソン', date='2026-11-19', due='2026-11-25', slides=[{}]*26)
+SPEC = dict(title='Bike Hackathon', title_ja='自転車盗ハッカソン', date='2026-11-19', due='2026-11-25', slides=[{}]*27)
 
 LOAD = '''
 # 読み込むファイルを設定する（Notebookと同じフォルダに保存）
@@ -188,6 +189,8 @@ def build(root, c):
         incidents = list(csv.DictReader(f))
     total = len(incidents)
     assert total == metadata['record_count']
+    profile = bicycle_data.summary(incidents)
+    data_guide = bicycle_data.guide(profile, bi, p, metadata['notes_pdf'])
     locks = Counter(row['施錠関係'] for row in incidents)
     unknown_dates = sum(row['発生年月日（始期）']=='不明' for row in incidents)
     unknown_hours = sum(row['発生時（始期）']=='不明' for row in incidents)
@@ -273,7 +276,9 @@ def build(root, c):
         slide('quiz-clock','6分 ＋ 6分','6 minutes + 6 minutes', '<div class="ascii-clock-row">'+clock+ascii_bike.art('spin')+'</div>'+p('前半は自力。後半は教科書・ノート・教材・通常のWeb検索OK。12分を通して、生成AI・他者との相談は不可。','First work independently; then use notes, textbooks, course materials and ordinary web search. No generative AI or collaboration during either phase.'),'quiz'),
         slide('quiz-save','12分後、途中でも提出。','After 12 minutes: submit what you have.', '<p class="big-filename">week08_quiz_氏名.ipynb</p>'+p('解けたセルを実行して、出力を保存。UNIPAの小テスト提出先へ。','Run the cells you have completed and save their outputs. Submit to the quiz assignment on UNIPA.')+p('各問：指定された処理3点＋指定どおりの出力2点。問1-5は計算の手順も採点します。','Each question: 3 points for the required logic and 2 for the required output. Question 1-5 must perform the specified calculation steps.'),'statement'),
         slide('brief','自転車が、なくなった。','The bike is gone.', p('あなたは千葉県警の調査担当。自転車盗データから、どんな防犯の呼びかけを提案する？','You are investigating bicycle theft in Chiba. What prevention message would you recommend from the data?')+'<div class="bike-deliverable">'+bi('件数 → 比較 → 根拠のある提案','Count → compare → recommend')+'</div>','question'),
-        slide('data',f'{total:,}件の記録。',f'{total:,} incident records.', first_rows+p(*source_note,'source-note')+p('1行が1件。市区町村、場所、年月日、時刻、年齢、職業、施錠関係があります。','One row is one record: municipality, place, date, hour, age group, occupation and lock status.')),
+        slide('data-overview','bike.csvには、何が入っている？','What is in bike.csv?', '<div class="bike-data-count"><strong>'+f'{total:,}'+'</strong><span>'+bi('自転車盗の記録','recorded bicycle thefts')+'<small>'+bi('15列 · 57の市区町村・区の名称','15 fields · 57 municipality/ward labels')+'</small></span></div>'+p('場所・日時・被害者の年齢層と身分・施錠状況。1行が1件の記録です。','Location, date/hour, victim age band and status, and lock status. One row is one record.')+'<dl class="bike-data-facts"><div><dt>'+f'{profile["unlocked_pct"]:.1f}%'+'</dt><dd>'+bi('施錠せず','Unlocked')+'</dd></div><div><dt>'+f'{profile["young_pct"]:.1f}%'+'</dt><dd>'+bi('被害者は10〜29歳','Victim aged 10–29')+'</dd></div></dl>'+p('千葉県警の2025年公開分。発生日は過去年・不明を含む。割合は全10,054件に対するもの。件数は被害率ではありません。','Chiba Police’s 2025 release includes earlier and unknown occurrence dates. Percentages use all 10,054 records; counts are not theft rates.','source-note')+links([('challenge.html#data-guide','データの概要・全15列','Data guide: all 15 fields')]),'data-overview'),
+        slide('data','1行が、1件の記録','One row, one record', first_rows+p('この3列以外に、町丁目・年月日・年齢・職業などがあります。調べたい問いに合う列を選ぼう。','Other fields include neighborhood, date, age band and status. Choose fields that match your question.')),
+
         slide('load','まず、CSVを読む。','First, read the CSV.', p('空のNotebookを作り、公式CSVをbike.csvに名前変更して同じフォルダへ。pandasは不要。','Create a blank notebook. Rename the official CSV to bike.csv and save it beside the notebook. No pandas required.')+code('load',LOAD)) ,
         slide('row','リストの中に、辞書。','A list of dictionaries.', code('row',ROW)+p('<code>incidents[0]</code> は最初の1行。<code>["列名"]</code> で、その列の値を取り出します。','<code>incidents[0]</code> is the first row. <code>["column name"]</code> selects one value.')),
         slide('count','forで、1件ずつ数える。','Count one record at a time.', code('count',COUNT)+p('<code>.get(label, 0)</code>：まだないキーなら0。そこに1を足して、同じキーへ保存。','<code>.get(label, 0)</code>: start at zero for a new key, add one, then save it back.')),
@@ -336,14 +341,12 @@ def build(root, c):
     challenge_body = '<p class="slide-kicker">'+bi('新しい3人チームで制作 → 同じ作品を宿題へ','New three-person teams → finish the same project at home')+'</p><h1>'+bi('自転車盗ハッカソン','Bike Hackathon')+'</h1>'+ascii_bike.art('ride')
     challenge_body += p('先週とは違うメンバーで、新しい3人チームを作ります。千葉の自転車盗データを調べ、根拠のある防犯の提案を一つのNotebookにまとめよう。','Form a new three-person team with different classmates from last week. Investigate Chiba bicycle-theft data and build one notebook with an evidence-based prevention recommendation.')
     challenge_body += '<h2>'+bi('1. 千葉県警のオープンデータを開く','1. Open Chiba Police open data')+'</h2>'+source_links+p('「令和7年中の発生情報」から「自転車盗（CSV形式）」をダウンロード。ファイル名をbike.csvに変更します。','In the 2025 section, download the bicycle-theft CSV and rename it to bike.csv.')+p(*source_note)+p('同じ内容の授業用コピーも下にあります。文字コードは公式ファイルと同じCP932です。','The class copy below contains the same data and retains the official CP932 encoding.')
+    challenge_body += data_guide
     challenge_body += '<h2>'+bi('2. 空のNotebookを作る','2. Create a blank notebook')+'</h2><ol>'+''.join('<li>'+bi(j,e)+'</li>' for j,e in [
         ('チームでweek08フォルダを用意し、空のJupyter Notebookを一つ作る。ファイル名は bike.ipynb。','Prepare a week08 folder and create one blank Jupyter notebook for the team, named bike.ipynb.'),
         ('bike.csvを同じフォルダへ保存。最初のMarkdownセルに作品タイトル・3人全員の氏名・調べたい問いを書く。','Save bike.csv in the same folder. In the first Markdown cell, write the project title, all three members’ names and your question.'),
         ('＋コードでPython、＋Markdownで説明を追加。以下の読み込みコードから始め、実行結果の下にチームの説明を置く。','Add Code cells for Python and Markdown cells for explanations. Begin with the loading code below; explain each result together underneath.')])+'</ol>'+c.code_html(LOAD)+p(f'実行すると {total}。読み込めないときは、ファイル名とNotebookから見た保存場所を確認。',f'Expected result: {total}. If loading fails, check the filename and its location relative to your notebook.')+links([('bike.csv','配布CSV','Class CSV'),('bicycle-theft-guide.ipynb','読み込み・集計・グラフの実行例','Worked examples: load, count and chart')],8)
-    challenge_body += '<h2>'+bi('問いを選ぶ','Choose a question')+'</h2>'+c.list_html([
-        ('どの市区町村で報告件数が多い？ 自分の通学エリアでは？','Which municipalities have more reported cases? What about your commuting area?'),
-        ('どの時間帯・場所に多い？ どんな呼びかけが役に立ちそう？','Which hours or places have more cases? What message might help?'),
-        ('年代・職業・施錠関係では、どんな違いが見える？','What differences appear by age group, occupation or lock status?')])
+    challenge_body += bicycle_data.project_ideas(bi,p)
     challenge_body += '<h2>'+bi('レポートに必要なもの','Your report needs')+'</h2><ol>'+''.join('<li>'+bi(j,e)+'</li>' for j,e in [
         ('問い・出典・対象データの説明。1行が何を表すかを書く。','A question, source and description of the data, including what one row represents.'),
         ('forを使った集計または絞り込み。列や条件を自分で変える。whileや関数は必須ではありません。','A count or filter using a for loop. Change the columns or conditions yourself. While loops and custom functions are optional.'),
@@ -402,6 +405,8 @@ homework_title_ja: チームの自転車盗レポートを仕上げる
 - [小テスト①・パスワードで開く / Open Graded Quiz 01](weeks/week-08/quiz.html) {notebook}
 - [自転車盗ハッカソン / Bike Hackathon](weeks/week-08/challenge.html) {challenge}
 - [宿題・提出方法 / Homework and Submission](weeks/week-08/challenge.html#homework) {homework}
+- [データの概要・全15列 / Data guide: all 15 fields](weeks/week-08/challenge.html#data-guide) {support}
+- [制作アイデア / Project ideas](weeks/week-08/challenge.html#ideas) {support}
 - [自転車盗CSV / Bicycle-Theft CSV](weeks/week-08/bike.csv) {data}
 - [集計・グラフの実行例 / Counting and Chart Examples](weeks/week-08/bicycle-theft-guide.ipynb) {support}
 '''
@@ -418,4 +423,4 @@ if __name__ == '__main__':
     for entry in entries:
         if entry['week']==8:entry.update(title=SPEC['title'], slides=len(SPEC['slides']))
     c.write(manifest,json.dumps(entries,ensure_ascii=False,indent=2)+'\n')
-    print('Built Week 8: 26 slides, individual quiz and new-team Bike Hackathon.')
+    print('Built Week 8: 27 slides, bike data guide and new-team Bike Hackathon.')

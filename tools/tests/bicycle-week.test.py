@@ -70,7 +70,7 @@ with contextlib.chdir(folder):
     assert plt.gca().get_xlabel()=='Lock status'
     plt.close('all')
 lecture = (folder/'lecture.html').read_text()
-assert lecture.count('data-slide data-ink-id=')==23
+assert lecture.count('data-slide data-ink-id=')==26
 assert 'data-ink-id="w8-bike-quiz-clock"' in lecture
 assert 'data-release="2026-11-19T12:00:00+09:00"' in lecture
 assert not any(x in lecture for x in ['student-menu.csv','remaining(','def count_places','earthquakes'])

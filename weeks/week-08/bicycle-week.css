@@ -97,3 +97,9 @@ body.camera-active .annotation-tools{position:absolute;bottom:4.5rem;right:1rem;
 .bicycle-week.course-deck .ascii-weather .ascii-lightning{color:#ad8500}
 .bicycle-week.course-deck .ascii-weather .ascii-snow{color:#4f95b9}
 @media(max-width:650px){.ascii-review-row:has(.ascii-weather){display:block}.ascii-sky{gap:.5rem;min-height:7rem}.bicycle-week.course-deck .ascii-weather pre{font-size:.8rem}.ascii-weather .ascii-toggle{top:-1rem}}
+
+/* Group briefing: plain roles and one large production timer. */
+.bike-team-roles{margin:1.5rem 0;font-size:clamp(1.15rem,1.9vw,1.65rem);line-height:1.6}.bike-team-roles>div{display:grid;grid-template-columns:7em 1fr;gap:1rem;padding:.6rem 0;border-bottom:1px solid #cbd2ce}.bike-team-roles dt{font-weight:700;color:#315876}.bike-team-roles dd{margin:0}.bike-build-row{display:flex;align-items:center;gap:3rem}.bike-build-row .quiz-clock{flex:1;margin:0}.bike-build-row .ascii-scene{width:14rem}.bike-build-clock output{font-size:clamp(5rem,13vw,11rem)}
+@media(max-width:650px){.bike-team-roles>div{grid-template-columns:1fr;gap:.25rem}.bike-build-row .ascii-scene{display:none}}
+
+.bicycle-week [data-ink-id="w8-bike-deliverable"] ul{font-size:clamp(1.15rem,1.9vw,1.65rem);line-height:1.9;padding-left:1.5em}

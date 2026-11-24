@@ -23,12 +23,12 @@ for week in range(9,15):
         source=source.replace('from IPython.display import HTML, display\n','')
         value=None
         with contextlib.redirect_stdout(stream),contextlib.chdir(folder):
-            if week==7:
+            if week==9:
                 printed,value=execute_cell(source,scope)
                 stream.write(printed)
             else:exec(source,scope)
         saved_values=[o['data']['text/plain'] for o in cell['outputs'] if o['output_type']=='execute_result']
-        if week==7:assert saved_values==([] if value is None else [repr(value)]),(source,saved_values,value)
+        if week==9:assert saved_values==([] if value is None else [repr(value)]),(source,saved_values,value)
         expected_html=[o['data']['text/html'] for o in cell.get('outputs',[]) if o.get('data',{}).get('text/html')]
         if expected_html:assert rich[-1]==expected_html[-1]
 
@@ -46,7 +46,7 @@ for week in range(9,15):
 lecture=(ROOT/'weeks/week-09/lecture.html').read_text()
 payload=json.loads(re.search(r'<script id="lesson-data" type="application/json">(.*?)</script>',lecture,re.S)[1])
 nb=json.loads((ROOT/'weeks/week-09/practice.ipynb').read_text())
-loop=next(c for c in nb['cells'] if c['cell_type']=='code' and c['source'].startswith('for student in names'))
+loop=next(c for c in nb['cells'] if c['cell_type']=='code' and '\nfor student in names:' in c['source'])
 expected=''.join(o.get('text','') for o in loop['outputs']).strip()
 assert '\n'.join(result for _,result in payload['nameTrace'])==expected
 

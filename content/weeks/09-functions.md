@@ -17,8 +17,8 @@ homework_title: Repeat with a function and loop
 homework_title_ja: 関数とループで繰り返す
 ---
 ## Lecture Flow
-EN: Name tags, arguments and return, a loop of calls, Week 7 weather data, then build a city panel.
-JP: 名札を作る関数 → 引数とreturn → forから呼ぶ → Week 7の天気データ → 都市パネル → 制作。
+EN: Call greet(), pass one name, repeat with for, then use Week 7 weather data to build a city panel.
+JP: greet()を呼ぶ → 名前を一つ渡す → forから呼ぶ → Week 7の天気データ → 都市パネル。
 ## In-Class Notebook
 EN: Predict the output, run the worked notebook in order, then change its names or cities.
 JP: 実行前に予想する。見本Notebookを上から動かし、名前や都市を変える。

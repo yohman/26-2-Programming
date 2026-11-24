@@ -6,18 +6,22 @@ import json
 import pprint
 import re
 import zipfile
+from weather_hackathon import execute_cell
 
-VERSION = '20261124-function-weather'
+VERSION = '20261124-first-call'
 RELEASE = '2026-11-26T12:00:00+09:00'
 SPEC = dict(title='One function, many calls', title_ja='関数を一つ、何度でも',
             date='2026-11-26', due='2026-12-02', slides=[None]*13)
 DATE = '2026-11-12'
 SOURCE = 'https://open-meteo.com/en/docs/historical-weather-api'
 NAMES = 'names = ["Haru", "Yui", "Ren"]'
-NAME_TAG = '''def name_tag(name):
-    return f"HELLO, {name}!"'''
+GREET = '''def greet():
+    return "Hello!"'''
+GREET_NAME = '''def greet_name(name):
+    return f"Hello, {name}!"'''
 NAME_LOOP = '''for student in names:
-    print(name_tag(student))'''
+    message = greet_name(student)
+    print(message)'''
 LABEL = '''def weather_label(city, icon, high, low):
     return f"{icon} {city}\\n↑{high}°C  ↓{low}°C"'''
 BADGE = '''from html import escape
@@ -67,13 +71,16 @@ def build(root, c):
         slides.append(f'<section class="slide lesson-slide layout-{layout}" data-slide data-ink-id="w9-fn-{key}" hidden><{level}>'+bi(ja,en)+f'</{level}>'+body+'</section>')
 
     def run(source, heading, show=True, note=None):
-        stream = io.StringIO()
-        with contextlib.redirect_stdout(stream):
-            exec(source, scope)
-        result = stream.getvalue()
+        result, value = execute_cell(source, scope)
         if note:
             heading += '\n\n'+note[0]+'\n\n'+note[1]
-        cells.extend([c.mdcell('## '+heading), c.codecell(source, result or None, sum(cell['cell_type']=='code' for cell in cells)+1)])
+        count = sum(cell['cell_type']=='code' for cell in cells)+1
+        cell = c.codecell(source, result or None, count)
+        if value is not None:
+            cell['outputs'].append(dict(output_type='execute_result', execution_count=count,
+                                        metadata={}, data={'text/plain':repr(value)}))
+            result += repr(value)+'\n'
+        cells.extend([c.mdcell('## '+heading), cell])
         return c.code_html(source, result if show else None)
 
     def pair(code, output):
@@ -93,35 +100,37 @@ def build(root, c):
         cells.append(cell)
         return value
 
-    add('open','名札、あと何枚？','How many name tags?', '<div class="fn-ticket">HELLO, Haru!</div>'
-        +text('クラスの全員分を作るなら、文字列を何回書く？','If everyone in the class needs one, how many times would you write the same string?')
-        +p('今日は見本の名前から、天気アプリの画面まで。','Today we’ll go from sample names to a weather app display.'),'hero')
-    add('names','変わるのは、名前だけ','Only the name changes',
-        pair(run(NAMES+'\n\nprint(f"HELLO, {names[0]}!")\nprint(f"HELLO, {names[1]}!")',
-                 '見本の名前 / Sample names'),
-             '<aside class="fn-aside">'+p('3人目を出すには？','What would you write for the third person?')+'</aside>'))
-    note=('defは処理に名前を付ける。nameは、呼び出し時に値を受け取る仮引数。字下げした行は呼ぶまで動かない。',
-          'def names the operation. name is the parameter that receives a value. The indented body waits until a call.')
-    add('define','def：処理に名前を付ける','def: name the operation',
-        run(NAME_TAG,'関数を定義 / Define a function',note=note)+text(*note)
+    add('open','ひとこと、あいさつ','One small greeting', '<div class="fn-ticket">Hello!</div>'
+        +text('あいさつを一つ用意して、好きなときに呼び出せるようにしよう。','Let’s make one greeting we can call whenever we want.'),'hero')
+    add('syntax','関数を呼ぶには？','How do we call a function?',
+        text('関数の名前は <code>greet</code>。実行するには、名前の後ろに何を付ける？',
+             'Our function will be called <code>greet</code>. What goes after its name to run it?')
+        +'<details class="answer"><summary>'+bi('呼び出し方を見る','Reveal the call')+'</summary>'
+        +'<div class="fn-ticket"><code>greet<span class="fn-parens">()</span></code></div>'
+        +p('<code>()</code> を付けると呼び出し。かっこの中が空なので、今回は何も渡しません。',
+           '<code>()</code> makes the call. The parentheses are empty because this call needs no input.')+'</details>','question')
+    note=('1行目：<code>def</code> で定義。<code>:</code> の次の行は右にずらす。2行目：<code>return</code> で結果を返す。',
+          'Line 1: <code>def</code> starts the definition. After the colon, indent the next line. Line 2: <code>return</code> gives back a result.')
+    add('define','greetを作る','Define greet',
+        run(GREET,'関数を定義 / Define a function',
+            note=tuple(re.sub('<[^>]+>','',line) for line in note))+text(*note)
         +'<details class="answer"><summary>'+bi('ここで何が表示される？','What appears if we run just this?')+'</summary>'
-        +p('名札はまだ表示されません。関数を定義しただけです。','No name tag appears. We have only defined the function.')+'</details>','question')
-    add('call','呼ぶと、何が戻る？','What comes back from a call?',
-        pair(run('tag = name_tag("Haru")\nprint(tag)','呼び出しと戻り値 / Call and return'),
-             '<aside class="fn-aside"><ol><li>'+bi('<code>"Haru"</code> が <code>name</code> に入る。','<code>"Haru"</code> goes into <code>name</code>.')
-             +'</li><li>'+bi('<code>return</code> が結果を <code>tag</code> に返す。','<code>return</code> sends the result back to <code>tag</code>.')
-             +'</li><li>'+bi('<code>print(tag)</code> で表示する。','<code>print(tag)</code> displays it.')+'</li></ol></aside>'))
-    add('return','returnとprintの違い','return and print do different jobs',
-        run('def show_tag(name):\n    print(name_tag(name))\n\nresult = show_tag("Yui")\nprint(result)',
-            '表示と戻り値 / Display and return')
-        +text('最初の行は関数の中のprint。次のNoneは、show_tagが値を返していないから。予想してから結果を見よう。',
-              'The first line comes from inside the function. The second is None because show_tag never returns a value. Predict before revealing.'))
-    loop = run(NAME_LOOP,'forの中から呼ぶ / Call inside a loop',show=False)
+        +p('まだ何も表示されません。次のスライドで呼び出します。','Nothing yet. We call it on the next slide.')+'</details>')
+    call_note=('Notebookでは、セルの最後の行の値がそのまま表示されます。',
+               'A notebook shows the value of the last expression in the cell.')
+    add('call','greetを呼ぶ','Call greet',
+        run('greet()','最初の呼び出し / First call',note=call_note)+text(*call_note))
+    add('argument','かっこの中に、名前を一つ','One name inside the parentheses',
+        run(GREET_NAME+'\n\ngreet_name("Haru")','名前を渡す / Pass a name')
+        +text('<code>"Haru"</code> が <code>name</code> に入る。<code>"Yui"</code> に変えたら、何が返る？',
+              '<code>"Haru"</code> goes into <code>name</code>. What comes back if you change it to <code>"Yui"</code>?'))
+    loop = run(NAMES+'\n\n'+NAME_LOOP,'forの中から呼ぶ / Call inside a loop',show=False)
     add('loop','3人なら、3回呼ぶ','Three names, three calls',
         pair(loop,'<div class="fn-trace" data-name-trace><output data-current>—</output>'
              +'<div class="fn-actions">'+action('next','次の1人','Next name')+action('reset','リセット','Reset')+'</div>'
              +'<ol class="fn-printed" aria-live="polite"></ol></div>')
-        +text('forが次の名前を選ぶ。name_tagは一人分だけを作る。','The loop picks the next name. name_tag makes one tag.'))
+        +text('<code>for</code> が次の名前を選ぶ。<code>greet_name</code> があいさつを返し、次の行で表示する。',
+              '<code>for</code> picks the next name. <code>greet_name</code> returns a greeting, and the next line displays it.'))
     add('week7','Week 7で読んだ daily','The daily data from Week 7',
         run(prior,'Week 7の柏の保存データ / Saved Week 7 Kashiwa data')
         +p('同じ位置 day の日付・最高・最低を取り出す。これはWeek 7の保存予報。次の複数都市の例は同日の別データ（過去気象データ）です。',
@@ -180,7 +189,9 @@ def build(root, c):
     stream = io.StringIO()
     with contextlib.redirect_stdout(stream):
         exec(NAME_LOOP,scope)
-    data = json.dumps(dict(nameTrace=list(zip(scope['names'],stream.getvalue().splitlines()))),ensure_ascii=False).replace('</','<\\/')
+    data = json.dumps(dict(nameTrace=[(f'greet_name({json.dumps(name)})', result)
+                                     for name,result in zip(scope['names'],stream.getvalue().splitlines(),strict=True)]),
+                      ensure_ascii=False).replace('</','<\\/')
     c.write(dest/'lecture.html',head+f'<body class="lecture-page course-deck functions-week" data-week="9" data-release="{RELEASE}">'+header+'<main><div id="slides-view" class="view">'+nav+'<div class="slide-stage">'+''.join(slides)+'</div></div></main><script id="lesson-data" type="application/json">'+data+'</script></body></html>')
     build_challenge(root, dest, c, header, data_code)
 
@@ -208,8 +219,8 @@ def build_challenge(root, dest, c, header, data_code):
     for key,value in [('overview',aim[1]),('overview_ja',aim[0])]:
         front=re.sub(r'^'+key+r':.*$',key+': '+value,front,flags=re.M)
     sections = [
-        ('Lecture Flow',('名札を作る関数 → 引数とreturn → forから呼ぶ → Week 7の天気データ → 都市パネル → 制作。',
-                         'Name tags, arguments and return, a loop of calls, Week 7 weather data, then build a city panel.')),
+        ('Lecture Flow',('greet()を呼ぶ → 名前を一つ渡す → forから呼ぶ → Week 7の天気データ → 都市パネル。',
+                         'Call greet(), pass one name, repeat with for, then use Week 7 weather data to build a city panel.')),
         ('In-Class Notebook',('実行前に予想する。見本Notebookを上から動かし、名前や都市を変える。',
                               'Predict the output, run the worked notebook in order, then change its names or cities.')),
         ('In-Class Challenge',(challenge[0]+' [手順](weeks/week-09/challenge.html)。',challenge[1]+' [Instructions](weeks/week-09/challenge.html).')),

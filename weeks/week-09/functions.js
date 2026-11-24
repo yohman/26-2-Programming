@@ -8,8 +8,8 @@
   const printed = trace.querySelector('.fn-printed');
   let step = 0;
   next.addEventListener('click', () => {
-    const [name, result] = nameTrace[step++];
-    current.textContent = 'name_tag(' + JSON.stringify(name) + ')';
+    const [call, result] = nameTrace[step++];
+    current.textContent = call;
     const tag = document.createElement('li');
     tag.textContent = result;
     printed.append(tag);

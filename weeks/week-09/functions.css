@@ -2,6 +2,7 @@
 .functions-week .lesson-slide pre{font-size:clamp(.78rem,1.2vw,1.12rem);padding:.85rem;line-height:1.55}
 .functions-week .lesson-slide h2{margin-bottom:1rem}
 .fn-ticket{width:fit-content;max-width:100%;padding:1rem 1.3rem;margin:1.2rem 0 1.8rem;border-top:.5rem solid #315876;background:#fff;color:#315876;font:500 clamp(1.8rem,5vw,4.7rem)/1.3 var(--mono)}
+.fn-parens{color:#307153}
 .fn-pair{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:.55rem 1.5rem;align-items:start;margin-bottom:1rem}
 .fn-pair>.lesson-code,.fn-pair>.lesson-output{grid-column:1}
 .fn-pair> :last-child{grid-column:2;grid-row:1/span 2;min-width:0}

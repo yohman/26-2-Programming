@@ -7,6 +7,7 @@ from pathlib import Path
 import contextlib, csv, html, io, json, re, shutil, zipfile, sys
 import weather_hackathon
 import bicycle_week
+import function_week
 from urllib.parse import urljoin, urlencode
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -74,31 +75,7 @@ W[7]=weather_hackathon.SPEC
 
 W[8]=bicycle_week.SPEC
 
-W[9]=dict(title='One function, many calls',title_ja='関数を一つ、何度でも',date='2026-11-26',due='2026-12-02',
- aim=('引数と戻り値を追い、ループ内から関数を呼び、関数の中のループも説明する。','Trace arguments and returns; distinguish a loop calling a function from a loop inside a function.'),
- flow=('0–8：予想、8–23：定義・呼び出し・return、23–40：関数とループの追跡、40–55：Notebookで修正、55–85：チャレンジ、85–100：確認・説明。','0–8 predict; 8–23 definition/call/return; 23–40 trace functions and loops; 40–55 notebook changes; 55–85 challenge; 85–100 verify and explain.'),
- brief=('先週のメニューを使い、予算を受け取って候補のリストを返す関数を作る。500円、700円、1,000円を外側のforで順に渡す。','Use the familiar menu to write a function receiving a budget and returning a list. Call it for ¥500, ¥700 and ¥1,000 in an outer for loop.'),
- requirements=[('引数とreturnを持つ関数を一つ作る。','Write one function with a parameter and a return value.'),('外側のforから3回呼び、呼ぶたびに値が変わる様子を示す。','Call it three times from an outer loop and show the changing results.'),('通常・境界・候補0件を確認し、returnの位置を説明する。','Check normal, boundary and no-match cases; explain the position of return.')],
- homework=('同じ関数に時間の条件を追加するか、自分のテーマの関数へ変える。3回の呼び出し、3件の確認、引数→処理→戻り値の説明を保存してUNIPAへ。','Add a time condition or adapt the function to your own topic. Save three calls, three checks and an explanation of input → process → return; submit to UNIPA.'),
- slides=[
- H('3人、3つの予算','Takumaは500円、Yukiは700円、Masakiは1,000円。練習用の架空設定。同じコードを3回コピーする？','Fictional practice budgets: Takuma ¥500, Yuki ¥700, Masaki ¥1,000. Copy the same code three times?',stamp='500 / 700 / 1000'),
- C('まず、知っている処理','価格を調べ、候補を集める。この処理を名前で呼べるようにしたい。','Inspect prices and collect matching names. Give this process a name.', 'chosen = []\nfor item in menu:\n    if item["price"] <= 500:\n        chosen.append(item["name"])\nprint(chosen)'),
- C('defは、まだ実行しない','字下げ部分を関数として保存する。名前の後の()で初めて呼び出す。','The indented body is defined here. Parentheses on a call run it.',REMAIN+'\n\nprint("Function defined; body not called yet")'),
- C('引数を渡す','1000→budget、470→price。引数は呼び出す側の値、仮引数は関数内の受け口。','1000 becomes budget; 470 becomes price. Arguments are supplied values; parameters are the names receiving them.', 'balance = remaining(1000, 470)\nprint(balance)'),
- slide('呼び出しを、スロー再生','関数へ入り、計算し、returnで元の場所へ戻る。','Enter, calculate, then return to the caller.','interactive',demo='call'),
- C('printとreturnは役割が違う','printは画面へ表示。returnは次の計算で使う値を返す。returnがなければNoneが返る。','print displays; return supplies a reusable result. With no explicit return, the result is None.', 'def show_balance(budget, price):\n    print(budget - price)\n\nresult = show_balance(1000, 470)\nprint("result:", result)'),
- Q('このresultは？','returnのあるremaining(1000, 470)なら、resultには何が入る？','What would result contain with remaining(1000, 470), which uses return?',('530。画面に出るだけでなく、result + 100のように使える。','530. It can be reused in an expression such as result + 100.')),
- C('関数の中にfor','関数全体で一つの予算を処理。chosen=[]は毎回の呼び出しで作り直す。','One call processes one budget. chosen=[] creates a fresh list each time.', AFFORD+'\n\nprint(affordable(menu, 500))'),
- slide('1回の呼び出しを数える','4品を調べて、一つのリストを返す。returnはforと同じ字下げの外側。','Inspect four items and return one list. return is outside the for body.','path',extra='<div class="process-line"><span>budget = 500</span><b>→</b><span>4 items</span><b>→</b><span>[Onigiri, Sandwich, Udon]</span></div>'),
- C('外側のforから関数を呼ぶ','forが予算を一つずつ取り出す。関数がその予算の候補を返す。','The outer for supplies one budget; the function returns that budget’s choices.', 'for budget in [500, 700, 1000]:\n    names = affordable(menu, budget)\n    print(budget, names)'),
- slide('ループ × 関数を追跡','呼び出し元のbudgetと、関数の中のitem・chosenを分けて見る。','Watch caller budget separately from local item and chosen.','trace',trace='loopcalls'),
- Q('何回、価格を見る？','メニュー4品×予算3つ。関数呼び出しは何回？価格の比較は何回？','Four menu items, three budgets. How many calls and price comparisons?',('呼び出し3回、比較12回。関数の定義は1回。','Three calls, twelve comparisons, one definition.')),
- C('returnが早すぎる','この例では最初の品だけでreturnする。修正前の結果を予想する。','This version returns after the first item. Predict the bug before fixing it.', 'def too_early(items, budget):\n    chosen = []\n    for item in items:\n        if item["price"] <= budget:\n            chosen.append(item["name"])\n        return chosen\n\nprint(too_early(menu, 500))'),
- C('空の入力も、結果を返す','returnをループの外へ置くと、空のリストでも[]を返す。','With return after the loop, an empty input still returns [].', 'assert affordable([], 500) == []\nassert affordable(menu, 149) == []\nassert affordable(menu, 150) == ["Onigiri"]\nprint("Three checks passed")'),
- slide('値は、呼び出すたびに変わる','処理の定義は共通。引数が変わる。ローカルのchosenは毎回新しい。結果は外側のnamesへ戻る。','The definition stays the same. Arguments change. Each call gets a new chosen list; its result returns to names.','comparison'),
- CH('affordable(items, budget)を作り、外側のforで3つの予算を渡す。発展：max_minutesも引数へ。','Build affordable(items, budget), then pass three budgets from an outer loop. Extension: add max_minutes.'),
- slide('相手に説明する3行','「どこから呼ぶ？」「何を渡す？」「何が戻る？」をコード上で指さす。日本語で説明してOK。','Point to the caller, argument and returned value. Explain in Japanese if you prefer.','pair'),
- slide('次回は、Cellの外へ','今日の関数を.pyへ保存して実行する。同じPythonがNotebookの外でも動く。','Next week, save the function in a .py file and run the same Python outside a notebook.','exit')])
+W[9]=function_week.SPEC
 
 W[10]=dict(title='Python outside the notebook',title_ja='Notebookの外でPythonを動かす',date='2026-12-03',due='2026-12-09',
  aim=('関数を.pyへ保存し、Terminalから実行し、他のファイルからimportする。','Save a .py script, run it in a terminal, and import a function from another file.'),
@@ -393,6 +370,8 @@ def build_week(week,spec):
         return weather_hackathon.build(ROOT,sys.modules[__name__])
     if week==8:
         return bicycle_week.build(ROOT,sys.modules[__name__])
+    if week==9:
+        return function_week.build(ROOT,sys.modules[__name__])
     dest=ROOT/f'weeks/week-{week:02}'
     date=spec['date']; release=date+'T12:00:00+09:00'
     if week in [9,10]:
@@ -522,10 +501,10 @@ result.pack(pady=10)
 root.mainloop()'''
     notebook(ROOT/'weeks/week-13/workshop-tkinter.ipynb',[mdcell('# 任意：関数をボタンから呼ぶ\n\nTkinterの画面が使える環境向けの発展。新しい完成条件ではありません。下のコードをbudget_window.pyへ保存してTerminalで実行できます。Notebookで動かした場合は、画面を閉じるまでCellは実行中です。\n\ncommand=show_balance は関数を渡します。show_balance()と書くと今呼んでしまいます。中心のremaining関数はNotebookやTerminalと同じです。'),codecell(tk_code),mdcell('## 自分で試す\n470円、1,000円、文字列で確認。結果の単位、エラーの案内、関数へ渡る値を説明しよう。')])
     for week in W:
-        if week in [7,8]:continue  # Students author their own challenge notebooks.
+        if week in [7,8,9]:continue  # These weeks manage their own materials.
         folder=ROOT/f'weeks/week-{week:02}'
         files=['practice.ipynb','challenge-starter.ipynb']
-        if week in [9,10]:files+=['student-menu.csv']
+        if week==10:files+=['student-menu.csv']
         if week==10:files+=['budget_tool.py']
         if week==11:files+=['detect_faces.py','reitaku.jpg','vision-input.jpg','detected-faces.jpg','detected-boxes.csv','challenge-face-detection.ipynb']
         if week==12:files+=['click_model.py','click_game.py']

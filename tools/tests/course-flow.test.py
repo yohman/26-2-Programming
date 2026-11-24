@@ -39,16 +39,16 @@ for week in range(9,15):
         assert pack.testzip() is None
         assert all(name.startswith(f'week-{week:02}/') and '..' not in name for name in pack.namelist())
         if week==12:assert f'week-{week:02}/click_model.py' in pack.namelist()
-    if week in [9,10]:
+    if week==10:
         with (folder/'student-menu.csv').open() as file:assert len(list(csv.DictReader(file)))==24
 
 # The visible trace must match the actual Python call-loop output.
 lecture=(ROOT/'weeks/week-09/lecture.html').read_text()
-payload=json.loads(re.search(r'<script type="application/json" id="lesson-data">(.*?)</script>',lecture,re.S)[1])
+payload=json.loads(re.search(r'<script id="lesson-data" type="application/json">(.*?)</script>',lecture,re.S)[1])
 nb=json.loads((ROOT/'weeks/week-09/practice.ipynb').read_text())
-loop=next(c for c in nb['cells'] if c['cell_type']=='code' and c['source'].startswith('for budget in [500, 700, 1000]'))
+loop=next(c for c in nb['cells'] if c['cell_type']=='code' and c['source'].startswith('for student in names'))
 expected=''.join(o.get('text','') for o in loop['outputs']).strip()
-assert payload['trace'][-1]['output'].strip()==expected
+assert '\n'.join(result for _,result in payload['nameTrace'])==expected
 
 script=ROOT/'weeks/week-10/budget_tool.py'
 for value,expected in [('150','Onigiri'),('abc','whole number'),('-1','zero or more')]:

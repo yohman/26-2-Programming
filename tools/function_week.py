@@ -8,7 +8,7 @@ import re
 import zipfile
 from weather_hackathon import execute_cell
 
-VERSION = '20261124-first-call'
+VERSION = '20261124-code-focus'
 RELEASE = '2026-11-26T12:00:00+09:00'
 SPEC = dict(title='One function, many calls', title_ja='関数を一つ、何度でも',
             date='2026-11-26', due='2026-12-02', slides=[None]*13)
@@ -60,7 +60,8 @@ def build(root, c):
     data_code = 'forecast = '+pprint.pformat(forecast, sort_dicts=False, width=68)+'\n\ncities = ["柏", "札幌", "大阪", "那覇"]'
     w7 = json.loads((root/'weeks/week-07/weather-response.json').read_text())['daily']
     day_index = w7['time'].index(DATE)
-    prior = 'daily = '+pprint.pformat({k:w7[k] for k in ('time','temperature_2m_max','temperature_2m_min')},width=75,sort_dicts=False)
+    daily_rows = ''.join(f'    "{key}": {value!r},\n' for key, value in w7.items())
+    prior = 'daily = {\n'+daily_rows+'}'
     prior += f'\n\nday = {day_index}\nprint(daily["time"][day])\nprint(daily["temperature_2m_max"][day], daily["temperature_2m_min"][day])'
     scope = {}
     cells = [c.mdcell('# Week 09 · 関数を一つ、何度でも\n\n上から順に実行し、結果を予想してから値を変えよう。Run cells in order.')]
@@ -133,8 +134,8 @@ def build(root, c):
               '<code>for</code> picks the next name. <code>greet_name</code> returns a greeting, and the next line displays it.'))
     add('week7','Week 7で読んだ daily','The daily data from Week 7',
         run(prior,'Week 7の柏の保存データ / Saved Week 7 Kashiwa data')
-        +p('同じ位置 day の日付・最高・最低を取り出す。これはWeek 7の保存予報。次の複数都市の例は同日の別データ（過去気象データ）です。',
-           'Read the date, high and low at the same index. This is the saved Week 7 forecast. The multi-city example uses a separate historical weather dataset for the same date.')
+        +p('各キーの値はリスト。どのリストでも <code>[1]</code> は同じ日。柏の保存予報で、次の都市比較とは別データです。',
+           'Each key holds a list. Index <code>[1]</code> means the same day in every list. This saved Kashiwa forecast is separate from the city comparison.')
         +links([('../week-07/weather-code.html','Week 7のチュートリアル','Week 7 tutorial')]))
     weather_call = 'print(weather_label("柏", "☁️", 16.6, 6.1))'
     add('label','名前を、都市と天気に','A label for one city',

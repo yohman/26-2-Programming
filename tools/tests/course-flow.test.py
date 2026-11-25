@@ -44,6 +44,13 @@ for week in range(9,15):
 
 # The visible trace must match the actual Python call-loop output.
 lecture=(ROOT/'weeks/week-09/lecture.html').read_text()
+flow=re.findall(r'data-slide data-ink-id="w9-fn-([^"]+)"',lecture)
+assert len(flow)==17
+assert flow[:5]==['recap','quiz','quiz-clock','quiz-save','open']
+assert flow[-1]=='try'
+assert '06:00</output>' in lecture
+week9=(ROOT/'weeks/week-09/challenge.html').read_text()
+assert 'two different inputs' in week9 and 'No API or pandas is required' in week9
 payload=json.loads(re.search(r'<script id="lesson-data" type="application/json">(.*?)</script>',lecture,re.S)[1])
 nb=json.loads((ROOT/'weeks/week-09/practice.ipynb').read_text())
 loop=next(c for c in nb['cells'] if c['cell_type']=='code' and '\nfor student in names:' in c['source'])

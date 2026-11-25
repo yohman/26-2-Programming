@@ -6,12 +6,16 @@ import json
 import pprint
 import re
 import zipfile
+import quiz_package
 from weather_hackathon import execute_cell
 
-VERSION = '20261124-code-focus'
+VERSION = '20261125-lesson-flow'
 RELEASE = '2026-11-26T12:00:00+09:00'
 SPEC = dict(title='One function, many calls', title_ja='関数を一つ、何度でも',
-            date='2026-11-26', due='2026-12-02', slides=[None]*13)
+            date='2026-11-26', due='2026-12-02', slides=[None]*17)
+CHALLENGE = (
+    '自分で選んだデータを使っても、データなしで小さなツールや遊びを作ってもOK。役に立つ、意外な発見がある、思わず笑える。関数で「何かができる」Notebookを作ろう。',
+    'Choose a dataset, or build a small tool or game with your own inputs. Use a function to make a notebook that does something useful, surprising, or funny.')
 DATE = '2026-11-12'
 SOURCE = 'https://open-meteo.com/en/docs/historical-weather-api'
 NAMES = 'names = ["Haru", "Yui", "Ren"]'
@@ -101,6 +105,28 @@ def build(root, c):
         cells.append(cell)
         return value
 
+    add('recap','先週の自転車盗データ','Last week: the bike hackathon',
+        '<div class="fn-recap-stat"><strong>68.4%</strong><span>'+bi('盗難記録のうち「施錠せず」','of recorded thefts involved unlocked bikes')+'</span></div>'
+        +text('10,054件のうち6,879件。みんなのNotebookでは、<code>for</code> で何を数えた？ この数字から盗まれる確率は分かる？',
+              '6,879 out of 10,054 reports. What did your notebook count with <code>for</code>? Does this number tell us the chance of a bike being stolen?')
+        +links([('../week-08/challenge.html#data-guide','先週のデータを見る','Revisit last week’s data')]),'hero')
+    add('quiz','小テスト①','Pop quiz 01',
+        '<div class="quiz-score"><span>6 '+bi('問','questions')+'</span><span>30 '+bi('点','points')+'</span></div>'
+        +text('個人で解きます。授業中に案内するパスワードでNotebookを開き、氏名を書いて開始の合図を待ちます。',
+              'Work individually. Use the password announced in class to get the notebook, add your name, and wait for the start signal.')
+        +links([('quiz.html','小テストを開く','Open the quiz')]),'hero')
+    clock = '<div class="quiz-clock" data-quiz-clock><div class="quiz-phases">'
+    for index,(ja,en) in enumerate([('① 自力で6分','① On your own · 6 min'),('② 資料OKで6分','② Open book · 6 min')]):
+        clock += f'<button type="button" data-phase="{index}" aria-pressed="{str(index == 0).lower()}">'+bi(ja,en)+'</button>'
+    clock += '</div><output data-clock aria-live="off">06:00</output><div><button type="button" data-clock-toggle aria-label="Start timer">▶</button><button type="button" data-clock-reset aria-label="Reset timer">↺</button><span data-clock-status role="status">'+bi('開始待ち','Ready')+'</span></div></div>'
+    add('quiz-clock','6分 ＋ 6分','6 minutes + 6 minutes',clock
+        +text('前半は問題文とヒントだけ。後半は教科書・ノート・教材・通常のWeb検索OK。どちらも生成AIや相談は不可。',
+              'First half: use only the quiz and its hints. Second half: books, notes, course materials and regular web search are allowed. No generative AI or collaboration in either half.'))
+    add('quiz-save','途中でも、提出。','Submit, even if unfinished.',
+        '<p class="big-filename">week09_quiz_氏名.ipynb</p>'
+        +text('解いたセルを実行して、出力を残して保存。終了の合図で、UNIPAの小テスト提出先へ。',
+              'Run the cells you completed and save the outputs. When time is up, submit the notebook to the quiz on UNIPA.'))
+
     add('open','ひとこと、あいさつ','One small greeting', '<div class="fn-ticket">Hello!</div>'
         +text('あいさつを一つ用意して、好きなときに呼び出せるようにしよう。','Let’s make one greeting we can call whenever we want.'),'hero')
     add('syntax','関数を呼ぶには？','How do we call a function?',
@@ -171,11 +197,13 @@ def build(root, c):
            'Select cities and predict the count. append adds one badge at a time. After the loop, return sends back the whole panel.','lesson-lead')
         +p('保存済みのPython出力を使ったシミュレーション。Notebookではdisplay(HTML(...))で表示。',
            'Browser simulation uses saved Python output. In the notebook, display(HTML(...)) renders the panel.','simulation-note'))
-    add('try','1行変えると、何が変わる？','What changes if you edit one line?',
-        text('まず都市を2つにする。次に weather_label で最低気温を先に表示。どの関数を変えれば、すべてのバッジに反映される？',
-             'First use just two cities. Then show the low temperature first. Which function do you edit to update every badge?')
-        +'<details class="answer"><summary>'+bi('ヒント','Hint')+'</summary>'+p('何枚作るかは cities。1枚に何を書くかは weather_label。','cities controls how many. weather_label controls what each badge says.')+'</details>'
-        +links([('challenge.html','チャレンジの手順','Challenge instructions'),('practice.ipynb','実行例Notebook','Worked notebook')],9,'lecture.html'),'challenge')
+    add('try','その関数で、何ができる？','What will your function do?',
+        text(*CHALLENGE)
+        +c.list_html([
+            ('<code>def</code> で一つ、入力を受け取り結果を返す関数を作る。','Use <code>def</code> to write one function that takes input and returns a result.'),
+            ('入力を2通り試して、結果を見せる。','Show what it does with two different inputs.'),
+            ('誰のために何をするのか、Markdownで一言。','In Markdown, say what it does and who it’s for.')])
+        +links([('challenge.html','チャレンジの手順','Challenge instructions')]),'challenge')
     assert len(slides) == len(SPEC['slides'])
     note = '過去気象データ / Historical weather: '+saved['url']
     cells.insert(1,c.mdcell(note))
@@ -185,7 +213,7 @@ def build(root, c):
         c.notebook(dest/alias,cells)
     header = '<header class="lecture-header"><a id="lecture-return" href="../../agenda.html?open=09#week-09">← '+bi('授業予定','Agenda')+'</a><span class="lecture-mark">PRG / 26–2 · W09</span><button id="language-toggle" class="language-toggle" type="button">EN</button></header>'
     head = c.page_head('Week 09 · '+SPEC['title'],'course-decks.css','course-decks.js',VERSION)
-    head += f'<link rel="stylesheet" href="functions.css?v={VERSION}"><link rel="stylesheet" href="../../assets/slide-annotations.css"><script src="../../assets/slide-annotations.js" defer></script><script src="../../assets/slide-swipe.js" defer></script><script src="functions.js?v={VERSION}" defer></script></head>'
+    head += f'<link rel="stylesheet" href="../week-08/bicycle-week.css?v={VERSION}"><link rel="stylesheet" href="functions.css?v={VERSION}"><link rel="stylesheet" href="../../assets/slide-annotations.css"><script src="../../assets/slide-annotations.js" defer></script><script src="../../assets/slide-swipe.js" defer></script><script src="../week-08/bicycle-week.js?v={VERSION}" defer></script><script src="functions.js?v={VERSION}" defer></script></head>'
     nav = '<nav class="slide-controls" aria-label="Slide navigation"><div class="slide-nav-group"><button id="previous-slide" type="button">← '+bi('前へ','Previous')+'</button><span id="slide-count" aria-live="polite"></span><button id="next-slide" type="button">'+bi('次へ','Next')+' →</button></div><button id="slide-fullscreen" type="button" class="slide-fullscreen" aria-pressed="false">⛶</button></nav>'
     stream = io.StringIO()
     with contextlib.redirect_stdout(stream):
@@ -194,37 +222,45 @@ def build(root, c):
                                      for name,result in zip(scope['names'],stream.getvalue().splitlines(),strict=True)]),
                       ensure_ascii=False).replace('</','<\\/')
     c.write(dest/'lecture.html',head+f'<body class="lecture-page course-deck functions-week" data-week="9" data-release="{RELEASE}">'+header+'<main><div id="slides-view" class="view">'+nav+'<div class="slide-stage">'+''.join(slides)+'</div></div></main><script id="lesson-data" type="application/json">'+data+'</script></body></html>')
-    build_challenge(root, dest, c, header, data_code)
+    quiz_package.build(root,c)
+    quiz_package.build_page(root,c,header,VERSION)
+    build_challenge(root, dest, c, header)
 
 
-def build_challenge(root, dest, c, header, data_code):
+def build_challenge(root, dest, c, header):
     bi,p,links = c.bi,c.p,c.links
-    aim = ('名前の名札から、複数都市の天気パネルへ。def・引数・returnを学び、forから同じ関数を呼びます。',
-           'Go from name tags to a weather panel. Learn def, arguments and return, then call the same function from a for loop.')
-    challenge = ('都市や表示を変えて、誰かに役立つパネルを作る。天気以外でもOK。',
-                 'Change the city list and the badge display to make a useful panel. You can use a different topic.')
+    aim = ('自転車盗ハッカソンの振り返り → 小テスト① → 関数のミニ講義 → 自分のNotebookを制作。',
+           'Bike hackathon recap → pop quiz → functions mini-lecture → build your own notebook.')
     submit = ('実行結果付きの.ipynbを12月2日（水）23:59 JSTまでにUNIPAへ提出。追加ファイルを使った場合は添付。',
               'Submit the .ipynb with saved outputs to UNIPA by Wednesday, December 2 at 23:59 JST. Attach any extra files you used.')
-    bullets = [('1件分の値を返す関数を作る。forで3件以上に使い、一つのパネルや一覧にまとめる。',
-                'Write a function that returns a result for one item. Call it in a for loop for at least three items and show the results together.'),
-               ('都市を減らす、並びを変えるなど、2種類の入力で確認。何を変えたか、結果がどう変わったかをMarkdownに書く。',
-                'Check two inputs, for example by changing the selection or its order. Explain what you changed and what happened in Markdown.')]
-    body = '<h1>'+bi('自分のパネルを作る','Build your own panel')+'</h1>'+p(*challenge)+c.list_html(bullets)
-    body += p('見本Notebookを上から実行し、最後の都市リストと表示を変えて始めよう。保存データ入り。API・pandasの設定は不要。',
-              'Run the worked notebook in order, then try changing the last city list and its display. The data is included; no API or pandas setup is needed.')
-    body += links([('practice.ipynb','実行例Notebook','Worked notebook')],9)
+    bullets = [('空のNotebookを作り、タイトル・氏名・「誰のために何をするか」をMarkdownに書く。',
+                'Start a blank notebook. In Markdown, add your title, name, and what the notebook does for whom.'),
+               ('<code>def</code> で入力を受け取り、<code>return</code> で結果を返す関数を一つ作る。',
+                'Write at least one function with <code>def</code> that takes an input and uses <code>return</code> to give back a result.'),
+               ('同じ関数を違う入力で2回試して、結果を保存する。何件も処理するときは <code>for</code> から呼んでみよう。',
+                'Call the same function with two different inputs and save the results. If you have many items, try calling it from a <code>for</code> loop.')]
+    body = '<h1>'+bi('その関数で、何ができる？','What will your function do?')+'</h1>'+p(*CHALLENGE)
+    body += '<h2>'+bi('Notebookに入れるもの','What to put in your notebook')+'</h2>'+c.list_html(bullets)
+    body += '<h2>'+bi('例えば','For example')+'</h2>'+c.list_html([
+        ('自転車盗データと市名を渡して、その市の記録件数を返す。','Give your function the bike data and a city name; get back the city’s reported theft count.'),
+        ('都市名を渡して、天気と最高・最低気温のバッジを返す。','Give your function a city name; get back a badge with the weather and temperatures.'),
+        ('残り時間を渡して、休み時間にできることを提案する。','Give your function the minutes left in your break; get back a suggestion for what to do.')])
+    body += p('見本は天気で実演しています。APIやpandasは必須ではありません。','The worked notebook uses weather as an example. No API or pandas is required.')
+    body += links([('practice.ipynb','天気の実行例Notebook','Worked weather notebook'),('challenge-starter.ipynb','Notebookの構成例','Notebook outline')],9)
     body += '<h2 id="homework">'+bi('宿題・提出','Homework and submission')+'</h2>'+p(*submit)+links([('lecture.html','講義スライド','Slides')])
-    c.write(dest/'challenge.html',c.page_head('Week 09 · Build your own panel','course-pages.css','course-page.js',VERSION)+f'</head><body class="course-challenge" data-release="{RELEASE}">'+header+'<main id="course-page" hidden>'+body+'</main></body></html>')
+    c.write(dest/'challenge.html',c.page_head('Week 09 · What will your function do?','course-pages.css','course-page.js',VERSION)+f'</head><body class="course-challenge" data-release="{RELEASE}">'+header+'<main id="course-page" hidden>'+body+'</main></body></html>')
     agenda = next((root/'content/weeks').glob('09-*.md'))
     front = agenda.read_text().split('---',2)[1].strip()
-    for key,value in [('overview',aim[1]),('overview_ja',aim[0])]:
+    for key,value in [('overview',aim[1]),('overview_ja',aim[0]),
+                      ('practice_mix','Individual quiz · Build with functions'),('practice_mix_ja','個人の小テスト・関数で制作'),
+                      ('homework_title','Make a notebook that does something'),('homework_title_ja','関数で「何かができる」Notebook')]:
         front=re.sub(r'^'+key+r':.*$',key+': '+value,front,flags=re.M)
     sections = [
-        ('Lecture Flow',('greet()を呼ぶ → 名前を一つ渡す → forから呼ぶ → Week 7の天気データ → 都市パネル。',
-                         'Call greet(), pass one name, repeat with for, then use Week 7 weather data to build a city panel.')),
-        ('In-Class Notebook',('実行前に予想する。見本Notebookを上から動かし、名前や都市を変える。',
-                              'Predict the output, run the worked notebook in order, then change its names or cities.')),
-        ('In-Class Challenge',(challenge[0]+' [手順](weeks/week-09/challenge.html)。',challenge[1]+' [Instructions](weeks/week-09/challenge.html).')),
+        ('Lecture Flow',('先週の自転車盗レポートを振り返る → 小テスト① → 関数：greet()から天気パネルへ → Notebook制作。',
+                         'Recap the bike reports → pop quiz → functions, from greet() to a weather panel → build a notebook.')),
+        ('In-Class Notebook',('まず小テスト①（個人・6問・30点）。前半6分は自力、後半6分は資料OK。どちらも生成AI・相談は不可。パスワードは授業で案内します。その後、関数の実行例を試します。',
+                              'First: an individual quiz, six questions for 30 points. Six minutes on your own, then six open book. No generative AI or collaboration. Get the password in class, then try the worked function examples after the quiz.')),
+        ('In-Class Challenge',(CHALLENGE[0]+' [手順](weeks/week-09/challenge.html)。',CHALLENGE[1]+' [Instructions](weeks/week-09/challenge.html).')),
         ('Take-Home Assignment',(submit[0]+' [要件](weeks/week-09/challenge.html#homework)。',submit[1]+' [Requirements](weeks/week-09/challenge.html#homework).')),
     ]
     text='---\n'+front+'\n---\n'
@@ -232,19 +268,21 @@ def build_challenge(root, dest, c, header, data_code):
         text+=f'## {title}\nEN: {en}\nJP: {ja}\n'
     text+='''## Resources
 - [Week 09 Lecture — One function, many calls](weeks/week-09/lecture.html) {lecture}
+- [小テスト①・パスワードで開く / Open Graded Quiz 01](weeks/week-09/quiz.html) {notebook}
 - [ミニ講義の実行例 / Worked Examples](weeks/week-09/practice.ipynb) {fundamentals}
 - [チャレンジの手順 / Challenge Instructions](weeks/week-09/challenge.html) {challenge}
 - [宿題・提出方法 / Homework and Submission](weeks/week-09/challenge.html#homework) {homework}
 '''
     c.write(agenda,text)
     c.notebook(dest/'challenge-starter.ipynb',[
-        c.mdcell('# Week 09 · 自分のパネルを作る\n\n氏名：\n\n誰が、何を知るために使うパネル？\n\n'+challenge[0]),
-        c.codecell(data_code),
-        c.mdcell('## 1件分の関数\n\n引数を受け取り、1件分のラベルをreturnする。'),
-        c.codecell('# def で1件分の関数を書く。'),
-        c.mdcell('## forで繰り返す\n\n少なくとも3件に同じ関数を使う。出力は一覧やパネルにまとめる。'),
-        c.codecell('# for の中から関数を呼ぶ。'),
-        c.mdcell('## 確認\n\n2種類の入力で、予想と実行結果を比べる。何を変えた？ 結果はどう変わった？'),
+        c.mdcell('# 作品タイトル / Project title\n\n氏名 / Name：\n\n誰のために、何をするNotebook？ / What does it do, and who is it for?'),
+        c.codecell('# 自分のデータや入力値を用意する / Set up your data or inputs'),
+        c.mdcell('## 関数 / Function\n\nどんな入力を受け取り、何を返す？ / What does it take in and give back?'),
+        c.codecell('# def で関数を定義する / Define your function'),
+        c.mdcell('## 入力を変えて試す / Try two different inputs'),
+        c.codecell('# 1つ目の入力で呼び出す / Call it with the first input'),
+        c.codecell('# 2つ目の入力で呼び出す / Call it with the second input'),
+        c.mdcell('## 結果 / Results\n\n入力を変えたら、結果はどう変わった？ / How did the result change?'),
     ])
     with zipfile.ZipFile(dest/'starter-files.zip','w',compression=zipfile.ZIP_DEFLATED) as bundle:
         for name in ('practice.ipynb','challenge-starter.ipynb','weather-snapshot.json'):

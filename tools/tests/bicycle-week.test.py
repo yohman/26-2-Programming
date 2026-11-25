@@ -9,7 +9,7 @@ sys.path.insert(0, str(ROOT/'tools'))
 import bicycle_week as lesson
 folder = ROOT/'weeks/week-08'
 private = ROOT/'admin/.course-private/week08/quiz-source.json'
-payload = json.loads((folder/'quiz-01.enc.json').read_text())
+payload = json.loads((folder.parent/'week-09/quiz-01.enc.json').read_text())
 assert not (folder/'quiz-01.ipynb').exists()
 assert payload['algorithm']=='AES-GCM' and payload['iterations']>=250000
 if private.exists():
@@ -70,11 +70,11 @@ with contextlib.chdir(folder):
     assert plt.gca().get_xlabel()=='Lock status'
     plt.close('all')
 lecture = (folder/'lecture.html').read_text()
-assert lecture.count('data-slide data-ink-id=')==27
-assert 'data-ink-id="w8-bike-quiz-clock"' in lecture
+assert lecture.count('data-slide data-ink-id=')==24
+assert 'data-ink-id="w8-bike-quiz' not in lecture
 assert 'data-release="2026-11-19T12:00:00+09:00"' in lecture
 assert not any(x in lecture for x in ['student-menu.csv','remaining(','def count_places','earthquakes'])
-assert lecture.index('w8-bike-review') < lecture.index('w8-bike-quiz\"') < lecture.index('w8-bike-cctv-01') < lecture.index('w8-bike-police-source') < lecture.index('w8-bike-data')
+assert lecture.index('w8-bike-review') < lecture.index('w8-bike-cctv-01') < lecture.index('w8-bike-police-source') < lecture.index('w8-bike-data')
 assert lecture.count('class="camera-frame"')==6
 assert (folder/'challenge.html').read_text().index('000074746.csv') < (folder/'challenge.html').read_text().index('2. 空のNotebook')
 assert (folder/'bicycle-lock-status.png').read_bytes().startswith(b'\x89PNG')

@@ -22,12 +22,20 @@ test('published quiz package matches the teacher private notebook',async t=>{
  const privateFile=path.join(root,'admin/.course-private/week08/quiz-source.json');
  if(!fs.existsSync(privateFile)){t.skip('Private course source is not in this checkout');return;}
  const source=JSON.parse(fs.readFileSync(privateFile,'utf8'));
- const payload=JSON.parse(fs.readFileSync(path.join(root,'weeks/week-08/quiz-01.enc.json'),'utf8'));
+ const payload=JSON.parse(fs.readFileSync(path.join(root,'weeks/week-09/quiz-01.enc.json'),'utf8'));
  const opened=await decryptQuiz(payload,source.passphrase,webcrypto);
  assert.equal(opened.text,fs.readFileSync(path.join(root,'admin/.course-private/week08/quiz-01.ipynb'),'utf8'));
+ assert.equal(payload.filename,'week09_quiz.ipynb');
  assert.equal(opened.notebook.cells.filter(c=>c.cell_type==='code').length,6);
+ assert.ok(opened.notebook.cells[0].source.includes('2026年11月26日'));
+ const questions=opened.notebook.cells.filter(c=>c.cell_type==='markdown'&&c.source.startsWith('## 小テスト①問題'));
+ assert.equal(questions.length,6);
+ assert.ok(source.questions.every(([id,text],i)=>questions[i].source.endsWith('\n\n'+text)));
  assert.equal(fs.existsSync(path.join(root,'weeks/week-08/quiz-01.ipynb')),false);
- const page=fs.readFileSync(path.join(root,'weeks/week-08/quiz.html'),'utf8');
+ assert.equal(fs.existsSync(path.join(root,'weeks/week-09/quiz-01.ipynb')),false);
+ assert.equal(fs.existsSync(path.join(root,'weeks/week-08/quiz-01.enc.json')),false);
+ const page=fs.readFileSync(path.join(root,'weeks/week-09/quiz.html'),'utf8');
+ assert.ok(page.includes('data-release="2026-11-26T13:15:00+09:00"'));
  const script=fs.readFileSync(path.join(root,'weeks/week-08/quiz.js'),'utf8');
  assert.ok(!page.includes(source.passphrase)&&!script.includes(source.passphrase));
  for(const [,question] of source.questions)assert.ok(!page.includes(question)&&!script.includes(question));

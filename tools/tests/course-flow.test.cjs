@@ -95,5 +95,5 @@ test('legacy quiz previews route to the password page, including p previews',asy
  let destination='';
  const context={URL,URLSearchParams,document:{querySelector:()=>({})},location:{search:'?file=weeks%2Fweek-08%2Fquiz-01.ipynb&p=',href:'https://example.org/course/viewer.html',replace:url=>destination=url}};
  vm.runInNewContext(site.slice(start,end),context);await context.setupFileViewer();
- const url=new URL(destination);assert.equal(url.pathname,'/course/weeks/week-08/quiz.html');assert.ok(url.searchParams.has('p'));
+ const url=new URL(destination);assert.equal(url.pathname,'/course/weeks/week-09/quiz.html');assert.ok(url.searchParams.has('p'));
 });

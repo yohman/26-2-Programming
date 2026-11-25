@@ -51,6 +51,7 @@ def build(root, course):
 
 
 def build_page(root, c, header, version):
+    version += '-quiz-code'
     bi, p = c.bi, c.p
     head = c.page_head('Week 09 · 小テスト①','course-pages.css','course-page.js',version)
     head += f'<link rel="stylesheet" href="../week-08/bicycle-week.css"><script src="../../assets/site.js?v={version}" defer></script><script src="../week-08/quiz.js?v={version}" defer></script></head>'

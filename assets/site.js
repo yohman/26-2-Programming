@@ -104,17 +104,48 @@ function tableHtml(lines) {
 }
 
 function markdownHtml(markdown) {
+  // Split out fenced code before splitting prose on blank lines.
+  const parts = [], prose = [];
+  let fence;
+  const flushProse = () => {
+    parts.push(markdownProseHtml(prose.join('\n')));
+    prose.length = 0;
+  };
+  const flushFence = () => {
+    const source = fence.lines.join('\n');
+    const code = /^(python|py)$/.test(fence.language) ? highlightCode(source) : escapeHtml(source);
+    parts.push(`<pre class="code-block" aria-label="${fence.language ? escapeHtml(fence.language) + ' code' : 'Code'}"><code>${code}</code></pre>`);
+    fence = null;
+  };
+  for (const line of markdown.replace(/\r\n?/g, '\n').split('\n')) {
+    if (fence) {
+      if (fence.close.test(line)) flushFence();
+      else fence.lines.push(line.replace(fence.indent, ''));
+      continue;
+    }
+    const opener = line.match(/^( {0,3})(`{3,}|~{3,})[ \t]*([^`]*)$/);
+    if (opener) {
+      flushProse();
+      const [, indent, marker, info] = opener;
+      fence = {
+        language: info.trim().split(/\s+/)[0].toLowerCase(),
+        indent: new RegExp(`^ {0,${indent.length}}`),
+        close: new RegExp(`^ {0,3}${marker[0]}{${marker.length},}[ \\t]*$`),
+        lines: []
+      };
+    } else prose.push(line);
+  }
+  if (fence) flushFence();
+  flushProse();
+  return parts.join('');
+}
+
+function markdownProseHtml(markdown) {
   return markdown.split(/\n{2,}/).filter(block => block.trim()).map(rawBlock => {
     const block = rawBlock.trim();
     const lines = block.split('\n');
-    const fence = block.match(/^```([a-z0-9_-]*)\n([\s\S]*?)\n```$/i);
     const heading = lines[0].match(/^(#{1,3})\s+(.+)$/);
-    if (fence) {
-      const language = fence[1].toLowerCase();
-      const code = language === 'python' || language === 'py' ? highlightCode(fence[2]) : escapeHtml(fence[2].replace(/\\`/g, '`'));
-      return `<pre class="code-block" aria-label="${escapeHtml(language || 'Code')} code"><code>${code}</code></pre>`;
-    }
-    if (heading) return `<h${heading[1].length + 1}>${inline(heading[2])}</h${heading[1].length + 1}>${lines.length > 1 ? markdownHtml(lines.slice(1).join('\n').trim()) : ''}`;
+    if (heading) return `<h${heading[1].length + 1}>${inline(heading[2])}</h${heading[1].length + 1}>${lines.length > 1 ? markdownProseHtml(lines.slice(1).join('\n').trim()) : ''}`;
     if (lines.every(line => /^>\s+/.test(line))) {
       const quote = lines.map(line => line.replace(/^>\s+/, '')).join('\n');
       const label = quote.match(/^\*\*([^*]+)\*\*/)?.[1]?.toLowerCase() || '';

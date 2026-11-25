@@ -2,9 +2,12 @@ const test=require('node:test');
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const path=require('node:path');
+const vm=require('node:vm');
 const {webcrypto,pbkdf2Sync,createCipheriv,randomBytes}=require('node:crypto');
 const {decryptQuiz}=require('../../weeks/week-08/quiz.js');
 const root=path.resolve(__dirname,'../..');
+const browser={document:{addEventListener(){}}};
+vm.runInNewContext(fs.readFileSync(path.join(root,'assets/site.js'),'utf8'),browser);
 function fixture(text,password){
  const salt=randomBytes(16),iv=randomBytes(12),iterations=250000;
  const key=pbkdf2Sync(password,salt,iterations,32,'sha256'),cipher=createCipheriv('aes-256-gcm',key,iv);
@@ -17,6 +20,17 @@ test('browser quiz decrypts only with the correct password',async()=>{
  await assert.rejects(()=>decryptQuiz(payload,'incorrect',webcrypto));
  const damaged={...payload,ciphertext:Buffer.from('corrupt payload').toString('base64')};
  await assert.rejects(()=>decryptQuiz(damaged,'test-only-passphrase',webcrypto));
+});
+test('quiz preview separates consecutive fences from prose and preserves code whitespace',()=>{
+ const fence='`'.repeat(3);
+ const markdown=['## Example','Before',fence+'python','for n in range(2):','    print(n)','','    print(n + 1)',fence,'Between',fence,'<b>text only</b>','  indented',fence,'After'].join('\r\n');
+ const result=browser.markdownHtml(markdown);
+ assert.equal((result.match(/<pre class="code-block"/g)||[]).length,2);
+ assert.match(result,/<h3>Example<\/h3><p>Before<\/p><pre/);
+ assert.match(result,/aria-label="python code"/);
+ assert.match(result,/<\/span>\(n\)\n\n    <span/);
+ assert.match(result,/<\/pre><p>Between<\/p><pre[^>]*><code>&lt;b&gt;text only&lt;\/b&gt;\n  indented<\/code><\/pre><p>After<\/p>/);
+ assert.doesNotMatch(result,/\x60{3}|<b>/);
 });
 test('published quiz package matches the teacher private notebook',async t=>{
  const privateFile=path.join(root,'admin/.course-private/week08/quiz-source.json');
@@ -31,6 +45,8 @@ test('published quiz package matches the teacher private notebook',async t=>{
  const questions=opened.notebook.cells.filter(c=>c.cell_type==='markdown'&&c.source.startsWith('## 小テスト①問題'));
  assert.equal(questions.length,6);
  assert.ok(source.questions.every(([id,text],i)=>questions[i].source.endsWith('\n\n'+text)));
+ const codeBlocks=questions.flatMap(cell=>browser.markdownHtml(cell.source).match(/<pre class="code-block"/g)||[]);
+ assert.equal(codeBlocks.length,10);
  assert.equal(fs.existsSync(path.join(root,'weeks/week-08/quiz-01.ipynb')),false);
  assert.equal(fs.existsSync(path.join(root,'weeks/week-09/quiz-01.ipynb')),false);
  assert.equal(fs.existsSync(path.join(root,'weeks/week-08/quiz-01.enc.json')),false);

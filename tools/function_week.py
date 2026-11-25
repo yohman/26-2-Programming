@@ -236,21 +236,38 @@ def build_challenge(root, dest, c, header):
            'Bike hackathon recap → pop quiz → functions mini-lecture → build your own notebook.')
     submit = ('実行結果付きの.ipynbを12月2日（水）23:59 JSTまでにUNIPAへ提出。追加ファイルを使った場合は添付。',
               'Submit the .ipynb with saved outputs to UNIPA by Wednesday, December 2 at 23:59 JST. Attach any extra files you used.')
-    bullets = [('空のNotebookを作り、タイトル・氏名・「誰のために何をするか」をMarkdownに書く。',
-                'Start a blank notebook. In Markdown, add your title, name, and what the notebook does for whom.'),
-               ('<code>def</code> で入力を受け取り、<code>return</code> で結果を返す関数を一つ作る。',
-                'Write at least one function with <code>def</code> that takes an input and uses <code>return</code> to give back a result.'),
-               ('同じ関数を違う入力で2回試して、結果を保存する。何件も処理するときは <code>for</code> から呼んでみよう。',
-                'Call the same function with two different inputs and save the results. If you have many items, try calling it from a <code>for</code> loop.')]
+    minimum = [
+        ('<strong>処理を2段階。</strong> <code>def</code> で入力を受け取り、関数の中で <code>if</code> または <code>for</code> を使って、絞り込み→集計、計算→判定などの処理を行い、<code>return</code> で結果を返す。',
+         '<strong>Two processing steps.</strong> Write a function that accepts input, uses <code>if</code> or <code>for</code> inside it, and returns a result. For example, filter then count, or calculate then make a decision.'),
+        ('<strong>入力を3通り。</strong> 普通の入力、別の結果になる入力、境目や該当なしのケースで実行し、結果を残す。',
+         '<strong>Three test cases.</strong> Run the function with a typical input, one that produces a different result, and a boundary case or a case with no matches. Save all three results.'),
+        ('<strong>結果を使う。</strong> 返り値を使って、表・グラフ・提案・ゲームの判定など、意味のある結果を表示する。文字だけでもOK。',
+         '<strong>Use the return value.</strong> Show a meaningful result: a table, chart, recommendation, or game outcome. Plain text is fine.'),
+        ('<strong>Markdownで説明。</strong> タイトル・氏名に加え、誰のために何をするのか、入力を変えると結果がどう変わるのかを短く書く。',
+         '<strong>Explain it in Markdown.</strong> Include your title and name, what the notebook does and for whom, and how changing the input changed the result.'),
+    ]
     body = '<h1>'+bi('その関数で、何ができる？','What will your function do?')+'</h1>'+p(*CHALLENGE)
-    body += '<h2>'+bi('Notebookに入れるもの','What to put in your notebook')+'</h2>'+c.list_html(bullets)
-    body += '<h2>'+bi('例えば','For example')+'</h2>'+c.list_html([
-        ('自転車盗データと市名を渡して、その市の記録件数を返す。','Give your function the bike data and a city name; get back the city’s reported theft count.'),
-        ('都市名を渡して、天気と最高・最低気温のバッジを返す。','Give your function a city name; get back a badge with the weather and temperatures.'),
-        ('残り時間を渡して、休み時間にできることを提案する。','Give your function the minutes left in your break; get back a suggestion for what to do.')])
-    body += p('見本は天気で実演しています。APIやpandasは必須ではありません。','The worked notebook uses weather as an example. No API or pandas is required.')
-    body += links([('practice.ipynb','天気の実行例Notebook','Worked weather notebook'),('challenge-starter.ipynb','Notebookの構成例','Notebook outline')],9)
-    body += '<h2 id="homework">'+bi('宿題・提出','Homework and submission')+'</h2>'+p(*submit)+links([('lecture.html','講義スライド','Slides')])
+    body += p('空のNotebookで始めよう。まず「どんな入力から、どんな結果を出したいか」を一文で書く。',
+              'Start with a blank notebook and write one sentence about what goes in and what should come out.')
+    body += '<h2 id="homework">'+bi('宿題・提出','Homework and submission')+'</h2>'
+    body += '<h3>'+bi('最低要件','Minimum requirements')+'</h3>'+c.list_html(minimum)
+    body += p('あいさつに名前を入れるだけ、あるいは授業の例をそのまま写すだけでは要件を満たしません。',
+              'A greeting with a different name or an unchanged classroom example does not meet the requirements.')
+    body += '<h3>'+bi('最低要件を満たす例','Examples that meet the minimum')+'</h3>'+c.list_html([
+        ('<strong>自転車盗：</strong> 市名で記録を絞り、件数を返す。2つの市と該当なしを試し、件数を表示する。',
+         '<strong>Bike theft:</strong> Filter reports by city and return the count. Show the counts for two cities and a no-match case.'),
+        ('<strong>休み時間：</strong> 残り時間から往復の移動時間を引き、5分以上残るかで提案を変える。余裕あり・時間不足・ちょうど5分を試す。',
+         '<strong>Break planner:</strong> Subtract round-trip walking time from the break length. Change the suggestion depending on whether at least five minutes remain. Test plenty of time, too little time, and exactly five minutes.')])
+    body += '<h3>'+bi('発展アイデア（任意）','Stretch ideas (optional)')+'</h3>'+c.list_html([
+        ('<strong>絞り込みから地図へ：</strong> 地震を規模・深さで絞る関数と、結果を地図や散布図にする関数を分ける。条件を変えた2枚を比べる。',
+         '<strong>Filter, then plot:</strong> Use one function to select earthquakes by magnitude and depth and another to map or plot the results. Compare two sets of criteria.'),
+        ('<strong>ランキング：</strong> 選んだ地域の65歳以上の割合を <code>for</code> で計算し、順位順に並べたリストを返す関数を作る。その結果を棒グラフにする。',
+         '<strong>Rank regions:</strong> Write a function that loops over selected regions, calculates each region’s share aged 65+, and returns a sorted list. Turn the list into a bar chart.'),
+        ('<strong>ミニゲーム：</strong> 1回分の勝敗を判定し、得点を更新して返す関数を作る。<code>while</code> で繰り返し遊べるようにし、引き分けや無効な入力も試す。',
+         '<strong>Mini-game:</strong> Write a function that decides the outcome of a round and returns the updated score. Use <code>while</code> to replay, and test draws and invalid input.')])
+    body += p('API・pandas・グラフ用ライブラリは必須ではありません。','No API, pandas, or charting library is required.')
+    body += links([('practice.ipynb','関数の実行例Notebook','Worked functions notebook'),('challenge-starter.ipynb','Notebookの構成例','Notebook outline')],9)
+    body += '<h3>'+bi('提出方法','Submission')+'</h3>'+p(*submit)+links([('lecture.html','講義スライド','Slides')])
     c.write(dest/'challenge.html',c.page_head('Week 09 · What will your function do?','course-pages.css','course-page.js',VERSION)+f'</head><body class="course-challenge" data-release="{RELEASE}">'+header+'<main id="course-page" hidden>'+body+'</main></body></html>')
     agenda = next((root/'content/weeks').glob('09-*.md'))
     front = agenda.read_text().split('---',2)[1].strip()
@@ -264,7 +281,9 @@ def build_challenge(root, dest, c, header):
         ('In-Class Notebook',('小テスト①は個人で6問。AはAIなしで6分。保存してAを残し、BはAI利用OKで6分。得点は各30点満点、提出はNotebook 1ファイル。パスワードは授業で案内します。',
                               'Six questions, worked individually. Take six minutes without AI in A, then save and leave A unchanged. You may use AI in B for six minutes. Each round is scored out of 30. Submit one notebook. Get the password in class.')),
         ('In-Class Challenge',(CHALLENGE[0]+' [手順](weeks/week-09/challenge.html)。',CHALLENGE[1]+' [Instructions](weeks/week-09/challenge.html).')),
-        ('Take-Home Assignment',(submit[0]+' [要件](weeks/week-09/challenge.html#homework)。',submit[1]+' [Requirements](weeks/week-09/challenge.html#homework).')),
+        ('Take-Home Assignment',(
+            '関数の中で if や for を使い、絞り込み→集計など2段階の処理を行う。入力を3通り（境目や該当なしを含む）試し、返り値を使って結果を表示する。'+submit[0]+' [最低要件・発展アイデア](weeks/week-09/challenge.html#homework)。',
+            'Your function must use if or for and do two processing steps, such as filter then count. Test three inputs, including a boundary or no-match case, and use the return value in your output. '+submit[1]+' [Minimum requirements and stretch ideas](weeks/week-09/challenge.html#homework).')),
     ]
     text='---\n'+front+'\n---\n'
     for title,(ja,en) in sections:
@@ -280,12 +299,14 @@ def build_challenge(root, dest, c, header):
     c.notebook(dest/'challenge-starter.ipynb',[
         c.mdcell('# 作品タイトル / Project title\n\n氏名 / Name：\n\n誰のために、何をするNotebook？ / What does it do, and who is it for?'),
         c.codecell('# 自分のデータや入力値を用意する / Set up your data or inputs'),
-        c.mdcell('## 関数 / Function\n\nどんな入力を受け取り、何を返す？ / What does it take in and give back?'),
-        c.codecell('# def で関数を定義する / Define your function'),
-        c.mdcell('## 入力を変えて試す / Try two different inputs'),
-        c.codecell('# 1つ目の入力で呼び出す / Call it with the first input'),
-        c.codecell('# 2つ目の入力で呼び出す / Call it with the second input'),
-        c.mdcell('## 結果 / Results\n\n入力を変えたら、結果はどう変わった？ / How did the result change?'),
+        c.mdcell('## 関数 / Function\n\n段階1と段階2で何を処理する？ / What are your two processing steps?'),
+        c.codecell('# def で関数を作り、if や for で処理して結果を返す / Define a function using if or for, and return a result'),
+        c.mdcell('## 3通りのテスト / Three tests'),
+        c.codecell('# 普通の入力 / Typical input'),
+        c.codecell('# 別の結果になる入力 / Input that produces a different result'),
+        c.codecell('# 境目や該当なし / Boundary or no-match case'),
+        c.mdcell('## 結果 / Results\n\n返り値を使って、提案・表・図などを表示する。入力を変えると結果はどう変わった？ / Use the return value in a recommendation, table, or other output. How did the result change?'),
+        c.codecell('# 返り値を使って結果を表示 / Show an output that uses the return value'),
     ])
     with zipfile.ZipFile(dest/'starter-files.zip','w',compression=zipfile.ZIP_DEFLATED) as bundle:
         for name in ('practice.ipynb','challenge-starter.ipynb','weather-snapshot.json'):

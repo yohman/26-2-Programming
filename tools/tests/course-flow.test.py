@@ -54,7 +54,11 @@ assert all(sprite in lecture for sprite in ['sprites/pokemon/25.png','sprites/po
 assert '06:00</output>' in lecture
 assert 'A: Without AI' in lecture and 'B: AI allowed' in lecture and 'submit once to UNIPA' in lecture
 week9=(ROOT/'weeks/week-09/challenge.html').read_text()
-assert 'two different inputs' in week9 and 'No API or pandas is required' in week9
+homework=week9.split('id="homework"',1)[1]
+assert 'Two processing steps' in homework and 'Three test cases' in homework
+assert 'Stretch ideas (optional)' in homework and 'No API, pandas, or charting library is required' in homework
+outline=json.loads((ROOT/'weeks/week-09/challenge-starter.ipynb').read_text())
+assert any('Boundary or no-match case' in cell['source'] for cell in outline['cells'])
 payload=json.loads(re.search(r'<script id="lesson-data" type="application/json">(.*?)</script>',lecture,re.S)[1])
 nb=json.loads((ROOT/'weeks/week-09/practice.ipynb').read_text())
 loop=next(c for c in nb['cells'] if c['cell_type']=='code' and '\nfor student in names:' in c['source'])

@@ -26,8 +26,8 @@ JP: 小テスト①は個人で6問。AはAIなしで6分。保存してAを残�
 EN: Choose a dataset, or build a small tool or game with your own inputs. Use a function to make a notebook that does something useful, surprising, or funny. [Instructions](weeks/week-09/challenge.html).
 JP: 自分で選んだデータを使っても、データなしで小さなツールや遊びを作ってもOK。役に立つ、意外な発見がある、思わず笑える。関数で「何かができる」Notebookを作ろう。 [手順](weeks/week-09/challenge.html)。
 ## Take-Home Assignment
-EN: Submit the .ipynb with saved outputs to UNIPA by Wednesday, December 2 at 23:59 JST. Attach any extra files you used. [Requirements](weeks/week-09/challenge.html#homework).
-JP: 実行結果付きの.ipynbを12月2日（水）23:59 JSTまでにUNIPAへ提出。追加ファイルを使った場合は添付。 [要件](weeks/week-09/challenge.html#homework)。
+EN: Your function must use if or for and do two processing steps, such as filter then count. Test three inputs, including a boundary or no-match case, and use the return value in your output. Submit the .ipynb with saved outputs to UNIPA by Wednesday, December 2 at 23:59 JST. Attach any extra files you used. [Minimum requirements and stretch ideas](weeks/week-09/challenge.html#homework).
+JP: 関数の中で if や for を使い、絞り込み→集計など2段階の処理を行う。入力を3通り（境目や該当なしを含む）試し、返り値を使って結果を表示する。実行結果付きの.ipynbを12月2日（水）23:59 JSTまでにUNIPAへ提出。追加ファイルを使った場合は添付。 [最低要件・発展アイデア](weeks/week-09/challenge.html#homework)。
 ## Resources
 - [Week 09 Lecture — One function, many calls](weeks/week-09/lecture.html) {lecture}
 - [小テスト①・パスワードで開く / Open Graded Quiz 01](weeks/week-09/quiz.html) {notebook}

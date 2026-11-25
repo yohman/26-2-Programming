@@ -11,6 +11,7 @@ from function_examples import add_examples
 from weather_hackathon import execute_cell
 
 VERSION = '20261126-slide-jump'
+DECK_VERSION = '20261126-code-wrap'
 QUIZ_VERSION = '20261125-quiz-ab'
 RELEASE = '2026-11-26T12:00:00+09:00'
 SPEC = dict(title='One function, many calls', title_ja='関数を一つ、何度でも',
@@ -221,8 +222,8 @@ def build(root, c):
     for alias in ['fundamentals-functions.ipynb', 'week-09-in-class-functions.ipynb']:
         c.notebook(dest/alias,cells)
     header = '<header class="lecture-header"><a id="lecture-return" href="../../agenda.html?open=09#week-09">← '+bi('授業予定','Agenda')+'</a><span class="lecture-mark">PRG / 26–2 · W09</span><button id="language-toggle" class="language-toggle" type="button">EN</button></header>'
-    head = c.page_head('Week 09 · '+SPEC['title'],'course-decks.css','course-decks.js',VERSION)
-    head += f'<link rel="stylesheet" href="../week-08/bicycle-week.css?v={VERSION}"><link rel="stylesheet" href="functions.css?v={VERSION}"><link rel="stylesheet" href="../../assets/slide-annotations.css"><script src="../../assets/slide-annotations.js" defer></script><script src="../../assets/slide-swipe.js" defer></script><script src="../week-08/bicycle-week.js?v={VERSION}" defer></script><script src="functions.js?v={VERSION}" defer></script></head>'
+    head = c.page_head('Week 09 · '+SPEC['title'],'course-decks.css','course-decks.js',DECK_VERSION)
+    head += f'<link rel="stylesheet" href="../week-08/bicycle-week.css?v={DECK_VERSION}"><link rel="stylesheet" href="functions.css?v={DECK_VERSION}"><link rel="stylesheet" href="../../assets/slide-annotations.css"><script src="../../assets/slide-annotations.js" defer></script><script src="../../assets/slide-swipe.js" defer></script><script src="../week-08/bicycle-week.js?v={DECK_VERSION}" defer></script><script src="functions.js?v={DECK_VERSION}" defer></script></head>'
     nav = '<nav class="slide-controls" aria-label="Slide navigation"><div class="slide-nav-group"><button id="previous-slide" type="button">← '+bi('前へ','Previous')+'</button><span id="slide-count" aria-live="polite"></span><button id="next-slide" type="button">'+bi('次へ','Next')+' →</button></div><button id="slide-fullscreen" type="button" class="slide-fullscreen" aria-pressed="false">⛶</button></nav>'
     stream = io.StringIO()
     with contextlib.redirect_stdout(stream):

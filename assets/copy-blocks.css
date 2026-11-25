@@ -4,8 +4,14 @@ pre.copyable-block,#request-url.copyable-block,.application-example > code.copya
 .block-copy:hover { color:#202a31; background:#dfe7eb; }
 .block-copy:focus-visible { outline:2px solid #315876; outline-offset:2px; }
 .block-copy[data-copied] { color:#356a58; }
+pre.copyable-code.copyable-block { --code-control-size:36px; overflow-x:auto; padding-right:calc(2 * var(--code-control-size) + 1.25rem) !important; }
+pre.copyable-code,pre.copyable-code > code { white-space:pre !important; overflow-wrap:normal !important; word-break:normal; }
+pre.copyable-code.is-code-wrapped,pre.copyable-code.is-code-wrapped > code { white-space:pre-wrap !important; overflow-wrap:anywhere !important; }
+.block-wrap { position:absolute; top:.35rem; right:calc(.55rem + var(--code-control-size)); z-index:1; display:grid; place-items:center; width:var(--code-control-size); min-width:0; height:var(--code-control-size); padding:0; border:0; border-radius:0; background:rgba(255,255,255,.9); color:#60717c; cursor:pointer; }
+.block-wrap:hover,.block-wrap[aria-pressed="true"] { color:#23465b; background:#dfe7eb; }
+.block-wrap:focus-visible { outline:2px solid #315876; outline-offset:2px; }
 .copyable-table { padding-top:2.75rem; }
 .copyable-editor > .block-copy { top:.3rem; }
 .copy-fallback { position:fixed; top:0; left:-10000px; }
-@media(pointer:coarse) { .block-copy { width:44px; height:44px; }pre.copyable-block,#request-url.copyable-block,.application-example > code.copyable-block { padding-right:3.75rem !important; } }
-@media print { .block-copy { display:none !important; } }
+@media(pointer:coarse) { .block-copy { width:44px; height:44px; }pre.copyable-block,#request-url.copyable-block,.application-example > code.copyable-block { padding-right:3.75rem !important; } pre.copyable-code.copyable-block { --code-control-size:44px; } }
+@media print { .block-copy,.block-wrap { display:none !important; } pre.copyable-code,pre.copyable-code > code { white-space:pre-wrap !important; overflow-wrap:anywhere !important; } }

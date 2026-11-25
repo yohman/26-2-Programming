@@ -1,6 +1,6 @@
 .functions-week .lesson-slide{padding:clamp(1.3rem,3vw,3.1rem)}
-.functions-week .lesson-slide pre{font-size:clamp(1.02rem,1.75vw,1.55rem);padding:.85rem 3rem .85rem 1rem;line-height:1.45;white-space:pre-wrap;overflow-wrap:anywhere}
-.functions-week [data-ink-id="w9-fn-week7"] pre[data-language="python"]{white-space:pre;overflow-wrap:normal}
+.functions-week .lesson-slide pre{font-size:clamp(1.02rem,1.75vw,1.55rem);padding:.85rem 3rem .85rem 1rem;line-height:1.45}
+.functions-week .lesson-slide pre.lesson-output{white-space:pre-wrap;overflow-wrap:anywhere}
 .functions-week .lesson-slide:not(.layout-hero):not(.layout-challenge)>p,.functions-week .lesson-slide .answer p{font-size:clamp(.88rem,1.05vw,1rem);line-height:1.55;margin:.65rem 0 .9rem}
 .functions-week .lesson-slide h2{margin-bottom:1rem}
 .fn-recap-stat{display:flex;flex-wrap:wrap;gap:.1em .4em;align-items:baseline;margin:1rem 0;font-size:clamp(1.1rem,2.3vw,2rem)}

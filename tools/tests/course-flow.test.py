@@ -45,9 +45,12 @@ for week in range(9,15):
 # The visible trace must match the actual Python call-loop output.
 lecture=(ROOT/'weeks/week-09/lecture.html').read_text()
 flow=re.findall(r'data-slide data-ink-id="w9-fn-([^"]+)"',lecture)
-assert len(flow)==17
+assert len(flow)==24
 assert flow[:5]==['recap','quiz','quiz-clock','quiz-save','open']
 assert flow[-1]=='try'
+assert flow[10:18]==['double','even','text-bar','pokemon','earthquakes','bikes','japan-age','week7']
+assert re.findall(r'data-quake-count="(\d+)"',lecture)==['38','6','2']
+assert all(sprite in lecture for sprite in ['sprites/pokemon/25.png','sprites/pokemon/shiny/25.png'])
 assert '06:00</output>' in lecture
 assert 'A: Without AI' in lecture and 'B: AI allowed' in lecture and 'submit once to UNIPA' in lecture
 week9=(ROOT/'weeks/week-09/challenge.html').read_text()

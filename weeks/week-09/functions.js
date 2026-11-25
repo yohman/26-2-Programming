@@ -3,6 +3,14 @@
   const trace = document.querySelector('[data-name-trace]');
   if (!trace) return; // The release gate removes the deck before class.
   const {nameTrace} = JSON.parse(document.getElementById('lesson-data').textContent);
+  document.querySelectorAll('[data-fn-choices]').forEach(demo => {
+    const choices = [...demo.querySelectorAll('button[data-fn-choice]')];
+    const results = [...demo.querySelectorAll('[data-fn-choice-result]')];
+    choices.forEach(button => button.addEventListener('click', () => {
+      choices.forEach(choice => choice.setAttribute('aria-pressed', String(choice === button)));
+      results.forEach(result => { result.hidden = result.dataset.fnChoiceResult !== button.dataset.fnChoice; });
+    }));
+  });
   const next = trace.querySelector('[data-fn-next]');
   const current = trace.querySelector('[data-current]');
   const printed = trace.querySelector('.fn-printed');

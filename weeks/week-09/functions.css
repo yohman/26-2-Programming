@@ -28,6 +28,29 @@
 .fn-panel legend{padding:0;margin-bottom:.3rem;font-weight:700}
 .fn-panel label{white-space:nowrap}
 .functions-week .lesson-links{margin-top:.8rem}
+.fn-input-data{margin:.65rem 0;color:#526873;font-size:.88rem}
+.fn-input-data summary{cursor:pointer}
+.functions-week .fn-input-data pre{font-size:.84rem;max-height:13rem;white-space:pre}
+.fn-demo{min-width:0}
+.fn-demo .fn-actions{margin-top:0}
+.fn-demo button[aria-pressed="true"]{color:#fff;background:#315876;border-color:#315876}
+.fn-demo [data-fn-choice-result]>code,.fn-sprite small{font:500 .86rem/1.5 var(--mono);overflow-wrap:anywhere}
+.fn-sprite{margin:.35rem 0;display:grid;justify-items:center;background:#f5f2e9;border-bottom:3px solid #ccb550}
+.fn-sprite img{image-rendering:pixelated;object-fit:contain;max-width:100%;margin:0}
+.fn-sprite small{padding:.15rem .6rem .65rem}
+.fn-depth{margin:.4rem 0;color:#315876}
+.fn-depth svg{display:block;width:100%;height:auto;max-height:36vh;background:#f4f7fa}
+.fn-depth text{font:11px var(--mono);fill:#38505e}
+.fn-depth path{fill:none;stroke:#bacad1}
+.fn-depth .fn-chart-axis{stroke:#607c8d}
+.fn-depth circle{fill:#bc5d42;opacity:.78}
+.fn-depth figcaption{font-size:.94rem;padding:.2rem 0}
+.fn-depth figcaption strong{font-size:1.25rem}
+.fn-age-chart{list-style:none;padding:0;margin:.5rem 0}
+.fn-age-chart li{display:grid;grid-template-columns:1fr auto;gap:.1rem .8rem;margin:0 0 .5rem;font-size:clamp(.88rem,1.2vw,1.1rem)}
+.fn-age-chart meter{grid-column:1/-1;width:100%;height:.68rem;appearance:none}
+.fn-age-chart meter::-webkit-meter-bar{border:0;border-radius:0;background:#e6eeea}
+.fn-age-chart meter::-webkit-meter-optimum-value{background:#477564}
 @media(max-width:860px){
   .fn-pair{display:block}
   .fn-pair> :last-child{margin-bottom:.85rem}

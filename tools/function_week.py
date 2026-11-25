@@ -7,12 +7,14 @@ import pprint
 import re
 import zipfile
 import quiz_package
+from function_examples import add_examples
 from weather_hackathon import execute_cell
 
-VERSION = '20261125-quiz-ab'
+VERSION = '20261125-function-examples'
+QUIZ_VERSION = '20261125-quiz-ab'
 RELEASE = '2026-11-26T12:00:00+09:00'
 SPEC = dict(title='One function, many calls', title_ja='関数を一つ、何度でも',
-            date='2026-11-26', due='2026-12-02', slides=[None]*17)
+            date='2026-11-26', due='2026-12-02', slides=[None]*24)
 CHALLENGE = (
     '自分で選んだデータを使っても、データなしで小さなツールや遊びを作ってもOK。役に立つ、意外な発見がある、思わず笑える。関数で「何かができる」Notebookを作ろう。',
     'Choose a dataset, or build a small tool or game with your own inputs. Use a function to make a notebook that does something useful, surprising, or funny.')
@@ -158,6 +160,7 @@ def build(root, c):
              +'<ol class="fn-printed" aria-live="polite"></ol></div>')
         +text('<code>for</code> が次の名前を選ぶ。<code>greet_name</code> があいさつを返し、次の行で表示する。',
               '<code>for</code> picks the next name. <code>greet_name</code> returns a greeting, and the next line displays it.'))
+    add_examples(root,c,add,run,pair,scope,rich)
     add('week7','Week 7で読んだ daily','The daily data from Week 7',
         run(prior,'Week 7の柏の保存データ / Saved Week 7 Kashiwa data')
         +p('各キーの値はリスト。どのリストでも <code>[1]</code> は同じ日。柏の保存予報で、次の都市比較とは別データです。',
@@ -223,7 +226,7 @@ def build(root, c):
                       ensure_ascii=False).replace('</','<\\/')
     c.write(dest/'lecture.html',head+f'<body class="lecture-page course-deck functions-week" data-week="9" data-release="{RELEASE}">'+header+'<main><div id="slides-view" class="view">'+nav+'<div class="slide-stage">'+''.join(slides)+'</div></div></main><script id="lesson-data" type="application/json">'+data+'</script></body></html>')
     quiz_package.build(root,c)
-    quiz_package.build_page(root,c,header,VERSION)
+    quiz_package.build_page(root,c,header,QUIZ_VERSION)
     build_challenge(root, dest, c, header)
 
 
@@ -256,8 +259,8 @@ def build_challenge(root, dest, c, header):
                       ('homework_title','Make a notebook that does something'),('homework_title_ja','関数で「何かができる」Notebook')]:
         front=re.sub(r'^'+key+r':.*$',key+': '+value,front,flags=re.M)
     sections = [
-        ('Lecture Flow',('先週の自転車盗レポートを振り返る → 小テスト① → 関数：greet()から天気パネルへ → Notebook制作。',
-                         'Recap the bike reports → pop quiz → functions, from greet() to a weather panel → build a notebook.')),
+        ('Lecture Flow',('先週の振り返りと小テスト①。その後、短い関数から始め、ポケモン・地震・自転車盗・人口・天気のデータで試す。最後にNotebook制作。',
+                         'Recap and quiz first. Try a few short functions, then use them on Pokémon, earthquake, bike, population, and weather data. Finish by building a notebook.')),
         ('In-Class Notebook',('小テスト①は個人で6問。AはAIなしで6分。保存してAを残し、BはAI利用OKで6分。得点は各30点満点、提出はNotebook 1ファイル。パスワードは授業で案内します。',
                               'Six questions, worked individually. Take six minutes without AI in A, then save and leave A unchanged. You may use AI in B for six minutes. Each round is scored out of 30. Submit one notebook. Get the password in class.')),
         ('In-Class Challenge',(CHALLENGE[0]+' [手順](weeks/week-09/challenge.html)。',CHALLENGE[1]+' [Instructions](weeks/week-09/challenge.html).')),

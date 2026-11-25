@@ -17,8 +17,8 @@ homework_title: Make a notebook that does something
 homework_title_ja: 関数で「何かができる」Notebook
 ---
 ## Lecture Flow
-EN: Recap the bike reports → pop quiz → functions, from greet() to a weather panel → build a notebook.
-JP: 先週の自転車盗レポートを振り返る → 小テスト① → 関数：greet()から天気パネルへ → Notebook制作。
+EN: Recap and quiz first. Try a few short functions, then use them on Pokémon, earthquake, bike, population, and weather data. Finish by building a notebook.
+JP: 先週の振り返りと小テスト①。その後、短い関数から始め、ポケモン・地震・自転車盗・人口・天気のデータで試す。最後にNotebook制作。
 ## In-Class Notebook
 EN: Six questions, worked individually. Take six minutes without AI in A, then save and leave A unchanged. You may use AI in B for six minutes. Each round is scored out of 30. Submit one notebook. Get the password in class.
 JP: 小テスト①は個人で6問。AはAIなしで6分。保存してAを残し、BはAI利用OKで6分。得点は各30点満点、提出はNotebook 1ファイル。パスワードは授業で案内します。

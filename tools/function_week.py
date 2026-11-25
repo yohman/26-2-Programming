@@ -9,7 +9,7 @@ import zipfile
 import quiz_package
 from weather_hackathon import execute_cell
 
-VERSION = '20261125-lesson-flow'
+VERSION = '20261125-quiz-ab'
 RELEASE = '2026-11-26T12:00:00+09:00'
 SPEC = dict(title='One function, many calls', title_ja='関数を一つ、何度でも',
             date='2026-11-26', due='2026-12-02', slides=[None]*17)
@@ -111,21 +111,21 @@ def build(root, c):
               '6,879 out of 10,054 reports. What did your notebook count with <code>for</code>? Does this number tell us the chance of a bike being stolen?')
         +links([('../week-08/challenge.html#data-guide','先週のデータを見る','Revisit last week’s data')]),'hero')
     add('quiz','小テスト①','Pop quiz 01',
-        '<div class="quiz-score"><span>6 '+bi('問','questions')+'</span><span>30 '+bi('点','points')+'</span></div>'
+        '<div class="quiz-score"><span>6 '+bi('問','questions')+'</span><span>30 '+bi('点','pts')+' × 2</span></div>'
         +text('個人で解きます。授業中に案内するパスワードでNotebookを開き、氏名を書いて開始の合図を待ちます。',
               'Work individually. Use the password announced in class to get the notebook, add your name, and wait for the start signal.')
         +links([('quiz.html','小テストを開く','Open the quiz')]),'hero')
     clock = '<div class="quiz-clock" data-quiz-clock><div class="quiz-phases">'
-    for index,(ja,en) in enumerate([('① 自力で6分','① On your own · 6 min'),('② 資料OKで6分','② Open book · 6 min')]):
+    for index,(ja,en) in enumerate([('A：AIなし','A: Without AI'),('B：AI利用OK','B: AI allowed')]):
         clock += f'<button type="button" data-phase="{index}" aria-pressed="{str(index == 0).lower()}">'+bi(ja,en)+'</button>'
     clock += '</div><output data-clock aria-live="off">06:00</output><div><button type="button" data-clock-toggle aria-label="Start timer">▶</button><button type="button" data-clock-reset aria-label="Reset timer">↺</button><span data-clock-status role="status">'+bi('開始待ち','Ready')+'</span></div></div>'
     add('quiz-clock','6分 ＋ 6分','6 minutes + 6 minutes',clock
-        +text('前半は問題文とヒントだけ。後半は教科書・ノート・教材・通常のWeb検索OK。どちらも生成AIや相談は不可。',
-              'First half: use only the quiz and its hints. Second half: books, notes, course materials and regular web search are allowed. No generative AI or collaboration in either half.'))
-    add('quiz-save','途中でも、提出。','Submit, even if unfinished.',
+        +text('Aは問題文とヒントだけ。6分で保存し、Aはそのまま。Bでは、AIを使って解答の修正や未回答の問題に取り組めます。どちらも相談は不可。',
+              'In A, use only the quiz and its hints. Save at six minutes and leave A untouched. In B, you may use AI to revise or finish answers. Work individually in both rounds.'))
+    add('quiz-save','提出はNotebook 1ファイル','One notebook to submit',
         '<p class="big-filename">week09_quiz_氏名.ipynb</p>'
-        +text('解いたセルを実行して、出力を残して保存。終了の合図で、UNIPAの小テスト提出先へ。',
-              'Run the cells you completed and save the outputs. When time is up, submit the notebook to the quiz on UNIPA.'))
+        +text('変更しない問題はBを空欄に。「すべて実行」はせず、出力を残して保存します。終了の合図で、途中でもUNIPAへ1回だけ提出。',
+              'Leave B blank for answers you keep. Save your outputs without using Run All. At the signal, submit once to UNIPA, even if unfinished.'))
 
     add('open','ひとこと、あいさつ','One small greeting', '<div class="fn-ticket">Hello!</div>'
         +text('あいさつを一つ用意して、好きなときに呼び出せるようにしよう。','Let’s make one greeting we can call whenever we want.'),'hero')
@@ -258,8 +258,8 @@ def build_challenge(root, dest, c, header):
     sections = [
         ('Lecture Flow',('先週の自転車盗レポートを振り返る → 小テスト① → 関数：greet()から天気パネルへ → Notebook制作。',
                          'Recap the bike reports → pop quiz → functions, from greet() to a weather panel → build a notebook.')),
-        ('In-Class Notebook',('まず小テスト①（個人・6問・30点）。前半6分は自力、後半6分は資料OK。どちらも生成AI・相談は不可。パスワードは授業で案内します。その後、関数の実行例を試します。',
-                              'First: an individual quiz, six questions for 30 points. Six minutes on your own, then six open book. No generative AI or collaboration. Get the password in class, then try the worked function examples after the quiz.')),
+        ('In-Class Notebook',('小テスト①は個人で6問。AはAIなしで6分。保存してAを残し、BはAI利用OKで6分。得点は各30点満点、提出はNotebook 1ファイル。パスワードは授業で案内します。',
+                              'Six questions, worked individually. Take six minutes without AI in A, then save and leave A unchanged. You may use AI in B for six minutes. Each round is scored out of 30. Submit one notebook. Get the password in class.')),
         ('In-Class Challenge',(CHALLENGE[0]+' [手順](weeks/week-09/challenge.html)。',CHALLENGE[1]+' [Instructions](weeks/week-09/challenge.html).')),
         ('Take-Home Assignment',(submit[0]+' [要件](weeks/week-09/challenge.html#homework)。',submit[1]+' [Requirements](weeks/week-09/challenge.html#homework).')),
     ]

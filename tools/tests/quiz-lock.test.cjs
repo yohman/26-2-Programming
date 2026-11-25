@@ -40,11 +40,20 @@ test('published quiz package matches the teacher private notebook',async t=>{
  const opened=await decryptQuiz(payload,source.passphrase,webcrypto);
  assert.equal(opened.text,fs.readFileSync(path.join(root,'admin/.course-private/week08/quiz-01.ipynb'),'utf8'));
  assert.equal(payload.filename,'week09_quiz.ipynb');
- assert.equal(opened.notebook.cells.filter(c=>c.cell_type==='code').length,6);
+ assert.equal(opened.notebook.cells.filter(c=>c.cell_type==='code').length,12);
  assert.ok(opened.notebook.cells[0].source.includes('2026年11月26日'));
  const questions=opened.notebook.cells.filter(c=>c.cell_type==='markdown'&&c.source.startsWith('## 小テスト①問題'));
  assert.equal(questions.length,6);
  assert.ok(source.questions.every(([id,text],i)=>questions[i].source.endsWith('\n\n'+text)));
+ for (const question of questions) {
+  const index=opened.notebook.cells.indexOf(question);
+  const [a,b]=opened.notebook.cells.slice(index+1,index+3);
+  assert.deepEqual([a,b].map(cell=>cell.cell_type),['code','code']);
+  assert.deepEqual([a,b].map(cell=>cell.metadata.tags[0]),['quiz-round-a','quiz-round-b']);
+  assert.match(a.source,/^# A: AIなし \/ Without AI\s*$/);
+  assert.match(b.source,/^# B: AIあり \/ AI-assisted\s*$/);
+  assert.ok([a,b].every(cell=>cell.execution_count===null&&cell.outputs.length===0));
+ }
  const codeBlocks=questions.flatMap(cell=>browser.markdownHtml(cell.source).match(/<pre class="code-block"/g)||[]);
  assert.equal(codeBlocks.length,10);
  assert.equal(fs.existsSync(path.join(root,'weeks/week-08/quiz-01.ipynb')),false);

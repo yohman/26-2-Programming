@@ -17,7 +17,9 @@ if private.exists():
     config=json.loads(private.read_text())
     quiz=json.loads(quiz_package.decrypt(payload,config['passphrase']))
     answers=[c for c in quiz['cells'] if c['cell_type']=='code']
-    assert len(answers)==6 and all(not ''.join(c['source']).strip() and not c['outputs'] for c in answers)
+    assert len(answers)==12
+    assert [c['metadata']['tags'][0] for c in answers]==['quiz-round-a','quiz-round-b']*6
+    assert all(c['source'].strip().startswith('# ') and not c['outputs'] and c['execution_count'] is None for c in answers)
     archive=ROOT/'2025 Material/Week08/小テスト①.ipynb'
     if archive.exists():
         old=json.loads(archive.read_text())['cells']

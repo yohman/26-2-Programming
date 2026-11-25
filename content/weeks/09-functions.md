@@ -20,8 +20,8 @@ homework_title_ja: 関数で「何かができる」Notebook
 EN: Recap the bike reports → pop quiz → functions, from greet() to a weather panel → build a notebook.
 JP: 先週の自転車盗レポートを振り返る → 小テスト① → 関数：greet()から天気パネルへ → Notebook制作。
 ## In-Class Notebook
-EN: First: an individual quiz, six questions for 30 points. Six minutes on your own, then six open book. No generative AI or collaboration. Get the password in class, then try the worked function examples after the quiz.
-JP: まず小テスト①（個人・6問・30点）。前半6分は自力、後半6分は資料OK。どちらも生成AI・相談は不可。パスワードは授業で案内します。その後、関数の実行例を試します。
+EN: Six questions, worked individually. Take six minutes without AI in A, then save and leave A unchanged. You may use AI in B for six minutes. Each round is scored out of 30. Submit one notebook. Get the password in class.
+JP: 小テスト①は個人で6問。AはAIなしで6分。保存してAを残し、BはAI利用OKで6分。得点は各30点満点、提出はNotebook 1ファイル。パスワードは授業で案内します。
 ## In-Class Challenge
 EN: Choose a dataset, or build a small tool or game with your own inputs. Use a function to make a notebook that does something useful, surprising, or funny. [Instructions](weeks/week-09/challenge.html).
 JP: 自分で選んだデータを使っても、データなしで小さなツールや遊びを作ってもOK。役に立つ、意外な発見がある、思わず笑える。関数で「何かができる」Notebookを作ろう。 [手順](weeks/week-09/challenge.html)。

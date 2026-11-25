@@ -10,8 +10,92 @@
   const previous=document.getElementById('previous-slide'),next=document.getElementById('next-slide');
   document.querySelectorAll('input[type="number"]').forEach(input=>input.required=true);
   let index=0;const cleanup=[];const model=window.CourseModels;
-  function language(value){document.documentElement.dataset.language=value;document.documentElement.lang=value;const b=document.getElementById('language-toggle');b.textContent=value==='ja'?'EN':'日本語';b.setAttribute('aria-label',value==='ja'?'Switch to English':'日本語に切り替える');try{localStorage.setItem('programming-language',value);}catch{}}
-  function show(value){cleanup.forEach(fn=>fn());index=Math.max(0,Math.min(slides.length-1,value));slides.forEach((s,i)=>s.hidden=i!==index);previous.disabled=index===0;next.disabled=index===slides.length-1;document.getElementById('slide-count').textContent=String(index+1).padStart(2,'0')+' / '+slides.length;const url=new URL(location.href);url.searchParams.set('slide',index+1);history.replaceState(null,'',url);stage.scrollTop=0;window.scrollTo(0,0);view.dispatchEvent(new CustomEvent('lecture:slidechange',{detail:{index}}));}
+  function language(value){document.documentElement.dataset.language=value;document.documentElement.lang=value;const b=document.getElementById('language-toggle');b.textContent=value==='ja'?'EN':'日本語';b.setAttribute('aria-label',value==='ja'?'Switch to English':'日本語に切り替える');controls.label();try{localStorage.setItem('programming-language',value);}catch{}}
+  function jumpControls() {
+    const count=document.getElementById('slide-count'), group=count.parentElement;
+    group.classList.add('course-slide-nav');
+    document.documentElement.classList.add('course-slide-navigation');
+    const arrows={
+      first:'M5 5v14M18 6l-6 6 6 6', previous:'M15 6l-6 6 6 6',
+      next:'M9 6l6 6-6 6', last:'M19 5v14M6 6l6 6-6 6'
+    };
+    const icon=key=>'<svg viewBox="0 0 24 24" width="19" height="19" aria-hidden="true"><path d="'+arrows[key]+'" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    const first=document.createElement('button'),last=document.createElement('button');
+    for (const [button,key] of [[first,'first'],[previous,'previous'],[next,'next'],[last,'last']]) {
+      button.type='button';
+      button.innerHTML=icon(key);
+      if (key==='first'||key==='last') button.id=key+'-slide';
+    }
+    group.prepend(first);
+    group.append(last);
+    first.addEventListener('click',()=>show(0));
+    last.addEventListener('click',()=>show(slides.length-1));
+
+    const slot=document.createElement('div');
+    slot.className='slide-jump-slot';
+    slot.innerHTML='<button type="button" class="slide-count-trigger" aria-controls="slide-jump-form" aria-expanded="false"></button><form id="slide-jump-form" class="slide-number-entry" hidden><input type="text" inputmode="numeric" enterkeyhint="go" autocomplete="off" spellcheck="false" required><button type="submit">↵</button></form>';
+    const trigger=slot.querySelector('button'),form=slot.querySelector('form'),input=form.querySelector('input'),go=form.querySelector('button');
+    count.replaceWith(slot);
+    trigger.append(count);
+    function label(){
+      const ja=document.documentElement.lang==='ja';
+      for (const [button,title] of [[first,ja?'最初のスライド':'First slide'],[previous,ja?'前のスライド':'Previous slide'],[next,ja?'次のスライド':'Next slide'],[last,ja?'最後のスライド':'Last slide'],[trigger,(ja?'番号を入力して移動：':'Jump to slide: ')+count.textContent],[go,ja?'移動':'Go to slide']]) {
+        button.setAttribute('aria-label',title);
+        button.title=title;
+      }
+      input.setAttribute('aria-label',ja?'スライド番号':'Slide number');
+    }
+    function close(focus=false){
+      if(form.hidden)return;
+      form.hidden=true;trigger.hidden=false;
+      trigger.setAttribute('aria-expanded','false');
+      input.setCustomValidity('');
+      if(focus)trigger.focus({preventScroll:true});
+    }
+    trigger.addEventListener('click',()=>{
+      input.value=String(index+1);
+      trigger.hidden=true;form.hidden=false;
+      trigger.setAttribute('aria-expanded','true');
+      input.focus({preventScroll:true});input.select();
+    });
+    input.addEventListener('input',()=>input.setCustomValidity(''));
+    form.addEventListener('submit',event=>{
+      event.preventDefault();
+      const value=input.value.trim().normalize('NFKC');
+      const target=Number(value);
+      if(!/^\d+$/.test(value)||target<1||target>slides.length){
+        input.setCustomValidity(document.documentElement.lang==='ja'?'1〜'+slides.length+'の番号を入力してください。':'Enter a slide number from 1 to '+slides.length+'.');
+        input.reportValidity();
+        return;
+      }
+      close(true);show(target-1);
+    });
+    form.addEventListener('keydown',event=>{
+      if(event.key==='Escape'){event.preventDefault();event.stopPropagation();close(true);}
+    });
+    slot.addEventListener('focusout',event=>{
+      if(event.relatedTarget&&!slot.contains(event.relatedTarget))close();
+    });
+    document.addEventListener('pointerdown',event=>{if(!slot.contains(event.target))close();});
+    return {label,render(){
+      close();
+      first.disabled=previous.disabled=index===0;last.disabled=next.disabled=index===slides.length-1;
+      const digits=Math.max(2,String(slides.length).length);
+      count.textContent=String(index+1).padStart(digits,'0')+' / '+slides.length;
+      label();
+    }};
+  }
+  const controls=jumpControls();
+  function show(value){
+    cleanup.forEach(fn=>fn());
+    index=Math.max(0,Math.min(slides.length-1,Math.trunc(value)));
+    slides.forEach((s,i)=>s.hidden=i!==index);
+    controls.render();
+    const url=new URL(location.href);
+    url.searchParams.set('slide',index+1);history.replaceState(null,'',url);
+    stage.scrollTop=0;window.scrollTo({top:0,behavior:'instant'});
+    view.dispatchEvent(new CustomEvent('lecture:slidechange',{detail:{index}}));
+  }
   function highlight(code){
     if(code.closest('pre')?.dataset.language==='shell')return;
     const source=code.textContent,pattern=/(#[^\n]*)|("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')|\b(def|return|for|while|in|if|else|elif|break|continue|True|False|None|import|from|as|with|and|not|try|except|global)\b|\b(print|range|len|append|input|int|float|list|dict|open|enumerate|affordable|remaining|large_boxes|hit|tick_state|get|boxplot|rectangle|after|main|assert)\b|\b(\d+(?:\.\d+)?)\b/g;

@@ -10,15 +10,15 @@ title_ja: 関数を一つ、何度でも
 course_date: 2026-11-26
 homework_due: 2026-12-02T23:59:00+09:00
 course_time: 13:10–14:50
-overview: Bike hackathon recap → pop quiz → functions mini-lecture → build your own notebook.
-overview_ja: 自転車盗ハッカソンの振り返り → 小テスト① → 関数のミニ講義 → 自分のNotebookを制作。
+overview: Bike hackathon recap, pop quiz, Mori’s Corner, then functions and notebook work.
+overview_ja: 自転車盗ハッカソンの振り返り、小テスト①、Mori’s Corner、関数のミニ講義とNotebook制作。
 
 homework_title: Make a notebook that does something
 homework_title_ja: 関数で「何かができる」Notebook
 ---
 ## Lecture Flow
-EN: Recap and quiz first. Try a few short functions, then use them on Pokémon, earthquake, bike, population, and weather data. Finish by building a notebook.
-JP: 先週の振り返りと小テスト①。その後、短い関数から始め、ポケモン・地震・自転車盗・人口・天気のデータで試す。最後にNotebook制作。
+EN: Recap, pop quiz, then Mori’s Corner (10 minutes). Try a few short functions and use them on Pokémon, earthquake, bike, population, and weather data. Finish with notebook work.
+JP: 先週の振り返りと小テスト①の後、Mori’s Corner（10分）。短い関数から始め、ポケモン・地震・自転車盗・人口・天気のデータで試す。最後にNotebook制作。
 ## In-Class Notebook
 EN: Six questions, worked individually. Take six minutes without AI in A, then save and leave A unchanged. You may use AI in B for six minutes. Each round is scored out of 30. Submit one notebook. Get the password in class.
 JP: 小テスト①は個人で6問。AはAIなしで6分。保存してAを残し、BはAI利用OKで6分。得点は各30点満点、提出はNotebook 1ファイル。パスワードは授業で案内します。

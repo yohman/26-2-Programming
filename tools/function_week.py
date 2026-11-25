@@ -10,11 +10,11 @@ import quiz_package
 from function_examples import add_examples
 from weather_hackathon import execute_cell
 
-VERSION = '20261125-function-examples'
+VERSION = '20261126-slide-jump'
 QUIZ_VERSION = '20261125-quiz-ab'
 RELEASE = '2026-11-26T12:00:00+09:00'
 SPEC = dict(title='One function, many calls', title_ja='関数を一つ、何度でも',
-            date='2026-11-26', due='2026-12-02', slides=[None]*24)
+            date='2026-11-26', due='2026-12-02', slides=[None]*25)
 CHALLENGE = (
     '自分で選んだデータを使っても、データなしで小さなツールや遊びを作ってもOK。役に立つ、意外な発見がある、思わず笑える。関数で「何かができる」Notebookを作ろう。',
     'Choose a dataset, or build a small tool or game with your own inputs. Use a function to make a notebook that does something useful, surprising, or funny.')
@@ -129,6 +129,12 @@ def build(root, c):
         +text('変更しない問題はBを空欄に。「すべて実行」はせず、出力を残して保存します。終了の合図で、途中でもUNIPAへ1回だけ提出。',
               'Leave B blank for answers you keep. Save your outputs without using Run All. At the signal, submit once to UNIPA, even if unfinished.'))
 
+    mori_clock = ('<div class="quiz-clock" data-bike-clock data-seconds="600"><output data-clock aria-live="off">10:00</output>'
+                  '<div><button type="button" data-clock-toggle aria-label="Start timer">▶</button>'
+                  '<button type="button" data-clock-reset aria-label="Reset timer">↺</button>'
+                  '<span data-clock-status role="status">'+bi('開始待ち','Ready')+'</span></div></div>')
+    add('mori-corner','Moriさんのコーナー','Mori’s Corner',mori_clock,'hero')
+
     add('open','ひとこと、あいさつ','One small greeting', '<div class="fn-ticket">Hello!</div>'
         +text('あいさつを一つ用意して、好きなときに呼び出せるようにしよう。','Let’s make one greeting we can call whenever we want.'),'hero')
     add('syntax','関数を呼ぶには？','How do we call a function?',
@@ -232,8 +238,8 @@ def build(root, c):
 
 def build_challenge(root, dest, c, header):
     bi,p,links = c.bi,c.p,c.links
-    aim = ('自転車盗ハッカソンの振り返り → 小テスト① → 関数のミニ講義 → 自分のNotebookを制作。',
-           'Bike hackathon recap → pop quiz → functions mini-lecture → build your own notebook.')
+    aim = ('自転車盗ハッカソンの振り返り、小テスト①、Mori’s Corner、関数のミニ講義とNotebook制作。',
+           'Bike hackathon recap, pop quiz, Mori’s Corner, then functions and notebook work.')
     submit = ('実行結果付きの.ipynbを12月2日（水）23:59 JSTまでにUNIPAへ提出。追加ファイルを使った場合は添付。',
               'Submit the .ipynb with saved outputs to UNIPA by Wednesday, December 2 at 23:59 JST. Attach any extra files you used.')
     minimum = [
@@ -276,8 +282,8 @@ def build_challenge(root, dest, c, header):
                       ('homework_title','Make a notebook that does something'),('homework_title_ja','関数で「何かができる」Notebook')]:
         front=re.sub(r'^'+key+r':.*$',key+': '+value,front,flags=re.M)
     sections = [
-        ('Lecture Flow',('先週の振り返りと小テスト①。その後、短い関数から始め、ポケモン・地震・自転車盗・人口・天気のデータで試す。最後にNotebook制作。',
-                         'Recap and quiz first. Try a few short functions, then use them on Pokémon, earthquake, bike, population, and weather data. Finish by building a notebook.')),
+        ('Lecture Flow',('先週の振り返りと小テスト①の後、Mori’s Corner（10分）。短い関数から始め、ポケモン・地震・自転車盗・人口・天気のデータで試す。最後にNotebook制作。',
+                         'Recap, pop quiz, then Mori’s Corner (10 minutes). Try a few short functions and use them on Pokémon, earthquake, bike, population, and weather data. Finish with notebook work.')),
         ('In-Class Notebook',('小テスト①は個人で6問。AはAIなしで6分。保存してAを残し、BはAI利用OKで6分。得点は各30点満点、提出はNotebook 1ファイル。パスワードは授業で案内します。',
                               'Six questions, worked individually. Take six minutes without AI in A, then save and leave A unchanged. You may use AI in B for six minutes. Each round is scored out of 30. Submit one notebook. Get the password in class.')),
         ('In-Class Challenge',(CHALLENGE[0]+' [手順](weeks/week-09/challenge.html)。',CHALLENGE[1]+' [Instructions](weeks/week-09/challenge.html).')),

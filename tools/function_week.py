@@ -9,11 +9,11 @@ from function_examples import add_examples, example
 from weather_hackathon import execute_cell
 
 VERSION = '20261126-slide-jump'
-DECK_VERSION = '20261126-complete-examples'
+DECK_VERSION = '20261126-execution-trace'
 QUIZ_VERSION = '20261125-quiz-ab'
 RELEASE = '2026-11-26T12:00:00+09:00'
 SPEC = dict(title='One function, many calls', title_ja='関数を一つ、何度でも',
-            date='2026-11-26', due='2026-12-02', slides=[None]*25)
+            date='2026-11-26', due='2026-12-02', slides=[None]*26)
 CHALLENGE = (
     '自分で選んだデータを使っても、データなしで小さなツールや遊びを作ってもOK。役に立つ、意外な発見がある、思わず笑える。関数で「何かができる」Notebookを作ろう。',
     'Choose a dataset, or build a small tool or game with your own inputs. Use a function to make a notebook that does something useful, surprising, or funny.')
@@ -50,6 +50,29 @@ PANEL = '''def weather_panel(cities, forecast):
     return f'<div style="{style}">{"".join(badges)}</div>' '''
 PANEL = PANEL.rstrip()
 DISPLAY = '# NotebookでHTMLを表示する\nfrom IPython.display import HTML, display\n'
+
+
+def execution_figure(c):
+    bi = c.bi
+
+    def strip(side, ja, en, lengths):
+        rows = []
+        for index,length in enumerate(lengths):
+            indent = ' class="flow-indent"' if side == 'calls' and 2 <= index <= 4 else ''
+            rows.append(f'<li{indent}><span style="--stroke-width:{length}%"></span></li>')
+        return ('<div><h3>'+bi(ja,en)+'</h3>'
+                +f'<ol class="flow-sheet" data-flow-side="{side}" aria-hidden="true">'+''.join(rows)+'</ol></div>')
+
+    grid = strip('linear','上から下へ','Straight-line code',[76,58,83,43,68,55,90,64,77,53])
+    grid += strip('calls','関数を呼ぶ','Code with a function',[76,44,68,55,60,81,37,37,37,62])
+    return ('<div class="fn-execution" data-fn-execution><div class="flow-grid">'+grid+'</div>'
+            '<div class="flow-bottom"><div class="flow-buttons">'
+            '<button type="button" data-flow-play><span data-flow-glyph aria-hidden="true">▶</span>'
+            +'<span class="ja" data-flow-play-ja>再生</span><span class="en" data-flow-play-en>Play</span></button>'
+            '<button type="button" data-flow-step>'+bi('1行ずつ','Step')+'</button></div>'
+            '<p data-flow-caption aria-live="polite">'
+            '<span class="ja" data-flow-ja>右の字下げされた3行に注目。</span>'
+            '<span class="en" data-flow-en>Watch the three indented lines on the right.</span></p></div></div>')
 
 
 def build(root, c):
@@ -159,6 +182,8 @@ def build(root, c):
                'A notebook shows the value of the last expression in the cell.')
     add('call','greetを呼ぶ','Call greet',
         run(example(GREET,'greet()'),'最初の呼び出し / First call',note=call_note)+text(*call_note))
+    add('execution','関数を呼ぶと、どこへ進む？','Where does a function call go?',
+        execution_figure(c))
     add('argument','かっこの中に、名前を一つ','One name inside the parentheses',
         run(example(GREET_NAME,'greet_name("Haru")'),'名前を渡す / Pass a name')
         +text('<code>"Haru"</code> が <code>name</code> に入る。<code>"Yui"</code> に変えたら、何が返る？',

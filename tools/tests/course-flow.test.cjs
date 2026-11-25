@@ -5,6 +5,17 @@ const path=require('node:path');
 const vm=require('node:vm');
 const models=require('../../assets/course-models.js');
 const root=path.resolve(__dirname,'../..');
+test('Week 9 execution trace skips the body at definition and returns after each call',()=>{
+ const {flowFrames}=require('../../weeks/week-09/functions.js');
+ assert.deepEqual(flowFrames.slice(0,3).map(frame=>frame.row),[0,1,5]);
+ assert.deepEqual(flowFrames.map(frame=>frame.linear).filter(row=>row!==null),[0,1,2,3,4,5,6,7,8,9]);
+ for(const caller of [6,7,8]) {
+  const steps=flowFrames.filter(frame=>frame.caller===caller);
+  assert.deepEqual(steps.map(frame=>frame.row),[caller,2,3,4,caller]);
+  assert.deepEqual(steps.map(frame=>frame.phase),['call','inside','inside','inside','return']);
+ }
+ assert.deepEqual(flowFrames.slice(-2).map(frame=>frame.phase),['continue','done']);
+});
 const menu=[{name:'Onigiri',price:150,minutes:3},{name:'Sandwich',price:320,minutes:5},{name:'Curry',price:550,minutes:12},{name:'Udon',price:450,minutes:10}];
 test('budget, coin and game boundaries are explicit',()=>{
  assert.deepEqual(models.affordable([{name:'Onigiri',price:150}],150),['Onigiri']);

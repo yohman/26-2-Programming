@@ -29,6 +29,27 @@
 .fn-panel legend{padding:0;margin-bottom:.3rem;font-weight:700}
 .fn-panel label{white-space:nowrap}
 .functions-week .lesson-links{margin-top:.8rem}
+.fn-execution{max-width:1080px}
+.flow-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(.85rem,3vw,2.4rem)}
+.flow-grid h3{margin:0 0 .55rem;color:#476271;font-size:clamp(.92rem,1.8vw,1.25rem)}
+.flow-sheet{--flow-row:clamp(1.2rem,3.25vh,1.85rem);--flow-pad:clamp(.9rem,2.8vw,1.75rem);list-style:none;margin:0;padding:var(--flow-pad) clamp(1.45rem,5vw,3.4rem);position:relative;display:grid;grid-auto-rows:var(--flow-row);background:#162b3c}
+.flow-sheet li{position:relative;margin:0;display:flex;align-items:center;min-width:0}
+.flow-sheet li>span{display:block;width:var(--stroke-width);height:clamp(4px,.52vw,7px);border-radius:2px;background:#fff;opacity:.25;transition:opacity .15s ease,box-shadow .15s ease}
+.flow-sheet li.is-past>span{opacity:.55}
+.flow-sheet li.is-current>span{opacity:1;box-shadow:0 0 12px #fff8}
+.flow-sheet li.flow-indent{padding-inline-start:17%}
+.flow-sheet li.flow-indent::before{content:"";position:absolute;left:8%;height:100%;width:1px;background:#ffffff3d}
+.flow-sheet li.flow-indent.is-current::before{background:#c2e7f8}
+.flow-sheet li.is-caller>span{opacity:.82;outline:1px solid #a3d3eb;outline-offset:4px}
+.flow-sheet[data-hop]::after{content:"";position:absolute;pointer-events:none;top:calc(var(--flow-pad) + var(--flow-row)*2.5);left:clamp(.7rem,2.5vw,1.45rem);width:clamp(.4rem,1.2vw,.75rem);height:calc(var(--flow-row)*(var(--flow-caller) - 2));border-left:1px solid #a3d3eb;border-top:1px solid #a3d3eb;border-bottom:1px solid #a3d3eb}
+.flow-bottom{display:flex;gap:.65rem 1.25rem;align-items:center;flex-wrap:wrap;margin-top:1rem}
+.flow-buttons{display:flex;gap:.45rem}
+.flow-buttons button{padding:.45rem .7rem;border:1px solid #aebdc4;background:#eff3f5;color:#234861;font-weight:700}
+.flow-buttons button:first-child{min-width:6.7rem}
+.flow-buttons button:disabled{opacity:.45}
+[data-flow-glyph]{margin-inline-end:.45rem}
+.flow-bottom p{margin:0;color:#405462;font-size:clamp(.9rem,1.55vw,1.12rem);min-height:1.6em}
+@media(prefers-reduced-motion:reduce){.flow-sheet li>span{transition:none}}
 .fn-demo{min-width:0}
 .fn-demo .fn-actions{margin-top:0}
 .fn-demo button[aria-pressed="true"]{color:#fff;background:#315876;border-color:#315876}

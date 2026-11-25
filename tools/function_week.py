@@ -1,17 +1,15 @@
 """Bilingual Week 9 functions lesson, with outputs evaluated in Python at build time."""
-import contextlib
 import html
-import io
 import json
 import pprint
 import re
 import zipfile
 import quiz_package
-from function_examples import add_examples
+from function_examples import add_examples, example
 from weather_hackathon import execute_cell
 
 VERSION = '20261126-slide-jump'
-DECK_VERSION = '20261126-code-wrap'
+DECK_VERSION = '20261126-complete-examples'
 QUIZ_VERSION = '20261125-quiz-ab'
 RELEASE = '2026-11-26T12:00:00+09:00'
 SPEC = dict(title='One function, many calls', title_ja='関数を一つ、何度でも',
@@ -26,14 +24,15 @@ GREET = '''def greet():
     return "Hello!"'''
 GREET_NAME = '''def greet_name(name):
     return f"Hello, {name}!"'''
-NAME_LOOP = '''for student in names:
+NAME_LOOP = '''messages = []
+for student in names:
     message = greet_name(student)
-    print(message)'''
+    messages.append(message)
+messages'''
 LABEL = '''def weather_label(city, icon, high, low):
     return f"{icon} {city}\\n↑{high}°C  ↓{low}°C"'''
-BADGE = '''from html import escape
-
-def weather_badge(city, icon, high, low):
+ESCAPE = 'from html import escape'
+BADGE = '''def weather_badge(city, icon, high, low):
     label = weather_label(city, icon, high, low)
     safe_label = escape(label)
     style = ("padding:.75rem;background:#e8eff3;"
@@ -44,12 +43,13 @@ PANEL = '''def weather_panel(cities, forecast):
     badges = []
     for city in cities:
         icon, high, low = forecast[city]
-        badges.append(weather_badge(city, icon, high, low))
+        badge = weather_badge(city, icon, high, low)
+        badges.append(badge)
 
     style = "display:grid;grid-template-columns:repeat(2,1fr);gap:8px"
     return f'<div style="{style}">{"".join(badges)}</div>' '''
 PANEL = PANEL.rstrip()
-DISPLAY = 'from IPython.display import HTML, display\n'
+DISPLAY = '# NotebookでHTMLを表示する\nfrom IPython.display import HTML, display\n'
 
 
 def build(root, c):
@@ -65,11 +65,14 @@ def build(root, c):
         assert day['time'] == [DATE]
         forecast[name] = (icons[day['weather_code'][0]], day['temperature_2m_max'][0], day['temperature_2m_min'][0])
     data_code = 'forecast = '+pprint.pformat(forecast, sort_dicts=False, width=68)+'\n\ncities = ["柏", "札幌", "大阪", "那覇"]'
+    one_city = f'city = "柏"\nicon, high, low = {forecast["柏"]!r}'
     w7 = json.loads((root/'weeks/week-07/weather-response.json').read_text())['daily']
     day_index = w7['time'].index(DATE)
     daily_rows = ''.join(f'    "{key}": {value!r},\n' for key, value in w7.items())
-    prior = 'daily = {\n'+daily_rows+'}'
-    prior += f'\n\nday = {day_index}\nprint(daily["time"][day])\nprint(daily["temperature_2m_max"][day], daily["temperature_2m_min"][day])'
+    prior = example(data='daily = {\n'+daily_rows+'}',
+                    data_note='Week 7に保存した柏の予報',
+                    call=f'day = {day_index}\ndate = daily["time"][day]\nhigh = daily["temperature_2m_max"][day]\nlow = daily["temperature_2m_min"][day]\ndate, high, low',
+                    call_note='同じ番号の日付・最高・最低を取り出す')
     scope = {}
     cells = [c.mdcell('# Week 09 · 関数を一つ、何度でも\n\n上から順に実行し、結果を予想してから値を変えよう。Run cells in order.')]
     slides = []
@@ -148,56 +151,71 @@ def build(root, c):
     note=('1行目：<code>def</code> で定義。<code>:</code> の次の行は右にずらす。2行目：<code>return</code> で結果を返す。',
           'Line 1: <code>def</code> starts the definition. After the colon, indent the next line. Line 2: <code>return</code> gives back a result.')
     add('define','greetを作る','Define greet',
-        run(GREET,'関数を定義 / Define a function',
+        run(example(GREET),'関数を定義 / Define a function',
             note=tuple(re.sub('<[^>]+>','',line) for line in note))+text(*note)
         +'<details class="answer"><summary>'+bi('ここで何が表示される？','What appears if we run just this?')+'</summary>'
         +p('まだ何も表示されません。次のスライドで呼び出します。','Nothing yet. We call it on the next slide.')+'</details>')
     call_note=('Notebookでは、セルの最後の行の値がそのまま表示されます。',
                'A notebook shows the value of the last expression in the cell.')
     add('call','greetを呼ぶ','Call greet',
-        run('greet()','最初の呼び出し / First call',note=call_note)+text(*call_note))
+        run(example(GREET,'greet()'),'最初の呼び出し / First call',note=call_note)+text(*call_note))
     add('argument','かっこの中に、名前を一つ','One name inside the parentheses',
-        run(GREET_NAME+'\n\ngreet_name("Haru")','名前を渡す / Pass a name')
+        run(example(GREET_NAME,'greet_name("Haru")'),'名前を渡す / Pass a name')
         +text('<code>"Haru"</code> が <code>name</code> に入る。<code>"Yui"</code> に変えたら、何が返る？',
               '<code>"Haru"</code> goes into <code>name</code>. What comes back if you change it to <code>"Yui"</code>?'))
-    loop = run(NAMES+'\n\n'+NAME_LOOP,'forの中から呼ぶ / Call inside a loop',show=False)
+    loop = run(example(GREET_NAME,NAME_LOOP,data=NAMES,data_note='名前のリストを用意する',
+                       call_note='1人ずつ関数を呼び、結果をリストに入れる'),
+               'forの中から呼ぶ / Call inside a loop',show=False)
     add('loop','3人なら、3回呼ぶ','Three names, three calls',
         pair(loop,'<div class="fn-trace" data-name-trace><output data-current>—</output>'
              +'<div class="fn-actions">'+action('next','次の1人','Next name')+action('reset','リセット','Reset')+'</div>'
              +'<ol class="fn-printed" aria-live="polite"></ol></div>')
-        +text('<code>for</code> が次の名前を選ぶ。<code>greet_name</code> があいさつを返し、次の行で表示する。',
-              '<code>for</code> picks the next name. <code>greet_name</code> returns a greeting, and the next line displays it.'))
+        +text('<code>for</code> が次の名前を選ぶ。返ってきたあいさつは <code>messages</code> に追加する。',
+              '<code>for</code> picks the next name. Add each returned greeting to <code>messages</code>.'))
     add_examples(root,c,add,run,pair,scope,rich)
     add('week7','Week 7で読んだ daily','The daily data from Week 7',
         run(prior,'Week 7の柏の保存データ / Saved Week 7 Kashiwa data')
         +p('各キーの値はリスト。どのリストでも <code>[1]</code> は同じ日。柏の保存予報で、次の都市比較とは別データです。',
            'Each key holds a list. Index <code>[1]</code> means the same day in every list. This saved Kashiwa forecast is separate from the city comparison.')
         +links([('../week-07/weather-code.html','Week 7のチュートリアル','Week 7 tutorial')]))
-    weather_call = 'print(weather_label("柏", "☁️", 16.6, 6.1))'
     add('label','名前を、都市と天気に','A label for one city',
-        run(LABEL+'\n\n'+weather_call,'都市ラベル / Weather label')
+        run(example(LABEL,'weather_label(city, icon, high, low)',data=one_city,
+                    data_note='柏の天気アイコン、最高気温、最低気温'),
+            '都市ラベル / Weather label')
         +text('入力は4つ。順番を変えたら、何がどこに表示される？ ↑は最高、↓は最低。',
               'There are four inputs. What happens if you swap their order? ↑ is the daily high; ↓ is the low.')
         +p('2026-11-12 · Open-Meteo','2026-11-12 · Open-Meteo','simulation-note'))
     add('data','リストで順番、辞書で値','List for order, dictionary for values',
-        run(data_code+'\n\nprint(forecast[cities[0]])','都市リストと気象データ / City list and weather data')
+        run(example(data=data_code,data_note='4都市分の気象データと表示する順番',
+                    call='forecast[cities[0]]',call_note='最初の都市のデータを見る'),
+            '都市リストと気象データ / City list and weather data')
         +text('<code>cities[0]</code> は「柏」。<code>forecast["柏"]</code> から、アイコン・最高・最低を受け取る。',
               '<code>cities[0]</code> is 柏. <code>forecast["柏"]</code> gives the icon, high and low.')
         +p('<a href="'+SOURCE+'">Open-Meteo</a> の過去気象データ（2026-11-12、℃）。☁️ 曇り、🌦️ 弱い霧雨。',
            '<a href="'+SOURCE+'">Open-Meteo</a> historical weather (2026-11-12, °C). ☁️ Overcast; 🌦️ light drizzle.','simulation-note'))
     add('city-loop','名前のときと、同じfor','The same loop, with cities',
-        run('for city in cities:\n    icon, high, low = forecast[city]\n    print(weather_label(city, icon, high, low))',
+        run(example(LABEL,'for city in cities:\n    icon, high, low = forecast[city]\n    label = weather_label(city, icon, high, low)\n    print(label)',
+                    data=data_code,data_note='都市ごとにアイコン・最高・最低を用意',
+                    call_note='1都市ずつ関数を呼び、改行を含むラベルを表示'),
             '都市ごとに関数を呼ぶ / Call once per city')
         +text('名前リストのときと同じ。forが1都市を選び、weather_labelがその1都市分の文字列を返す。',
               'The pattern is the same as the name list. The loop picks a city; weather_label returns its text.'))
-    code = run(BADGE,'バッジを組み立てる / Build a badge')
-    badge = rich('weather_badge("柏", "☁️", 16.6, 6.1)')
+    badge_source = example(LABEL+'\n\n'+BADGE,'badge = weather_badge(city, icon, high, low)',
+                           data=ESCAPE+'\n\n'+one_city,
+                           data_note='HTML表示に使う escape と柏の天気',
+                           function_note='ラベルを作り、バッジ用のHTMLにする')
+    code = run(badge_source,'バッジを組み立てる / Build a badge')
+    badge = rich('badge')
     add('badge','文字列を、1枚のバッジに','One label becomes one badge',
         pair(code,'<div class="fn-reveal">'+action('reveal','バッジを表示','Reveal badge')+'<div data-fn-result hidden>'+badge+'</div></div>')
         +text('中で weather_label を呼び、見た目を付けてHTMLを返す。HTMLはここでは表示用。escapeは文字を安全に表示するため。',
               'The function calls weather_label, adds styling and returns HTML for display. escape keeps the label as text.'))
-    code = run(PANEL,'都市をまとめて表示 / Compose a city panel')
-    panel = rich('weather_panel(cities, forecast)')
+    panel_source = example(LABEL+'\n\n'+BADGE+'\n\n'+PANEL,'panel = weather_panel(cities, forecast)',
+                           data=ESCAPE+'\n\n'+data_code,
+                           data_note='HTML表示に使う escape と4都市分の天気',
+                           function_note='ラベル、バッジ、パネルを作る関数')
+    code = run(panel_source,'都市をまとめて表示 / Compose a city panel')
+    panel = rich('panel')
     buttons = ''.join('<label><input type="checkbox" value="'+name+'" checked> '+name+'</label>' for name in names)
     add('panel','関数の中で、forが回る','A loop inside the panel function',
         pair(code,'<div class="fn-panel"><fieldset><legend>'+bi('表示する都市','Cities to show')+'</legend>'+buttons+'</fieldset>'
@@ -225,11 +243,8 @@ def build(root, c):
     head = c.page_head('Week 09 · '+SPEC['title'],'course-decks.css','course-decks.js',DECK_VERSION)
     head += f'<link rel="stylesheet" href="../week-08/bicycle-week.css?v={DECK_VERSION}"><link rel="stylesheet" href="functions.css?v={DECK_VERSION}"><link rel="stylesheet" href="../../assets/slide-annotations.css"><script src="../../assets/slide-annotations.js" defer></script><script src="../../assets/slide-swipe.js" defer></script><script src="../week-08/bicycle-week.js?v={DECK_VERSION}" defer></script><script src="functions.js?v={DECK_VERSION}" defer></script></head>'
     nav = '<nav class="slide-controls" aria-label="Slide navigation"><div class="slide-nav-group"><button id="previous-slide" type="button">← '+bi('前へ','Previous')+'</button><span id="slide-count" aria-live="polite"></span><button id="next-slide" type="button">'+bi('次へ','Next')+' →</button></div><button id="slide-fullscreen" type="button" class="slide-fullscreen" aria-pressed="false">⛶</button></nav>'
-    stream = io.StringIO()
-    with contextlib.redirect_stdout(stream):
-        exec(NAME_LOOP,scope)
     data = json.dumps(dict(nameTrace=[(f'greet_name({json.dumps(name)})', result)
-                                     for name,result in zip(scope['names'],stream.getvalue().splitlines(),strict=True)]),
+                                     for name,result in zip(scope['names'],scope['messages'],strict=True)]),
                       ensure_ascii=False).replace('</','<\\/')
     c.write(dest/'lecture.html',head+f'<body class="lecture-page course-deck functions-week" data-week="9" data-release="{RELEASE}">'+header+'<main><div id="slides-view" class="view">'+nav+'<div class="slide-stage">'+''.join(slides)+'</div></div></main><script id="lesson-data" type="application/json">'+data+'</script></body></html>')
     quiz_package.build(root,c)

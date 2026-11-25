@@ -13,6 +13,7 @@
 .fn-parens{color:#307153}
 .fn-pair{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:.55rem 1.5rem;align-items:start;margin-bottom:1rem}
 .fn-pair>.lesson-code,.fn-pair>.lesson-output{grid-column:1;min-width:0}
+.functions-week .fn-pair pre[data-language="python"]{font-size:clamp(1rem,1.47vw,1.35rem);line-height:1.32}
 .fn-pair> :last-child{grid-column:2;grid-row:1/span 2;min-width:0}
 .fn-aside,.fn-trace,.fn-reveal,.fn-panel{border-top:3px solid #315876;padding:.85rem .1rem 0;font-size:clamp(.92rem,1.4vw,1.2rem)}
 .fn-aside li+li{margin-top:.7rem}
@@ -28,9 +29,6 @@
 .fn-panel legend{padding:0;margin-bottom:.3rem;font-weight:700}
 .fn-panel label{white-space:nowrap}
 .functions-week .lesson-links{margin-top:.8rem}
-.fn-input-data{margin:.65rem 0;color:#526873;font-size:.88rem}
-.fn-input-data summary{cursor:pointer}
-.functions-week .fn-input-data pre{font-size:.84rem;max-height:13rem;white-space:pre}
 .fn-demo{min-width:0}
 .fn-demo .fn-actions{margin-top:0}
 .fn-demo button[aria-pressed="true"]{color:#fff;background:#315876;border-color:#315876}

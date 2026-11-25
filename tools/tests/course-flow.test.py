@@ -1,6 +1,6 @@
 """Verify saved outputs, portable scripts, download bundles and timer behavior."""
 from pathlib import Path
-import contextlib, csv, io, json, re, subprocess, sys, tempfile, types, zipfile
+import ast, contextlib, csv, html, io, json, re, subprocess, sys, tempfile, types, zipfile
 
 ROOT=Path(__file__).resolve().parents[2]
 sys.path.insert(0,str(ROOT/'tools'))
@@ -63,8 +63,16 @@ assert any('Boundary or no-match case' in cell['source'] for cell in outline['ce
 payload=json.loads(re.search(r'<script id="lesson-data" type="application/json">(.*?)</script>',lecture,re.S)[1])
 nb=json.loads((ROOT/'weeks/week-09/practice.ipynb').read_text())
 loop=next(c for c in nb['cells'] if c['cell_type']=='code' and '\nfor student in names:' in c['source'])
-expected=''.join(o.get('text','') for o in loop['outputs']).strip()
-assert '\n'.join(result for _,result in payload['nameTrace'])==expected
+expected=ast.literal_eval(loop['outputs'][0]['data']['text/plain'])
+assert [result for _,result in payload['nameTrace']]==expected
+
+# Every displayed code example runs on its own and matches a notebook cell.
+assert '使うデータを見る' not in lecture
+notebook_sources={c['source'] for c in nb['cells'] if c['cell_type']=='code'}
+for snippet in re.findall(r'<pre data-language="python"><code>(.*?)</code></pre>',lecture,re.S):
+    snippet=html.unescape(snippet)
+    assert snippet.startswith('# ') and snippet in notebook_sources
+    execute_cell(snippet,{})
 
 script=ROOT/'weeks/week-10/budget_tool.py'
 for value,expected in [('150','Onigiri'),('abc','whole number'),('-1','zero or more')]:

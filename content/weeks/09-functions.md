@@ -16,6 +16,9 @@ overview_ja: 自転車盗ハッカソンの振り返り、小テスト①、Mori
 homework_title: Make a notebook that does something
 homework_title_ja: 関数で「何かができる」Notebook
 ---
+## Student Work
+EN: [Student work: Week 8 bike hackathon](gallery.html?week=8) — Preview team notebooks and their saved outputs.
+JP: [みんなの作品：Week 8 自転車盗ハッカソン](gallery.html?week=8) — グループのNotebookと実行結果をプレビュー。
 ## Lecture Flow
 EN: Recap, pop quiz, then Mori’s Corner (10 minutes). Try a few short functions and use them on Pokémon, earthquake, bike, population, and weather data. Finish with notebook work.
 JP: 先週の振り返りと小テスト①の後、Mori’s Corner（10分）。短い関数から始め、ポケモン・地震・自転車盗・人口・天気のデータで試す。最後にNotebook制作。

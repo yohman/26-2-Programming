@@ -463,9 +463,12 @@ def read_roster(path=None):
 
 
 def submission_week(folder):
-    """Prefer UNIPA's assignment number when an export is inside a later-week folder."""
-    exports = {int(match[1]) for path in folder.iterdir() if path.is_dir()
-               and (match := re.fullmatch(r'\d{4}_[A-Z0-9]+_(\d{1,2})_\d{14}', path.name))}
+    """Resolve UNIPA assignment numbers to teaching weeks; an explicit mapping takes precedence."""
+    mapping = folder.parent / '.unipa-assignment-weeks.json'
+    overrides = json.loads(mapping.read_text()) if mapping.exists() else {}
+    batches = [match for path in folder.iterdir() if path.is_dir()
+               and (match := re.fullmatch(r'(\d{4}_[A-Z0-9]+_(\d{1,2}))_\d{14}', path.name))]
+    exports = {int(overrides.get(match[1], match[2])) for match in batches}
     folder_week = int(re.fullmatch(r'week[-_]?0?(\d+)', folder.name)[1])
     return next(iter(exports)) if len(exports) == 1 else folder_week
 
@@ -515,7 +518,7 @@ def latest_student_files(folder):
     return result
 
 
-def prepare(only_week=None):
+def prepare(only_week=None, saved_only=False):
     roster, roster_notes = read_roster()
     OUTPUT.mkdir(parents=True, exist_ok=True)
     API_CACHE.mkdir(exist_ok=True)
@@ -551,7 +554,7 @@ def prepare(only_week=None):
                     notebook, recovered = read_notebook(file) if file else (None, None)
                 except (ValueError, UnicodeError) as error:
                     notebook = None; invalid = 'Notebook could not be read; upload may still be incomplete: ' + str(error)
-                urls = api_urls(notebook) if notebook else []
+                urls = api_urls(notebook) if notebook and not saved_only else []
                 responses = {}
                 if urls:
                     with ThreadPoolExecutor(max_workers=4) as pool:
@@ -562,8 +565,13 @@ def prepare(only_week=None):
                 destination = OUTPUT / digest; destination.mkdir(exist_ok=True)
                 previous_record = previous_records.get((week, student, file.name if file else None))
                 unchanged_notebook_only = (previous_record and notebook==previous_record.get('notebook')
+                                           and not previous_record['replay'].get('saved_only')
                                            and all(path.suffix.lower()=='.ipynb' for path in files))
-                execution = previous_record['replay'] if unchanged_notebook_only else replay(notebook, files, folder, digest, responses) if notebook else {'cells': [], 'notes': [invalid or 'No notebook submitted.'], 'generated': []}
+                if saved_only and notebook:
+                    execution = {'cells': [], 'notes': ['Saved notebook outputs only; the submission was not rerun.'],
+                                 'generated': [], 'saved_only': True}
+                else:
+                    execution = previous_record['replay'] if unchanged_notebook_only else replay(notebook, files, folder, digest, responses) if notebook else {'cells': [], 'notes': [invalid or 'No notebook submitted.'], 'generated': []}
                 if recovered and recovered not in execution['notes']: execution['notes'].append(recovered)
                 assets = []
                 for attached in files:
@@ -662,11 +670,12 @@ if __name__ == '__main__':
     parser.add_argument('--worker')
     parser.add_argument('--serve', action='store_true')
     parser.add_argument('--week', type=int, help='Refresh one assignment week; preserve other previews')
+    parser.add_argument('--saved-only', action='store_true', help='Use submitted outputs; do not run student notebooks')
     args = parser.parse_args()
     if args.worker:
         worker(args.worker)
     else:
-        prepare(args.week)
+        prepare(args.week, saved_only=args.saved_only)
         if args.serve:
             print('Local admin: http://127.0.0.1:8766/admin/', flush=True)
             ThreadingHTTPServer(('127.0.0.1', 8766), Handler).serve_forever()

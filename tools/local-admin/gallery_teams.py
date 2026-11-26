@@ -1,6 +1,8 @@
-"""Resolve declared Week 7 authors against the roster, without fuzzy title matching."""
+"""Resolve declared authors against the roster, without fuzzy title matching."""
 import re
 import unicodedata
+
+GROUP_WEEKS = (7, 8)
 
 
 def normalize(text):
@@ -78,7 +80,7 @@ def people(entries, context, roster):
             for s in sorted(ids) if s in roster]
 
 
-def group_projects(entries, context, roster, previous, strict_fingerprint, group_weeks=(7,)):
+def group_projects(entries, context, roster, previous, strict_fingerprint, group_weeks=GROUP_WEEKS, verified_groups=()):
     """Use explicit author sets; preserve distinct submissions as notebook versions."""
     parent = list(range(len(entries)))
     def find(i):
@@ -94,6 +96,11 @@ def group_projects(entries, context, roster, previous, strict_fingerprint, group
         key=(entry['week'],strict_fingerprint(entry))
         if key in fingerprints:union(i,fingerprints[key])
         fingerprints[key]=i
+    by_id={entry['id']:i for i,entry in enumerate(entries)}
+    for verified in verified_groups:
+        indices=[by_id[id] for id in verified if id in by_id]
+        if len(indices)>1 and len({entries[i]['week'] for i in indices})==1:
+            for i in indices[1:]:union(indices[0],i)
     prior_by_member = {}
     for project in previous:
         if project['week'] not in group_weeks:continue
@@ -101,11 +108,16 @@ def group_projects(entries, context, roster, previous, strict_fingerprint, group
         member_ids={sid for sid,p in roster.items() if normalize(p['name']) in names}
         if len(member_ids)>=2:
             for sid in member_ids:prior_by_member.setdefault((project['week'],sid),[]).append(member_ids)
-    for i,entry in enumerate(entries):
+    submissions_by_student = {}
+    for entry in entries:
+        key = (entry['week'], context[entry['id']]['student'])
+        submissions_by_student[key] = submissions_by_student.get(key, 0) + 1
+    for entry in entries:
         if entry['week'] not in group_weeks:continue
         current=context[entry['id']]
-        if not current['authors']:
-            known=prior_by_member.get((entry['week'],current['student']),[])
+        key=(entry['week'],current['student'])
+        if not current['authors'] and submissions_by_student[key]==1:
+            known=prior_by_member.get(key,[])
             if len(known)==1:current['authors']=set(known[0])
     # Named authors may have submitted a different revision or omitted their own header.
     for i,a in enumerate(entries):
@@ -115,6 +127,9 @@ def group_projects(entries, context, roster, previous, strict_fingerprint, group
         for j,b in enumerate(entries):
             if i==j or b['week']!=a['week']:continue
             cb=context[b['id']];other=cb['authors']|{cb['student']}
+            # A member's second notebook may be independent work. Do not infer
+            # that it belongs to the team without a team credit or exact match.
+            if len(other)==1 and submissions_by_student[(b['week'],cb['student'])]>1:continue
             if cb['student'] in team and (len(other)==1 or other<=team or team<=other):union(i,j)
     components={}
     for i,entry in enumerate(entries):components.setdefault(find(i),[]).append(entry)

@@ -37,17 +37,21 @@ with tempfile.TemporaryDirectory() as directory:
  assert chosen['1111111111'][0].name.endswith('new.ipynb')
  assert chosen['2222222222'][0].name.endswith('old.ipynb')
  review.extract_new_exports(folder) # Repeat refresh keeps originals intact.
+ bike=admin/'week08'/'2026_COURSE_9_20261126115142';bike.mkdir(parents=True)
+ assert review.submission_week(bike.parent)==9
+ (admin/'.unipa-assignment-weeks.json').write_text(json.dumps({'2026_COURSE_9':8}))
+ assert review.submission_week(bike.parent)==8 and review.submission_week(folder)==7
  # The declared third author gets credit without a separate submission.
  (admin/'roster.csv').write_text('学籍番号,学生氏名,学生氏名_英語,学生氏名_カナ\n'+''.join(f"{sid},{p['name']},{p['reading']},{p['kana']}\n" for sid,p in roster.items()))
- def index_for(filename,authors=True,third=False):
+ def index_for(filename,authors=True,third=False,week=7):
   items=[]
   for i,student in enumerate(list(roster)[:3 if third else 2]):
-   identity=f'private-{i}-{filename}';target=output/identity;target.mkdir(exist_ok=True)
+   identity=f'private-{week}-{i}-{filename}';target=output/identity;target.mkdir(exist_ok=True)
    item={'id':identity,'student':student,'file':f'{student}_1_1_{filename}.ipynb'};items.append(item)
    nb=notebook('メンバー：しんご、ゆずき、ひなた' if authors else '# Updated umbrella report','sun' if i==0 else 'rain')
    record={'notebook':nb,'student_name':roster[student]['name'],'student_reading':roster[student]['reading'],'title':'Umbrella forecast','replay':{'cells':[]}}
    (target/'submission.json').write_text(json.dumps(record))
-  (output/'index.json').write_text(json.dumps({'weeks':[{'week':7,'submissions':items}]}))
+  (output/'index.json').write_text(json.dumps({'weeks':[{'week':week,'submissions':items}]}))
   return items
  items=index_for('old')
  key=json.dumps([7,items[0]['student'],items[0]['file']],separators=(',',':'))
@@ -79,6 +83,11 @@ with tempfile.TemporaryDirectory() as directory:
   unreadable=[v for v in damaged_group['variants'] if v.get('preview_status')=='unreadable']
   assert damaged_group['has_notebook'] and damaged_group['submission_count']==3 and len(damaged_group['members'])==3
   assert len(unreadable)==1 and unreadable[0]['notebook_path'] is None and unreadable[0]['has_notebook'] is False
+  index_for('bike',week=8)
+  gallery.publish([],push=False,only_week=8)
+  later=json.loads(public.read_text())['submissions']
+  assert later[0]==damaged_group
+  assert later[1]['week']==8 and len(later[1]['members'])==3 and len(later[1]['variants'])==2
 
 
 # A corrupt/empty group upload cannot become the default or inherit a teammate's path.
@@ -88,5 +97,25 @@ context={valid['id']:{'student':'1111111111','authors':{'1111111111','2222222222
 group=teams.group_projects([invalid,valid],context,roster,[],gallery.notebook_fingerprint)[0]
 assert group['_primary_id']==valid['id'] and group['has_notebook']
 assert group['submission_count']==2 and len(group['members'])==2
+
+# A team member's unrelated second notebook keeps a separate entry.
+team=dict(valid,id='c'*20,week=8)
+copy=dict(team,id='d'*20,student_name='馬塲 信吾')
+extra=dict(team,id='e'*20,title='Independent report',notebook=notebook('# Separate idea','another result'))
+context={
+ team['id']:{'student':'1111111111','authors':{'1111111111','2222222222'}},
+ copy['id']:{'student':'2222222222','authors':{'1111111111','2222222222'}},
+ extra['id']:{'student':'1111111111','authors':set()},
+}
+prior=[{'id':team['id'],'week':8,'members':[{'name':roster[s]['name']} for s in ['1111111111','2222222222']]}]
+projects=teams.group_projects([team,copy,extra],context,roster,prior,gallery.notebook_fingerprint)
+assert [len(group['_sources']) for group in projects]==[2,1]
+assert len(projects[1]['members'])==1
+independent=dict(extra,id='f'*20,student_name=roster['3333333333']['name'],
+                 notebook=notebook('# Updated independent work','changed output'))
+context[independent['id']]={'student':'3333333333','authors':set()}
+verified=teams.group_projects([extra,independent],context,roster,[],gallery.notebook_fingerprint,
+                             verified_groups=[(extra['id'],independent['id'])])
+assert len(verified)==1 and len(verified[0]['members'])==2
 
 print('PASS: author names/kana/roman variants, no ambiguous-name guesses, latest ZIP selection, full member credits, distinct versions, stable links and hearts across tomorrow’s refresh.')

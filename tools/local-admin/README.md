@@ -14,9 +14,13 @@ Place the student roster in `admin/roster.csv`. The importer finds the student-t
 
 The entire `admin/` folder is ignored by Git: originals, exports, generated pages, review JSON, and the Python environment must never be committed or copied to GitHub Pages. Public notebook excerpts are exported separately (see below).
 
+When a UNIPA assignment number differs from its teaching week, add a private mapping in `admin/.unipa-assignment-weeks.json`. Keys are export filenames without the timestamp or extension (for example, `"2026_COURSE_9": 8`). A local import with `--week 8 --saved-only` keeps the notebook's existing outputs without running student code.
+
 ## Group review
 
 Admin uses the same project groups, thumbnails, titles and member credits as the class gallery. Counts distinguish projects from submitted notebooks. Open a group to switch between distinct submitted notebook versions, saved outputs, local replays and original attachments. Previous private submission links still open the corresponding group/version.
+
+If manually verified versions share a project but lack usable author credits, the ignored `admin/.gallery-project-notes.json` can list their opaque submission IDs together in a week's `groups`. Its optional `titles` maps submission IDs to gallery card titles; the notebook content remains unchanged.
 
 There is one heart per group on the grid, mirrored at the top and bottom of its preview. A heart on any member makes the group selected. Turning the group off clears all member selections in one immediate, batched save. Existing selections are retained. The private submission index and originals remain in ignored `admin/`; the browser joins them to the already-published gallery metadata without exporting student IDs.
 

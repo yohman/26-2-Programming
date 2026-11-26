@@ -323,6 +323,8 @@ def build_challenge(root, dest, c, header):
                       ('homework_title','Make a notebook that does something'),('homework_title_ja','関数で「何かができる」Notebook')]:
         front=re.sub(r'^'+key+r':.*$',key+': '+value,front,flags=re.M)
     sections = [
+        ('Student Work',('[みんなの作品：Week 8 自転車盗ハッカソン](gallery.html?week=8) — グループのNotebookと実行結果をプレビュー。',
+                         '[Student work: Week 8 bike hackathon](gallery.html?week=8) — Preview team notebooks and their saved outputs.')),
         ('Lecture Flow',('先週の振り返りと小テスト①の後、Mori’s Corner（10分）。短い関数から始め、ポケモン・地震・自転車盗・人口・天気のデータで試す。最後にNotebook制作。',
                          'Recap, pop quiz, then Mori’s Corner (10 minutes). Try a few short functions and use them on Pokémon, earthquake, bike, population, and weather data. Finish with notebook work.')),
         ('In-Class Notebook',('小テスト①は個人で6問。AはAIなしで6分。保存してAを残し、BはAI利用OKで6分。得点は各30点満点、提出はNotebook 1ファイル。パスワードは授業で案内します。',

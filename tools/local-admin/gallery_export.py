@@ -10,7 +10,7 @@ import os
 import tempfile
 import threading
 from datetime import datetime
-from gallery_teams import declared_members, group_projects
+from gallery_teams import GROUP_WEEKS, declared_members, group_projects
 from review import read_roster
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -134,7 +134,7 @@ def public_notebook(entry):
         'language_info': {'name': 'python'}}, 'cells': cells}
 
 
-def publish(hearts, push=True):
+def publish(hearts, push=True, only_week=None):
     if not isinstance(hearts, list) or len(hearts) > 1000:
         raise ValueError('Invalid heart selection')
     index = json.loads((ROOT / 'admin/_review/index.json').read_text())
@@ -143,6 +143,8 @@ def publish(hearts, push=True):
     roster_people, _ = read_roster(ROOT / 'admin/roster.csv')
     alias_path = ROOT / 'admin/.gallery-author-aliases.json'
     author_aliases = json.loads(alias_path.read_text()) if alias_path.exists() else {}
+    notes_path = ROOT / 'admin/.gallery-project-notes.json'
+    project_notes = json.loads(notes_path.read_text()) if notes_path.exists() else {}
     previous = json.loads(PUBLIC.read_text()).get('submissions', []) if PUBLIC.exists() and PUBLIC.read_text().lstrip().startswith('{') else []
     student_ids = {s['student'] for w in index['weeks'] for s in w['submissions']}
     roster = ROOT / 'admin/roster.csv'
@@ -160,19 +162,24 @@ def publish(hearts, push=True):
     for week in index['weeks']:
         for item in week['submissions']:
             key = (week['week'], item['student'], item['file'] or '')
+            if only_week is not None and week['week'] != only_week:
+                if key in selected:
+                    accepted.append(json.dumps(list(key), ensure_ascii=False, separators=(',', ':')))
+                continue
             record = json.loads((ROOT / 'admin/_review' / item['id'] / 'submission.json').read_text())
             notebook = record.get('notebook') or {'cells': [{'cell_type': 'markdown', 'source': 'Notebookのプレビューはありません。 / No notebook preview is available.'}]}
             cells = [{k: cell[k] for k in ('cell_type', 'source', 'outputs', 'execution_count', 'attachments') if k in cell} for cell in notebook['cells']]
             runs = [{'cell': run['cell'], 'outputs': [o for o in run['outputs'] if o.get('metadata', {}).get('local_widget_preview')]} for run in record['replay']['cells']]
             entry_id = public_id(key)
             roster_people.setdefault(item['student'], {'name':record['student_name'] or 'Student','reading':record['student_reading'] or ''})
-            context[entry_id] = {'student':item['student'], 'key':key, 'authors':declared_members(notebook, roster_people, author_aliases) if week['week']==7 else set()}
-            entries.append(clean({'id': entry_id, 'week': week['week'], 'featured': key in selected, 'has_notebook': bool(record.get('notebook')), **({'preview_status':'ready' if record.get('notebook') else 'unreadable' if item['file'] else 'missing'} if week['week']==7 else {}), 'student_name': record['student_name'] or 'Student', 'student_reading': record['student_reading'] or '', 'title': re.sub(r'^\d{8,12}_\d+_\d+_', '', record['title']), 'notebook': {'cells': cells}, 'replay': {'cells': runs}, 'attachments': []}))
+            context[entry_id] = {'student':item['student'], 'key':key, 'authors':declared_members(notebook, roster_people, author_aliases) if week['week'] in GROUP_WEEKS else set()}
+            entries.append(clean({'id': entry_id, 'week': week['week'], 'featured': key in selected, 'has_notebook': bool(record.get('notebook')), **({'preview_status':'ready' if record.get('notebook') else 'unreadable' if item['file'] else 'missing'} if week['week']==7 else {}), 'student_name': record['student_name'] or 'Student', 'student_reading': record['student_reading'] or '', 'title': re.sub(r'^\d{8,12}_\d+_\d+_', '', project_notes.get(str(week['week']),{}).get('titles',{}).get(entry_id,record['title'])), 'notebook': {'cells': cells}, 'replay': {'cells': runs}, 'attachments': []}))
             if key in selected:
                 accepted.append(json.dumps(list(key), ensure_ascii=False, separators=(',', ':')))
     submission_count = len(entries)
     source_entries = entries
-    entries = group_projects(entries, context, roster_people, previous, notebook_fingerprint)
+    verified_groups = [group for notes in project_notes.values() for group in notes.get('groups',[])]
+    entries = group_projects(entries, context, roster_people, previous, notebook_fingerprint, verified_groups=verified_groups)
     selected_ids = {public_id(key) for key in selected}
     for entry in entries:
         # An updated attachment name must not erase an existing group heart.
@@ -226,9 +233,9 @@ def publish(hearts, push=True):
             signature = notebook_fingerprint(source)
             if signature not in versions:
                 asset = assets[source['id']]
-                fields = ('id','title','notebook_path','replay_path') + (('has_notebook','preview_status') if entry['week']==7 else ())
+                fields = ('id','title','notebook_path','replay_path') + (('has_notebook','preview_status') if entry['week'] in GROUP_WEEKS else ())
                 versions[signature] = {key:asset[key] for key in fields if key in asset}
-                if entry['week']==7:
+                if entry['week'] in GROUP_WEEKS:
                     versions[signature].setdefault('notebook_path',None)
                     versions[signature].setdefault('replay_path',None)
                 versions[signature]['submitters'] = []
@@ -236,6 +243,9 @@ def publish(hearts, push=True):
             if person not in versions[signature]['submitters']:versions[signature]['submitters'].append(person)
         record['variants'] = list(versions.values())
         manifest.append(record)
+    if only_week is not None:
+        manifest.extend(entry for entry in previous if entry['week'] != only_week)
+        manifest.sort(key=lambda entry:entry['week'])
     write_json_atomic(PUBLIC, {'updated':datetime.now().astimezone().isoformat(), 'submissions':manifest})
     STATE.write_text(json.dumps(accepted, ensure_ascii=False))
     save_hearts(accepted)

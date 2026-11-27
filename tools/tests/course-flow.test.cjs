@@ -11,14 +11,14 @@ test('Week 10 ASCII demo plays, steps, and stops on slide change',()=>{
  const data={textContent:deck.match(/id="ascii-data">(.*?)<\/script>/s)[1]};
  const rain=JSON.parse(data.textContent).rain;
  const picture={},count={};
- const button=()=>({addEventListener(type,click){this[type]=click;}});
+ const button=(asciiPlay='')=>({dataset:{asciiPlay},addEventListener(type,click){this[type]=click;}});
  const play=button(),step=button(),view=button();
  const elements={'.ascii-output':picture,'[data-ascii-index]':count,
   '[data-ascii-play]':play,'[data-ascii-step]':step};
  let tick;
  vm.runInNewContext(fs.readFileSync(path.join(dir,'ascii.js'),'utf8'),{
   document:{getElementById:id=>id==='ascii-data'?data:view,addEventListener(){},
-   querySelectorAll:()=>[{dataset:{asciiDemo:'rain'},querySelector:key=>elements[key]}]},
+   querySelectorAll:()=>[{dataset:{asciiDemo:'rain'},querySelectorAll:()=>[play],querySelector:key=>elements[key]}]},
   setInterval(fn,delay){assert.equal(delay,280);tick=fn;return 1;},
   clearInterval(){tick=null;}
  });
@@ -29,6 +29,26 @@ test('Week 10 ASCII demo plays, steps, and stops on slide change',()=>{
  view['lecture:slidechange']();assert.equal(tick,null);assert.equal(play.disabled,false);
  play.click();for(let i=1;i<rain.frames.length;i++)tick();
  assert.equal(tick,null);assert.equal(count.textContent,'09 / 09');
+});
+test('Week 10 spinner timing controls replay the same frames with different pauses',()=>{
+ const dir=path.join(root,'weeks/week-10');
+ const deck=fs.readFileSync(path.join(dir,'lecture.html'),'utf8');
+ const data={textContent:deck.match(/id="ascii-data">(.*?)<\/script>/s)[1]};
+ const button=(asciiPlay='')=>({dataset:{asciiPlay},addEventListener(type,click){this[type]=click;}});
+ const fast=button('200'),slow=button('800'),step=button(),picture={},count={},readout={};
+ const elements={'.ascii-output':picture,'[data-ascii-index]':count,'[data-ascii-step]':step,'[data-ascii-delay]':readout};
+ let tick, pause;
+ vm.runInNewContext(fs.readFileSync(path.join(dir,'ascii.js'),'utf8'),{
+  document:{getElementById:id=>id==='ascii-data'?data:null,addEventListener(){},
+   querySelectorAll:()=>[{dataset:{asciiDemo:'spinner'},querySelectorAll:()=>[fast,slow],querySelector:key=>elements[key]}]},
+  setInterval(fn,delay){pause=delay;tick=fn;return 1;},clearInterval(){tick=null;}
+ });
+ fast.click();assert.equal(pause,200);assert.equal(readout.textContent,'sleep(0.2)');
+ tick();assert.equal(picture.textContent,'/');
+ slow.click();assert.equal(pause,800);assert.equal(readout.textContent,'sleep(0.8)');
+ assert.equal(picture.textContent,'|');assert.equal(fast.disabled,false);
+ tick();assert.equal(picture.textContent,'/');
+ step.click();assert.equal(tick,null);assert.equal(picture.textContent,'-');
 });
 test('Week 9 execution trace skips the body at definition and returns after each call',()=>{
  const {flowFrames}=require('../../weeks/week-09/functions.js');

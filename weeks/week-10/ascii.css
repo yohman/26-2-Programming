@@ -41,6 +41,11 @@
 }
 .ascii-actions button:disabled { opacity: .45; cursor: default; }
 .ascii-actions [data-ascii-index] { margin-inline-start: .4rem; font: .75rem var(--mono); }
+.ascii-actions .ascii-delay { margin-inline-start: .4rem; color: #315876; font: 700 1rem var(--mono); }
+.ascii-timing .ascii-preview { max-width: 32rem; }
+.ascii-week .ascii-demo.timing .ascii-output,
+.ascii-week .ascii-demo.single .ascii-output { font-size: clamp(1.35rem, 4vw, 2.65rem); }
+.ascii-week .ascii-demo.timing .ascii-output { padding: .6rem 1rem; }
 .ascii-week .ascii-hello-output { color: #244237; background: #eaf2ed; }
 .ascii-week summary { cursor: pointer; }
 .ascii-week .ascii-challenge { background: #edf2ee; }

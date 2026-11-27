@@ -7,8 +7,9 @@
     const {frames, delay} = examples[demo.dataset.asciiDemo];
     const picture = demo.querySelector('.ascii-output');
     const count = demo.querySelector('[data-ascii-index]');
-    const play = demo.querySelector('[data-ascii-play]');
+    const plays = demo.querySelectorAll('[data-ascii-play]');
     const step = demo.querySelector('[data-ascii-step]');
+    const delayReadout = demo.querySelector('[data-ascii-delay]');
     let index = 0;
     let timer = null;
     const show = () => {
@@ -18,10 +19,12 @@
     const stop = () => {
       clearInterval(timer);
       timer = null;
-      play.disabled = false;
+      plays.forEach(play => { play.disabled = false; });
     };
-    play.addEventListener('click', () => {
+    plays.forEach(play => play.addEventListener('click', () => {
       demos.forEach(reset => reset());
+      const pause = Number(play.dataset.asciiPlay) || delay;
+      if (delayReadout) delayReadout.textContent = 'sleep(' + (pause / 1000) + ')';
       index = 0;
       show();
       play.disabled = true;
@@ -29,8 +32,8 @@
         index += 1;
         show();
         if (index === frames.length - 1) stop();
-      }, delay);
-    });
+      }, pause);
+    }));
     step.addEventListener('click', () => {
       stop();
       index = (index + 1) % frames.length;

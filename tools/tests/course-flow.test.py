@@ -39,7 +39,7 @@ for week in range(9,15):
         assert pack.testzip() is None
         assert all(name.startswith(f'week-{week:02}/') and '..' not in name for name in pack.namelist())
         if week==10:
-            assert set(pack.namelist())=={'week-10/'+n for n in ('hello.py','tiny.py','train.py','rain.py','skyline.py','signal.py','launch.py')}
+            assert set(pack.namelist())=={'week-10/'+n for n in ('hello.py','tiny.py','spinner.py','dot.py','emoji.py','train.py','rain.py','skyline.py','signal.py','launch.py')}
             for name in pack.namelist():
                 assert pack.read(name)==(ROOT/'weeks'/name).read_bytes()
         if week==12:assert f'week-{week:02}/click_model.py' in pack.namelist()
@@ -92,14 +92,16 @@ assert 'id="first-file"' in ascii_challenge and 'id="homework"' in ascii_challen
 assert ascii_payload(ascii_deck)==ascii_payload(ascii_challenge)
 clear='\x1b[2J\x1b[H'
 assert 'w10-ascii-skyline' in ascii_deck and 'w10-ascii-launch' in ascii_deck
-for name,separator,frame_count in [('tiny',clear,12),('train','\r',18),('rain',clear,9),('signal',clear,4),('launch',clear,10)]:
+assert 'data-ascii-play="200"' in ascii_deck and 'data-ascii-play="800"' in ascii_deck
+for name,separator,frame_count in [('tiny',clear,12),('spinner','\r',12),('dot','\r',12),('emoji','\r',6),
+                                   ('train','\r',18),('rain',clear,9),('signal',clear,4),('launch',clear,10)]:
     script=ascii_folder/(name+'.py')
     code=script.read_text().rstrip()
     assert html.escape(code) in ascii_challenge
     assert (f'data-ascii-demo="{name}"' if name=='tiny' else html.escape('def flight_frame' if name=='launch' else code)) in ascii_deck
     result=subprocess.check_output([sys.executable,str(script)],cwd=tempfile.gettempdir(),timeout=6)
     pictures=result.decode().split(separator)[1:]
-    if name=='train':pictures[-1]=pictures[-1].rstrip('\n')
+    if separator=='\r':pictures[-1]=pictures[-1].rstrip('\n')
     assert pictures==ascii_payload(ascii_deck)[name]['frames'] and len(pictures)==frame_count
     if name=='launch':
         assert 'READY' in pictures[0] and 'LIFTOFF' in pictures[1] and 'ORBIT REACHED' in pictures[-1]
@@ -108,6 +110,9 @@ for name,separator,frame_count in [('tiny',clear,12),('train','\r',18),('rain',c
     if name=='tiny':
         assert {'🙂','😮'}=={frame.splitlines()[-1][-1] for frame in pictures}
         assert [i for i,frame in enumerate(pictures) if frame.splitlines()[1].index('.')==7+i]==list(range(12))
+    if name=='spinner':assert pictures==['|','/','-','\\']*3
+    if name=='dot':assert pictures==[' '*i+'.' for i in range(12)]
+    if name=='emoji':assert pictures==['🙂','😮','😄']*2
     assert len(set(pictures))>=3
 skyline=subprocess.check_output([sys.executable,str(ascii_folder/'skyline.py')],cwd=tempfile.gettempdir(),timeout=2).decode()
 assert len(skyline.splitlines())==7 and skyline.count('[#]')==22

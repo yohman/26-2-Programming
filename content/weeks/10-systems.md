@@ -24,8 +24,8 @@ challenge_title_ja: ASCIIチャレンジ
 EN: 0–20 min: save and run a .py file. 20–40: frames, loops, animation. 40–70: build. 70–90: test and share. 90–100: final project idea.
 JP: 0–20分：.pyを作って実行、20–40分：1コマ・ループ・アニメーション、40–70分：制作、70–90分：動作確認と上映、90–100分：最終作品のアイデア。
 ## In-Class Notebook
-EN: Run hello.py, then explore how loops and functions build a skyline, a changing signal, and a rocket launch.
-JP: hello.py を実行し、街や信号、ロケットが関数とループでどう作られるかを見る。
+EN: Run hello.py, then animate a spinner, a dot, and some emoji. Use sleep to change the speed before moving on to the train and rocket.
+JP: hello.py を実行し、スピナー・ドット・絵文字を動かす。sleep で速さを変え、列車やロケットへ発展させる。
 ## In-Class Challenge
 EN: Make a text-only scene for a 30-second terminal show-and-tell. Give it a change the audience can spot, in a short animation or a still built by a loop.
 JP: ターミナルで30秒の上映会。文字だけで、自分の場面と、見てわかる変化を作ろう。短いアニメでも、ループで描く一枚絵でもOK。

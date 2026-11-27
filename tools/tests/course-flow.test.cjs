@@ -50,6 +50,32 @@ test('Week 10 spinner timing controls replay the same frames with different paus
  tick();assert.equal(picture.textContent,'/');
  step.click();assert.equal(tick,null);assert.equal(picture.textContent,'-');
 });
+test('Week 10 train function calls switch frame count and pace independently',()=>{
+ const dir=path.join(root,'weeks/week-10');
+ const deck=fs.readFileSync(path.join(dir,'lecture.html'),'utf8');
+ const data={textContent:deck.match(/id="ascii-data">(.*?)<\/script>/s)[1]};
+ const button=asciiVariant=>({dataset:{asciiVariant},addEventListener(type,click){this[type]=click;},
+  setAttribute(key,value){this[key]=value;}});
+ const normal=button('train'),short=button('train-short'),slow=button('train-slow'),step=button();
+ const picture={},count={};
+ const elements={'.ascii-output':picture,'[data-ascii-index]':count,'[data-ascii-step]':step};
+ let tick, pause;
+ vm.runInNewContext(fs.readFileSync(path.join(dir,'ascii.js'),'utf8'),{
+  document:{getElementById:id=>id==='ascii-data'?data:null,addEventListener(){},
+   querySelectorAll:()=>[{dataset:{asciiDemo:'train'},querySelectorAll:()=>[normal,short,slow],querySelector:key=>elements[key]}]},
+  setInterval(fn,delay){pause=delay;tick=fn;return 1;},clearInterval(){tick=null;}
+ });
+ normal.click();assert.equal(pause,120);assert.equal(count.textContent,'01 / 18');
+ short.click();assert.equal(pause,120);assert.equal(count.textContent,'01 / 08');
+ assert.equal(short['aria-pressed'],'true');assert.equal(normal['aria-pressed'],'false');
+ for(let i=1;i<8;i++)tick();
+ assert.equal(tick,null);assert.equal(count.textContent,'08 / 08');
+ const shortEndpoint=picture.textContent;
+ slow.click();assert.equal(pause,250);assert.equal(count.textContent,'01 / 18');
+ for(let i=1;i<18;i++)tick();
+ assert.equal(tick,null);assert.equal(count.textContent,'18 / 18');
+ assert.equal(picture.textContent.length-shortEndpoint.length,10);
+});
 test('Week 9 execution trace skips the body at definition and returns after each call',()=>{
  const {flowFrames}=require('../../weeks/week-09/functions.js');
  assert.deepEqual(flowFrames.slice(0,3).map(frame=>frame.row),[0,1,5]);

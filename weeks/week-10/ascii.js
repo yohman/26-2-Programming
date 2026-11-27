@@ -4,7 +4,7 @@
   const examples = JSON.parse(data.textContent);
   const demos = [];
   for (const demo of document.querySelectorAll('[data-ascii-demo]')) {
-    const {frames, delay} = examples[demo.dataset.asciiDemo];
+    let {frames, delay} = examples[demo.dataset.asciiDemo];
     const picture = demo.querySelector('.ascii-output');
     const count = demo.querySelector('[data-ascii-index]');
     const plays = demo.querySelectorAll('[data-ascii-play]');
@@ -23,10 +23,15 @@
     };
     plays.forEach(play => play.addEventListener('click', () => {
       demos.forEach(reset => reset());
+      ({frames, delay} = examples[play.dataset.asciiVariant || demo.dataset.asciiDemo]);
+      plays.forEach(button => {
+        if (button.dataset.asciiVariant) button.setAttribute('aria-pressed', String(button === play));
+      });
       const pause = Number(play.dataset.asciiPlay) || delay;
       if (delayReadout) delayReadout.textContent = 'sleep(' + (pause / 1000) + ')';
       index = 0;
       show();
+      if (frames.length < 2) return;
       play.disabled = true;
       timer = setInterval(() => {
         index += 1;

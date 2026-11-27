@@ -39,7 +39,7 @@ for week in range(9,15):
         assert pack.testzip() is None
         assert all(name.startswith(f'week-{week:02}/') and '..' not in name for name in pack.namelist())
         if week==10:
-            assert set(pack.namelist())=={'week-10/'+n for n in ('hello.py','tiny.py','spinner.py','dot.py','emoji.py','train.py','rain.py','skyline.py','signal.py','launch.py')}
+            assert set(pack.namelist())=={'week-10/'+n for n in ('hello.py','tiny.py','spinner.py','dot.py','emoji.py','train.py','route.py','rain.py','skyline.py','signal.py','launch.py')}
             for name in pack.namelist():
                 assert pack.read(name)==(ROOT/'weeks'/name).read_bytes()
         if week==12:assert f'week-{week:02}/click_model.py' in pack.namelist()
@@ -82,6 +82,9 @@ ascii_folder=ROOT/'weeks/week-10'
 ascii_deck=(ascii_folder/'lecture.html').read_text()
 manifest=json.loads((ROOT/'tools/course-flow-manifest.json').read_text())
 assert ascii_deck.count(' data-slide data-ink-id=')==next(w['slides'] for w in manifest if w['week']==10)
+ascii_flow=re.findall(r'data-slide data-ink-id="w10-ascii-([^"]+)"',ascii_deck)
+assert ascii_flow[:2]==['save','run']
+assert ascii_flow[4:11]==['frame','loop','timer','train','parameters','route','challenge']
 ascii_challenge=(ascii_folder/'challenge.html').read_text()
 ascii_agenda=(ROOT/'content/weeks/10-systems.md').read_text()
 ascii_payload=lambda page:json.loads(re.search(r'<script type="application/json" id="ascii-data">(.*?)</script>',page,re.S)[1])
@@ -94,7 +97,7 @@ clear='\x1b[2J\x1b[H'
 assert 'w10-ascii-skyline' in ascii_deck and 'w10-ascii-launch' in ascii_deck
 assert 'data-ascii-play="200"' in ascii_deck and 'data-ascii-play="800"' in ascii_deck
 for name,separator,frame_count in [('tiny',clear,12),('spinner','\r',12),('dot','\r',12),('emoji','\r',6),
-                                   ('train','\r',18),('rain',clear,9),('signal',clear,4),('launch',clear,10)]:
+                                   ('train','\r',18),('route',clear,3),('rain',clear,9),('signal',clear,4),('launch',clear,10)]:
     script=ascii_folder/(name+'.py')
     code=script.read_text().rstrip()
     assert html.escape(code) in ascii_challenge
@@ -114,6 +117,9 @@ for name,separator,frame_count in [('tiny',clear,12),('spinner','\r',12),('dot',
             ]
     if name=='signal':
         assert all(frame.count('(*)')==1 for frame in pictures)
+    if name=='route':
+        assert [next(line[2:] for line in picture.splitlines() if line.startswith('> ')) for picture in pictures]==['Campus','Library','Station']
+        assert all(picture.count('> ')==1 for picture in pictures)
     if name=='tiny':
         assert {'🙂','😮'}=={frame.splitlines()[-1][-1] for frame in pictures}
         assert [i for i,frame in enumerate(pictures) if frame.splitlines()[1].index('.')==7+i]==list(range(12))
@@ -121,6 +127,13 @@ for name,separator,frame_count in [('tiny',clear,12),('spinner','\r',12),('dot',
     if name=='dot':assert pictures==[' '*i+'.' for i in range(12)]
     if name=='emoji':assert pictures==['🙂','😮','😄']*2
     assert len(set(pictures))>=3
+variants=ascii_payload(ascii_deck)
+train_code=(ascii_folder/'train.py').read_text().rstrip().rsplit('\n',1)[0]
+for key,steps,delay in [('train-short',8,0.12),('train-slow',18,0.25)]:
+    variant=subprocess.check_output([sys.executable,'-c',train_code+f'\nanimate_train({steps}, {delay})'],timeout=6)
+    pictures=variant.decode().rstrip('\n').split('\r')[1:]
+    assert variants[key]=={'frames':pictures,'delay':round(1000*delay)}
+    assert pictures==variants['train']['frames'][:steps]
 skyline=subprocess.check_output([sys.executable,str(ascii_folder/'skyline.py')],cwd=tempfile.gettempdir(),timeout=2).decode()
 assert len(skyline.splitlines())==7 and skyline.count('[#]')==22
 assert html.escape(skyline.rstrip('\n')) in ascii_challenge

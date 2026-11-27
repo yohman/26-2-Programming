@@ -41,6 +41,8 @@
 }
 .ascii-actions button:disabled { opacity: .45; cursor: default; }
 .ascii-actions [data-ascii-index] { margin-inline-start: .4rem; font: .75rem var(--mono); }
+.ascii-actions [data-ascii-variant] code { font-size: inherit; }
+.ascii-actions [data-ascii-variant][aria-pressed="true"] { border-color: #315876; background: #e5ebef; }
 .ascii-actions .ascii-delay { margin-inline-start: .4rem; color: #315876; font: 700 1rem var(--mono); }
 .ascii-timing .ascii-preview { max-width: 32rem; }
 .ascii-week .ascii-demo.timing .ascii-output,

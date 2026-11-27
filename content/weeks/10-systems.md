@@ -10,8 +10,8 @@ title_ja: ASCIIスタジオ
 course_date: 2026-12-03
 homework_due: 2026-12-09T23:59:00+09:00
 course_time: 13:10–14:50
-overview: Make pictures with text and spaces, then run your own .py file from a terminal.
-overview_ja: 文字と空白で絵を作り、自分の .py ファイルをターミナルから動かす。
+overview: Create and run a .py file from the terminal, then change an animation by passing different values to a function.
+overview_ja: .py ファイルを作り、ターミナルで実行。関数に渡す値を変えて、アニメーションを動かす。
 
 homework_title: Your terminal ASCII piece
 homework_title_ja: ターミナルで動くASCII作品
@@ -21,11 +21,11 @@ challenge_title: ASCII challenge
 challenge_title_ja: ASCIIチャレンジ
 ---
 ## Lecture Flow
-EN: 0–20 min: save and run a .py file. 20–40: frames, loops, animation. 40–70: build. 70–90: test and share. 90–100: final project idea.
-JP: 0–20分：.pyを作って実行、20–40分：1コマ・ループ・アニメーション、40–70分：制作、70–90分：動作確認と上映、90–100分：最終作品のアイデア。
+EN: 0–15 min: create and run a .py file. 15–40: change motion with functions, arguments, and loops. 40–70: build. 70–90: test and share. 90–100: final project idea.
+JP: 0–15分：.pyを作ってターミナルで実行、15–40分：関数・引数・ループで動きを変える、40–70分：制作、70–90分：動作確認と上映、90–100分：最終作品のアイデア。
 ## In-Class Notebook
-EN: Run hello.py, then animate a spinner, a dot, and some emoji. Use sleep to change the speed before moving on to the train and rocket.
-JP: hello.py を実行し、スピナー・ドット・絵文字を動かす。sleep で速さを変え、列車やロケットへ発展させる。
+EN: Start with hello.py, then change the train’s frame count and speed with arguments. Use a list and an if statement to make a shuttle display.
+JP: hello.py から始めて、train.py の引数でコマ数と速さを変える。route.py ではリストと if で停留所を表示。
 ## In-Class Challenge
 EN: Make a text-only scene for a 30-second terminal show-and-tell. Give it a change the audience can spot, in a short animation or a still built by a loop.
 JP: ターミナルで30秒の上映会。文字だけで、自分の場面と、見てわかる変化を作ろう。短いアニメでも、ループで描く一枚絵でもOK。
@@ -33,8 +33,8 @@ JP: ターミナルで30秒の上映会。文字だけで、自分の場面と�
 EN: Polish your piece and submit ascii.py to UNIPA. In comments at the top, include the title, your name, the run command, and what changes. No notebook is needed.
 JP: 作品を仕上げて、ascii.py を UNIPA に提出。先頭のコメントに作品名・氏名・実行コマンド・何が変化するかを短く書く。Notebookは不要。
 ## Aha!
-EN: A function makes one frame. The loop asks for the next.
-JP: 関数が1コマを作り、ループが次のコマを作る。
+EN: Keep the function the same. Change what it does by passing in different values.
+JP: 関数の中身はそのまま。渡す値を変えるだけで動きが変わる。
 ## Resources
 - [Week 10 Lecture — ASCII Studio](weeks/week-10/lecture.html) {lecture}
 - [最初の .py とコード例 / First .py and examples](weeks/week-10/challenge.html#first-file) {fundamentals}

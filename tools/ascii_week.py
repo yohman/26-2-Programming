@@ -7,11 +7,11 @@ import subprocess
 import sys
 import zipfile
 
-VERSION = '20261127-ascii-code-copy'
+VERSION = '20261127-ascii-basics-first'
 RELEASE = '2026-12-03T12:00:00+09:00'
 DUE = '2026-12-09'
-SLIDES = ['save', 'run', 'open', 'spaces', 'frame', 'loop', 'timer', 'train', 'parameters', 'route',
-          'challenge', 'feedback', 'share', 'spinner', 'dot', 'emoji', 'rain', 'skyline', 'signal', 'launch']
+SLIDES = ['save', 'run', 'open', 'spinner', 'timer', 'spaces', 'dot', 'emoji', 'frame', 'loop',
+          'train', 'parameters', 'route', 'challenge', 'feedback', 'share', 'rain', 'skyline', 'signal', 'launch']
 SCRIPTS = ['hello.py', 'tiny.py', 'spinner.py', 'dot.py', 'emoji.py', 'train.py', 'route.py', 'rain.py', 'skyline.py', 'signal.py', 'launch.py']
 TRAIN_CALLS = [('train', 18, 0.12), ('train-short', 8, 0.12), ('train-slow', 18, 0.25)]
 SPEC = dict(title='ASCII Studio', title_ja='ASCIIスタジオ', date='2026-12-03', due=DUE, slides=SLIDES)
@@ -63,8 +63,8 @@ ROUTE_HINT = (
     '<code>stops</code> is a list. The outer <code>for</code> moves to the next stop; the <code>if</code> inside the function marks only the current one with <code>&gt;</code>. What happens if you add “Cafeteria” to the list?',
 )
 SPIN_HINT = (
-    r'<code>\r</code> で行の先頭に戻り、次の記号で上書きする。<code>end=""</code> は改行なし、<code>flush=True</code> は待つ前に表示。最後の <code>print()</code> だけが改行する。',
-    r'<code>\r</code> moves the cursor to the start of the line so the next symbol replaces the last one. <code>end=""</code> skips the newline, and <code>flush=True</code> shows the frame before the pause. The final <code>print()</code> adds a newline.',
+    r'<code>symbols * 3</code> で4つの記号を3周。<code>\r</code> で行の先頭に戻り、次の記号で上書きする。<code>end=""</code> は改行なし、<code>flush=True</code> は待つ前に表示。最後の <code>print()</code> だけが改行する。',
+    r'<code>symbols * 3</code> cycles through the list three times. <code>\r</code> returns to the start of the line so the next symbol replaces the last one. <code>end=""</code> skips the newline. <code>flush=True</code> shows the symbol before the pause. The final <code>print()</code> adds a newline.',
 )
 TIME_HINT = (
     '<code>from time import sleep</code> で待つ関数を使える。<code>sleep(0.2)</code> はループの中で、表示するたびに0.2秒（200ミリ秒）待つ。0.8秒にすると、絵もコマ数も同じまま、動きが遅くなる。',
@@ -75,8 +75,8 @@ DOT_HINT = (
     '<code>position</code> goes from 0 to 11, adding one blank before the dot each time. <code>range(12)</code> sets the number of frames. <code>sleep(0.2)</code> sets the pause between them.',
 )
 EMOJI_HINT = (
-    '位置は固定。リストの次の表情に置き換える。絵文字は Unicode なので、ターミナルで絵文字が見えなければ <code>":)"</code> などでも試せる。',
-    'The position stays fixed while the next face in the list replaces the previous one. Emoji are Unicode. If your terminal can’t display them, try faces like <code>":)"</code>.',
+    '<code>faces</code> の順番を入れ替えると、表情の順番も変わる。位置はスピナーと同じく固定。絵文字が見えなければ、<code>":)"</code> などでも試せる。',
+    'Reorder <code>faces</code> to change the sequence of expressions. Like the spinner, the face stays in one spot. If your terminal can’t display emoji, try <code>":)"</code>.',
 )
 TINY_HINT = (
     'スピナーは <code>| / - \\</code> を順番に出す。ドットは空白の数、絵文字はリストの何番目を選ぶかで変わる。絵文字はASCIIではなく、端末によって幅が違うことがある。',
@@ -205,8 +205,8 @@ def build(root: Path, c):
     note = p('Pythonで実行した出力をブラウザで再生。','The browser replays output captured from Python.','simulation-note')
     add('open','回る、動く、表情が変わる','A spinner, a dot, an emoji',
         demo('tiny','opening')
-        +p('hello.py が動いた。次は「1回表示する」を「変えながら何回か表示する」に。変わったのは、記号？ 位置？ 表情？',
-           'You ran hello.py. Now go from showing something once to showing it several times with a change. What changed: the symbol, the position, or the face?','ascii-caption'), 'curtain')
+        +p('変わったのは、記号？ 位置？ 表情？ 次のスライドで一つずつ作る。コードは <code>hello.py</code> と同じように保存して実行できる。',
+           'What changed: the symbol, the position, or the face? The next slides build each animation. Save and run the examples the same way you ran <code>hello.py</code>.','ascii-caption'), 'curtain')
     add('save','最初のファイル：hello.py','The first file: hello.py',
         c.code_html(*examples[0])+p(*SAVE,'ascii-caption'), 'code')
     add('run','ターミナルから起動','Running from the terminal',
@@ -218,18 +218,21 @@ def build(root: Path, c):
         +p('文字 × 数は繰り返し。空白も1文字。2つ目のコードは、何でドットを右に動かしている？',
            'A string times a number repeats it. A space is a character too. In the second example, what moves the dot to the right?','ascii-caption'), 'code')
     add('spinner','4文字で回転','Four characters make a spinner',
-        demo('spinner','single')+c.code_html(spinner)+p(*SPIN_HINT,'ascii-caption')+note, 'example')
+        demo('spinner','single')+c.code_html(spinner)+p(*SPIN_HINT,'ascii-caption')
+        +p('<code>spinner.py</code> として保存。まず記号を一つ変えて実行。','Save as <code>spinner.py</code>. Change one symbol and run it.','ascii-caption')+note, 'example')
     add('timer','タイマー：1コマごとの待ち時間','The timer: a pause between frames',
         p('1コマを表示し、少し待ってから次のコマへ。','Draw a frame, pause, then draw the next one.','lesson-lead')
         +demo('spinner','timing',(200,800))+p(*TIME_HINT,'ascii-caption')
         +p('予想：sleep をループの外に出すと？','Prediction: what changes if you move sleep outside the loop?','ascii-caption'), 'timing')
     add('dot','空白が1つ増えるたびに','One more space moves the dot',
-        demo('dot','single')+c.code_html(dot)+p(*DOT_HINT,'ascii-caption')+note, 'example')
+        demo('dot','single')+c.code_html(dot)+p(*DOT_HINT,'ascii-caption')
+        +p('<code>dot.py</code> として保存。<code>range(5)</code> にすると、どこで止まる？','Save as <code>dot.py</code>. Where does it stop if you use <code>range(5)</code>?','ascii-caption')+note, 'example')
     add('emoji','同じ場所、違う表情','One spot, changing faces',
-        demo('emoji','single')+c.code_html(emoji)+p(*EMOJI_HINT,'ascii-caption')+note, 'example')
+        demo('emoji','single')+c.code_html(emoji)+p(*EMOJI_HINT,'ascii-caption')
+        +p('<code>emoji.py</code> として保存。最後に出したい表情を選んで実行。','Save as <code>emoji.py</code>. Choose which face should appear last, then run it.','ascii-caption')+note, 'example')
     add('frame','空白の数で列車を置く','Spaces place the train',
-        c.code_html(one_frame,output(one_frame))+p('<code>position</code> は値を受け取る引数の名前。呼び出すときに渡す <code>0</code> と <code>6</code> が空白の数になる。<code>return</code> はできた文字列を返し、<code>print</code> が画面に出す。',
-                                                 '<code>position</code> is the parameter: the name in the definition. <code>0</code> and <code>6</code> are the arguments: the values passed in. <code>return</code> gives back the string; <code>print</code> puts it on screen.','ascii-caption'), 'code')
+        c.code_html(one_frame,output(one_frame))+p('ドットを列車に置き換え、同じ「空白を足す」処理を関数にする。<code>position</code> は値を受け取る名前。<code>0</code> や <code>6</code> を渡すと、<code>return</code> がその位置の列車を文字列で返す。',
+                                                 'Swap the dot for a train and put the same spacing trick in a function. <code>position</code> is the parameter. Pass it an argument such as <code>0</code> or <code>6</code>, and <code>return</code> gives back the train at that position as a string.','ascii-caption'), 'code')
     add('loop','ループで位置を変える','The loop changes the position',
         c.code_html(frame_loop,output(frame_loop))+p('関数は1コマを作る。for は位置を変えて、同じ関数を何度も呼ぶ。まず別々の行に描いてみよう。',
                                                      'The function makes one frame. The loop calls it with a new position each time. First, print each frame on a separate line.','ascii-caption'), 'code')
@@ -282,9 +285,9 @@ def build(root: Path, c):
              +'</details></section>')
     body += '<section id="examples">'+heading('ASCII作品のサンプル','ASCII examples')
     body += p('コードをコピーして、見出しの名前で保存。hello.py と同じように、コマンドのファイル名を変えて実行する。','Copy the code and save it using the name shown above each script. Run it like hello.py, replacing the file name in the command.')
-    for name, code, hint in [('train',train,TRAIN_HINT),('route',route,ROUTE_HINT),
-                             ('tiny',tiny,TINY_HINT),('spinner',spinner,SPIN_HINT),('dot',dot,DOT_HINT),('emoji',emoji,EMOJI_HINT),
-                             ('rain',rain,RAIN_HINT),
+    for name, code, hint in [('spinner',spinner,SPIN_HINT),('dot',dot,DOT_HINT),('emoji',emoji,EMOJI_HINT),
+                             ('train',train,TRAIN_HINT),('route',route,ROUTE_HINT),
+                             ('tiny',tiny,TINY_HINT),('rain',rain,RAIN_HINT),
                              ('skyline',skyline,SKYLINE_HINT),('signal',signal,SIGNAL_HINT),
                              ('launch',launch,LAUNCH_HINT)]:
         body += f'<h3 id="{name}">{name}.py</h3>'
@@ -332,8 +335,8 @@ def build(root: Path, c):
     sections = [
         ('Lecture Flow', ('0–15分：.pyを作って実行、15–40分：関数・引数・ループ、40–60分：制作、60–70分：ペアで感想、70–75分：修正、75–90分：上映、90–100分：最終作品のアイデア。',
                           '0–15 min: create and run a .py file. 15–40: functions, arguments, and loops. 40–60: build. 60–70: partner feedback. 70–75: revise. 75–90: show-and-tell. 90–100: final project idea.')),
-        ('In-Class Notebook', ('hello.py から始めて、train.py の引数でコマ数と速さを変える。route.py ではリストと if で停留所を表示。',
-                               'Start with hello.py, then change the train’s frame count and speed with arguments. Use a list and an if statement to make a shuttle display.')),
+        ('In-Class Notebook', ('hello.py を実行し、スピナー・ドット・絵文字を動かす。その仕組みを train.py の関数に応用し、渡す値でコマ数と速さを変える。',
+                               'Run hello.py, then animate a spinner, a moving dot, and emoji. Use the same ideas in train.py, where arguments control the frame count and speed.')),
         ('In-Class Challenge', BRIEF),
         ('Take-Home Assignment', HOMEWORK),
         ('Aha!', ('関数の中身はそのまま。渡す値を変えるだけで動きが変わる。','Keep the function the same. Change what it does by passing in different values.')),

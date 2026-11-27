@@ -24,8 +24,8 @@ challenge_title_ja: ASCIIチャレンジ
 EN: 0–15 min: create and run a .py file. 15–40: functions, arguments, and loops. 40–60: build. 60–70: partner feedback. 70–75: revise. 75–90: show-and-tell. 90–100: final project idea.
 JP: 0–15分：.pyを作って実行、15–40分：関数・引数・ループ、40–60分：制作、60–70分：ペアで感想、70–75分：修正、75–90分：上映、90–100分：最終作品のアイデア。
 ## In-Class Notebook
-EN: Start with hello.py, then change the train’s frame count and speed with arguments. Use a list and an if statement to make a shuttle display.
-JP: hello.py から始めて、train.py の引数でコマ数と速さを変える。route.py ではリストと if で停留所を表示。
+EN: Run hello.py, then animate a spinner, a moving dot, and emoji. Use the same ideas in train.py, where arguments control the frame count and speed.
+JP: hello.py を実行し、スピナー・ドット・絵文字を動かす。その仕組みを train.py の関数に応用し、渡す値でコマ数と速さを変える。
 ## In-Class Challenge
 EN: Make a text-only scene for a 30-second terminal show-and-tell. Give it a change the audience can spot, in a short animation or a still built by a loop.
 JP: ターミナルで30秒の上映会。文字だけで、自分の場面と、見てわかる変化を作ろう。短いアニメでも、ループで描く一枚絵でもOK。

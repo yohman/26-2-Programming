@@ -84,8 +84,8 @@ manifest=json.loads((ROOT/'tools/course-flow-manifest.json').read_text())
 assert ascii_deck.count(' data-slide data-ink-id=')==next(w['slides'] for w in manifest if w['week']==10)
 ascii_flow=re.findall(r'data-slide data-ink-id="w10-ascii-([^"]+)"',ascii_deck)
 assert ascii_flow[:2]==['save','run']
-assert ascii_flow[4:11]==['frame','loop','timer','train','parameters','route','challenge']
-assert ascii_flow[11:13]==['feedback','share']
+assert ascii_flow[2:8]==['open','spinner','timer','spaces','dot','emoji']
+assert ascii_flow[8:16]==['frame','loop','train','parameters','route','challenge','feedback','share']
 ascii_challenge=(ascii_folder/'challenge.html').read_text()
 ascii_agenda=(ROOT/'content/weeks/10-systems.md').read_text()
 ascii_payload=lambda page:json.loads(re.search(r'<script type="application/json" id="ascii-data">(.*?)</script>',page,re.S)[1])

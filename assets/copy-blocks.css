@@ -1,17 +1,24 @@
 .copyable-block { position:relative; }
-pre.copyable-block,#request-url.copyable-block,.application-example > code.copyable-block { padding-right:3.5rem !important; }
+#request-url.copyable-block,.application-example > code.copyable-block { padding-right:3.5rem !important; }
 .block-copy { position:absolute; top:.35rem; right:.35rem; z-index:1; display:inline-flex; align-items:center; justify-content:center; width:36px; height:36px; min-width:36px; padding:0; border:0; border-radius:0; background:rgba(255,255,255,.94); color:#52636e; cursor:pointer; font:700 18px/1 sans-serif; }
 .block-copy:hover { color:#202a31; background:#dfe7eb; }
 .block-copy:focus-visible { outline:2px solid #315876; outline-offset:2px; }
 .block-copy[data-copied] { color:#356a58; }
-pre.copyable-code.copyable-block { --code-control-size:36px; overflow-x:auto; padding-right:calc(2 * var(--code-control-size) + 1.25rem) !important; }
+pre.copyable-code.copyable-block { overflow-x:auto; }
 pre.copyable-code,pre.copyable-code > code { white-space:pre !important; overflow-wrap:normal !important; word-break:normal; }
 pre.copyable-code.is-code-wrapped,pre.copyable-code.is-code-wrapped > code { white-space:pre-wrap !important; overflow-wrap:anywhere !important; }
-.block-wrap { position:absolute; top:.35rem; right:calc(.55rem + var(--code-control-size)); z-index:1; display:grid; place-items:center; width:var(--code-control-size); min-width:0; height:var(--code-control-size); padding:0; border:0; border-radius:0; background:rgba(255,255,255,.9); color:#60717c; cursor:pointer; }
+.block-controls { --code-control-size:36px; display:flex; align-items:center; justify-content:flex-end; gap:.3rem; margin-inline-start:auto; }
+.block-controls--row { position:sticky; inset-inline-start:0; margin:0 0 .35rem; }
+.block-controls button:is(.block-copy,.block-wrap) { position:static; display:grid; place-items:center; flex:0 0 var(--code-control-size); width:var(--code-control-size); min-width:0; height:var(--code-control-size); padding:0; border:1px solid #c4d1d8; border-radius:0; background:#fff; color:#52636e; cursor:pointer; }
+.block-controls button:is(.block-copy,.block-wrap):hover,.block-controls .block-wrap[aria-pressed="true"] { background:#dfe7eb; color:#23465b; }
+.block-controls .block-copy[data-copied] { color:#356a58; }
+.code-toolbar,.lecture-cell-toolbar { flex-wrap:wrap; }
+.code-toolbar > button,.lecture-cell-toolbar > button { margin-inline-start:auto; }
+.code-toolbar > button + .block-controls,.lecture-cell-toolbar > button + .block-controls { margin-inline-start:0; }
 .block-wrap:hover,.block-wrap[aria-pressed="true"] { color:#23465b; background:#dfe7eb; }
 .block-wrap:focus-visible { outline:2px solid #315876; outline-offset:2px; }
 .copyable-table { padding-top:2.75rem; }
 .copyable-editor > .block-copy { top:.3rem; }
 .copy-fallback { position:fixed; top:0; left:-10000px; }
-@media(pointer:coarse) { .block-copy { width:44px; height:44px; }pre.copyable-block,#request-url.copyable-block,.application-example > code.copyable-block { padding-right:3.75rem !important; } pre.copyable-code.copyable-block { --code-control-size:44px; } }
-@media print { .block-copy,.block-wrap { display:none !important; } pre.copyable-code,pre.copyable-code > code { white-space:pre-wrap !important; overflow-wrap:anywhere !important; } }
+@media(pointer:coarse) { .block-copy { width:44px; height:44px; } #request-url.copyable-block,.application-example > code.copyable-block { padding-right:3.75rem !important; } .block-controls { --code-control-size:44px; } }
+@media print { .block-controls,.block-copy,.block-wrap { display:none !important; } pre.copyable-code,pre.copyable-code > code { white-space:pre-wrap !important; overflow-wrap:anywhere !important; } }

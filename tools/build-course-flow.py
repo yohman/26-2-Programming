@@ -284,7 +284,7 @@ def code_html(source,output=None,language='python'):
     return '<div class="lesson-code"><div class="code-toolbar"><span>'+language.title()+'</span>'+button+'</div><pre data-language="'+language+'"><code>'+html.escape(source)+'</code></pre></div>'+('' if not output else '<pre class="lesson-output" hidden aria-live="polite">'+html.escape(output)+'</pre>')
 
 def page_head(title,css,js,version=VERSION):
-    copy_query = f'?v={version}' if js == 'course-decks.js' else ''
+    copy_query = f'?v={version}'
     return f'''<!doctype html><html lang="ja" data-language="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{html.escape(title)}</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"><link rel="icon" href="../../favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="../week-02/lecture.css?v={version}"><link rel="stylesheet" href="../../assets/{css}?v={version}"><link rel="stylesheet" href="../../assets/copy-blocks.css{copy_query}"><script src="../../assets/course-models.js?v={version}" defer></script><script src="../../assets/{js}?v={version}" defer></script><script src="../../assets/copy-blocks.js{copy_query}" defer></script>'''
 
 def demo_html(kind):

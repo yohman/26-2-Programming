@@ -7,7 +7,7 @@ import subprocess
 import sys
 import zipfile
 
-VERSION = '20261127-ascii-timing'
+VERSION = '20261127-code-toolbar'
 RELEASE = '2026-12-03T12:00:00+09:00'
 DUE = '2026-12-09'
 SLIDES = ['open', 'save', 'run', 'spaces', 'spinner', 'timer', 'dot', 'emoji', 'frame', 'loop', 'train', 'rain', 'skyline', 'signal', 'launch', 'challenge', 'share']
@@ -137,7 +137,7 @@ def build(root: Path, c):
     launch_code = launch[launch.index('def flight_frame'):launch.index('\n\nfor step')]
     bi, p = c.bi, c.p
     heading = lambda ja, en: '<h2>'+bi(ja, en)+'</h2>'
-    cmd = '<pre class="ascii-terminal-command" data-language="shell"><code>'+html.escape(COMMANDS)+'</code></pre>'
+    cmd = c.code_html(COMMANDS, language='shell')
     links = lambda items: c.links(items)
     assets = f'<link rel="stylesheet" href="ascii.css?v={VERSION}"><script src="ascii.js?v={VERSION}" defer></script>'
     header = '<header class="lecture-header"><a id="lecture-return" class="return-link" href="../../agenda.html?open=10#week-10">← '+bi('授業予定','Agenda')+'</a><span class="lecture-mark">PRG / 26–2</span><button id="language-toggle" class="language-toggle" type="button" aria-label="Switch language">EN</button></header>'

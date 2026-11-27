@@ -12,7 +12,7 @@ pre.copyable-code.is-code-wrapped,pre.copyable-code.is-code-wrapped > code { whi
 .block-controls button:is(.block-copy,.block-wrap) { position:static; display:grid; place-items:center; flex:0 0 var(--code-control-size); width:var(--code-control-size); min-width:0; height:var(--code-control-size); padding:0; border:1px solid #c4d1d8; border-radius:0; background:#fff; color:#52636e; cursor:pointer; }
 .block-controls button:is(.block-copy,.block-wrap):hover,.block-controls .block-wrap[aria-pressed="true"] { background:#dfe7eb; color:#23465b; }
 .block-controls .block-copy[data-copied] { color:#356a58; }
-.code-toolbar,.lecture-cell-toolbar { flex-wrap:wrap; }
+.code-toolbar,.lecture-cell-toolbar { display:flex; align-items:center; flex-wrap:wrap; gap:.35rem .65rem; }
 .code-toolbar > button,.lecture-cell-toolbar > button { margin-inline-start:auto; }
 .code-toolbar > button + .block-controls,.lecture-cell-toolbar > button + .block-controls { margin-inline-start:0; }
 .block-wrap:hover,.block-wrap[aria-pressed="true"] { color:#23465b; background:#dfe7eb; }

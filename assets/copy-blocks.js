@@ -1,6 +1,7 @@
 /* Shared plain-text copy controls, including dynamically rendered content. */
 (() => {
   const selector='pre, #request-url, .application-example > code, textarea, #csv-output, .csv-table-scroll';
+  const outputSelector='pre.lesson-output, pre.ascii-output, pre.ascii-hello-output, pre[data-demo-output], pre[data-trace-output]';
   const japanese=()=>(document.documentElement.dataset.language||document.documentElement.lang)!=='en';
   const label=()=>japanese()?'コピー':'Copy';
   const icon='<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="8" y="8" width="12" height="13"/><path d="M16 8V3H3v13h5"/></svg>';
@@ -26,7 +27,7 @@
   }
   function install() {
     document.querySelectorAll(selector).forEach(target=>{
-      if(target.matches('[data-no-copy]') || target.closest('[data-no-copy]'))return;
+      if(target.matches(outputSelector) || target.closest('[data-no-copy]'))return;
       const host=target instanceof HTMLTextAreaElement?target.parentElement:target;
       if(!host)return;
       if(installed.get(host)?.isConnected)return;
@@ -51,9 +52,7 @@
         return;
       }
       const previous=host.previousElementSibling;
-      const actions=host.parentElement?.nextElementSibling;
-      const toolbar=previous?.matches('.code-toolbar, .lecture-cell-toolbar')?previous:
-        (host.matches('.ascii-output')&&actions?.matches('.ascii-actions')?actions:null);
+      const toolbar=previous?.matches('.code-toolbar, .lecture-cell-toolbar')?previous:null;
       const controls=document.createElement('span');
       controls.className=toolbar?'block-controls':'block-controls block-controls--row';
       if(toolbar)toolbar.append(controls);

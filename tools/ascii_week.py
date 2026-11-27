@@ -7,7 +7,7 @@ import subprocess
 import sys
 import zipfile
 
-VERSION = '20261127-ascii-feedback'
+VERSION = '20261127-ascii-code-copy'
 RELEASE = '2026-12-03T12:00:00+09:00'
 DUE = '2026-12-09'
 SLIDES = ['save', 'run', 'open', 'spaces', 'frame', 'loop', 'timer', 'train', 'parameters', 'route',

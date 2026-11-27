@@ -12,9 +12,18 @@ sky = [
     "                           ",
     "                           ",
     "                           ",
+    "                           ",
 ]
-rocket = [" /\\ ", " |^|", " /_\\", " /V\\"]
-x = 12
+rocket = [
+    "   ^   ",
+    "  / \\  ",
+    "  |o|  ",
+    " /___\\ ",
+    "   *   ",
+]
+# すべての行を同じ幅にして、空の中央に置く
+x = (len(sky[0]) - len(rocket[0])) // 2
+launch_row = len(sky) - len(rocket)
 
 
 def flight_frame(top, message):
@@ -35,7 +44,7 @@ def flight_frame(top, message):
 
 for step in range(10):
     # 上に行くほど、先端の行番号は小さい
-    top = max(0, 7 - step)
+    top = max(0, launch_row - step)
     if step == 0:
         message = "READY"
     elif top == 0:

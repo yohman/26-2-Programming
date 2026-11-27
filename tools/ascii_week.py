@@ -7,7 +7,7 @@ import subprocess
 import sys
 import zipfile
 
-VERSION = '20261127-code-toolbar'
+VERSION = '20261127-rocket-center'
 RELEASE = '2026-12-03T12:00:00+09:00'
 DUE = '2026-12-09'
 SLIDES = ['open', 'save', 'run', 'spaces', 'spinner', 'timer', 'dot', 'emoji', 'frame', 'loop', 'train', 'rain', 'skyline', 'signal', 'launch', 'challenge', 'share']

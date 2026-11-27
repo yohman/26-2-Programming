@@ -105,6 +105,13 @@ for name,separator,frame_count in [('tiny',clear,12),('spinner','\r',12),('dot',
     assert pictures==ascii_payload(ascii_deck)[name]['frames'] and len(pictures)==frame_count
     if name=='launch':
         assert 'READY' in pictures[0] and 'LIFTOFF' in pictures[1] and 'ORBIT REACHED' in pictures[-1]
+        for picture in pictures:
+            lines=picture.splitlines()
+            center=len(lines[-1])//2
+            nose=next(y for y,line in enumerate(lines) if '^' in line)
+            assert [line.ljust(center+4)[center-3:center+4] for line in lines[nose:nose+5]]==[
+                '   ^   ', '  / \\  ', '  |o|  ', ' /___\\ ', '   *   ',
+            ]
     if name=='signal':
         assert all(frame.count('(*)')==1 for frame in pictures)
     if name=='tiny':

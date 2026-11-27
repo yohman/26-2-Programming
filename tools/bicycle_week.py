@@ -326,7 +326,7 @@ def build(root, c):
 
     moved_head = c.page_head('Quiz 01 · Week 09','course-pages.css','course-page.js',VERSION)+'</head>'
     moved = '<h1>'+bi('小テスト①はWeek 09へ','Quiz 01 has moved to Week 09')+'</h1>'
-    moved += p('11月26日（木）の授業中に実施します。','The quiz takes place in class on Thursday, November 26.')
+    moved += p('11月26日に実施した小テストの問題とNotebookは、Week 09で確認できます。','Find the November 26 quiz questions and notebook in Week 09.')
     moved += links([('../week-09/quiz.html','Week 09 小テスト','Week 09 quiz')])
     c.write(folder/'quiz.html',moved_head+f'<body class="course-challenge" data-release="{RELEASE}">'+header+'<main id="course-page" hidden>'+moved+'</main></body></html>')
 

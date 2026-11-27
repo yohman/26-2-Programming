@@ -9,8 +9,8 @@ from function_examples import add_examples, example
 from weather_hackathon import execute_cell
 
 VERSION = '20261126-slide-jump'
-DECK_VERSION = '20261126-execution-trace'
-QUIZ_VERSION = '20261125-quiz-ab'
+DECK_VERSION = '20261127-quiz-archive'
+QUIZ_VERSION = '20261127-quiz-archive'
 RELEASE = '2026-11-26T12:00:00+09:00'
 SPEC = dict(title='One function, many calls', title_ja='関数を一つ、何度でも',
             date='2026-11-26', due='2026-12-02', slides=[None]*26)
@@ -141,8 +141,8 @@ def build(root, c):
         +links([('../week-08/challenge.html#data-guide','先週のデータを見る','Revisit last week’s data')]),'hero')
     add('quiz','小テスト①','Pop quiz 01',
         '<div class="quiz-score"><span>6 '+bi('問','questions')+'</span><span>30 '+bi('点','pts')+' × 2</span></div>'
-        +text('個人で解きます。授業中に案内するパスワードでNotebookを開き、氏名を書いて開始の合図を待ちます。',
-              'Work individually. Use the password announced in class to get the notebook, add your name, and wait for the start signal.')
+        +text('個人で解きます。Notebookを開いて氏名を書き、開始の合図を待ちます。',
+              'Work individually. Open the notebook, add your name, and wait for the start signal.')
         +links([('quiz.html','小テストを開く','Open the quiz')]),'hero')
     clock = '<div class="quiz-clock" data-quiz-clock><div class="quiz-phases">'
     for index,(ja,en) in enumerate([('A：AIなし','A: Without AI'),('B：AI利用OK','B: AI allowed')]):
@@ -272,7 +272,6 @@ def build(root, c):
                                      for name,result in zip(scope['names'],scope['messages'],strict=True)]),
                       ensure_ascii=False).replace('</','<\\/')
     c.write(dest/'lecture.html',head+f'<body class="lecture-page course-deck functions-week" data-week="9" data-release="{RELEASE}">'+header+'<main><div id="slides-view" class="view">'+nav+'<div class="slide-stage">'+''.join(slides)+'</div></div></main><script id="lesson-data" type="application/json">'+data+'</script></body></html>')
-    quiz_package.build(root,c)
     quiz_package.build_page(root,c,header,QUIZ_VERSION)
     build_challenge(root, dest, c, header)
 
@@ -327,8 +326,8 @@ def build_challenge(root, dest, c, header):
                          '[Student work: Week 8 bike hackathon](gallery.html?week=8) — Preview team notebooks and their saved outputs.')),
         ('Lecture Flow',('先週の振り返りと小テスト①の後、Mori’s Corner（10分）。短い関数から始め、ポケモン・地震・自転車盗・人口・天気のデータで試す。最後にNotebook制作。',
                          'Recap, pop quiz, then Mori’s Corner (10 minutes). Try a few short functions and use them on Pokémon, earthquake, bike, population, and weather data. Finish with notebook work.')),
-        ('In-Class Notebook',('小テスト①は個人で6問。AはAIなしで6分。保存してAを残し、BはAI利用OKで6分。得点は各30点満点、提出はNotebook 1ファイル。パスワードは授業で案内します。',
-                              'Six questions, worked individually. Take six minutes without AI in A, then save and leave A unchanged. You may use AI in B for six minutes. Each round is scored out of 30. Submit one notebook. Get the password in class.')),
+        ('In-Class Notebook',('小テスト①は個人で6問。AはAIなしで6分。保存してAを残し、BはAI利用OKで6分。得点は各30点満点、提出はNotebook 1ファイル。下のリンクから問題を見直せます。',
+                              'Six questions, worked individually. Take six minutes without AI in A, then save and leave A unchanged. You may use AI in B for six minutes. Each round is scored out of 30. Submit one notebook. Use the link below to review the questions.')),
         ('In-Class Challenge',(CHALLENGE[0]+' [手順](weeks/week-09/challenge.html)。',CHALLENGE[1]+' [Instructions](weeks/week-09/challenge.html).')),
         ('Take-Home Assignment',(
             '関数の中で if や for を使い、絞り込み→集計など2段階の処理を行う。入力を3通り（境目や該当なしを含む）試し、返り値を使って結果を表示する。'+submit[0]+' [最低要件・発展アイデア](weeks/week-09/challenge.html#homework)。',
@@ -339,7 +338,7 @@ def build_challenge(root, dest, c, header):
         text+=f'## {title}\nEN: {en}\nJP: {ja}\n'
     text+='''## Resources
 - [Week 09 Lecture — One function, many calls](weeks/week-09/lecture.html) {lecture}
-- [小テスト①・パスワードで開く / Open Graded Quiz 01](weeks/week-09/quiz.html) {notebook}
+- [小テスト①の問題 / Quiz 01 archive](weeks/week-09/quiz.html) {notebook}
 - [ミニ講義の実行例 / Worked Examples](weeks/week-09/practice.ipynb) {fundamentals}
 - [チャレンジの手順 / Challenge Instructions](weeks/week-09/challenge.html) {challenge}
 - [宿題・提出方法 / Homework and Submission](weeks/week-09/challenge.html#homework) {homework}

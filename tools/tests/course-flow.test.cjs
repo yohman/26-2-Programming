@@ -125,7 +125,7 @@ test('CSV previews decode both UTF-8 and the official CP932 file',async()=>{
  assert.match(decoded,/市区町村（発生地）/);assert.match(decoded,/千葉県/);assert.ok(!decoded.includes('\ufffd'));
  assert.equal(decoded.trim().split('\n').length,10055);
 });
-test('legacy quiz previews route to the password page, including p previews',async()=>{
+test('legacy quiz previews route to the answer-free archive, including p previews',async()=>{
  const site=fs.readFileSync(path.join(root,'assets/site.js'),'utf8');
  const start=site.indexOf('async function setupFileViewer('),end=site.indexOf('async function loadWeeks(',start);
  let destination='';

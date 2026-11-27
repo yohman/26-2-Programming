@@ -1,4 +1,4 @@
-"""Package a classroom quiz for a password-unlocked browser download.
+"""Build the archived Week 9 quiz page; keep the original packaging helper.
 
 Question text and the temporary passphrase live only under ignored admin/.course-private/week08/.
 A checkout without that private source reuses the already encrypted package.
@@ -67,12 +67,19 @@ def build(root, course):
 
 def build_page(root, c, header, version):
     bi, p = c.bi, c.p
+    archive = root/'weeks/week-09/quiz-01.ipynb'
+    notebook = json.loads(archive.read_text(encoding='utf-8'))
+    answers = [cell for cell in notebook['cells'] if cell['cell_type'] == 'code']
+    expected = ['# '+label for label in (ROUND_A, ROUND_B)]*6
+    if ([cell['source'].strip() for cell in answers] != expected
+            or any(cell['outputs'] or cell['execution_count'] is not None for cell in answers)):
+        raise ValueError('The public quiz archive must contain only blank answer cells.')
     head = c.page_head('Week 09 · 小テスト①','course-pages.css','course-page.js',version)
-    head += f'<link rel="stylesheet" href="../week-08/bicycle-week.css"><script src="../../assets/site.js?v={version}" defer></script><script src="../week-08/quiz.js?v={version}" defer></script></head>'
+    head += f'<link rel="stylesheet" href="../week-08/bicycle-week.css"><script src="../../assets/site.js?v={version}" defer></script><script src="quiz-archive.js?v={version}" defer></script></head>'
     body = '<h1>'+bi('小テスト①','Quiz 01')+'</h1>'+p(
-        '授業中に案内するパスワードを入力。Notebookをダウンロードして氏名を記入し、開始の合図を待ちます。',
-        'Enter the password announced in class. Download the notebook, add your name, and wait for the start signal.')
+        '11月26日に実施した小テストです。問題を見直したり、解答欄が空のNotebookで練習したりできます。',
+        'Review the November 26 quiz questions or practice with the blank notebook.')
     body += p('AはAIなしで6分。合図で保存し、次の6分はAIを使ってBだけ修正できます。提出はNotebook 1ファイルです。',
               'A: six minutes without AI. Save at the signal, then take six minutes to revise in B with AI if you choose. Submit one notebook.')
-    body += '<div class="quiz-entry" data-quiz-lock><form><label for="quiz-password">'+bi('パスワード','Password')+'</label><div><input id="quiz-password" type="password" autocomplete="off" autocapitalize="none" spellcheck="false" required><button type="submit">'+bi('開く','Open')+'</button></div></form><p role="status" data-quiz-status></p><section data-quiz-unlocked hidden><a class="quiz-download" data-quiz-download>'+bi('小テストNotebookをダウンロード','Download quiz notebook')+' ↓</a><details><summary>'+bi('問題をプレビュー','Preview the questions')+'</summary><div data-quiz-preview></div></details></section></div>'
+    body += '<div class="quiz-entry" data-quiz-archive><a class="quiz-download" href="quiz-01.ipynb" download="week09_quiz.ipynb">'+bi('小テストNotebookをダウンロード','Download quiz notebook')+' ↓</a><details open><summary>'+bi('問題をプレビュー','Preview the questions')+'</summary><div data-quiz-preview aria-busy="true"></div></details></div>'
     c.write(root/'weeks/week-09/quiz.html',head+f'<body class="course-challenge bicycle-week quiz-page" data-release="{QUIZ_RELEASE}">'+header+'<main id="course-page" hidden>'+body+'</main></body></html>')

@@ -7,11 +7,11 @@ import subprocess
 import sys
 import zipfile
 
-VERSION = '20261127-ascii-functions'
+VERSION = '20261127-ascii-feedback'
 RELEASE = '2026-12-03T12:00:00+09:00'
 DUE = '2026-12-09'
 SLIDES = ['save', 'run', 'open', 'spaces', 'frame', 'loop', 'timer', 'train', 'parameters', 'route',
-          'challenge', 'share', 'spinner', 'dot', 'emoji', 'rain', 'skyline', 'signal', 'launch']
+          'challenge', 'feedback', 'share', 'spinner', 'dot', 'emoji', 'rain', 'skyline', 'signal', 'launch']
 SCRIPTS = ['hello.py', 'tiny.py', 'spinner.py', 'dot.py', 'emoji.py', 'train.py', 'route.py', 'rain.py', 'skyline.py', 'signal.py', 'launch.py']
 TRAIN_CALLS = [('train', 18, 0.12), ('train-short', 8, 0.12), ('train-slow', 18, 0.25)]
 SPEC = dict(title='ASCII Studio', title_ja='ASCIIスタジオ', date='2026-12-03', due=DUE, slides=SLIDES)
@@ -102,6 +102,18 @@ PITCHES = (
     'たとえば、終電の発車案内、3秒で変身するキャラクター、1軒だけ明かりがつく夜の街。テーマは自由。サンプルを使うなら文字を置き換えるだけでなく、変化のルールを一つ変える。',
     'Try a last-train departure board, a character that transforms on cue, or a skyline with one lit window. Your own idea is welcome. If you start from an example, change a rule that controls what we see.',
 )
+FEEDBACK = (
+    '完成前でOK。近くの人とペアになり、手元のターミナルで作品を動かして見せる。',
+    'Works in progress are welcome. Pair up with someone nearby and run your work in your own terminal.',
+)
+FEEDBACK_STEPS = [
+    ('<strong>4分：</strong> Aさんが実行。Bさんは「何が変わったか」と「もっと見やすくする案」を一つずつ伝える。',
+     '<strong>4 min:</strong> A runs their script. B says what changed and suggests one way to make it clearer.'),
+    ('<strong>4分：</strong> 交代。Bさんが実行し、Aさんが感想と提案を伝える。',
+     '<strong>4 min:</strong> Switch. B runs their script and A gives feedback.'),
+    ('<strong>2分：</strong> 上映までに直すことを、各自一つ決める。',
+     '<strong>2 min:</strong> Each pick one thing to revise before the show-and-tell.'),
+]
 STRETCH = (
     '発展：背景と動くものを別々の関数で作る。位置が端に着いたら、台詞や次の場面を切り替える。',
     'Stretch: draw the background and moving object in separate functions, or switch the caption or scene when the object reaches an edge.',
@@ -240,11 +252,13 @@ def build(root: Path, c):
         demo('launch','wide')+c.code_html(launch_code)+p(*LAUNCH_HINT,'ascii-caption')+note
         +links([('challenge.html#launch','ロケットの全コード','Full rocket script')]), 'example')
     add('challenge','30分：ターミナル上映会','30 minutes: Terminal show-and-tell',
-        p(*BRIEF,'lesson-lead')+c.list_html(REQUIREMENTS)
-        +p(*PITCHES)+links([('challenge.html#make','チャレンジの手順・コード例','Challenge instructions and examples')]), 'challenge')
+        p(*BRIEF,'lesson-lead')+p('20分で作る → 残り10分でペアに見せる。','Build for 20 minutes, then spend 10 minutes trying each other’s work.','ascii-caption')
+        +c.list_html(REQUIREMENTS)+p(*PITCHES)+links([('challenge.html#make','チャレンジの手順・コード例','Challenge instructions and examples')]), 'challenge')
+    add('feedback','10分：ペアで見せ合う','10 minutes: Try it with a partner',
+        p(*FEEDBACK,'lesson-lead')+c.list_html(FEEDBACK_STEPS)
+        +p('次の5分で一つ直して、もう一度動かそう。','Use the next five minutes to make one revision and run it again.','ascii-caption'), 'challenge')
     add('share','上映と提出','Showtime and submission',
-        p('友だちに実行コマンドだけを渡し、動くか確認。発表は30秒：ターミナルで実行し、ループが何を変えるか一言。','Give a classmate the run command and see if it works. For the 30-second share-out, run the script and say what the loop changes.','lesson-lead')
-        +p('発表の前に、数字や状態を一つ変えて実行。何が変わるか予想してから確かめる。','Before showing it, change a number or state. Predict what will change, then run it and check.','ascii-caption')
+        p('発表は30秒。ターミナルで実行し、関数に渡す値で何が変わるか一言。','For the 30-second share-out, run the script and say what changes when you pass a different value to the function.','lesson-lead')
         +p(*HOMEWORK)+links([('challenge.html#homework','宿題・提出方法','Homework and submission')])
         +p('最後に、最終作品のアイデアを一つメモ。今日の作品から発展させてもOK。','Before you leave, jot down one final-project idea. You can build on today’s piece.','ascii-caption'), 'share')
     nav = ('<nav class="slide-controls" aria-label="Slide navigation"><div class="slide-nav-group">'
@@ -284,10 +298,12 @@ def build(root: Path, c):
         if name == 'spinner':
             body += p(*TIME_HINT)
     body += links([('starter-files.zip','サンプル .py（ZIP）','Example scripts (ZIP)')])+'</section>'
-    body += '<section id="make">'+heading('30分：自分の作品','30 minutes: your own piece')+p(*PITCHES)+c.list_html(REQUIREMENTS)
+    body += '<section id="make">'+heading('20分：作品を作る','20 minutes: Build your piece')+p(*PITCHES)+c.list_html(REQUIREMENTS)
     body += p('新しい ascii.py を作る。まず関数で1コマを描き、次に2つの引数で呼び出して違いを確認。最後にループでつなげて、ターミナルから実行する。',
               'Create a new ascii.py. Make one frame with a function, then call it with two different values and check what changes. Finally, connect the frames in a loop and run the script from the terminal.')
     body += p(*STRETCH)+'</section>'
+    body += '<section id="feedback">'+heading('10分：ペアで見せ合う','10 minutes: Try it with a partner')+p(*FEEDBACK)+c.list_html(FEEDBACK_STEPS)
+    body += p('次の5分で一つ直して、もう一度動かそう。','Use the next five minutes to make one revision and run it again.')+'</section>'
     body += '<section id="homework">'+heading('宿題・提出','Homework and submission')+p(*HOMEWORK)+p(f'締切：{DUE} 23:59 JST',f'Due: {DUE}, 23:59 JST')+'</section>'
     head = c.page_head('Week 10 challenge · ASCII Studio','course-pages.css','course-page.js',VERSION)
     c.write(dest/'challenge.html',head+assets+f'</head><body class="course-challenge ascii-week" data-release="{RELEASE}">'+header
@@ -314,8 +330,8 @@ def build(root: Path, c):
     for key,value in values.items():
         front = re.sub(r'^'+key+r':.*$',key+': '+value,front,flags=re.M) if re.search(r'^'+key+r':',front,re.M) else front+'\n'+key+': '+value
     sections = [
-        ('Lecture Flow', ('0–15分：.pyを作ってターミナルで実行、15–40分：関数・引数・ループで動きを変える、40–70分：制作、70–90分：動作確認と上映、90–100分：最終作品のアイデア。',
-                          '0–15 min: create and run a .py file. 15–40: change motion with functions, arguments, and loops. 40–70: build. 70–90: test and share. 90–100: final project idea.')),
+        ('Lecture Flow', ('0–15分：.pyを作って実行、15–40分：関数・引数・ループ、40–60分：制作、60–70分：ペアで感想、70–75分：修正、75–90分：上映、90–100分：最終作品のアイデア。',
+                          '0–15 min: create and run a .py file. 15–40: functions, arguments, and loops. 40–60: build. 60–70: partner feedback. 70–75: revise. 75–90: show-and-tell. 90–100: final project idea.')),
         ('In-Class Notebook', ('hello.py から始めて、train.py の引数でコマ数と速さを変える。route.py ではリストと if で停留所を表示。',
                                'Start with hello.py, then change the train’s frame count and speed with arguments. Use a list and an if statement to make a shuttle display.')),
         ('In-Class Challenge', BRIEF),

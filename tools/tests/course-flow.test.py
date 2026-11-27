@@ -85,6 +85,7 @@ assert ascii_deck.count(' data-slide data-ink-id=')==next(w['slides'] for w in m
 ascii_flow=re.findall(r'data-slide data-ink-id="w10-ascii-([^"]+)"',ascii_deck)
 assert ascii_flow[:2]==['save','run']
 assert ascii_flow[4:11]==['frame','loop','timer','train','parameters','route','challenge']
+assert ascii_flow[11:13]==['feedback','share']
 ascii_challenge=(ascii_folder/'challenge.html').read_text()
 ascii_agenda=(ROOT/'content/weeks/10-systems.md').read_text()
 ascii_payload=lambda page:json.loads(re.search(r'<script type="application/json" id="ascii-data">(.*?)</script>',page,re.S)[1])
@@ -92,6 +93,10 @@ for page in (ascii_deck,ascii_challenge,ascii_agenda):
     assert not re.search(r'budget_tool|student-menu|challenge-starter\.ipynb',page)
     assert '2026-12-03T12:00:00+09:00' in page and 'ascii.py' in page
 assert 'id="first-file"' in ascii_challenge and 'id="homework"' in ascii_challenge
+assert 'id="feedback"' in ascii_challenge and '60–70: partner feedback. 70–75: revise.' in ascii_agenda
+for page in (ascii_deck,ascii_challenge):
+    assert '10 minutes: Try it with a partner' in page
+    assert page.count('<strong>4 min:</strong>')==2 and page.count('<strong>2 min:</strong>')==1
 assert ascii_payload(ascii_deck)==ascii_payload(ascii_challenge)
 clear='\x1b[2J\x1b[H'
 assert 'w10-ascii-skyline' in ascii_deck and 'w10-ascii-launch' in ascii_deck

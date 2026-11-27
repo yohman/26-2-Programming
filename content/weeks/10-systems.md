@@ -21,8 +21,8 @@ challenge_title: ASCII challenge
 challenge_title_ja: ASCIIチャレンジ
 ---
 ## Lecture Flow
-EN: 0–15 min: create and run a .py file. 15–40: change motion with functions, arguments, and loops. 40–70: build. 70–90: test and share. 90–100: final project idea.
-JP: 0–15分：.pyを作ってターミナルで実行、15–40分：関数・引数・ループで動きを変える、40–70分：制作、70–90分：動作確認と上映、90–100分：最終作品のアイデア。
+EN: 0–15 min: create and run a .py file. 15–40: functions, arguments, and loops. 40–60: build. 60–70: partner feedback. 70–75: revise. 75–90: show-and-tell. 90–100: final project idea.
+JP: 0–15分：.pyを作って実行、15–40分：関数・引数・ループ、40–60分：制作、60–70分：ペアで感想、70–75分：修正、75–90分：上映、90–100分：最終作品のアイデア。
 ## In-Class Notebook
 EN: Start with hello.py, then change the train’s frame count and speed with arguments. Use a list and an if statement to make a shuttle display.
 JP: hello.py から始めて、train.py の引数でコマ数と速さを変える。route.py ではリストと if で停留所を表示。

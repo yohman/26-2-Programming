@@ -80,6 +80,8 @@ for snippet in re.findall(r'<pre data-language="python"><code>(.*?)</code></pre>
 # Actual standalone Python must produce precisely the frames replayed in the browser.
 ascii_folder=ROOT/'weeks/week-10'
 ascii_deck=(ascii_folder/'lecture.html').read_text()
+manifest=json.loads((ROOT/'tools/course-flow-manifest.json').read_text())
+assert ascii_deck.count(' data-slide data-ink-id=')==next(w['slides'] for w in manifest if w['week']==10)
 ascii_challenge=(ascii_folder/'challenge.html').read_text()
 ascii_agenda=(ROOT/'content/weeks/10-systems.md').read_text()
 ascii_payload=lambda page:json.loads(re.search(r'<script type="application/json" id="ascii-data">(.*?)</script>',page,re.S)[1])

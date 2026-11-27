@@ -5,6 +5,31 @@ const path=require('node:path');
 const vm=require('node:vm');
 const models=require('../../assets/course-models.js');
 const root=path.resolve(__dirname,'../..');
+test('Week 10 ASCII demo plays, steps, and stops on slide change',()=>{
+ const dir=path.join(root,'weeks/week-10');
+ const deck=fs.readFileSync(path.join(dir,'lecture.html'),'utf8');
+ const data={textContent:deck.match(/id="ascii-data">(.*?)<\/script>/s)[1]};
+ const rain=JSON.parse(data.textContent).rain;
+ const picture={},count={};
+ const button=()=>({addEventListener(type,click){this[type]=click;}});
+ const play=button(),step=button(),view=button();
+ const elements={'.ascii-output':picture,'[data-ascii-index]':count,
+  '[data-ascii-play]':play,'[data-ascii-step]':step};
+ let tick;
+ vm.runInNewContext(fs.readFileSync(path.join(dir,'ascii.js'),'utf8'),{
+  document:{getElementById:id=>id==='ascii-data'?data:view,addEventListener(){},
+   querySelectorAll:()=>[{dataset:{asciiDemo:'rain'},querySelector:key=>elements[key]}]},
+  setInterval(fn,delay){assert.equal(delay,280);tick=fn;return 1;},
+  clearInterval(){tick=null;}
+ });
+ step.click();assert.equal(picture.textContent,rain.frames[1].trimEnd());
+ play.click();assert.equal(picture.textContent,rain.frames[0].trimEnd());
+ assert.equal(play.disabled,true);
+ tick();assert.equal(count.textContent,'02 / 09');
+ view['lecture:slidechange']();assert.equal(tick,null);assert.equal(play.disabled,false);
+ play.click();for(let i=1;i<rain.frames.length;i++)tick();
+ assert.equal(tick,null);assert.equal(count.textContent,'09 / 09');
+});
 test('Week 9 execution trace skips the body at definition and returns after each call',()=>{
  const {flowFrames}=require('../../weeks/week-09/functions.js');
  assert.deepEqual(flowFrames.slice(0,3).map(frame=>frame.row),[0,1,5]);

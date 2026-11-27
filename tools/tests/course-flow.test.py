@@ -38,9 +38,11 @@ for week in range(9,15):
     with zipfile.ZipFile(folder/'starter-files.zip') as pack:
         assert pack.testzip() is None
         assert all(name.startswith(f'week-{week:02}/') and '..' not in name for name in pack.namelist())
+        if week==10:
+            assert set(pack.namelist())=={'week-10/hello.py','week-10/train.py','week-10/rain.py'}
+            for name in pack.namelist():
+                assert pack.read(name)==(ROOT/'weeks'/name).read_bytes()
         if week==12:assert f'week-{week:02}/click_model.py' in pack.namelist()
-    if week==10:
-        with (folder/'student-menu.csv').open() as file:assert len(list(csv.DictReader(file)))==24
 
 # The visible trace must match the actual Python call-loop output.
 lecture=(ROOT/'weeks/week-09/lecture.html').read_text()
@@ -75,10 +77,29 @@ for snippet in re.findall(r'<pre data-language="python"><code>(.*?)</code></pre>
     assert snippet.startswith('# ') and snippet in notebook_sources
     execute_cell(snippet,{})
 
-script=ROOT/'weeks/week-10/budget_tool.py'
-for value,expected in [('150','Onigiri'),('abc','whole number'),('-1','zero or more')]:
-    result=subprocess.run([sys.executable,str(script)],input=value+'\n',text=True,capture_output=True,cwd=tempfile.gettempdir())
-    assert result.returncode==0 and expected in result.stdout,(value,result.stdout,result.stderr)
+# Actual standalone Python must produce precisely the frames replayed in the browser.
+ascii_folder=ROOT/'weeks/week-10'
+ascii_deck=(ascii_folder/'lecture.html').read_text()
+ascii_challenge=(ascii_folder/'challenge.html').read_text()
+ascii_agenda=(ROOT/'content/weeks/10-systems.md').read_text()
+ascii_payload=lambda page:json.loads(re.search(r'<script type="application/json" id="ascii-data">(.*?)</script>',page,re.S)[1])
+for page in (ascii_deck,ascii_challenge,ascii_agenda):
+    assert not re.search(r'budget_tool|student-menu|challenge-starter\.ipynb',page)
+    assert '2026-12-03T12:00:00+09:00' in page and 'ascii.py' in page
+assert 'id="first-file"' in ascii_challenge and 'id="homework"' in ascii_challenge
+assert ascii_payload(ascii_deck)==ascii_payload(ascii_challenge)
+for name,separator,frame_count in [('train','\r',18),('rain','\x1b[2J\x1b[H',9)]:
+    script=ascii_folder/(name+'.py')
+    code=script.read_text().rstrip()
+    for page in (ascii_deck,ascii_challenge):
+        assert html.escape(code) in page
+    result=subprocess.check_output([sys.executable,str(script)],cwd=tempfile.gettempdir(),timeout=6)
+    pictures=result.decode().split(separator)[1:]
+    if name=='train':pictures[-1]=pictures[-1].rstrip('\n')
+    assert pictures==ascii_payload(ascii_deck)[name]['frames'] and len(pictures)==frame_count
+    assert len(set(pictures))>=3
+assert subprocess.check_output([sys.executable,str(ascii_folder/'hello.py')],timeout=3)==b'Hello, terminal!\n'
+
 with (ROOT/'weeks/week-11/detected-boxes.csv').open() as file:
     boxes=list(csv.DictReader(file))
 assert boxes and all(0<=int(b['x'])<1200 and int(b['w'])>0 for b in boxes)

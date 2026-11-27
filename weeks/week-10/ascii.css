@@ -1,0 +1,77 @@
+.course-deck .ascii-slide h2 { margin-bottom: .85rem; }
+.course-deck .ascii-slide .lesson-code pre { margin-top: 0; font-size: clamp(.95rem, 1.65vw, 1.48rem); line-height: 1.42; }
+.course-deck .ascii-slide .ascii-caption { color: #465863; font-size: clamp(.85rem, 1.3vw, 1.15rem); margin: .8rem 0; max-width: 62ch; }
+.course-deck .ascii-curtain {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: #12252d;
+  color: #d5f2da;
+}
+.course-deck .ascii-curtain h1 { font-size: clamp(2.2rem, 6vw, 5.5rem); margin: 0; }
+.course-deck .ascii-curtain .ascii-caption { color: #b6c9c7; margin: 1.4rem 0 0; }
+.ascii-preview {
+  position: relative;
+  overflow: auto;
+  background: #12252d;
+  color: #d5f2da;
+  max-width: 72rem;
+}
+.ascii-week pre.ascii-output {
+  font: 500 clamp(.9rem, 3.6vw, 2.15rem)/1.17 var(--mono);
+  color: inherit;
+  background: transparent;
+  border: 0;
+  margin: 0;
+  padding: .8rem;
+  white-space: pre;
+  min-width: max-content;
+}
+.ascii-demo.opening .ascii-preview { margin: .6rem 0; background: transparent; }
+.ascii-demo.opening .ascii-output { font-size: clamp(1rem, 4.3vw, 3.2rem); padding: .65rem 0; }
+.ascii-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .3rem .5rem; margin: .45rem 0 1rem; }
+.ascii-actions button {
+  font: 700 .84rem/1.2 var(--mono);
+  background: transparent;
+  color: inherit;
+  border: 1px solid currentColor;
+  padding: .4rem .6rem;
+  cursor: pointer;
+}
+.ascii-actions button:disabled { opacity: .45; cursor: default; }
+.ascii-actions [data-ascii-index] { margin-inline-start: .4rem; font: .75rem var(--mono); }
+.ascii-week .ascii-hello-output { color: #244237; background: #eaf2ed; }
+.ascii-week summary { cursor: pointer; }
+.ascii-week .ascii-challenge { background: #edf2ee; }
+.ascii-week .ascii-share { background: #e9eff2; }
+.ascii-week.course-challenge main pre {
+  margin: .6rem 0 1rem;
+  padding: 1rem;
+  overflow: auto;
+  white-space: pre;
+  background: #162b3c;
+  color: #edf4f7;
+  font: 500 .94rem/1.55 var(--mono);
+}
+.ascii-week.course-challenge .lesson-code pre { margin-top: 0; }
+.ascii-week.course-challenge .ascii-preview pre { margin: 0; color: #d5f2da; background: transparent; font-size: clamp(.9rem, 3.4vw, 1.5rem); }
+.ascii-week.course-challenge .ascii-hello-output { color: #244237; background: #eaf2ed; }
+.ascii-week.course-challenge .code-toolbar { background: #e5ebef; color: #315876; padding: .4rem .7rem; font: .75rem var(--mono); }
+.course-deck.lecture-embedded .ascii-slide { padding: 1.5rem; }
+.course-deck.lecture-embedded .ascii-slide .lesson-code pre { font-size: .9rem; }
+.course-deck.lecture-embedded .ascii-curtain h1 { font-size: clamp(1.8rem, 5vw, 3.3rem); }
+.course-deck.lecture-embedded .ascii-curtain .ascii-output { font-size: clamp(1rem, 3vw, 1.75rem); }
+@media (min-width: 920px) {
+  .course-deck:not(.lecture-embedded) .ascii-example:not([hidden]) {
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+    grid-template-rows: repeat(3, auto) 1fr;
+    column-gap: 1.2rem;
+    align-content: start;
+    align-items: start;
+  }
+  .ascii-example h2 { grid-column: 1 / -1; }
+  .ascii-example .lesson-code { grid-column: 1; grid-row: 2 / span 4; }
+  .ascii-example .ascii-demo, .ascii-example .ascii-caption, .ascii-example .simulation-note { grid-column: 2; }
+  .ascii-example .ascii-preview pre { font-size: clamp(.85rem, 1.5vw, 1.45rem); }
+}

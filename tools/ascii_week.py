@@ -7,25 +7,27 @@ import subprocess
 import sys
 import zipfile
 
-VERSION = '20261127-ascii-terminal'
+VERSION = '20261127-ascii-show'
 RELEASE = '2026-12-03T12:00:00+09:00'
 DUE = '2026-12-09'
-SLIDES = ['open', 'save', 'run', 'frame', 'loop', 'train', 'rain', 'challenge', 'share']
-SCRIPTS = ['hello.py', 'train.py', 'rain.py']
+SLIDES = ['open', 'save', 'run', 'spaces', 'spinner', 'frame', 'loop', 'train', 'rain', 'skyline', 'signal', 'launch', 'challenge', 'share']
+SCRIPTS = ['hello.py', 'tiny.py', 'train.py', 'rain.py', 'skyline.py', 'signal.py', 'launch.py']
 SPEC = dict(title='ASCII Studio', title_ja='ASCIIスタジオ', date='2026-12-03', due=DUE, slides=SLIDES)
 GOAL = (
     '文字と空白で絵を作り、自分の .py ファイルをターミナルから動かす。',
     'Make pictures with text and spaces, then run your own .py file from a terminal.',
 )
 BRIEF = (
-    '文字だけで、自分のシーンを作ろう。動く作品でも、ループで行を増やす一枚絵でもOK。',
-    'Make an original scene out of text. Animate it, or use a loop to build a still picture one row at a time.',
+    'ターミナルで30秒の上映会。文字だけで、自分の場面と、見てわかる変化を作ろう。短いアニメでも、ループで描く一枚絵でもOK。',
+    'Make a text-only scene for a 30-second terminal show-and-tell. Give it a change the audience can spot, in a short animation or a still built by a loop.',
 )
 REQUIREMENTS = [
     ('入力を受け取って1フレーム（または1行）の文字列を返す関数を作る。',
      'Write a function that takes an argument and returns the text for one frame or row.'),
     ('for ループで違う値を関数に渡し、位置・形・文字などを変えて表示する。',
      'Call it in a for loop with different values so the position, shape, or text changes.'),
+    ('見どころを一つ作る。動画なら登場・点灯・到着など。静止画なら模様や形が切り替わる場所を作る。',
+     'Give the audience one moment to notice: a character arrives, a sign lights up, or a still picture changes pattern at a chosen row.'),
     ('ターミナルで実行できて、自然に終了することを確かめる。追加パッケージは不要。',
      'Check that it runs in a terminal and ends on its own. No extra packages are needed.'),
 ]
@@ -50,9 +52,33 @@ TRAIN_HINT = (
     r'<code>\r</code> は行の先頭へ戻る。<code>end=""</code> で改行せず、<code>flush=True</code> で今すぐ表示。<code>sleep(0.12)</code> は次のコマまでの待ち時間（秒）。',
     r'<code>\r</code> returns to the start of the line. <code>end=""</code> skips the newline and <code>flush=True</code> displays immediately. <code>sleep(0.12)</code> waits 0.12 seconds.',
 )
+TINY_HINT = (
+    'スピナーは <code>| / - \\</code> を順番に出す。ドットは空白の数、絵文字はリストの何番目を選ぶかで変わる。絵文字はASCIIではなく、端末によって幅が違うことがある。',
+    'The spinner cycles through <code>| / - \\</code>. Spaces move the dot, and a list supplies the faces. Emoji are Unicode and may take up different widths in different terminals.',
+)
 RAIN_HINT = (
     r'雨の行だけを変えて、屋根は固定。<code>\033[2J\033[H</code> はターミナルを消去して左上に戻す合図。複数行を描き直したいときだけ使う。',
     r'Change the rain while the roof stays still. <code>\033[2J\033[H</code> clears the terminal and moves the cursor to the top left. Use it only when you want to redraw several lines.',
+)
+SKYLINE_HINT = (
+    '<code>level</code> は今描く段。ループは各ビルの高さを調べ、届くなら <code>[#]</code>、届かないなら空白にする。',
+    '<code>level</code> is the row being drawn. For each building, the loop adds <code>[#]</code> if the building reaches that level, or spaces if it doesn’t.',
+)
+SIGNAL_HINT = (
+    '位置は変えず、<code>active</code> と同じ行だけに <code>*</code> を表示する。リストの順番を変えると、何が変わる？',
+    'Nothing moves across the screen. Only the row that matches <code>active</code> gets a <code>*</code>. What happens if you change the order of the states?',
+)
+LAUNCH_HINT = (
+    '外側の <code>for step</code> が時間を進める。<code>flight_frame</code> の中の <code>for y</code> は一コマを上から1行ずつ描き、必要な行にだけロケットを重ねる。',
+    'The outer <code>for step</code> advances time. Inside <code>flight_frame</code>, <code>for y</code> builds one frame top to bottom and overlays the rocket only on the rows it occupies.',
+)
+PITCHES = (
+    'たとえば、終電の発車案内、3秒で変身するキャラクター、1軒だけ明かりがつく夜の街。テーマは自由。サンプルを使うなら文字を置き換えるだけでなく、変化のルールを一つ変える。',
+    'Try a last-train departure board, a character that transforms on cue, or a skyline with one lit window. Your own idea is welcome. If you start from an example, change a rule that controls what we see.',
+)
+STRETCH = (
+    '発展：背景と動くものを別々の関数で作る。位置が端に着いたら、台詞や次の場面を切り替える。',
+    'Stretch: draw the background and moving object in separate functions, or switch the caption or scene when the object reaches an edge.',
 )
 
 
@@ -72,14 +98,22 @@ def frames(source, separator):
 
 def build(root: Path, c):
     dest = root/'weeks/week-10'
-    hello, train, rain = [(dest/name).read_text(encoding='utf-8').rstrip() for name in SCRIPTS]
+    hello, tiny, train, rain, skyline, signal, launch = [(dest/name).read_text(encoding='utf-8').rstrip() for name in SCRIPTS]
     hello_output = output(hello)
     demos = {'train': frames(train, '\r'), 'rain': frames(rain, '\x1b[2J\x1b[H')}
+    demos.update(tiny=frames(tiny, '\x1b[2J\x1b[H'), signal=frames(signal, '\x1b[2J\x1b[H'),
+                 launch=frames(launch, '\x1b[2J\x1b[H'))
     demos['train']['frames'][-1] = demos['train']['frames'][-1].rstrip('\n')
     frame_def = train[train.index('# 空白'):train.index('# 1コマずつ')].rstrip()
     one_frame = frame_def + '\n\n# 右に6文字分ずらして表示\nprint(train_frame(6))'
     frame_loop = frame_def + '\n\n# 位置を変えて、1コマずつ別の行に表示\nfor position in range(0, 10, 3):\n    print(train_frame(position))'
-    examples = [(hello, hello_output), (one_frame, output(one_frame)), (frame_loop, output(frame_loop))]
+    one_dot = 'print(".")\nprint("🙂")'
+    dots = 'print("." * 5)\nprint(" " * 4 + ".")'
+    spin_steps = 'for symbol in ["|", "/", "-", "\\\\"]:\n    print(symbol)'
+    skyline_output = output(skyline)
+    examples = [(hello, hello_output), (one_dot, output(one_dot)), (dots, output(dots)), (spin_steps, output(spin_steps)),
+                (one_frame, output(one_frame)), (frame_loop, output(frame_loop)), (skyline, skyline_output)]
+    launch_code = launch[launch.index('def flight_frame'):launch.index('\n\nfor step')]
     bi, p = c.bi, c.p
     heading = lambda ja, en: '<h2>'+bi(ja, en)+'</h2>'
     cmd = '<pre class="ascii-terminal-command" data-language="shell"><code>'+html.escape(COMMANDS)+'</code></pre>'
@@ -105,29 +139,48 @@ def build(root: Path, c):
         assert key == SLIDES[index-1]
 
     note = p('Pythonで実行した出力をブラウザで再生。','The browser replays output captured from Python.','simulation-note')
-    add('open','文字だけで、雨','Rain, made of text',
-        demo('rain','opening')+p('今日は .py ファイルを作って、ターミナルで動かす。','Today you’ll make a .py file and run it in a terminal.','ascii-caption'), 'curtain')
+    add('open','回る、動く、表情が変わる','A spinner, a dot, an emoji',
+        demo('tiny','opening')
+        +p('いま変わったのは、記号？ 位置？ 表情？ まず1文字から、同じ動きを自分の .py ファイルで作る。',
+           'What changed: the symbol, the position, or the face? Start with one character and build the motion in your own .py file.','ascii-caption'), 'curtain')
     add('save','最初のファイル：hello.py','The first file: hello.py',
         c.code_html(*examples[0])+p(*SAVE,'ascii-caption'), 'code')
     add('run','ターミナルから起動','Running from the terminal',
         p(*RUN)+cmd+'<pre class="ascii-hello-output">'+html.escape(hello_output.strip())+'</pre>'
         +p('Notebookと違い、最後に値を書くだけでは表示されない。ターミナルに出すときは print()。','A script won’t display a bare value like a notebook cell does. Use print() to show it.','ascii-caption')
         +'<details><summary>'+bi('うまく動かないとき','If it doesn’t run')+'</summary>'+p(*FIX)+'</details>', 'command')
-    add('frame','空白も絵の一部','Spaces are part of the picture',
-        c.code_html(*examples[1])+p('6 を 0 や 12 に変えたら、列車はどこに出る？','Where will the train be if you change 6 to 0 or 12?','ascii-caption'), 'code')
+    add('spaces','ドットはどこに出る？','Where will the dot land?',
+        c.code_html(one_dot,output(one_dot))+c.code_html(dots,output(dots))
+        +p('文字 × 数は繰り返し。空白も1文字。2つ目のコードは、何でドットを右に動かしている？',
+           'A string times a number repeats it. A space is a character too. In the second example, what moves the dot to the right?','ascii-caption'), 'code')
+    add('spinner','4文字で回転','Four characters make a spinner',
+        c.code_html(spin_steps,output(spin_steps))
+        +p('ここでは1文字ずつ別の行に出る。同じ場所に上書きすれば、回転に見える。',
+           'For now each character prints on its own line. Redraw them in one spot and the symbol will appear to spin.','ascii-caption'), 'code')
+    add('frame','空白の数で列車を置く','Spaces place the train',
+        c.code_html(one_frame,output(one_frame))+p('ドットを列車に置き換え、右にずらす数を関数に渡す。6 を 0 や 12 に変えたら？',
+                                                 'Replace the dot with a train and pass the number of spaces to a function. What changes if you use 0 or 12 instead of 6?','ascii-caption'), 'code')
     add('loop','ループで位置を変える','The loop changes the position',
-        c.code_html(*examples[2])+p('関数は1コマを作る。for は位置を変えて、同じ関数を何度も呼ぶ。','The function makes one frame. The loop calls it again with a different position.','ascii-caption'), 'code')
+        c.code_html(frame_loop,output(frame_loop))+p('関数は1コマを作る。for は位置を変えて、同じ関数を何度も呼ぶ。まず別々の行に描いてみよう。',
+                                                     'The function makes one frame. The loop calls it with a new position each time. First, print each frame on a separate line.','ascii-caption'), 'code')
     add('train','同じ行で動く列車','A train on one line',
         demo('train','compact')+c.code_html(train)+p(*TRAIN_HINT,'ascii-caption')
         +p('動いているプログラムを止めるには Ctrl+C。','Press Ctrl+C in the terminal to stop a running script.','ascii-caption')+note, 'example')
     add('rain','屋根はそのまま、雨だけ動く','A still roof, moving rain',
         demo('rain','compact')+c.code_html(rain)+p(*RAIN_HINT,'ascii-caption')+note, 'example')
-    add('challenge','30分：ASCIIチャレンジ','30 minutes: ASCII challenge',
+    add('skyline','高さのリストで街を描く','A skyline from a list of heights',
+        c.code_html(skyline,skyline_output)+p(*SKYLINE_HINT,'ascii-caption'), 'code')
+    add('signal','同じ絵、違う状態','One picture, changing states',
+        demo('signal','compact')+c.code_html(signal)+p(*SIGNAL_HINT,'ascii-caption')+note, 'example')
+    add('launch','ロケットの1コマは何行？','How does the rocket get into each frame?',
+        demo('launch','wide')+c.code_html(launch_code)+p(*LAUNCH_HINT,'ascii-caption')+note
+        +links([('challenge.html#launch','ロケットの全コード','Full rocket script')]), 'example')
+    add('challenge','30分：ターミナル上映会','30 minutes: Terminal show-and-tell',
         p(*BRIEF,'lesson-lead')+c.list_html(REQUIREMENTS)
-        +p('たとえば、柏駅の発車案内、点滅するゲームのタイトル、行ごとに模様が変わるポスター。自分のアイデアも歓迎。','Try a Kashiwa Station departure board, a blinking game title, or a poster that changes pattern row by row. Your own idea is welcome.')
-        +links([('challenge.html','チャレンジの手順・コード例','Challenge instructions and examples')]), 'challenge')
+        +p(*PITCHES)+links([('challenge.html#make','チャレンジの手順・コード例','Challenge instructions and examples')]), 'challenge')
     add('share','上映と提出','Showtime and submission',
         p('友だちに実行コマンドだけを渡し、動くか確認。発表は30秒：ターミナルで実行し、ループが何を変えるか一言。','Give a classmate the run command and see if it works. For the 30-second share-out, run the script and say what the loop changes.','lesson-lead')
+        +p('発表の前に、数字や状態を一つ変えて実行。何が変わるか予想してから確かめる。','Before showing it, change a number or state. Predict what will change, then run it and check.','ascii-caption')
         +p(*HOMEWORK)+links([('challenge.html#homework','宿題・提出方法','Homework and submission')])
         +p('最後に、最終作品のアイデアを一つメモ。今日の作品から発展させてもOK。','Before you leave, jot down one final-project idea. You can build on today’s piece.','ascii-caption'), 'share')
     nav = ('<nav class="slide-controls" aria-label="Slide navigation"><div class="slide-nav-group">'
@@ -148,13 +201,22 @@ def build(root: Path, c):
              +p('<a href="https://code.visualstudio.com/docs/python/run">VS Code公式：Pythonを実行する</a>',
                 '<a href="https://code.visualstudio.com/docs/python/run">VS Code documentation: Running Python code</a>')
              +'</details></section>')
-    body += '<section id="examples">'+heading('動くサンプル','Animation examples')
-    body += p('コードをコピーして、自分で .py として保存。hello.py と同じように、コマンドのファイル名を train.py や rain.py に変えて実行する。','Copy the code and save it as a .py file. Run it like hello.py, replacing the file name in the command with train.py or rain.py.')
-    for name, code, hint in [('train',train,TRAIN_HINT),('rain',rain,RAIN_HINT)]:
-        body += f'<h3>{name}.py</h3>'+demo(name,'page')+c.code_html(code)+p(*hint)+note
+    body += '<section id="examples">'+heading('ASCII作品のサンプル','ASCII examples')
+    body += p('コードをコピーして、見出しの名前で保存。hello.py と同じように、コマンドのファイル名を変えて実行する。','Copy the code and save it using the name shown above each script. Run it like hello.py, replacing the file name in the command.')
+    for name, code, hint in [('tiny',tiny,TINY_HINT),('train',train,TRAIN_HINT),('rain',rain,RAIN_HINT),
+                             ('skyline',skyline,SKYLINE_HINT),('signal',signal,SIGNAL_HINT),
+                             ('launch',launch,LAUNCH_HINT)]:
+        body += f'<h3 id="{name}">{name}.py</h3>'
+        if name == 'skyline':
+            body += '<div class="ascii-preview"><pre class="ascii-output">'+html.escape(skyline_output.rstrip('\n'))+'</pre></div>'
+        else:
+            body += demo(name,'page')
+        body += c.code_html(code)+p(*hint)+(note if name != 'skyline' else '')
     body += links([('starter-files.zip','サンプル .py（ZIP）','Example scripts (ZIP)')])+'</section>'
-    body += '<section id="make">'+heading('30分：自分の作品','30 minutes: your own piece')+c.list_html(REQUIREMENTS)
-    body += p('新しい ascii.py を作る。まず1コマ（または1行）だけ表示し、次にループで変化させる。最後に相手のターミナルでも試す。','Create a new ascii.py. Get one frame or row to print, then use a loop to make it change. Finally, try it on a classmate’s terminal.')+'</section>'
+    body += '<section id="make">'+heading('30分：自分の作品','30 minutes: your own piece')+p(*PITCHES)+c.list_html(REQUIREMENTS)
+    body += p('新しい ascii.py に最初の1コマ（または1行）を作る。次にループで変化させる。最後に友だちに見てもらい、何が変わったか聞こう。',
+              'Create the first row or frame in a new ascii.py. Use a loop to make it change. Show it to a classmate and ask what they noticed.')
+    body += p(*STRETCH)+'</section>'
     body += '<section id="homework">'+heading('宿題・提出','Homework and submission')+p(*HOMEWORK)+p(f'締切：{DUE} 23:59 JST',f'Due: {DUE}, 23:59 JST')+'</section>'
     head = c.page_head('Week 10 challenge · ASCII Studio','course-pages.css','course-page.js',VERSION)
     c.write(dest/'challenge.html',head+assets+f'</head><body class="course-challenge ascii-week" data-release="{RELEASE}">'+header
@@ -163,7 +225,7 @@ def build(root: Path, c):
 
     cells = [c.mdcell('# ASCII Studio\n\n授業の提出形式は .py です。スライドとチャレンジページの手順に沿ってターミナルで実行しましょう。\n\nThis notebook is a reference. Save and run your own .py in a terminal for the assignment.')]
     cells += [c.codecell(code,result,i) for i,(code,result) in enumerate(examples,1)]
-    cells += [c.mdcell('## Terminal examples\n\n'+''.join(f'### {name}\n\n```python\n{code}\n```\n\n' for name,code in [('train.py',train),('rain.py',rain)]))]
+    cells += [c.mdcell('## Terminal examples\n\n'+''.join(f'### {name}\n\n```python\n{code}\n```\n\n' for name,code in [('tiny.py',tiny),('train.py',train),('rain.py',rain),('signal.py',signal),('launch.py',launch)]))]
     for name in ['practice.ipynb','week-10-in-class-systems.ipynb']:
         c.notebook(dest/name,cells)
     with zipfile.ZipFile(dest/'starter-files.zip','w') as pack:
@@ -183,7 +245,7 @@ def build(root: Path, c):
     sections = [
         ('Lecture Flow', ('0–20分：.pyを作って実行、20–40分：1コマ・ループ・アニメーション、40–70分：制作、70–90分：動作確認と上映、90–100分：最終作品のアイデア。',
                           '0–20 min: save and run a .py file. 20–40: frames, loops, animation. 40–70: build. 70–90: test and share. 90–100: final project idea.')),
-        ('In-Class Notebook', ('hello.py を作り、ターミナルで実行。列車と雨のコード例を試す。','Save and run hello.py in your terminal. Try the train and rain examples.')),
+        ('In-Class Notebook', ('hello.py を実行し、街や信号、ロケットが関数とループでどう作られるかを見る。','Run hello.py, then explore how loops and functions build a skyline, a changing signal, and a rocket launch.')),
         ('In-Class Challenge', BRIEF),
         ('Take-Home Assignment', HOMEWORK),
         ('Aha!', ('関数が1コマを作り、ループが次のコマを作る。','A function makes one frame. The loop asks for the next.')),

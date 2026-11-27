@@ -24,11 +24,11 @@ challenge_title_ja: ASCIIチャレンジ
 EN: 0–20 min: save and run a .py file. 20–40: frames, loops, animation. 40–70: build. 70–90: test and share. 90–100: final project idea.
 JP: 0–20分：.pyを作って実行、20–40分：1コマ・ループ・アニメーション、40–70分：制作、70–90分：動作確認と上映、90–100分：最終作品のアイデア。
 ## In-Class Notebook
-EN: Save and run hello.py in your terminal. Try the train and rain examples.
-JP: hello.py を作り、ターミナルで実行。列車と雨のコード例を試す。
+EN: Run hello.py, then explore how loops and functions build a skyline, a changing signal, and a rocket launch.
+JP: hello.py を実行し、街や信号、ロケットが関数とループでどう作られるかを見る。
 ## In-Class Challenge
-EN: Make an original scene out of text. Animate it, or use a loop to build a still picture one row at a time.
-JP: 文字だけで、自分のシーンを作ろう。動く作品でも、ループで行を増やす一枚絵でもOK。
+EN: Make a text-only scene for a 30-second terminal show-and-tell. Give it a change the audience can spot, in a short animation or a still built by a loop.
+JP: ターミナルで30秒の上映会。文字だけで、自分の場面と、見てわかる変化を作ろう。短いアニメでも、ループで描く一枚絵でもOK。
 ## Take-Home Assignment
 EN: Polish your piece and submit ascii.py to UNIPA. In comments at the top, include the title, your name, the run command, and what changes. No notebook is needed.
 JP: 作品を仕上げて、ascii.py を UNIPA に提出。先頭のコメントに作品名・氏名・実行コマンド・何が変化するかを短く書く。Notebookは不要。
